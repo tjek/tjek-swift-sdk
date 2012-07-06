@@ -24,6 +24,7 @@ typedef enum {
 @interface ETA : NSObject <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
 
 @property (nonatomic, strong) id<ETADelegate> delegate;
+@property (nonatomic) BOOL debug;
 @property (nonatomic, strong) NSString *apiKey;
 @property (nonatomic, strong) NSString *apiSecret;
 @property (nonatomic, strong) NSString *UUID;
