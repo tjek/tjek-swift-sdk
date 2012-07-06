@@ -22,6 +22,7 @@
 @property (nonatomic) BOOL hasLocation;
 @property (nonatomic, strong) NSMutableURLRequest *request;
 @property (nonatomic, strong) NSURLConnection *connection;
+@property (nonatomic) NSHTTPURLResponse *response;
 
 @end
 
@@ -44,6 +45,7 @@
 @synthesize hasLocation = _hasLocation;
 @synthesize request = _request;
 @synthesize connection = _connection;
+@synthesize response = _response;
 
 
 #pragma mark - Initializer
@@ -150,6 +152,7 @@
         NSHTTPURLResponse *thisResponse = (NSHTTPURLResponse *)response;
         NSLog(@"[ETA] didReceiveResponse: %@", thisResponse);
     }
+    self.response = (NSHTTPURLResponse *)response;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
@@ -157,6 +160,16 @@
     if (self.debug)
     {
         NSLog(@"[ETA] didReceiveData: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    }
+    
+    if (self.response.statusCode == 200)
+    {
+        NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONWritingPrettyPrinted error:nil];
+        [self.delegate etaRequestSucceededAndReturnedDictionary:jsonDictionary];
+    }
+    else
+    {
+        [self.delegate etaRequestFailedWithError:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
     }
 }
 
