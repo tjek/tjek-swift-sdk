@@ -2,8 +2,8 @@
 //  ETA.h
 //  ETA
 //
-//  Created by Rasmus Hummelmose on 29/06/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Created by Rasmus Hummelmose (Tapp ApS) on 29/06/12.
+//  Copyright (c) 2012 ETilbudsavis ApS. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
