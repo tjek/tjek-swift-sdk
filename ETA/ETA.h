@@ -16,12 +16,17 @@ typedef enum {
 @protocol ETADelegate <NSObject>
 
 @required
+
 - (void)etaRequestSucceededAndReturnedDictionary:(NSDictionary *)dictionary;
 - (void)etaRequestFailedWithError:(NSString *)error;
 
+- (void)etaWebViewFailedToLoadWithError:(NSString *)error;
+- (void)etaWebViewLoaded:(UIWebView *)webView;
+- (void)etaWebViewEventWithClass:(NSString *)class type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary;
+
 @end
 
-@interface ETA : NSObject <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
+@interface ETA : NSObject
 
 @property (nonatomic, strong) id<ETADelegate> delegate;
 @property (nonatomic) BOOL debug;
@@ -29,10 +34,15 @@ typedef enum {
 @property (nonatomic, strong) NSString *apiSecret;
 @property (nonatomic, strong) NSString *UUID;
 
-+ (ETA *)etaWithAPIKey:(NSString *)apiKey andAPISecret:(NSString *)apiSecret;
++ (ETA *)etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret;
 
 - (void)setLocationWithAccuracy:(float)accuracy latitude:(float)latitude longitude:(float)longitude locationDetermined:(int)locationDetermined distance:(int)distance;
 - (void)setGeocodedLocationWithLatitude:(float)latitude longitude:(float)longitude locationDetermined:(int)locationDetermined distance:(int)distance;
 - (void)performAPIRequestWithPathString:(NSString *)pathString requestType:(ETARequestType)requestType optionsDictionary:(NSDictionary *)optionsDictionary;
+
+- (UIWebView *)webViewForETA;
+- (void)pageflipWithCatalog:(NSString *)catalog page:(NSUInteger)page;
+- (void)pageflipWithDealer:(NSString *)dealer page:(NSUInteger)page;
+- (void)pageflipClose;
 
 @end

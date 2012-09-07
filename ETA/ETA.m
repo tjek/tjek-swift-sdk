@@ -11,7 +11,7 @@
 
 #define BASE_URL @"https://etilbudsavis.dk"
 
-@interface ETA()
+@interface ETA() <UIWebViewDelegate, NSURLConnectionDelegate, NSURLConnectionDataDelegate>
 
 @property (nonatomic) float latitude;
 @property (nonatomic) float longitude;
@@ -23,6 +23,7 @@
 @property (nonatomic, strong) NSMutableURLRequest *request;
 @property (nonatomic, strong) NSURLConnection *connection;
 @property (nonatomic) NSHTTPURLResponse *response;
+@property (nonatomic, strong) UIWebView *webView;
 
 @end
 
@@ -46,17 +47,134 @@
 @synthesize request = _request;
 @synthesize connection = _connection;
 @synthesize response = _response;
+@synthesize webView = _webView;
 
 
 #pragma mark - Initializer
 
-+ (ETA *)etaWithAPIKey:(NSString *)apiKey andAPISecret:(NSString *)apiSecret
++ (ETA *)etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret
 {
     ETA *eta = [[ETA alloc] init];
     eta.apiKey = apiKey;
     eta.apiSecret = apiSecret;
     eta.UUID = [eta generateUuidString];
     return eta;
+}
+
+- (UIWebView *)webViewForETA
+{
+    if (!self.apiKey || !self.apiSecret || !self.UUID) {
+        NSLog(@"[ETA] API Key, API Secret and UUID are mandatory properties");
+    }
+    
+    else if (!_webView) {
+        _webView = [[UIWebView alloc] init];
+        _webView.delegate = self;
+        _webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/connect", BASE_URL]]];
+        [_webView loadRequest:request];
+    }
+    return _webView;
+}
+
+
+#pragma mark - Page Flip
+
+- (void)pageflipWithCatalog:(NSString *)catalog page:(NSUInteger)page
+{
+    [self pageflipWithCatalog:catalog dealer:nil page:page];
+}
+
+- (void)pageflipWithDealer:(NSString *)dealer page:(NSUInteger)page
+{
+    [self pageflipWithCatalog:nil dealer:dealer page:page];
+}
+
+- (void)pageflipWithCatalog:(NSString *)catalog dealer:(NSString *)dealer page:(NSUInteger)page
+{
+    if (!self.webView) {
+        NSLog(@"[ETA] A UIWebView has to be loaded before calling page flip");
+        return;
+    }
+    
+    NSString *pageflipParameters = [NSString stringWithFormat:
+                                    @"eta.pageflip.init({%@:'%@',page:%d});",
+                                    (catalog ? @"catalog" : @"dealer"),
+                                    (catalog ? catalog : dealer),
+                                    (page ? page : 1)];
+    
+    NSString *JSResponse = [self.webView stringByEvaluatingJavaScriptFromString:pageflipParameters];
+    if (self.debug) {
+        NSLog(@"[ETA] JSON Page Flip Parameters: %@", pageflipParameters);
+        NSLog(@"[ETA] JS Page Flip Init Function Returned: %@", JSResponse);
+    }
+    
+    JSResponse = [self.webView stringByEvaluatingJavaScriptFromString:@"eta.pageflip.open();"];
+    if (self.debug) {
+        NSLog(@"[ETA] JS Page Flip Open Function Returned: %@", JSResponse);
+    }
+}
+
+- (void)pageflipClose
+{
+    if (!self.webView) {
+        NSLog(@"[ETA] A UIWebView has to be loaded before calling page flip");
+        return;
+    }
+    
+    NSString *JSResponse = [self.webView stringByEvaluatingJavaScriptFromString:@"eta.pageflip.close();"];
+    if (self.debug) {
+        NSLog(@"[ETA] JS Page Flip Close Function Returned: %@", JSResponse);
+    }
+}
+
+
+#pragma mark - UIWebView Delegate
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    if (self.debug) {
+        NSLog(@"[ETA] WebView Failed");
+    }
+    if ([self.delegate respondsToSelector:@selector(etaWebViewFailedToLoadWithError:)]) {
+        [self.delegate etaWebViewFailedToLoadWithError:error.debugDescription];
+    }
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    NSString *JSResponse = [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"eta.init({apiKey:'%@',apiSecret:'%@',uuid:'%@'});", self.apiKey, self.apiSecret, self.UUID]];
+    if (self.debug) {
+        NSLog(@"[ETA] JS Init Function Returned: %@", JSResponse);
+    }
+    if (self.hasLocation) {
+        NSString *JSONLocation = [self buildJSONFormattedLocationParameters];
+        JSResponse = [self.webView stringByEvaluatingJavaScriptFromString:JSONLocation];
+        if (self.debug) {
+            NSLog(@"[ETA] JS Location Function Returned: %@", JSResponse);
+        }
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(etaWebViewLoaded:)]) {
+        [self.delegate etaWebViewLoaded:self.webView];
+    }
+}
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    if ([request.URL.description rangeOfString:BASE_URL].location == NSNotFound) {
+        if ([self.delegate respondsToSelector:@selector(etaWebViewEventWithClass:type:dataDictionary:)]) {
+            NSString *event = [request.URL.description stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            NSArray * eventArray = [event componentsSeparatedByString:@":"];
+            NSString *eventClass = [eventArray objectAtIndex:0];;
+            NSString *eventType = [eventArray objectAtIndex:1];
+            NSString *eventDataJSON = [[eventArray subarrayWithRange:NSMakeRange(2, eventArray.count - 2)] componentsJoinedByString:@":"];
+            NSDictionary *eventDataDictionary = [NSJSONSerialization JSONObjectWithData:[eventDataJSON dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingAllowFragments error:nil];
+            [self.delegate etaWebViewEventWithClass:eventClass type:eventType dataDictionary:eventDataDictionary];
+        }
+        return NO;
+    }
+    return YES;
 }
 
 
@@ -77,7 +195,7 @@
     
     else
     {
-        NSLog(@"Accuracy, latitude, longitude and locationDetermined are mandatory arguments.");
+        NSLog(@"[ETA] Accuracy, latitude, longitude and locationDetermined are mandatory arguments");
     }
 }
 
@@ -95,7 +213,7 @@
     
     else
     {
-        NSLog(@"Latitude, longitude and locationDetermined are mandatory arguments.");
+        NSLog(@"[ETA] Latitude, longitude and locationDetermined are mandatory arguments");
     }
 }
 
@@ -165,8 +283,7 @@
     {
         NSLog(@"[ETA] didReceiveData: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     }
-    
-    if (self.response.statusCode == 200)
+    if (self.response.statusCode == 200 && [self.response.URL.description rangeOfString:@"api"].location != NSNotFound)
     {
         NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONWritingPrettyPrinted error:nil];
         [self.delegate etaRequestSucceededAndReturnedDictionary:jsonDictionary];
@@ -199,6 +316,30 @@
 
 
 #pragma mark - Helper methods
+
+- (NSString *)buildJSONFormattedLocationParameters
+{
+    NSArray *allParameters = [self buildRequestArrayWithOptions:nil];
+    NSArray *locationParameters = [allParameters subarrayWithRange:NSMakeRange(2, allParameters.count - 3)];
+    
+    NSMutableString *string = [NSMutableString string];
+    NSUInteger count = 1;
+    for (NSDictionary *parameter in locationParameters) {
+        NSString *key = [[parameter allKeys] objectAtIndex:0];
+        NSString *value = [parameter objectForKey:key];
+        [string appendFormat:@"%@:'%@'", key, value];
+        [string appendString:(count == locationParameters.count ? @"" : @",")];
+        count++;
+    }
+    
+    NSString *finalString = [NSString stringWithFormat:@"eta.Location.save({%@});", string];
+    
+    if (self.debug) {
+        NSLog(@"[ETA] JSON formatted location string evaluated to: %@", finalString);
+    }
+    
+    return finalString;
+}
 
 - (NSString *)buildQueryStringFromArray:(NSArray *)array
 {
@@ -234,7 +375,7 @@
     {
         [requestArray addObject:[NSDictionary dictionaryWithObject:self.UUID forKey:@"api_uuid"]];
     }
-    [requestArray addObject:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d", (long)[[NSDate date] timeIntervalSince1970]] forKey:@"api_timestamp"]];
+    [requestArray addObject:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970]] forKey:@"api_timestamp"]];
     if (self.latitude)
     {
         [requestArray addObject:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%f", self.latitude] forKey:@"api_latitude"]];
