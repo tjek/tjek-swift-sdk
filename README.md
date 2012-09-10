@@ -73,3 +73,30 @@ int distance = 1000; // we want results from within 1km
     NSLog(@"[ETA Delegate] Request failed with error: %@", error);
 }
 ```
+
+###UIWebView ETA Catalog
+```objectivec
+// Below is an example of how you can use the ETA iOS SDK to load a UIWebView with an ETA catalog.
+// ETA events that happen inside of the UIWebView are passed to its delegate as shown in the example.
+// In the example we assume that the eta property lazily loads an ETA object elsewhere.
+- (void)viewDidLoad
+{
+    self.eta.delegate = self;
+    [self.eta webViewForETA];
+}
+- (void)etaWebViewLoaded:(UIWebView *)webView
+{
+    NSLog(@"[ETA Delegate] WebView for ETA loaded: %@", webView);
+    [self.eta pageflipWithCatalog:@"71ffHDg" page:1];
+    self.view = webView;
+}
+
+- (void)etaWebViewFailedToLoadWithError:(NSString *)error
+{
+    NSLog(@"[ETA Delegate] An error occured while loading web view: %@", error);
+}
+- (void)etaWebView:(UIWebView *)webView triggeredEventWithClass:(NSString *)class type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary
+{
+    NSLog(@"[ETA Delegate] Received event with class: %@, %@, %@", class, type, dataDictionary);
+}
+```
