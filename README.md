@@ -53,6 +53,7 @@ int distance = 1000; // we want results from within 1km
 
 ###REST API Call
 ```objectivec
+// This example should be self explanatory. ETARequestType is an enumerated type (see ETA.h).
 NSString *path = @"/api/v1/offer/list/";
 ETARequestType type = ETARequestTypeGet;
 NSDictionary * options = @{ @"type" : @"suggested", @"api_page" : @1, @"api_limit" : @25 };
