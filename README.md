@@ -13,7 +13,7 @@ Example Snippets
 ----------------
 
 ### Initialization
-```objective-c
+```objectivec
 // Using the convenient factory method
 ETA *eta = [ETA etaWithAPIKey:@"fewf32f34f34fq34f34f4345" apiSecret:@"3h45gkw34h5gl345uibn"];
 
