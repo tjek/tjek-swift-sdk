@@ -14,7 +14,7 @@ Example Snippets
 
 ### Initialization
 ```objectivec
-// Using the convenient factory method
+// Using the convenient factory method.
 ETA *eta = [ETA etaWithAPIKey:@"fewf32f34f34fq34f34f4345" apiSecret:@"3h45gkw34h5gl345uibn"];
 
 // As both the API key and secret are public properties, we can alloc init as well.
@@ -22,4 +22,16 @@ ETA *eta = [ETA etaWithAPIKey:@"fewf32f34f34fq34f34f4345" apiSecret:@"3h45gkw34h
 ETA *etaOldSchool = [ETA alloc] init];
 etaOldSchool.apiKey = @"fewf32f34f34fq34f34f4345";
 etaOldSchool.apiSecret = @"3h45gkw34h5gl345uibn";
+```
+
+###Set Location (without geocoding)
+```objectivec
+// The code below assumes that a location property exists on self and that it holds a CLLocation object.
+// It also assumes that an eta property exists, holding an ETA object.
+float accuracy = self.location.horizontalAccuracy;
+float latitude = self.location.coordinate.latitude;
+float longitude = self.location.coordinate.longitude;
+int locationDetermined = [[NSDate date] timeIntervalSince1970];
+int distance = 1000; // we want results from within 1km
+[self.eta setLocationWithAccuracy:accuracy latitude:latitude longitude:longitude locationDetermined:locationDetermined distance:distance];
 ```
