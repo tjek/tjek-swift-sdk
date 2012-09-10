@@ -19,6 +19,7 @@
 @property (nonatomic) BOOL geocoded;
 @property (nonatomic) int locationDetermined;
 @property (nonatomic) int accuracy;
+@property (strong, nonatomic) NSString *address;
 @property (nonatomic) BOOL hasLocation;
 @property (nonatomic, strong) NSMutableURLRequest *request;
 @property (nonatomic, strong) NSURLConnection *connection;
@@ -42,6 +43,7 @@
 @synthesize distance = _distance;
 @synthesize geocoded = _geocoded;
 @synthesize accuracy = _accuracy;
+@synthesize address = _address;
 @synthesize locationDetermined = _locationDetermined;
 @synthesize hasLocation = _hasLocation;
 @synthesize request = _request;
@@ -199,7 +201,7 @@
     }
 }
 
-- (void)setGeocodedLocationWithLatitude:(float)latitude longitude:(float)longitude locationDetermined:(int)locationDetermined distance:(int)distance
+- (void)setGeocodedLocationWithAddress:(NSString *)address latitude:(float)latitude longitude:(float)longitude locationDetermined:(int)locationDetermined distance:(int)distance;
 {
     if (latitude && longitude && locationDetermined)
     {
@@ -207,6 +209,7 @@
         self.latitude = latitude;
         self.longitude = longitude;
         self.locationDetermined = locationDetermined;
+        if (address) self.address = address;
         if (distance) self.distance = distance;
         self.hasLocation = YES;
     }

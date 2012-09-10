@@ -37,7 +37,7 @@ typedef enum {
 + (ETA *)etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret;
 
 - (void)setLocationWithAccuracy:(float)accuracy latitude:(float)latitude longitude:(float)longitude locationDetermined:(int)locationDetermined distance:(int)distance;
-- (void)setGeocodedLocationWithLatitude:(float)latitude longitude:(float)longitude locationDetermined:(int)locationDetermined distance:(int)distance;
+- (void)setGeocodedLocationWithAddress:(NSString *)address latitude:(float)latitude longitude:(float)longitude locationDetermined:(int)locationDetermined distance:(int)distance;
 - (void)performAPIRequestWithPathString:(NSString *)pathString requestType:(ETARequestType)requestType optionsDictionary:(NSDictionary *)optionsDictionary;
 
 - (UIWebView *)webViewForETA;
