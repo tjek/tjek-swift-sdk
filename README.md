@@ -53,9 +53,23 @@ int distance = 1000; // we want results from within 1km
 
 ###REST API Call
 ```objectivec
-// This example should be self explanatory. ETARequestType is an enumerated type (see ETA.h).
-NSString *path = @"/api/v1/offer/list/";
-ETARequestType type = ETARequestTypeGet;
-NSDictionary * options = @{ @"type" : @"suggested", @"api_page" : @1, @"api_limit" : @25 };
-[self.eta performAPIRequestWithPathString:path requestType:type optionsDictionary:options];
+// Below is an example of how you can use the ETA iOS SDK to perform REST API calls and react on their results.
+// In the example we assume that the eta property lazily loads an ETA object elsewhere.
+// ETARequestType is an enumerated type (see ETA.h).
+- (void)viewDidLoad
+{
+    self.eta.delegate = self;
+    NSString *path = @"/api/v1/offer/list/";
+    ETARequestType type = ETARequestTypeGet;
+    NSDictionary * options = @{ @"type" : @"suggested", @"api_page" : @1, @"api_limit" : @25 };
+    [self.eta performAPIRequestWithPathString:path requestType:type optionsDictionary:options];
+}
+- (void)etaRequestSucceededAndReturnedDictionary:(NSDictionary *)dictionary
+{
+    NSLog(@"[ETA Delegate] Request succeeded with dictionary: %@", dictionary);
+}
+- (void)etaRequestFailedWithError:(NSString *)error
+{
+    NSLog(@"[ETA Delegate] Request failed with error: %@", error);
+}
 ```
