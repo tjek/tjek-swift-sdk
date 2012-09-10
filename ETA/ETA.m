@@ -165,14 +165,14 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     if ([request.URL.description rangeOfString:BASE_URL].location == NSNotFound) {
-        if ([self.delegate respondsToSelector:@selector(etaWebViewEventWithClass:type:dataDictionary:)]) {
+        if ([self.delegate respondsToSelector:@selector(etaWebView:triggeredEventWithClass:type:dataDictionary:)]) {
             NSString *event = [request.URL.description stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             NSArray * eventArray = [event componentsSeparatedByString:@":"];
             NSString *eventClass = [eventArray objectAtIndex:0];;
             NSString *eventType = [eventArray objectAtIndex:1];
             NSString *eventDataJSON = [[eventArray subarrayWithRange:NSMakeRange(2, eventArray.count - 2)] componentsJoinedByString:@":"];
             NSDictionary *eventDataDictionary = [NSJSONSerialization JSONObjectWithData:[eventDataJSON dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingAllowFragments error:nil];
-            [self.delegate etaWebViewEventWithClass:eventClass type:eventType dataDictionary:eventDataDictionary];
+            [self.delegate etaWebView:self.webView triggeredEventWithClass:eventClass type:eventType dataDictionary:eventDataDictionary];
         }
         return NO;
     }

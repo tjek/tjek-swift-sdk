@@ -34,7 +34,7 @@
     self.eta.delegate = self;
     
     //[self.eta performAPIRequestWithPathString:<#(NSString *)#> requestType:<#(ETARequestType)#> optionsDictionary:<#(NSDictionary *)#>]
-    
+
     // We instantiate a CLLocationManager, set its delegate and start monitoring location changes
     self.locationManager.delegate = self;
     [self.locationManager startMonitoringSignificantLocationChanges];
@@ -105,7 +105,7 @@
     NSLog(@"[ETA Delegate] An error occured while loading web view: %@", error);
 }
 
-- (void)etaWebViewEventWithClass:(NSString *)class type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary
+- (void)etaWebView:(UIWebView *)webView triggeredEventWithClass:(NSString *)class type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary
 {
     NSLog(@"[ETA Delegate] Received event with class: %@, %@, %@", class, type, dataDictionary);
 }

@@ -22,7 +22,7 @@ typedef enum {
 
 - (void)etaWebViewFailedToLoadWithError:(NSString *)error;
 - (void)etaWebViewLoaded:(UIWebView *)webView;
-- (void)etaWebViewEventWithClass:(NSString *)class type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary;
+- (void)etaWebView:(UIWebView *)webView triggeredEventWithClass:(NSString *)class type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary;
 
 @end
 
