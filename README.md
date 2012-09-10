@@ -90,7 +90,6 @@ int distance = 1000; // we want results from within 1km
     [self.eta pageflipWithCatalog:@"71ffHDg" page:1];
     self.view = webView;
 }
-
 - (void)etaWebViewFailedToLoadWithError:(NSString *)error
 {
     NSLog(@"[ETA Delegate] An error occured while loading web view: %@", error);
