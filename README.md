@@ -35,3 +35,26 @@ int locationDetermined = [[NSDate date] timeIntervalSince1970];
 int distance = 1000; // we want results from within 1km
 [self.eta setLocationWithAccuracy:accuracy latitude:latitude longitude:longitude locationDetermined:locationDetermined distance:distance];
 ```
+
+###Set Location (with geocoding)
+```objectivec
+// The code below assumes that a location property exists on self and that it holds a CLLocation object.
+// It also assumes that an eta property exists, holding an ETA object.
+// NB: The address parameter is not used a this point, so you'll have to add it
+//     as an additional parameter if you wish to include it in your calls.
+NSString *address = @"Hans Broges Gade 37, Aarhus C, Denmark";
+float accuracy = self.location.horizontalAccuracy;
+float latitude = self.location.coordinate.latitude;
+float longitude = self.location.coordinate.longitude;
+int locationDetermined = [[NSDate date] timeIntervalSince1970];
+int distance = 1000; // we want results from within 1km
+[self.eta setGeocodedLocationWithAddress:address latitude:latitude longitude:longitude locationDetermined:locationDetermined distance:distance];
+```
+
+###REST API Call
+```objectivec
+NSString *path = @"/api/v1/offer/list/";
+ETARequestType type = ETARequestTypeGet;
+NSDictionary * options = @{ @"type" : @"suggested", @"api_page" : @1, @"api_limit" : @25 };
+[self.eta performAPIRequestWithPathString:path requestType:type optionsDictionary:options];
+```
