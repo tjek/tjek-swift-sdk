@@ -16,11 +16,11 @@ typedef enum {
 @protocol ETADelegate <NSObject>
 
 @required
+@optional
 
 - (void)etaRequestSucceededAndReturnedDictionary:(NSDictionary *)dictionary;
-- (void)etaRequestFailedWithError:(NSString *)error;
-
-- (void)etaWebViewFailedToLoadWithError:(NSString *)error;
+- (void)etaRequestFailedWithError:(NSError *)error;
+- (void)etaWebViewFailedToLoadWithError:(NSError *)error;
 - (void)etaWebViewLoaded:(UIWebView *)webView;
 - (void)etaWebView:(UIWebView *)webView triggeredEventWithClass:(NSString *)class type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary;
 
@@ -33,6 +33,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *apiKey;
 @property (nonatomic, strong) NSString *apiSecret;
 @property (nonatomic, strong) NSString *UUID;
+@property (nonatomic, strong) NSMutableData *receivedData;
 
 + (ETA *)etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret;
 
