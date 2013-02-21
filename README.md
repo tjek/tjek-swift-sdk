@@ -61,14 +61,14 @@ int distance = 1000; // we want results from within 1km
     self.eta.delegate = self;
     NSString *path = @"/api/v1/offer/list/";
     ETARequestType type = ETARequestTypeGet;
-    NSDictionary * options = @{ @"type" : @"suggested", @"api_page" : @1, @"api_limit" : @25 };
+    NSDictionary * options = @{ @"type" : @"suggested", @"api_page" : @"1", @"api_limit" : @"25" };
     [self.eta performAPIRequestWithPathString:path requestType:type optionsDictionary:options];
 }
 - (void)etaRequestSucceededAndReturnedDictionary:(NSDictionary *)dictionary
 {
     NSLog(@"[ETA Delegate] Request succeeded with dictionary: %@", dictionary);
 }
-- (void)etaRequestFailedWithError:(NSString *)error
+- (void)etaRequestFailedWithError:(NSError *)error
 {
     NSLog(@"[ETA Delegate] Request failed with error: %@", error);
 }
@@ -90,7 +90,7 @@ int distance = 1000; // we want results from within 1km
     [self.eta pageflipWithCatalog:@"71ffHDg" page:1];
     self.view = webView;
 }
-- (void)etaWebViewFailedToLoadWithError:(NSString *)error
+- (void)etaWebViewFailedToLoadWithError:(NSError *)error
 {
     NSLog(@"[ETA Delegate] An error occured while loading web view: %@", error);
 }
