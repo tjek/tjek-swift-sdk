@@ -139,7 +139,7 @@
         NSLog(@"[ETA] WebView Failed");
     }
     if ([self.delegate respondsToSelector:@selector(etaWebViewFailedToLoadWithError:)]) {
-        [self.delegate etaWebViewFailedToLoadWithError:error.debugDescription];
+        [self.delegate etaWebViewFailedToLoadWithError:error];
     }
 }
 
@@ -253,6 +253,9 @@
     }
     
     self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:YES];
+    if(self.connection){
+        self.receivedData = [NSMutableData data];
+    }
 }
 
 
@@ -260,10 +263,10 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    if (self.debug)
-    {
-        NSLog(@"[ETA] NSURLConnection didFailWithError: %@", error);
+    if ( [self.delegate respondsToSelector:@selector(etaRequestFailedWithError:)] ){
+        [self.delegate etaRequestFailedWithError:error];
     }
+    self.receivedData = nil;
 }
 
 - (BOOL)connectionShouldUseCredentialStorage:(NSURLConnection *)connection
@@ -278,24 +281,36 @@
         NSHTTPURLResponse *thisResponse = (NSHTTPURLResponse *)response;
         NSLog(@"[ETA] didReceiveResponse: %@", thisResponse);
     }
+    
+    [self.receivedData setLength:0];
     self.response = (NSHTTPURLResponse *)response;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
+    [self.receivedData appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    NSError *errorJson;
+    NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:self.receivedData options:NSJSONWritingPrettyPrinted error:&errorJson];
+    
     if (self.debug)
     {
-        NSLog(@"[ETA] didReceiveData: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+        NSLog(@"[ETA] connectionDidFinishLoading: %@", jsonDictionary);
     }
-    if (self.response.statusCode == 200 && [self.response.URL.description rangeOfString:@"api"].location != NSNotFound)
-    {
-        NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONWritingPrettyPrinted error:nil];
-        [self.delegate etaRequestSucceededAndReturnedDictionary:jsonDictionary];
+    
+    if(jsonDictionary){
+        if ( [self.delegate respondsToSelector:@selector(etaRequestSucceededAndReturnedDictionary:)] ){
+            [self.delegate etaRequestSucceededAndReturnedDictionary:jsonDictionary];
+        }
+    } else {
+        if ( [self.delegate respondsToSelector:@selector(etaRequestFailedWithError:)] ){
+            [self.delegate etaRequestFailedWithError:errorJson];
+        }
     }
-    else
-    {
-        [self.delegate etaRequestFailedWithError:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
-    }
+    
+    self.receivedData = nil;
 }
 
 - (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
