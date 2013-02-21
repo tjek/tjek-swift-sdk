@@ -85,7 +85,7 @@
     NSLog(@"[ETA Delegate] Request succeeded with dictionary: %@", dictionary);
 }
 
-- (void)etaRequestFailedWithError:(NSString *)error
+- (void)etaRequestFailedWithError:(NSError *)error
 {
     NSLog(@"[ETA Delegate] Request failed with error: %@", error);
 }
@@ -100,7 +100,7 @@
     self.view = webView;
 }
 
-- (void)etaWebViewFailedToLoadWithError:(NSString *)error
+- (void)etaWebViewFailedToLoadWithError:(NSError *)error
 {
     NSLog(@"[ETA Delegate] An error occured while loading web view: %@", error);
 }
