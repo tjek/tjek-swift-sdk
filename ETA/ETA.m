@@ -379,33 +379,31 @@
         [requestArray addObject:[NSDictionary dictionaryWithObject:self.UUID forKey:@"api_uuid"]];
     }
     [requestArray addObject:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970]] forKey:@"api_timestamp"]];
-    if (self.latitude)
+    if (self.latitude && self.longitude)
     {
         [requestArray addObject:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%f", self.latitude] forKey:@"api_latitude"]];
-    }
-    if (self.longitude)
-    {
         [requestArray addObject:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%f", self.longitude] forKey:@"api_longitude"]];
-    }
-    if (self.distance > 0)
-    {
-        [requestArray addObject:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d", self.distance] forKey:@"api_distance"]];
-    }
-    if (self.locationDetermined > 0)
-    {
-        [requestArray addObject:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d", self.locationDetermined] forKey:@"api_locationDetermined"]];
-    }
-    if (self.geocoded)
-    {
-        [requestArray addObject:[NSDictionary dictionaryWithObject:@"1" forKey:@"api_geocoded"]];
-    }
-    else
-    {
-        [requestArray addObject:[NSDictionary dictionaryWithObject:@"0" forKey:@"api_geocoded"]];
-    }
-    if (self.accuracy > 0 && !self.geocoded)
-    {
-        [requestArray addObject:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d", self.accuracy] forKey:@"api_accuracy"]];
+
+        if (self.distance > 0)
+        {
+            [requestArray addObject:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d", self.distance] forKey:@"api_distance"]];
+        }
+        if (self.locationDetermined > 0)
+        {
+            [requestArray addObject:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d", self.locationDetermined] forKey:@"api_locationDetermined"]];
+        }
+        if (self.geocoded)
+        {
+            [requestArray addObject:[NSDictionary dictionaryWithObject:@"1" forKey:@"api_geocoded"]];
+        }
+        else
+        {
+            [requestArray addObject:[NSDictionary dictionaryWithObject:@"0" forKey:@"api_geocoded"]];
+        }
+        if (self.accuracy > 0 && !self.geocoded)
+        {
+            [requestArray addObject:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d", self.accuracy] forKey:@"api_accuracy"]];
+        }
     }
     
     // Add the parameters specified by the user.
