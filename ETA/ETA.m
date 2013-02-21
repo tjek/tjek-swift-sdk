@@ -238,6 +238,7 @@
         [urlString appendString:dataString];
         self.request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
         [self.request setHTTPMethod:@"GET"];
+        [self.request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     };
     
     if (requestType == ETARequestTypePOST)
