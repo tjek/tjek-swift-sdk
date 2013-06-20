@@ -73,7 +73,7 @@
         _webView = [[UIWebView alloc] init];
         _webView.delegate = self;
         _webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/connect", BASE_URL]]];
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/connect/", BASE_URL]]];
         [_webView loadRequest:request];
     }
     return _webView;
