@@ -17,24 +17,12 @@
 		17EE767F178ACD4E00EBDC6E /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 17EE767E178ACD4E00EBDC6E /* Default.png */; };
 		17EE7681178ACD4E00EBDC6E /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17EE7680178ACD4E00EBDC6E /* Default@2x.png */; };
 		17EE7683178ACD4E00EBDC6E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17EE7682178ACD4E00EBDC6E /* Default-568h@2x.png */; };
-		17EE768B178ACD4F00EBDC6E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17EE768A178ACD4F00EBDC6E /* SenTestingKit.framework */; };
-		17EE768C178ACD4F00EBDC6E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17EE766C178ACD4E00EBDC6E /* UIKit.framework */; };
-		17EE768D178ACD4F00EBDC6E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17EE766E178ACD4E00EBDC6E /* Foundation.framework */; };
-		17EE76A7178ACDE300EBDC6E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17EE76A2178ACDE300EBDC6E /* InfoPlist.strings */; };
-		17EE76A8178ACDE300EBDC6E /* ETA-SDKExampleTests-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 17EE76A4178ACDE300EBDC6E /* ETA-SDKExampleTests-Info.plist */; };
-		17EE76A9178ACDE300EBDC6E /* ETA_SDKExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EE76A6178ACDE300EBDC6E /* ETA_SDKExampleTests.m */; };
 		17EE76AD178ACDFB00EBDC6E /* ETA.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EE76AC178ACDFB00EBDC6E /* ETA.m */; };
+		17EE76B2178AD9BC00EBDC6E /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17EE76B1178AD9BC00EBDC6E /* Storyboard.storyboard */; };
+		17EE76B5178AD9F500EBDC6E /* ETAExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EE76B4178AD9F500EBDC6E /* ETAExampleViewController.m */; };
+		17EE76B8178ADC4A00EBDC6E /* ETA_Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EE76B7178ADC4A00EBDC6E /* ETA_Session.m */; };
+		17EE76BB178ADE4D00EBDC6E /* ETA_APIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EE76BA178ADE4D00EBDC6E /* ETA_APIClient.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		17EE768E178ACD4F00EBDC6E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 17EE7661178ACD4E00EBDC6E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 17EE7668178ACD4E00EBDC6E;
-			remoteInfo = "ETA-SDKExample";
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		17EE7669178ACD4E00EBDC6E /* ETA-SDKExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ETA-SDKExample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -50,15 +38,17 @@
 		17EE767E178ACD4E00EBDC6E /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		17EE7680178ACD4E00EBDC6E /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		17EE7682178ACD4E00EBDC6E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		17EE7689178ACD4F00EBDC6E /* ETA-SDKExampleTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ETA-SDKExampleTests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		17EE768A178ACD4F00EBDC6E /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		17EE76A3178ACDE300EBDC6E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		17EE76A4178ACDE300EBDC6E /* ETA-SDKExampleTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ETA-SDKExampleTests-Info.plist"; sourceTree = "<group>"; };
-		17EE76A5178ACDE300EBDC6E /* ETA_SDKExampleTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_SDKExampleTests.h; sourceTree = "<group>"; };
-		17EE76A6178ACDE300EBDC6E /* ETA_SDKExampleTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_SDKExampleTests.m; sourceTree = "<group>"; };
 		17EE76AB178ACDFB00EBDC6E /* ETA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA.h; sourceTree = "<group>"; };
 		17EE76AC178ACDFB00EBDC6E /* ETA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA.m; sourceTree = "<group>"; };
 		17EE76B0178AD60900EBDC6E /* ETA-APIKeyAndSecret.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ETA-APIKeyAndSecret.h"; sourceTree = "<group>"; };
+		17EE76B1178AD9BC00EBDC6E /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
+		17EE76B3178AD9F500EBDC6E /* ETAExampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETAExampleViewController.h; sourceTree = "<group>"; };
+		17EE76B4178AD9F500EBDC6E /* ETAExampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETAExampleViewController.m; sourceTree = "<group>"; };
+		17EE76B6178ADC4A00EBDC6E /* ETA_Session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_Session.h; sourceTree = "<group>"; };
+		17EE76B7178ADC4A00EBDC6E /* ETA_Session.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_Session.m; sourceTree = "<group>"; };
+		17EE76B9178ADE4D00EBDC6E /* ETA_APIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_APIClient.h; sourceTree = "<group>"; };
+		17EE76BA178ADE4D00EBDC6E /* ETA_APIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_APIClient.m; sourceTree = "<group>"; };
 		D0D6F070A5E34690BAFC6B14 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		E6036FDEC40948CE8D9CD8A0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -75,16 +65,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		17EE7685178ACD4F00EBDC6E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				17EE768B178ACD4F00EBDC6E /* SenTestingKit.framework in Frameworks */,
-				17EE768C178ACD4F00EBDC6E /* UIKit.framework in Frameworks */,
-				17EE768D178ACD4F00EBDC6E /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -93,7 +73,6 @@
 			children = (
 				17EE76AA178ACDFB00EBDC6E /* ETA-SDK */,
 				17EE7672178ACD4E00EBDC6E /* ETA-SDKExample */,
-				17EE76A1178ACDE300EBDC6E /* ETA-SDKTests */,
 				17EE766B178ACD4E00EBDC6E /* Frameworks */,
 				17EE766A178ACD4E00EBDC6E /* Products */,
 				D0D6F070A5E34690BAFC6B14 /* Pods.xcconfig */,
@@ -104,7 +83,6 @@
 			isa = PBXGroup;
 			children = (
 				17EE7669178ACD4E00EBDC6E /* ETA-SDKExample.app */,
-				17EE7689178ACD4F00EBDC6E /* ETA-SDKExampleTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -127,6 +105,9 @@
 				17EE76B0178AD60900EBDC6E /* ETA-APIKeyAndSecret.h */,
 				17EE767B178ACD4E00EBDC6E /* ETAAppDelegate.h */,
 				17EE767C178ACD4E00EBDC6E /* ETAAppDelegate.m */,
+				17EE76B1178AD9BC00EBDC6E /* Storyboard.storyboard */,
+				17EE76B3178AD9F500EBDC6E /* ETAExampleViewController.h */,
+				17EE76B4178AD9F500EBDC6E /* ETAExampleViewController.m */,
 				17EE7673178ACD4E00EBDC6E /* Supporting Files */,
 			);
 			path = "ETA-SDKExample";
@@ -146,22 +127,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		17EE76A1178ACDE300EBDC6E /* ETA-SDKTests */ = {
-			isa = PBXGroup;
-			children = (
-				17EE76A2178ACDE300EBDC6E /* InfoPlist.strings */,
-				17EE76A4178ACDE300EBDC6E /* ETA-SDKExampleTests-Info.plist */,
-				17EE76A5178ACDE300EBDC6E /* ETA_SDKExampleTests.h */,
-				17EE76A6178ACDE300EBDC6E /* ETA_SDKExampleTests.m */,
-			);
-			path = "ETA-SDKTests";
-			sourceTree = "<group>";
-		};
 		17EE76AA178ACDFB00EBDC6E /* ETA-SDK */ = {
 			isa = PBXGroup;
 			children = (
 				17EE76AB178ACDFB00EBDC6E /* ETA.h */,
 				17EE76AC178ACDFB00EBDC6E /* ETA.m */,
+				17EE76B9178ADE4D00EBDC6E /* ETA_APIClient.h */,
+				17EE76BA178ADE4D00EBDC6E /* ETA_APIClient.m */,
+				17EE76B6178ADC4A00EBDC6E /* ETA_Session.h */,
+				17EE76B7178ADC4A00EBDC6E /* ETA_Session.m */,
 			);
 			path = "ETA-SDK";
 			sourceTree = SOURCE_ROOT;
@@ -188,25 +162,6 @@
 			productReference = 17EE7669178ACD4E00EBDC6E /* ETA-SDKExample.app */;
 			productType = "com.apple.product-type.application";
 		};
-		17EE7688178ACD4F00EBDC6E /* ETA-SDKExampleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 17EE769E178ACD4F00EBDC6E /* Build configuration list for PBXNativeTarget "ETA-SDKExampleTests" */;
-			buildPhases = (
-				17EE7684178ACD4F00EBDC6E /* Sources */,
-				17EE7685178ACD4F00EBDC6E /* Frameworks */,
-				17EE7686178ACD4F00EBDC6E /* Resources */,
-				17EE7687178ACD4F00EBDC6E /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				17EE768F178ACD4F00EBDC6E /* PBXTargetDependency */,
-			);
-			name = "ETA-SDKExampleTests";
-			productName = "ETA-SDKExampleTests";
-			productReference = 17EE7689178ACD4F00EBDC6E /* ETA-SDKExampleTests.octest */;
-			productType = "com.apple.product-type.bundle";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -230,7 +185,6 @@
 			projectRoot = "";
 			targets = (
 				17EE7668178ACD4E00EBDC6E /* ETA-SDKExample */,
-				17EE7688178ACD4F00EBDC6E /* ETA-SDKExampleTests */,
 			);
 		};
 /* End PBXProject section */
@@ -244,15 +198,7 @@
 				17EE767F178ACD4E00EBDC6E /* Default.png in Resources */,
 				17EE7681178ACD4E00EBDC6E /* Default@2x.png in Resources */,
 				17EE7683178ACD4E00EBDC6E /* Default-568h@2x.png in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		17EE7686178ACD4F00EBDC6E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				17EE76A7178ACDE300EBDC6E /* InfoPlist.strings in Resources */,
-				17EE76A8178ACDE300EBDC6E /* ETA-SDKExampleTests-Info.plist in Resources */,
+				17EE76B2178AD9BC00EBDC6E /* Storyboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,19 +218,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-		};
-		17EE7687178ACD4F00EBDC6E /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
 		AA83EF9464B74982A644C313 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -310,40 +243,19 @@
 				17EE7679178ACD4E00EBDC6E /* main.m in Sources */,
 				17EE767D178ACD4E00EBDC6E /* ETAAppDelegate.m in Sources */,
 				17EE76AD178ACDFB00EBDC6E /* ETA.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		17EE7684178ACD4F00EBDC6E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				17EE76A9178ACDE300EBDC6E /* ETA_SDKExampleTests.m in Sources */,
+				17EE76B5178AD9F500EBDC6E /* ETAExampleViewController.m in Sources */,
+				17EE76B8178ADC4A00EBDC6E /* ETA_Session.m in Sources */,
+				17EE76BB178ADE4D00EBDC6E /* ETA_APIClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		17EE768F178ACD4F00EBDC6E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 17EE7668178ACD4E00EBDC6E /* ETA-SDKExample */;
-			targetProxy = 17EE768E178ACD4F00EBDC6E /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		17EE7675178ACD4E00EBDC6E /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				17EE7676178ACD4E00EBDC6E /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		17EE76A2178ACDE300EBDC6E /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				17EE76A3178ACDE300EBDC6E /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -431,40 +343,6 @@
 			};
 			name = Release;
 		};
-		17EE769F178ACD4F00EBDC6E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ETA-SDKExample.app/ETA-SDKExample";
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ETA-SDKExample/ETA-SDKExample-Prefix.pch";
-				INFOPLIST_FILE = "ETA-SDKExampleTests/ETA-SDKExampleTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		17EE76A0178ACD4F00EBDC6E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ETA-SDKExample.app/ETA-SDKExample";
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ETA-SDKExample/ETA-SDKExample-Prefix.pch";
-				INFOPLIST_FILE = "ETA-SDKExampleTests/ETA-SDKExampleTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -482,15 +360,6 @@
 			buildConfigurations = (
 				17EE769C178ACD4F00EBDC6E /* Debug */,
 				17EE769D178ACD4F00EBDC6E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		17EE769E178ACD4F00EBDC6E /* Build configuration list for PBXNativeTarget "ETA-SDKExampleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				17EE769F178ACD4F00EBDC6E /* Debug */,
-				17EE76A0178ACD4F00EBDC6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

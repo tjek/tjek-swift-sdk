@@ -12,6 +12,8 @@
 
 + (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret;
 
+- (void) connect:(void (^)(NSError* error))callback;
+
 @property (nonatomic, strong) NSString *apiKey;
 @property (nonatomic, strong) NSString *apiSecret;
 
