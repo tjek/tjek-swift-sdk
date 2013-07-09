@@ -17,11 +17,11 @@
 		17EE767F178ACD4E00EBDC6E /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 17EE767E178ACD4E00EBDC6E /* Default.png */; };
 		17EE7681178ACD4E00EBDC6E /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17EE7680178ACD4E00EBDC6E /* Default@2x.png */; };
 		17EE7683178ACD4E00EBDC6E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17EE7682178ACD4E00EBDC6E /* Default-568h@2x.png */; };
-		17EE76AD178ACDFB00EBDC6E /* ETA.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EE76AC178ACDFB00EBDC6E /* ETA.m */; };
 		17EE76B2178AD9BC00EBDC6E /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17EE76B1178AD9BC00EBDC6E /* Storyboard.storyboard */; };
 		17EE76B5178AD9F500EBDC6E /* ETAExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EE76B4178AD9F500EBDC6E /* ETAExampleViewController.m */; };
-		17EE76B8178ADC4A00EBDC6E /* ETA_Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EE76B7178ADC4A00EBDC6E /* ETA_Session.m */; };
-		17EE76BB178ADE4D00EBDC6E /* ETA_APIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EE76BA178ADE4D00EBDC6E /* ETA_APIClient.m */; };
+		17EE774B178C627C00EBDC6E /* ETA.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EE7746178C627C00EBDC6E /* ETA.m */; };
+		17EE774C178C627C00EBDC6E /* ETA_APIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EE7748178C627C00EBDC6E /* ETA_APIClient.m */; };
+		17EE774D178C627C00EBDC6E /* ETA_Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EE774A178C627C00EBDC6E /* ETA_Session.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,16 +39,16 @@
 		17EE7680178ACD4E00EBDC6E /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		17EE7682178ACD4E00EBDC6E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		17EE768A178ACD4F00EBDC6E /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		17EE76AB178ACDFB00EBDC6E /* ETA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA.h; sourceTree = "<group>"; };
-		17EE76AC178ACDFB00EBDC6E /* ETA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA.m; sourceTree = "<group>"; };
 		17EE76B0178AD60900EBDC6E /* ETA-APIKeyAndSecret.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ETA-APIKeyAndSecret.h"; sourceTree = "<group>"; };
 		17EE76B1178AD9BC00EBDC6E /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		17EE76B3178AD9F500EBDC6E /* ETAExampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETAExampleViewController.h; sourceTree = "<group>"; };
 		17EE76B4178AD9F500EBDC6E /* ETAExampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETAExampleViewController.m; sourceTree = "<group>"; };
-		17EE76B6178ADC4A00EBDC6E /* ETA_Session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_Session.h; sourceTree = "<group>"; };
-		17EE76B7178ADC4A00EBDC6E /* ETA_Session.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_Session.m; sourceTree = "<group>"; };
-		17EE76B9178ADE4D00EBDC6E /* ETA_APIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_APIClient.h; sourceTree = "<group>"; };
-		17EE76BA178ADE4D00EBDC6E /* ETA_APIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_APIClient.m; sourceTree = "<group>"; };
+		17EE7745178C627C00EBDC6E /* ETA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA.h; sourceTree = "<group>"; };
+		17EE7746178C627C00EBDC6E /* ETA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA.m; sourceTree = "<group>"; };
+		17EE7747178C627C00EBDC6E /* ETA_APIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_APIClient.h; sourceTree = "<group>"; };
+		17EE7748178C627C00EBDC6E /* ETA_APIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_APIClient.m; sourceTree = "<group>"; };
+		17EE7749178C627C00EBDC6E /* ETA_Session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_Session.h; sourceTree = "<group>"; };
+		17EE774A178C627C00EBDC6E /* ETA_Session.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_Session.m; sourceTree = "<group>"; };
 		D0D6F070A5E34690BAFC6B14 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		E6036FDEC40948CE8D9CD8A0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -71,7 +71,7 @@
 		17EE7660178ACD4E00EBDC6E = {
 			isa = PBXGroup;
 			children = (
-				17EE76AA178ACDFB00EBDC6E /* ETA-SDK */,
+				17EE7744178C627C00EBDC6E /* ETA-SDK */,
 				17EE7672178ACD4E00EBDC6E /* ETA-SDKExample */,
 				17EE766B178ACD4E00EBDC6E /* Frameworks */,
 				17EE766A178ACD4E00EBDC6E /* Products */,
@@ -127,18 +127,18 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		17EE76AA178ACDFB00EBDC6E /* ETA-SDK */ = {
+		17EE7744178C627C00EBDC6E /* ETA-SDK */ = {
 			isa = PBXGroup;
 			children = (
-				17EE76AB178ACDFB00EBDC6E /* ETA.h */,
-				17EE76AC178ACDFB00EBDC6E /* ETA.m */,
-				17EE76B9178ADE4D00EBDC6E /* ETA_APIClient.h */,
-				17EE76BA178ADE4D00EBDC6E /* ETA_APIClient.m */,
-				17EE76B6178ADC4A00EBDC6E /* ETA_Session.h */,
-				17EE76B7178ADC4A00EBDC6E /* ETA_Session.m */,
+				17EE7745178C627C00EBDC6E /* ETA.h */,
+				17EE7746178C627C00EBDC6E /* ETA.m */,
+				17EE7747178C627C00EBDC6E /* ETA_APIClient.h */,
+				17EE7748178C627C00EBDC6E /* ETA_APIClient.m */,
+				17EE7749178C627C00EBDC6E /* ETA_Session.h */,
+				17EE774A178C627C00EBDC6E /* ETA_Session.m */,
 			);
 			path = "ETA-SDK";
-			sourceTree = SOURCE_ROOT;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -242,10 +242,10 @@
 			files = (
 				17EE7679178ACD4E00EBDC6E /* main.m in Sources */,
 				17EE767D178ACD4E00EBDC6E /* ETAAppDelegate.m in Sources */,
-				17EE76AD178ACDFB00EBDC6E /* ETA.m in Sources */,
 				17EE76B5178AD9F500EBDC6E /* ETAExampleViewController.m in Sources */,
-				17EE76B8178ADC4A00EBDC6E /* ETA_Session.m in Sources */,
-				17EE76BB178ADE4D00EBDC6E /* ETA_APIClient.m in Sources */,
+				17EE774B178C627C00EBDC6E /* ETA.m in Sources */,
+				17EE774C178C627C00EBDC6E /* ETA_APIClient.m in Sources */,
+				17EE774D178C627C00EBDC6E /* ETA_Session.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

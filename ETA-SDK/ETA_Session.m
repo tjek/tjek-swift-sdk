@@ -14,31 +14,6 @@
 static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
 
 @implementation ETA_Session
-//
-//+ (void) createSessionUsingClient:(ETA_APIClient*)client withCallback:(void (^)(ETA_Session* session, NSError* error))callback
-//{
-//    [client postPath:@"/v2/sessions"
-//          parameters: @{ @"api_key": (client.apiKey) ?: [NSNull null] }
-//             success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//                 NSError* err = nil;
-//                 ETA_Session* session = [[ETA_Session alloc] initWithDictionary:responseObject error:&err];
-//                 
-//                 callback(session, err);
-//             }
-//             failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//                 callback(nil, error);
-//             }];
-//}
-//- (void) renewUsingClient:(ETA_APIClient*)client withCallback:(void (^)(NSError* error))callback
-//{
-//    //[client updateHeadersForSession:self];
-//    
-//    [client putPath:@"/v2/sessions" parameters:<#(NSDictionary *)#> success:<#^(AFHTTPRequestOperation *operation, id responseObject)success#> failure:<#^(AFHTTPRequestOperation *operation, NSError *error)failure#>
-//}
-//- (void) updateUsingClient:(ETA_APIClient*)client withCallback:(void (^)(NSError* error))callback
-//{
-//
-//}
 
 + (NSDateFormatter *)dateFormatter {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -56,22 +31,40 @@ static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
 }
 
 
-
-+ (NSDictionary *)JSONKeyPathsByPropertyKey {
-//    return [super.JSONKeyPathsByPropertyKey mtl_dictionaryByAddingEntriesFromDictionary:@{
-    return @{
-//             @"expires": @"expires"
-//             @"token": @"token",
-//             @"reporterLogin": @"user.login",
-//             @"assignee": @"assignee",
-//             @"updatedAt": @"updated_at"
-             };
++ (NSDictionary *)JSONKeyPathsByPropertyKey
+{
+    return @{};
 }
 
 
+
+#pragma mark - Utilities
 - (BOOL) willExpireSoon
 {
-    return ([self.expires timeIntervalSinceNow] <= kETA_SoonToExpireTimeInterval); // will expire in less than a day
+    return (!self.expires || [self.expires timeIntervalSinceNow] <= kETA_SoonToExpireTimeInterval); // will expire in less than a day
+}
+
+- (BOOL) isExpirySameOrNewerThanSession:(ETA_Session*)session
+{
+    if (!session.expires)
+        return YES;
+    if (!self.expires)
+        return NO;
+    return ([self.expires compare:session.expires] != NSOrderedAscending);
+}
+
+- (void) setToken:(NSString*)newToken ifExpiresBefore:(NSString*)expiryDateString
+{
+    NSDate* newExpiryDate = [[[self class] expiresJSONTransformer] transformedValue:expiryDateString];
+    
+    if (!newExpiryDate || !newToken)
+        return;
+
+    if (!self.expires || [self.expires compare:newExpiryDate] == NSOrderedAscending)
+    {
+        self.token = newToken;
+        self.expires = newExpiryDate;
+    }
 }
 
 @end

@@ -31,18 +31,30 @@
     [super viewDidLoad];
     
     ETA* eta = [ETA etaWithAPIKey:ETA_APIKey apiSecret:ETA_APISecret];
-    [eta connect:^(NSError* error) {
-        if (!error)
-        {
-            DLog(@"Connected!");
-        }
-        else
+    
+    [eta connectWithUserEmail:@"lh@etilbudsavis.dk" password:@"" completion:^(BOOL connected, NSError* error)
+    {
+        if (!connected)
         {
             DLog(@"Could not connect %@", error);
         }
+        else if (error)
+        {
+            DLog(@"Could not sign in %@", error);
+        }
+        else
+        {
+            DLog(@"Connected!");
+            [eta makeRequest:@"/v2/catalogs"
+                        type:ETARequestTypeGET
+                  parameters:@{@"r_lat":@55.55, @"r_lng": @12.12, @"r_radius":@10000}
+                  completion:^(NSDictionary *response, NSError *error) {
+                      DLog(@"Request Response %@", response);
+                  }];
+        }
     }];
-    
 }
+
 
 - (void)didReceiveMemoryWarning
 {
