@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		16B43A722B9641C08A95CD39 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6036FDEC40948CE8D9CD8A0 /* libPods.a */; };
+		1730FA8E178D503100FC5386 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1730FA8D178D503100FC5386 /* CoreLocation.framework */; };
 		17EE766D178ACD4E00EBDC6E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17EE766C178ACD4E00EBDC6E /* UIKit.framework */; };
 		17EE766F178ACD4E00EBDC6E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17EE766E178ACD4E00EBDC6E /* Foundation.framework */; };
 		17EE7671178ACD4E00EBDC6E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17EE7670178ACD4E00EBDC6E /* CoreGraphics.framework */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1730FA8D178D503100FC5386 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		17EE7669178ACD4E00EBDC6E /* ETA-SDKExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ETA-SDKExample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		17EE766C178ACD4E00EBDC6E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		17EE766E178ACD4E00EBDC6E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -58,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1730FA8E178D503100FC5386 /* CoreLocation.framework in Frameworks */,
 				17EE766D178ACD4E00EBDC6E /* UIKit.framework in Frameworks */,
 				17EE766F178ACD4E00EBDC6E /* Foundation.framework in Frameworks */,
 				17EE7671178ACD4E00EBDC6E /* CoreGraphics.framework in Frameworks */,
@@ -90,6 +93,7 @@
 		17EE766B178ACD4E00EBDC6E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1730FA8D178D503100FC5386 /* CoreLocation.framework */,
 				17EE766C178ACD4E00EBDC6E /* UIKit.framework */,
 				17EE766E178ACD4E00EBDC6E /* Foundation.framework */,
 				17EE7670178ACD4E00EBDC6E /* CoreGraphics.framework */,
