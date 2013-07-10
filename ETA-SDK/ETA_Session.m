@@ -8,7 +8,7 @@
 
 #import "ETA_Session.h"
 
-//#import "ETA_APIClient.h"
+#import "NSString+ETA_Permission.h"
 #import "MTLValueTransformer.h"
 
 static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
@@ -65,6 +65,28 @@ static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
         self.token = newToken;
         self.expires = newExpiryDate;
     }
+}
+
+
+- (BOOL) allowsPermission:(NSString*)actionPermission
+{
+    if (!actionPermission)
+        return YES;
+    if (!self.permissions)
+        return NO;
+    
+    __block BOOL allowed = NO;
+    [self.permissions enumerateKeysAndObjectsUsingBlock:^(NSString* permissionGroupName, NSArray* permissionList, BOOL *stop) {
+        [permissionList enumerateObjectsUsingBlock:^(NSString* permission, NSUInteger idx, BOOL *stop) {
+            if ([permission allowsPermission:actionPermission])
+            {
+                allowed = YES;
+                *stop = YES;
+            }
+        }];
+    }];
+    
+    return allowed;
 }
 
 @end

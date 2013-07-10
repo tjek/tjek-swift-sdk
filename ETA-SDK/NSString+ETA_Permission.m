@@ -1,0 +1,58 @@
+//
+//  NSString+ETA_Permission.m
+//  ETA-SDKExample
+//
+//  Created by Laurie Hufford on 7/10/13.
+//  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
+//
+
+#import "NSString+ETA_Permission.h"
+
+@implementation NSString (ETA_Permission)
+
+- (BOOL) allowsPermission:(NSString*)actionPermission
+{
+    NSArray* actionTokens = [actionPermission tokenizePermission];
+    NSArray* permissionTokens = [self tokenizePermission];
+    
+    BOOL allowed = NO;
+    
+    for (NSUInteger i=0; i<permissionTokens.count; i++)
+    {
+        if (i < actionTokens.count)
+        {
+            NSString* actionToken = actionTokens[i];
+            NSString* permissionToken = permissionTokens[i];
+            if ([actionToken isEqualToString:permissionToken])
+            {
+                allowed = YES;
+            }
+            else if ([permissionToken isEqualToString:@"*"])
+            {
+                allowed = YES;
+            }
+            else if ([actionToken isEqualToString:@"*"])
+            {
+                allowed = YES;
+            }
+            else
+            {
+                allowed = NO;
+                break;
+            }
+        }
+        else
+        {
+            allowed = NO;
+            break;
+        }
+    }
+    return allowed;
+}
+
+- (NSArray*) tokenizePermission
+{
+    return [[self lowercaseString] componentsSeparatedByString:@"."];
+}
+
+@end

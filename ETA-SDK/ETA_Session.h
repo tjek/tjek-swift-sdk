@@ -24,4 +24,7 @@
 - (BOOL) willExpireSoon;
 - (BOOL) isExpirySameOrNewerThanSession:(ETA_Session*)session;
 - (void) setToken:(NSString*)newToken ifExpiresBefore:(NSString*)expiryDateString;
+
+- (BOOL) allowsPermission:(NSString*)actionPermission;
+
 @end

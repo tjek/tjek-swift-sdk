@@ -24,6 +24,8 @@
 		1730FB0E178D71D900FC5386 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1730FA8D178D503100FC5386 /* CoreLocation.framework */; };
 		1730FB0F178D71E600FC5386 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1730FAEA178D683100FC5386 /* MobileCoreServices.framework */; };
 		1730FB10178D71E600FC5386 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1730FAE8178D680E00FC5386 /* SystemConfiguration.framework */; };
+		179E6A3F178DBCAD006D31A8 /* NSString+ETA_Permission.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6A3E178DBCAD006D31A8 /* NSString+ETA_Permission.m */; };
+		179E6A40178DBCAD006D31A8 /* NSString+ETA_Permission.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6A3E178DBCAD006D31A8 /* NSString+ETA_Permission.m */; };
 		17EE766D178ACD4E00EBDC6E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17EE766C178ACD4E00EBDC6E /* UIKit.framework */; };
 		17EE766F178ACD4E00EBDC6E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17EE766E178ACD4E00EBDC6E /* Foundation.framework */; };
 		17EE7671178ACD4E00EBDC6E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17EE7670178ACD4E00EBDC6E /* CoreGraphics.framework */; };
@@ -57,6 +59,8 @@
 		1730FB04178D6DFC00FC5386 /* ETA-SDKTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ETA-SDKTests-Prefix.pch"; sourceTree = "<group>"; };
 		1730FB08178D6E2C00FC5386 /* ETA_SessionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_SessionTests.m; sourceTree = "<group>"; };
 		1730FB09178D6E2C00FC5386 /* ETA_SessionTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_SessionTests.h; sourceTree = "<group>"; };
+		179E6A3D178DBCAD006D31A8 /* NSString+ETA_Permission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ETA_Permission.h"; sourceTree = "<group>"; };
+		179E6A3E178DBCAD006D31A8 /* NSString+ETA_Permission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ETA_Permission.m"; sourceTree = "<group>"; };
 		17EE7669178ACD4E00EBDC6E /* ETA-SDKExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ETA-SDKExample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		17EE766C178ACD4E00EBDC6E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		17EE766E178ACD4E00EBDC6E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -119,6 +123,8 @@
 				1730FAC9178D66BE00FC5386 /* ETA_APIClient.m */,
 				1730FACA178D66BE00FC5386 /* ETA_Session.h */,
 				1730FACB178D66BE00FC5386 /* ETA_Session.m */,
+				179E6A3D178DBCAD006D31A8 /* NSString+ETA_Permission.h */,
+				179E6A3E178DBCAD006D31A8 /* NSString+ETA_Permission.m */,
 			);
 			path = "ETA-SDK";
 			sourceTree = "<group>";
@@ -382,6 +388,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1730FB03178D6DFC00FC5386 /* ETA_SDKTests.m in Sources */,
+				179E6A40178DBCAD006D31A8 /* NSString+ETA_Permission.m in Sources */,
 				1730FB0A178D6E2C00FC5386 /* ETA_SessionTests.m in Sources */,
 				1730FB0B178D716F00FC5386 /* ETA.m in Sources */,
 				1730FB0C178D716F00FC5386 /* ETA_APIClient.m in Sources */,
@@ -395,6 +402,7 @@
 			files = (
 				17EE7679178ACD4E00EBDC6E /* main.m in Sources */,
 				17EE767D178ACD4E00EBDC6E /* ETAAppDelegate.m in Sources */,
+				179E6A3F178DBCAD006D31A8 /* NSString+ETA_Permission.m in Sources */,
 				17EE76B5178AD9F500EBDC6E /* ETAExampleViewController.m in Sources */,
 				1730FACC178D66BE00FC5386 /* ETA.m in Sources */,
 				1730FACE178D66BE00FC5386 /* ETA_APIClient.m in Sources */,
