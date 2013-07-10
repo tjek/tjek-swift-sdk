@@ -2,8 +2,8 @@
 //  ETA_SDKTests.m
 //  ETA-SDKTests
 //
-//  Created by Laurie Hufford on 7/9/13.
-//
+//  Created by Laurie Hufford on 7/10/13.
+//  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
 //
 
 #import "ETA_SDKTests.h"
@@ -22,11 +22,6 @@
     // Tear-down code here.
     
     [super tearDown];
-}
-
-- (void)testExample
-{
-    STFail(@"Unit tests are not implemented yet in ETA-SDKTests");
 }
 
 @end

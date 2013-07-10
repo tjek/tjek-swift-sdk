@@ -117,7 +117,10 @@
 {
     //TODO: Real error
     if (!self.isConnected)
+    {
         completionHandler(nil, [NSError errorWithDomain:@"" code:0 userInfo:nil]);
+        return;
+    }
     
     // get the base parameters, and override them with those passed in
     NSMutableDictionary* mergedParameters = [[self baseRequestParameters] mutableCopy];
@@ -164,6 +167,8 @@
             CGFloat clampedDistance = MIN(MAX(self.distance.floatValue, minDistance), maxDistance);
             params[@"r_radius"] = @(clampedDistance);
         }
+        
+        params[@"r_sensor"] = @(self.isLocationFromSensor);
     }
     
     return params;

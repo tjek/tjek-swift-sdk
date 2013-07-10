@@ -2,8 +2,8 @@
 //  ETA_SDKTests.h
 //  ETA-SDKTests
 //
-//  Created by Laurie Hufford on 7/9/13.
-//
+//  Created by Laurie Hufford on 7/10/13.
+//  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
 //
 
 #import <SenTestingKit/SenTestingKit.h>

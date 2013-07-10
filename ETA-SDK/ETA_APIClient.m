@@ -19,6 +19,10 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 
 static NSString* const kETA_APIPath_Sessions = @"/v2/sessions";
 
+NSString* const ETA_APIClientErrorDomain = @"ETA_APIClientErrorDomain";
+const NSInteger ETA_APIClientErrorNoSession = 1;
+const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
+
 @interface ETA_APIClient ()
 
 @property (nonatomic, readwrite, strong) NSString *apiKey;
@@ -66,10 +70,12 @@ static NSString* const kETA_APIPath_Sessions = @"/v2/sessions";
 // send a request, and on sucessful response update the session token, if newer
 - (void) makeRequest:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters completion:(void (^)(NSDictionary* JSONResponse, NSError* error))completionHandler
 {
-    //TODO: REAL ERROR!
     if (!self.session)
-        completionHandler(nil, [NSError errorWithDomain:@"" code:0 userInfo:nil]);
-    
+    {
+        completionHandler(nil, [[self class] errorIfNoSession]);
+        return;
+    }
+        
     // get the base parameters, and override them with those passed in
     NSMutableDictionary* mergedParameters = [[self baseRequestParameters] mutableCopy];
     [mergedParameters setValuesForKeysWithDictionary:parameters];
@@ -106,7 +112,9 @@ static NSString* const kETA_APIPath_Sessions = @"/v2/sessions";
 }
 
 
+
 #pragma mark -
+
 // When the secret changes, the headers must update
 - (void) setApiSecret:(NSString *)apiSecret
 {
@@ -153,6 +161,8 @@ static NSString* const kETA_APIPath_Sessions = @"/v2/sessions";
     [self.session setToken:headers[@"X-Token"]
            ifExpiresBefore:headers[@"X-Token-Expires"]];
 }
+
+
 
 #pragma mark - Session Loading / Updating / Saving
 
@@ -253,17 +263,18 @@ static NSString* const kETA_APIPath_Sessions = @"/v2/sessions";
 // create a new session, and assign
 - (void) createSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self makeRequest:kETA_APIPath_Sessions
-                 type:ETARequestTypePOST
-           parameters:@{ @"api_key": (self.apiKey) ?: [NSNull null] }
-           completion:^(NSDictionary *JSONResponse, NSError *error) {
+    [self postPath:kETA_APIPath_Sessions
+        parameters:@{ @"api_key": (self.apiKey) ?: [NSNull null] }
+           success:^(AFHTTPRequestOperation *operation, id responseObject) {
+               NSError* error = nil;
+               ETA_Session* session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:responseObject error:&error];
+               // save the session that was created, only if we have created it after any previous requests
                if (!error)
-               {
-                   ETA_Session* session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:JSONResponse error:&error];
-                   // save the session that was created, only if we have created it after any previous requests
-                   if (!error)
-                       [self setIfSameOrNewerSession:session];
-               }
+                   [self setIfSameOrNewerSession:session];
+               
+               completionHandler(error);
+           }
+           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                completionHandler(error);
            }];
 }
@@ -303,12 +314,22 @@ static NSString* const kETA_APIPath_Sessions = @"/v2/sessions";
            }];
 }
 
+
+
 #pragma mark - Session User Management
 
 - (void) attachUser:(NSDictionary*)userCredentials withCompletion:(void (^)(NSError* error))completionHandler
 {
     if (!userCredentials)
+    {
+        completionHandler([[self class] errorIfInvalidUserCredentials]);
         return;
+    }
+    if (!self.session)
+    {
+        completionHandler([[self class] errorIfNoSession]);
+        return;
+    }
     
     [self makeRequest:kETA_APIPath_Sessions
                  type:ETARequestTypePUT
@@ -327,6 +348,12 @@ static NSString* const kETA_APIPath_Sessions = @"/v2/sessions";
 
 - (void) detachUserWithCompletion:(void (^)(NSError* error))completionHandler
 {
+    if (!self.session)
+    {
+        completionHandler([[self class] errorIfNoSession]);
+        return;
+    }
+    
     [self makeRequest:kETA_APIPath_Sessions
                  type:ETARequestTypePUT
            parameters:@{ @"email":@"" }
@@ -342,4 +369,25 @@ static NSString* const kETA_APIPath_Sessions = @"/v2/sessions";
 }
 
 
+
+#pragma mark - Errors
+
++ (NSError*) errorIfNoSession
+{
+    return [NSError errorWithDomain:ETA_APIClientErrorDomain
+                               code:ETA_APIClientErrorNoSession
+                           userInfo:@{
+                                      NSLocalizedDescriptionKey: NSLocalizedString(@"Could not talk to server", @""),
+                                      NSLocalizedFailureReasonErrorKey: NSLocalizedString(@"No session object exists", @""),
+                                      }];
+}
++ (NSError*) errorIfInvalidUserCredentials
+{
+    return [NSError errorWithDomain:ETA_APIClientErrorDomain
+                               code:ETA_APIClientErrorInvalidUserCredentials
+                           userInfo:@{
+                                      NSLocalizedDescriptionKey: NSLocalizedString(@"Could not attach user", @""),
+                                      NSLocalizedFailureReasonErrorKey: NSLocalizedString(@"Provided user credentials are invalid", @""),
+                                      }];
+}
 @end
