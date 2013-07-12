@@ -24,8 +24,14 @@
 		1730FB0E178D71D900FC5386 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1730FA8D178D503100FC5386 /* CoreLocation.framework */; };
 		1730FB0F178D71E600FC5386 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1730FAEA178D683100FC5386 /* MobileCoreServices.framework */; };
 		1730FB10178D71E600FC5386 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1730FAE8178D680E00FC5386 /* SystemConfiguration.framework */; };
+		177DC0D6178F5675005E0B4D /* ETA_ModelItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 177DC0D5178F5675005E0B4D /* ETA_ModelItem.m */; };
+		177DC0D7178F5675005E0B4D /* ETA_ModelItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 177DC0D5178F5675005E0B4D /* ETA_ModelItem.m */; };
+		177DC0D8178F608E005E0B4D /* ETA_APIEndpoints.m in Sources */ = {isa = PBXBuildFile; fileRef = 177DC0D3178F55C4005E0B4D /* ETA_APIEndpoints.m */; };
+		177DC0D9178F608E005E0B4D /* ETA_APIEndpoints.m in Sources */ = {isa = PBXBuildFile; fileRef = 177DC0D3178F55C4005E0B4D /* ETA_APIEndpoints.m */; };
 		179E6A3F178DBCAD006D31A8 /* NSString+ETA_Permission.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6A3E178DBCAD006D31A8 /* NSString+ETA_Permission.m */; };
 		179E6A40178DBCAD006D31A8 /* NSString+ETA_Permission.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6A3E178DBCAD006D31A8 /* NSString+ETA_Permission.m */; };
+		179E6A43178DEEBF006D31A8 /* ETA_ShoppingList.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6A42178DEEBC006D31A8 /* ETA_ShoppingList.m */; };
+		179E6A44178DEEBF006D31A8 /* ETA_ShoppingList.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6A42178DEEBC006D31A8 /* ETA_ShoppingList.m */; };
 		17EE766D178ACD4E00EBDC6E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17EE766C178ACD4E00EBDC6E /* UIKit.framework */; };
 		17EE766F178ACD4E00EBDC6E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17EE766E178ACD4E00EBDC6E /* Foundation.framework */; };
 		17EE7671178ACD4E00EBDC6E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17EE7670178ACD4E00EBDC6E /* CoreGraphics.framework */; };
@@ -59,8 +65,14 @@
 		1730FB04178D6DFC00FC5386 /* ETA-SDKTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ETA-SDKTests-Prefix.pch"; sourceTree = "<group>"; };
 		1730FB08178D6E2C00FC5386 /* ETA_SessionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_SessionTests.m; sourceTree = "<group>"; };
 		1730FB09178D6E2C00FC5386 /* ETA_SessionTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_SessionTests.h; sourceTree = "<group>"; };
+		177DC0D2178F55C4005E0B4D /* ETA_APIEndpoints.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_APIEndpoints.h; sourceTree = "<group>"; };
+		177DC0D3178F55C4005E0B4D /* ETA_APIEndpoints.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_APIEndpoints.m; sourceTree = "<group>"; };
+		177DC0D4178F5675005E0B4D /* ETA_ModelItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_ModelItem.h; sourceTree = "<group>"; };
+		177DC0D5178F5675005E0B4D /* ETA_ModelItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_ModelItem.m; sourceTree = "<group>"; };
 		179E6A3D178DBCAD006D31A8 /* NSString+ETA_Permission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ETA_Permission.h"; sourceTree = "<group>"; };
 		179E6A3E178DBCAD006D31A8 /* NSString+ETA_Permission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ETA_Permission.m"; sourceTree = "<group>"; };
+		179E6A41178DEEBC006D31A8 /* ETA_ShoppingList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ShoppingList.h; sourceTree = "<group>"; };
+		179E6A42178DEEBC006D31A8 /* ETA_ShoppingList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ShoppingList.m; sourceTree = "<group>"; };
 		17EE7669178ACD4E00EBDC6E /* ETA-SDKExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ETA-SDKExample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		17EE766C178ACD4E00EBDC6E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		17EE766E178ACD4E00EBDC6E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -121,10 +133,16 @@
 				1730FAC7178D66BE00FC5386 /* ETA.m */,
 				1730FAC8178D66BE00FC5386 /* ETA_APIClient.h */,
 				1730FAC9178D66BE00FC5386 /* ETA_APIClient.m */,
+				177DC0D4178F5675005E0B4D /* ETA_ModelItem.h */,
+				177DC0D5178F5675005E0B4D /* ETA_ModelItem.m */,
 				1730FACA178D66BE00FC5386 /* ETA_Session.h */,
 				1730FACB178D66BE00FC5386 /* ETA_Session.m */,
+				177DC0D2178F55C4005E0B4D /* ETA_APIEndpoints.h */,
+				177DC0D3178F55C4005E0B4D /* ETA_APIEndpoints.m */,
 				179E6A3D178DBCAD006D31A8 /* NSString+ETA_Permission.h */,
 				179E6A3E178DBCAD006D31A8 /* NSString+ETA_Permission.m */,
+				179E6A41178DEEBC006D31A8 /* ETA_ShoppingList.h */,
+				179E6A42178DEEBC006D31A8 /* ETA_ShoppingList.m */,
 			);
 			path = "ETA-SDK";
 			sourceTree = "<group>";
@@ -390,8 +408,11 @@
 				1730FB03178D6DFC00FC5386 /* ETA_SDKTests.m in Sources */,
 				179E6A40178DBCAD006D31A8 /* NSString+ETA_Permission.m in Sources */,
 				1730FB0A178D6E2C00FC5386 /* ETA_SessionTests.m in Sources */,
+				177DC0D7178F5675005E0B4D /* ETA_ModelItem.m in Sources */,
 				1730FB0B178D716F00FC5386 /* ETA.m in Sources */,
 				1730FB0C178D716F00FC5386 /* ETA_APIClient.m in Sources */,
+				177DC0D9178F608E005E0B4D /* ETA_APIEndpoints.m in Sources */,
+				179E6A44178DEEBF006D31A8 /* ETA_ShoppingList.m in Sources */,
 				1730FB0D178D716F00FC5386 /* ETA_Session.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -402,9 +423,12 @@
 			files = (
 				17EE7679178ACD4E00EBDC6E /* main.m in Sources */,
 				17EE767D178ACD4E00EBDC6E /* ETAAppDelegate.m in Sources */,
+				179E6A43178DEEBF006D31A8 /* ETA_ShoppingList.m in Sources */,
 				179E6A3F178DBCAD006D31A8 /* NSString+ETA_Permission.m in Sources */,
 				17EE76B5178AD9F500EBDC6E /* ETAExampleViewController.m in Sources */,
 				1730FACC178D66BE00FC5386 /* ETA.m in Sources */,
+				177DC0D8178F608E005E0B4D /* ETA_APIEndpoints.m in Sources */,
+				177DC0D6178F5675005E0B4D /* ETA_ModelItem.m in Sources */,
 				1730FACE178D66BE00FC5386 /* ETA_APIClient.m in Sources */,
 				1730FAD0178D66BE00FC5386 /* ETA_Session.m in Sources */,
 			);

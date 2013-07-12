@@ -10,6 +10,7 @@
 
 #import "ETA.h"
 #import "ETA_Session.h"
+#import "ETA_APIEndpoints.h"
 
 #import "AFJSONRequestOperation.h"
 
@@ -17,11 +18,6 @@
 
 static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 
-static NSString* const kETA_APIPath_Sessions = @"/v2/sessions";
-
-NSString* const ETA_APIClientErrorDomain = @"ETA_APIClientErrorDomain";
-const NSInteger ETA_APIClientErrorNoSession = 1;
-const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
 
 @interface ETA_APIClient ()
 
@@ -32,6 +28,13 @@ const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
 
 
 @implementation ETA_APIClient
+{
+    dispatch_semaphore_t _startingSessionLock;
+    dispatch_queue_t _syncQueue;
+}
+
+
+#pragma mark - Constructors
 
 + (instancetype)clientWithApiKey:(NSString*)apiKey apiSecret:(NSString*)apiSecret
 {
@@ -52,6 +55,10 @@ const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
 {
     if ((self = [super initWithBaseURL:url]))
     {
+        _syncQueue = dispatch_queue_create("com.eTilbudsAvis.ETA_APIClient.syncQ", 0);
+        
+        _startingSessionLock = dispatch_semaphore_create(1);
+        
         [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
         
         [self setDefaultHeader:@"Accept" value:@"application/json"];
@@ -61,6 +68,10 @@ const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
     return self;
 }
 
+
+
+#pragma mark - API Requests
+
 // the parameters that are derived from the client, that may be overridded by the request
 - (NSDictionary*) baseRequestParameters
 {
@@ -68,52 +79,87 @@ const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
 }
 
 // send a request, and on sucessful response update the session token, if newer
-- (void) makeRequest:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters completion:(void (^)(NSDictionary* JSONResponse, NSError* error))completionHandler
+- (void) makeRequest:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters completion:(void (^)(id JSONResponse, NSError* error))completionHandler
 {
-    if (!self.session)
-    {
-        completionHandler(nil, [[self class] errorIfNoSession]);
-        return;
-    }
+    // push the makeRequest to the sync queue, which will be blocked while creating sessions
+    // as it is quickly sent on to AFNetworking's operation queue, it wont block the sync queue for long
+    dispatch_async(_syncQueue, ^{
         
-    // get the base parameters, and override them with those passed in
-    NSMutableDictionary* mergedParameters = [[self baseRequestParameters] mutableCopy];
-    [mergedParameters setValuesForKeysWithDictionary:parameters];
-    
-    
-    void (^successBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, id responseObject)
-    {
-        [self updateSessionTokenFromHeaders:operation.response.allHeaderFields];
+        // the code that does the actual sending of the request
+        void (^sendBlock)() = ^{
+            // get the base parameters, and override them with those passed in
+            NSMutableDictionary* mergedParameters = [[self baseRequestParameters] mutableCopy];
+            [mergedParameters setValuesForKeysWithDictionary:parameters];
+            
+            // convert any arrays into a comma separated list
+            NSMutableDictionary* cleanedParameters = [NSMutableDictionary dictionary];
+            [mergedParameters enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                if ([obj isKindOfClass:[NSArray class]])
+                {
+                    obj = [obj componentsJoinedByString:@","];
+                }
+                [cleanedParameters setValue:obj forKey:key];
+            }];
+            
+            
+            void (^successBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, id responseObject)
+            {
+                [self updateSessionTokenFromHeaders:operation.response.allHeaderFields];
+                if (completionHandler)
+                    completionHandler(responseObject, nil);
+            };
+            void (^failureBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, NSError *error)
+            {
+                if (completionHandler)
+                    completionHandler(nil, error);
+            };
+            
+            switch (type)
+            {
+                case ETARequestTypeGET:
+                    [self getPath:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
+                    break;
+                case ETARequestTypePOST:
+                    [self postPath:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
+                    break;
+                case ETARequestTypePUT:
+                    [self putPath:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
+                    break;
+                case ETARequestTypeDELETE:
+                    [self deletePath:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
+                    break;
+                default:
+                    break;
+            }
+        };
         
-        completionHandler(responseObject, nil);
-    };
-    void (^failureBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, NSError *error)
-    {
-        completionHandler(nil, error);
-    };
-    
-    switch (type)
-    {
-        case ETARequestTypeGET:
-            [self getPath:requestPath parameters:mergedParameters success:successBlock failure:failureBlock];
-            break;
-        case ETARequestTypePOST:
-            [self postPath:requestPath parameters:mergedParameters success:successBlock failure:failureBlock];
-            break;
-        case ETARequestTypePUT:
-            [self putPath:requestPath parameters:mergedParameters success:successBlock failure:failureBlock];
-            break;
-        case ETARequestTypeDELETE:
-            [self deletePath:requestPath parameters:mergedParameters success:successBlock failure:failureBlock];
-            break;
-        default:
-            break;
-    }
+        // the session hasnt been created, or it failed when previously created
+        // try to create the session from scratch.
+        // we are currently on the syncQ, so dont syncronously dispatch the start to the syncQ
+        if (!self.session)
+        {
+            [self startSessionOnSyncQueue:NO withCompletion:^(NSError *error) {
+                // if we were able to create the session, do the send request
+                if (!error)
+                    sendBlock();
+                // if the creation failed, send the error up to the request
+                else if (completionHandler)
+                    completionHandler(nil, error);
+            }];
+            
+            dispatch_semaphore_signal(_startingSessionLock);
+        }
+        // we have a session, so just run the sendBlock
+        else
+        {
+            sendBlock();
+        }
+    });
 }
 
 
 
-#pragma mark -
+#pragma mark - Headers
 
 // When the secret changes, the headers must update
 - (void) setApiSecret:(NSString *)apiSecret
@@ -137,7 +183,10 @@ const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
 }
 
 
+
+
 #pragma mark - Session Setters
+
 - (void) setIfSameOrNewerSession:(ETA_Session *)session
 {    
     if (session && [session isExpirySameOrNewerThanSession:self.session])
@@ -167,58 +216,101 @@ const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
 #pragma mark - Session Loading / Updating / Saving
 
 // get the session, either from local storage or creating a new one, and make sure it's up to date
+// it will perform it on the sync queue
 - (void) startSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    // fill self.session with the session from user defaults, or nil if not set
-    [self loadSessionFromStorage];
-    
-    // if there is no session, or either renew or update fail, call this block, which tries to create a new session
-    void (^createSessionBlock)() = ^{
-        self.session = nil;
-        [self createSessionWithCompletion:^(NSError *error) {
-            if (error)
-            {
-                DLog(@"Unable to create session. Now what?");
-            }
-            completionHandler(error);
-        }];
-    };
-    
-    // no session stored, create one from scratch
-    if (self.session)
-    {   
-        // if the session is out of date, renew it
-        if ([self.session willExpireSoon])
+    [self startSessionOnSyncQueue:YES withCompletion:completionHandler];
+}
+
+- (void) startSessionOnSyncQueue:(BOOL)dispatchOnSyncQ withCompletion:(void (^)(NSError* error))completionHandler
+{
+    // do it on the sync queue, and block until the completion occurs - that way any other requests will have to wait for the session to have started
+    void (^block)() = ^{
+        // previous connect was sucessful - dont bother connecting (and dont block syncQ with completion handler
+        if (self.session)
         {
-            [self renewSessionWithCompletion:^(NSError *error) {
+            if (completionHandler)
+            {
+                dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                    completionHandler(nil);
+                });
+            }
+            return;
+        }
+        
+        // create a semaphore, so that the queue's block doesn't end until the completion handler is hit
+        dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+        
+        
+        // fill self.session with the session from user defaults, or nil if not set
+        [self loadSessionFromStorage];
+        
+        // if there is no session, or either renew or update fail, call this block, which tries to create a new session
+        void (^createSessionBlock)() = ^{
+            self.session = nil;
+            [self createSessionWithCompletion:^(NSError *error) {
                 if (error)
                 {
-                    DLog(@"Unable to renew session - trying to create a new one instead: %@", error);
-                    createSessionBlock();
+                    DLog(@"Unable to create session. Now what?");
                 }
-                else
+                dispatch_semaphore_signal(sema); // tell the syncQueue block to finish
+                if (completionHandler)
                     completionHandler(error);
             }];
+        };
+        
+        // no session stored, create one from scratch
+        if (self.session)
+        {
+            // if the session is out of date, renew it
+            if ([self.session willExpireSoon])
+            {
+                [self renewSessionWithCompletion:^(NSError *error) {
+                    if (error)
+                    {
+                        DLog(@"Unable to renew session - trying to create a new one instead: %@", error);
+                        createSessionBlock();
+                    }
+                    else
+                    {
+                        dispatch_semaphore_signal(sema); // tell the syncQueue block to finish
+                        if (completionHandler)
+                            completionHandler(error);
+                    }
+                }];
+            }
+            // otherwise, update it
+            else
+            {
+                [self updateSessionWithCompletion:^(NSError *error) {
+                    if (error)
+                    {
+                        DLog(@"Unable to update session - trying to create a new one instead: %@", error.localizedDescription);
+                        createSessionBlock();
+                    }
+                    else
+                    {
+                        dispatch_semaphore_signal(sema); // tell the syncQueue block to finish
+                        if (completionHandler)
+                            completionHandler(error);
+                    }
+                }];
+            }
         }
-        // otherwise, update it
+        // no previous session exists - create a new one
         else
         {
-            [self updateSessionWithCompletion:^(NSError *error) {
-                if (error)
-                {
-                    DLog(@"Unable to update session - trying to create a new one instead: %@", error);
-                    createSessionBlock();
-                }
-                else
-                    completionHandler(error);
-            }];
+            createSessionBlock(nil);
         }
-    }
-    // no previous session exists - create a new one
+        
+        // wait for the semaphore that is going to be called when the getting of the session completes
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    };
+    
+    if (dispatchOnSyncQ)
+        dispatch_async(_syncQueue, block);
     else
-    {
-        createSessionBlock(nil);
-    }
+        block();
 }
 
 // get the session from UserDefaults
@@ -263,7 +355,7 @@ const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
 // create a new session, and assign
 - (void) createSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self postPath:kETA_APIPath_Sessions
+    [self postPath:ETA_APIEndpoints.sessions
         parameters:@{ @"api_key": (self.apiKey) ?: [NSNull null] }
            success:^(AFHTTPRequestOperation *operation, id responseObject) {
                NSError* error = nil;
@@ -272,46 +364,55 @@ const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
                if (!error)
                    [self setIfSameOrNewerSession:session];
                
-               completionHandler(error);
+               if (completionHandler)
+                   completionHandler(error);
            }
            failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-               completionHandler(error);
+               if (completionHandler)
+                   completionHandler(error);
            }];
 }
 
 // get the latest state of the session
 - (void) updateSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self makeRequest:kETA_APIPath_Sessions
-                 type:ETARequestTypeGET
-           parameters:nil
-           completion:^(NSDictionary *JSONResponse, NSError *error) {
-               if (!error)
-               {
-                   ETA_Session* session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:JSONResponse error:&error];
-                   // merge the updated session properties
-                   if (!error)
-                       [self setIfSameOrNewerSession:session];
-               }
-               completionHandler(error);
+    [self getPath:ETA_APIEndpoints.sessions
+       parameters:nil
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSError* error = nil;
+              ETA_Session* session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:responseObject error:&error];
+              // merge the updated session properties
+              if (!error)
+                  [self setIfSameOrNewerSession:session];
+              
+              if (completionHandler)
+                  completionHandler(error);
+           }
+           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+               if (completionHandler)
+                   completionHandler(error);
            }];
 }
 
 // Ask for a new expiration date / token
 - (void) renewSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self makeRequest:kETA_APIPath_Sessions
-                 type:ETARequestTypePUT
-           parameters:nil
-           completion:^(NSDictionary *JSONResponse, NSError *error) {
-               if (!error)
-               {
-                   ETA_Session* session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:JSONResponse error:&error];
-                   if (!error)
-                       [self setIfSameOrNewerSession:session];
-               }
-               completionHandler(error);
-           }];
+    [self putPath:ETA_APIEndpoints.sessions
+       parameters:nil
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSError* error = nil;
+              ETA_Session* session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:responseObject error:&error];
+              // merge the renewed session properties
+              if (!error)
+                  [self setIfSameOrNewerSession:session];
+              
+              if (completionHandler)
+                  completionHandler(error);
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              if (completionHandler)
+                  completionHandler(error);
+          }];
 }
 
 
@@ -320,18 +421,7 @@ const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
 
 - (void) attachUser:(NSDictionary*)userCredentials withCompletion:(void (^)(NSError* error))completionHandler
 {
-    if (!userCredentials)
-    {
-        completionHandler([[self class] errorIfInvalidUserCredentials]);
-        return;
-    }
-    if (!self.session)
-    {
-        completionHandler([[self class] errorIfNoSession]);
-        return;
-    }
-    
-    [self makeRequest:kETA_APIPath_Sessions
+    [self makeRequest:ETA_APIEndpoints.sessions
                  type:ETARequestTypePUT
            parameters:userCredentials
            completion:^(NSDictionary *JSONResponse, NSError *error) {
@@ -341,20 +431,15 @@ const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
                    if (!error)
                        [self setIfSameOrNewerSession:session];
                }
-               completionHandler(error);
+               if (completionHandler)
+                   completionHandler(error);
            }];
 }
 
 
 - (void) detachUserWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    if (!self.session)
-    {
-        completionHandler([[self class] errorIfNoSession]);
-        return;
-    }
-    
-    [self makeRequest:kETA_APIPath_Sessions
+    [self makeRequest:ETA_APIEndpoints.sessions
                  type:ETARequestTypePUT
            parameters:@{ @"email":@"" }
            completion:^(NSDictionary *JSONResponse, NSError *error) {
@@ -364,30 +449,15 @@ const NSInteger ETA_APIClientErrorInvalidUserCredentials = 2;
                    if (!error)
                        [self setIfSameOrNewerSession:session];
                }
-               completionHandler(error);
+               if (completionHandler)
+                   completionHandler(error);
            }];
 }
 
 
-
-#pragma mark - Errors
-
-+ (NSError*) errorIfNoSession
+- (BOOL) allowsPermission:(NSString*)actionPermission
 {
-    return [NSError errorWithDomain:ETA_APIClientErrorDomain
-                               code:ETA_APIClientErrorNoSession
-                           userInfo:@{
-                                      NSLocalizedDescriptionKey: NSLocalizedString(@"Could not talk to server", @""),
-                                      NSLocalizedFailureReasonErrorKey: NSLocalizedString(@"No session object exists", @""),
-                                      }];
+    return [self.session allowsPermission:actionPermission];
 }
-+ (NSError*) errorIfInvalidUserCredentials
-{
-    return [NSError errorWithDomain:ETA_APIClientErrorDomain
-                               code:ETA_APIClientErrorInvalidUserCredentials
-                           userInfo:@{
-                                      NSLocalizedDescriptionKey: NSLocalizedString(@"Could not attach user", @""),
-                                      NSLocalizedFailureReasonErrorKey: NSLocalizedString(@"Provided user credentials are invalid", @""),
-                                      }];
-}
+
 @end

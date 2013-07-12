@@ -9,7 +9,6 @@
 #import "ETA_Session.h"
 
 #import "NSString+ETA_Permission.h"
-#import "MTLValueTransformer.h"
 
 static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
 
@@ -87,6 +86,11 @@ static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
     }];
     
     return allowed;
+}
+
+- (NSString*) userID
+{
+    return self.user[@"id"];
 }
 
 @end

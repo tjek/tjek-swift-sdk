@@ -10,8 +10,6 @@
 
 #import "Mantle.h"
 
-@class ETA_APIClient;
-
 @interface ETA_Session : MTLModel <MTLJSONSerializing>
 
 @property (nonatomic, strong) NSString* token;
@@ -20,11 +18,11 @@
 @property (nonatomic, strong) NSString* provider;
 @property (nonatomic, strong) NSDictionary* permissions;
 
-
 - (BOOL) willExpireSoon;
 - (BOOL) isExpirySameOrNewerThanSession:(ETA_Session*)session;
 - (void) setToken:(NSString*)newToken ifExpiresBefore:(NSString*)expiryDateString;
 
 - (BOOL) allowsPermission:(NSString*)actionPermission;
 
+- (NSString*) userID;
 @end

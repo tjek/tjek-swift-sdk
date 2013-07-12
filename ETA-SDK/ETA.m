@@ -9,18 +9,11 @@
 #import "ETA.h"
 
 #import "ETA_APIClient.h"
+#import "ETA_Session.h"
 
-#import "AFNetworking.h"
+#import "ETA_APIEndpoints.h"
 
-//NSString* const kETA_APIPath_Catalogs = @"/v2/catalogs";
-//NSString* const kETA_APIPath_Offers = @"/v2/offers";
-//NSString* const kETA_APIPath_Stores = @"/v2/stores";
-//NSString* const kETA_APIPath_Users = @"/v2/catalogs";
-//NSString* const kETA_APIPath_Dealers = @"/v2/dealers";
-//NSString* const kETA_APIPath_Apps = @"/v2/catalogs";
-//NSString* const kETA_APIPath_Groups = @"/v2/catalogs";
-//NSString* const kETA_APIPath_Permissions = @"/v2/admin/auth/permissions";
-//NSString* const kETA_APIPath_ShoppingLists = @"/v2/shoppinglists";
+#import "ETA_ShoppingList.h"
 
 
 @interface ETA ()
@@ -28,7 +21,8 @@
 
 @property (nonatomic, readwrite, strong) NSString *apiKey;
 @property (nonatomic, readwrite, strong) NSString *apiSecret;
-@property (nonatomic, readwrite, assign) BOOL connected;
+
+@property (nonatomic, readwrite, strong) NSCache* itemCache;
 @end
 
 @implementation ETA
@@ -43,31 +37,34 @@
     return eta;
 }
 
-- (id) init
+
+- (instancetype) init
 {
-    if ((self = [super init]))
+    if((self = [super init]))
     {
-        _connected = NO;
+        self.itemCache = [[NSCache alloc] init];
     }
     return self;
 }
 
-
+- (ETA_APIClient*) client
+{
+    @synchronized(_client)
+    {
+        if (!_client)
+        {
+            self.client = [ETA_APIClient clientWithApiKey:self.apiKey apiSecret:self.apiSecret];
+        }
+    }
+    return _client;
+}
 
 
 #pragma mark - Connecting
 
 - (void) connect:(void (^)(NSError* error))completionHandler
 {
-    self.connected = NO;
-    
-    // First try to get stored state of the session
-    self.client = [ETA_APIClient clientWithApiKey:self.apiKey apiSecret:self.apiSecret];
-    
-    [self.client startSessionWithCompletion:^(NSError *error) {
-        self.connected = !error;
-        completionHandler(error);
-    }];
+    [self.client startSessionWithCompletion:completionHandler];
 }
 
 - (void) connectWithUserEmail:(NSString*)email password:(NSString*)password completion:(void (^)(BOOL connected, NSError* error))completionHandler
@@ -113,25 +110,216 @@
 }
 
 
-- (void) makeRequest:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters completion:(void (^)(NSDictionary* response, NSError* error))completionHandler
+- (void) api:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters completion:(void (^)(id response, NSError* error, BOOL fromCache))completionHandler
 {
-    //TODO: Real error
-    if (!self.isConnected)
-    {
-        completionHandler(nil, [NSError errorWithDomain:@"" code:0 userInfo:nil]);
-        return;
-    }
-    
+    [self api:requestPath type:type parameters:parameters useCache:YES completion:completionHandler];
+}
+
+- (void) api:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters useCache:(BOOL)useCache completion:(void (^)(id response, NSError* error, BOOL fromCache))completionHandler
+{
     // get the base parameters, and override them with those passed in
     NSMutableDictionary* mergedParameters = [[self baseRequestParameters] mutableCopy];
+    
+    // first take those that are in the string
+    NSArray* requestComponents = [requestPath componentsSeparatedByString:@"?"];
+    if (requestComponents.count > 1)
+    {
+        requestPath = requestComponents[0];
+        NSArray* keyValues = [requestComponents[1] componentsSeparatedByString:@"&"];
+        for (NSString* keyValue in keyValues)
+        {
+            NSArray* keyAndValueArray = [keyValue componentsSeparatedByString:@"="];
+            if (keyAndValueArray.count > 1)
+            {
+                NSString* key = keyAndValueArray[0];
+                NSString* valueStr = keyAndValueArray[1];
+                NSArray* valueArr = [valueStr componentsSeparatedByString:@","];
+                [mergedParameters setValue:(valueArr.count > 1) ? valueArr : valueStr forKey:key];
+            }
+        }
+    }
+    
+    // then take those in the dictionary
     [mergedParameters setValuesForKeysWithDictionary:parameters];
     
-
-    [self.client makeRequest:requestPath type:type parameters:parameters completion:completionHandler];
+    
+    if (completionHandler)
+    {
+        id cacheResponse = [self getCacheResponseForRequest:requestPath type:type parameters:mergedParameters];
+        if (cacheResponse)
+        {
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                completionHandler(cacheResponse, nil, YES);
+            });
+        }
+    }
+    
+    [self.client makeRequest:requestPath type:type parameters:mergedParameters completion:^(id response, NSError *error)
+    {
+        [self addJSONItemToCache:response];
+        
+        if (completionHandler)
+            completionHandler(response, error, NO);
+    }];
 }
 
 
+#pragma mark - Cache
 
+
+- (NSArray*)itemIDsFromRequestPath:(NSString*)requestPath parameters:(NSDictionary*)parameters endpointForItems:(NSString**)resultingEndpoint
+{
+    NSMutableArray* itemIDs = [@[] mutableCopy];
+    
+    
+    // trim the "/" from each end (as they result in empty path components)
+    NSString* trimmedPathString = [requestPath stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
+    NSArray* pathComponents = [trimmedPathString componentsSeparatedByString:@"/"];
+    
+    // there must be at least 2 components to get an ern
+    if (pathComponents.count < 2)
+        return itemIDs;
+    
+    
+    // get the multiple keys from the parameters
+    id itemIDParam = nil;
+    NSString* endpoint = [ETA_APIEndpoints endpointForShortName:pathComponents[pathComponents.count-2]];
+    // take the penultimate component and figure out if it is a valid endpoint
+    if (endpoint)
+    {
+        // if the penultimate component is a valud endpoint, assume the final item is the id
+        itemIDParam = pathComponents[pathComponents.count-1];
+    }
+    // it wasnt valid - try the final endpoint to use the parameters with
+    else
+    {
+        endpoint = [ETA_APIEndpoints endpointForShortName:pathComponents[pathComponents.count-1]];
+        if (endpoint)
+        {
+            // try to get the multiple-ids parameter
+            NSString* multiItemFilterKey = [ETA_APIEndpoints multipleItemsFilterKeyForEndpoint:endpoint];
+            if (multiItemFilterKey)
+                itemIDParam = parameters[multiItemFilterKey];
+            
+            
+            // if there were no multiple keys, try to get the single key
+            NSString* itemFilterKey = [ETA_APIEndpoints itemFilterKeyForEndpoint:endpoint];
+            if (!itemIDParam && itemFilterKey)
+                itemIDParam = parameters[itemFilterKey];
+        }
+    }
+    
+    
+    // We found valid item id(s)! Turn them into a list of erns
+    if (itemIDParam && endpoint)
+    {
+        // turn the item id parameter into an array of strings (it could be an array, a string or a number)
+        if ([itemIDParam isKindOfClass:[NSString class]])
+        {
+            [itemIDs addObjectsFromArray:[itemIDParam componentsSeparatedByString:@","]];
+        }
+        else if ([itemIDParam isKindOfClass:[NSArray class]])
+        {
+            for (id subItemID in itemIDParam) {
+                if ([subItemID isKindOfClass:[NSNumber class]] || [subItemID isKindOfClass:[NSString class]])
+                    [itemIDs addObject:[NSString stringWithFormat:@"%@", subItemID]];
+            }
+        }
+        else if ([itemIDParam isKindOfClass:[NSNumber class]])
+        {
+            [itemIDs addObject:[NSString stringWithFormat:@"%@", itemIDParam]];
+        }
+        
+        *resultingEndpoint = endpoint;
+    }
+    
+    return itemIDs;
+}
+
+- (id) getCacheResponseForRequest:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters
+{
+    if (type != ETARequestTypeGET)
+        return nil;
+    
+    /*
+     /v2/catalogs?catalog_id=1234
+     /v2/catalogs/1234/?something
+       = ["ern:catalog:1234"]
+     
+     /v2/catalogs?catalog_ids=1234,5678
+       = ["ern:catalog:1234", "ern:catalog:5678"]
+     
+     /v2/catalogs/1234/stores/1234
+     /v2/catalogs?store_id=1234
+       = []
+     */
+    NSString* endpoint = nil;
+    NSArray* itemIDs = [self itemIDsFromRequestPath:requestPath parameters:parameters endpointForItems:&endpoint];
+    if (itemIDs.count && endpoint)
+    {
+        NSTimeInterval nowTimestamp = [NSDate timeIntervalSinceReferenceDate];
+        NSTimeInterval cacheLifespan = [ETA_APIEndpoints cacheLifespanForEndpoint:endpoint];
+        
+        NSMutableArray* cachedItems = [@[] mutableCopy];
+        
+        // go through all the item ids, turn them into erns, and look for them in the cache
+        // if any item isnt in the list then return nothing
+        BOOL foundAll = YES;
+        for (NSString* itemID in itemIDs)
+        {
+            NSString* itemERN = [ETA_APIEndpoints ernForEndpoint:endpoint withItemID:itemID];
+            
+            NSDictionary* cachedItemDict = (itemERN) ? [self.itemCache objectForKey:itemERN] : nil;
+            // item not in cache
+            if (!cachedItemDict)
+            {
+                foundAll = NO;
+                break;
+            }
+            // item in cache
+            else
+            {
+                id cachedItem = cachedItemDict[@"item"];
+                // invalid item, or out of date. remove from cache and fail
+                if (!cachedItem || (nowTimestamp - [cachedItemDict[@"timestamp"] doubleValue]) > cacheLifespan)
+                {
+                    [self.itemCache removeObjectForKey:itemERN];
+                    foundAll = NO;
+                    break;
+                }
+                // yay - it's in the cache
+                else
+                {
+                    [cachedItems addObject:cachedItem];
+                }
+            }
+        }
+        
+        if (foundAll)
+            return cachedItems;
+    }
+    return nil;
+}
+
+- (void) addJSONItemToCache:(id)jsonItem
+{
+    if ([jsonItem isKindOfClass:[NSArray class]])
+    {
+        for (id subitem in jsonItem)
+        {
+            [self addJSONItemToCache:jsonItem];
+        }
+    }
+    else if ([jsonItem isKindOfClass:[NSDictionary class]])
+    {
+        NSString* ern = jsonItem[@"ern"];
+        if (ern)
+        {
+            [self.itemCache setObject:@{ @"item": jsonItem, @"timestamp":@([NSDate timeIntervalSinceReferenceDate]) }
+                               forKey:ern];
+        }
+    }
+}
 
 #pragma mark - Geolocation
 
@@ -174,11 +362,76 @@
     return params;
 }
 
-- (void) setLatitude:(CGFloat)latitude longitude:(CGFloat)longitude distance:(CGFloat)distance isFromSensor:(BOOL)isFromSensor
+- (void) setLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude distance:(CLLocationDistance)distance isFromSensor:(BOOL)isFromSensor
 {
     self.location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
     self.distance = @(distance);
     self.isLocationFromSensor = isFromSensor;
 }
 
+@end
+
+
+
+
+
+@implementation ETA (ShoppingList)
+
+- (BOOL) canGetShoppingList
+{
+    NSString* userID = [self.client.session userID];
+    return (userID) ? [self.client allowsPermission:[NSString stringWithFormat:@"api.users.%@.read", userID]] : NO;
+}
+- (BOOL) canUpdateShoppingList
+{
+    NSString* userID = [self.client.session userID];
+    return (userID) ? [self.client allowsPermission:[NSString stringWithFormat:@"api.users.%@.update", userID]] : NO;
+}
+- (BOOL) canDeleteShoppingList
+{
+    NSString* userID = [self.client.session userID];
+    return (userID) ? [self.client allowsPermission:[NSString stringWithFormat:@"api.users.%@.update", userID]] : NO;
+}
+
+- (void) getShoppingLists:(void (^)(NSArray* shoppingLists, NSError* error))completionHandler
+{
+    if (![self canGetShoppingList])
+    {
+        //TODO: ERROR - No attached user
+        NSError* err;
+        completionHandler(nil, err);
+        return;
+    }
+    
+//    [self.client setDefaultHeader:@"Cache-Control" value:@"must-revalidate"];    
+    
+    NSString* userID = [self.client.session userID];
+    [self api:[NSString stringWithFormat:@"/v2/users/%@/shoppinglists", userID]
+         type:ETARequestTypeGET
+   parameters:nil
+   completion:^(id response, NSError *error, BOOL fromCache) {
+       NSMutableArray* shoppingLists = nil;
+       if (!error)
+       {
+           shoppingLists = [@[] mutableCopy];
+           for (NSDictionary* shoppingListDict in response)
+           {
+               NSError* modelError = nil;
+               ETA_ShoppingList* shoppingList = [MTLJSONAdapter modelOfClass:[ETA_ShoppingList class] fromJSONDictionary:shoppingListDict error:&modelError];
+               
+               // if we see an error while parsing the shopping lists, completely fail
+               if (modelError)
+               {
+                   completionHandler(nil, modelError);
+                   return;
+               }
+               else if (shoppingList)
+               {
+                   [shoppingLists addObject:shoppingList];
+               }
+           }
+       }
+       completionHandler(shoppingLists, error);
+   }];
+}
 @end
