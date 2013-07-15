@@ -13,19 +13,24 @@
 
 #import "ETA_APIEndpoints.h"
 
-#import "ETA_ShoppingList.h"
 
+@interface ETA () <UIWebViewDelegate>
 
-@interface ETA ()
 @property (nonatomic, readwrite, strong) ETA_APIClient* client;
 
 @property (nonatomic, readwrite, strong) NSString *apiKey;
 @property (nonatomic, readwrite, strong) NSString *apiSecret;
+@property (nonatomic, readwrite, strong) NSURL *baseURL;
 
 @property (nonatomic, readwrite, strong) NSCache* itemCache;
+
+@property (nonatomic, readwrite, strong) UIWebView* webView;
+@property (nonatomic, readwrite, strong) NSString* webViewUUID;
 @end
 
+
 @implementation ETA
+@synthesize client = _client;
 
 + (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret
 {
@@ -34,6 +39,19 @@
     eta.apiKey = apiKey;
     eta.apiSecret = apiSecret;
     
+    return [self etaWithAPIKey:apiKey
+                     apiSecret:apiSecret
+                       baseURL:nil];
+}
+
++ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret baseURL:(NSURL *)baseURL
+{
+    ETA* eta = [[ETA alloc] init];
+    
+    eta.apiKey = apiKey;
+    eta.apiSecret = apiSecret;
+    if (baseURL)
+        eta.baseURL = baseURL;
     return eta;
 }
 
@@ -43,8 +61,14 @@
     if((self = [super init]))
     {
         self.itemCache = [[NSCache alloc] init];
+        self.baseURL = [NSURL URLWithString: kETA_APIBaseURLString];
     }
     return self;
+}
+
+- (void) dealloc
+{
+    self.client = nil;
 }
 
 - (ETA_APIClient*) client
@@ -53,12 +77,32 @@
     {
         if (!_client)
         {
-            self.client = [ETA_APIClient clientWithApiKey:self.apiKey apiSecret:self.apiSecret];
+            self.client = [ETA_APIClient clientWithBaseURL:self.baseURL apiKey:self.apiKey apiSecret:self.apiSecret];   
         }
     }
     return _client;
 }
 
+- (void) setClient:(ETA_APIClient *)client
+{
+    if (_client == client)
+        return;
+    
+    [_client removeObserver:self forKeyPath:@"session"];
+    
+    _client = client;
+    
+    [_client addObserver:self forKeyPath:@"session" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:NULL];
+}
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"session"])
+    {
+        // TODO: post out session change notifications ?
+//        DLog(@"Session Changed! %@", change[NSKeyValueChangeNewKey]);
+    }
+}
 
 #pragma mark - Connecting
 
@@ -73,9 +117,12 @@
         if (!error)
         {
             [self attachUserEmail:email password:password completion:^(NSError *error) {
-                completionHandler(YES, error);
+                if (completionHandler)
+                    completionHandler(YES, error);
             }];
-        } else {
+        }
+        else if (completionHandler)
+        {
             completionHandler(NO, error);
         }
     }];
@@ -369,69 +416,5 @@
     self.isLocationFromSensor = isFromSensor;
 }
 
-@end
 
-
-
-
-
-@implementation ETA (ShoppingList)
-
-- (BOOL) canGetShoppingList
-{
-    NSString* userID = [self.client.session userID];
-    return (userID) ? [self.client allowsPermission:[NSString stringWithFormat:@"api.users.%@.read", userID]] : NO;
-}
-- (BOOL) canUpdateShoppingList
-{
-    NSString* userID = [self.client.session userID];
-    return (userID) ? [self.client allowsPermission:[NSString stringWithFormat:@"api.users.%@.update", userID]] : NO;
-}
-- (BOOL) canDeleteShoppingList
-{
-    NSString* userID = [self.client.session userID];
-    return (userID) ? [self.client allowsPermission:[NSString stringWithFormat:@"api.users.%@.update", userID]] : NO;
-}
-
-- (void) getShoppingLists:(void (^)(NSArray* shoppingLists, NSError* error))completionHandler
-{
-    if (![self canGetShoppingList])
-    {
-        //TODO: ERROR - No attached user
-        NSError* err;
-        completionHandler(nil, err);
-        return;
-    }
-    
-//    [self.client setDefaultHeader:@"Cache-Control" value:@"must-revalidate"];    
-    
-    NSString* userID = [self.client.session userID];
-    [self api:[NSString stringWithFormat:@"/v2/users/%@/shoppinglists", userID]
-         type:ETARequestTypeGET
-   parameters:nil
-   completion:^(id response, NSError *error, BOOL fromCache) {
-       NSMutableArray* shoppingLists = nil;
-       if (!error)
-       {
-           shoppingLists = [@[] mutableCopy];
-           for (NSDictionary* shoppingListDict in response)
-           {
-               NSError* modelError = nil;
-               ETA_ShoppingList* shoppingList = [MTLJSONAdapter modelOfClass:[ETA_ShoppingList class] fromJSONDictionary:shoppingListDict error:&modelError];
-               
-               // if we see an error while parsing the shopping lists, completely fail
-               if (modelError)
-               {
-                   completionHandler(nil, modelError);
-                   return;
-               }
-               else if (shoppingList)
-               {
-                   [shoppingLists addObject:shoppingList];
-               }
-           }
-       }
-       completionHandler(shoppingLists, error);
-   }];
-}
 @end

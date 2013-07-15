@@ -15,9 +15,14 @@ static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
 @implementation ETA_Session
 
 + (NSDateFormatter *)dateFormatter {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZ";
+    static NSDateFormatter *dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZ";
+        
+    });    
     return dateFormatter;
 }
 
@@ -43,14 +48,19 @@ static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
     return (!self.expires || [self.expires timeIntervalSinceNow] <= kETA_SoonToExpireTimeInterval); // will expire in less than a day
 }
 
-- (BOOL) isExpirySameOrNewerThanSession:(ETA_Session*)session
+- (BOOL) isExpiryTheSameAsSession:(ETA_Session*)session
+{
+    return (self.expires == session.expires) || ([self.expires compare:session.expires] == NSOrderedSame);
+}
+- (BOOL) isExpiryNewerThanSession:(ETA_Session*)session
 {
     if (!session.expires)
         return YES;
     if (!self.expires)
         return NO;
-    return ([self.expires compare:session.expires] != NSOrderedAscending);
+    return ([self.expires compare:session.expires] == NSOrderedDescending);
 }
+
 
 - (void) setToken:(NSString*)newToken ifExpiresBefore:(NSString*)expiryDateString
 {
@@ -91,6 +101,26 @@ static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
 - (NSString*) userID
 {
     return self.user[@"id"];
+}
+
+#pragma mark - JSON
++ (instancetype) sessionFromJSONDictionary:(NSDictionary*)JSONDictionary
+{
+    if (!JSONDictionary)
+        return nil;
+    else
+        return [MTLJSONAdapter modelOfClass:[self class] fromJSONDictionary:JSONDictionary error:nil];
+}
+- (NSDictionary*)JSONDictionary
+{
+    return [MTLJSONAdapter JSONDictionaryFromModel:self];
+}
+
+- (NSString*) description
+{
+    NSString* sessionJSON = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:self.JSONDictionary options:NSJSONWritingPrettyPrinted error:nil]
+                                        encoding: NSUTF8StringEncoding];
+    return [NSString stringWithFormat:@"<ETA_Session: %@>", sessionJSON];
 }
 
 @end

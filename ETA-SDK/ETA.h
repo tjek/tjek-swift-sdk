@@ -9,22 +9,34 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
-#import "ETA_APIClient.h"
+
+typedef enum {
+    ETARequestTypeGET,
+    ETARequestTypePOST,
+    ETARequestTypePUT,
+    ETARequestTypeDELETE
+} ETARequestType;
+
+static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
 
 
 @interface ETA : NSObject
+
+@property (nonatomic, readonly, strong) NSURL* baseURL;
+@property (nonatomic, readonly, strong) NSString* apiKey;
+@property (nonatomic, readonly, strong) NSString* apiSecret;
 
 @property (nonatomic, readonly, assign, getter=isConnected) BOOL connected;
 
 
 // Construct an ETA object. Must use this method otherwise you wont have an API Key, and nothing will work
 + (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret;
-
++ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret baseURL:(NSURL*)baseURL;
 
 
 #pragma mark - Connecting
 
-// start a session. This is not required, as any API/user requests that you make will create the session automatically
+// start a session. This is not required, as any API/user requests that you make will create the session automatically.
 - (void) connect:(void (^)(NSError* error))completionHandler;
 // start a session and attach a user
 - (void) connectWithUserEmail:(NSString*)email password:(NSString*)password completion:(void (^)(BOOL connected, NSError* error))completionHandler;
@@ -69,27 +81,6 @@
 // The 'distance' property will be clamped to within these numbers before being sent
 + (NSArray*) preferredDistances;
 
-
-@end
-
-@interface ETA (Catalogs)
-
-- (void) getCatalogsWithCatalogIDs:(NSArray*)catalogIDs
-                         dealerIDs:(NSArray*)dealerIDs
-                          storeIDs:(NSArray*)storeIDs
-                           orderBy:(NSArray*)sortKeys
-                             limit:(NSUInteger)limit offset:(NSUInteger)offset
-                        completion:(void (^)(NSArray* catalogs, NSError* error))completionHandler;
-
 @end
 
 
-@interface ETA (ShoppingList)
-
-- (BOOL) canGetShoppingList;
-- (BOOL) canUpdateShoppingList;
-- (BOOL) canDeleteShoppingList;
-
-- (void) getShoppingLists:(void (^)(NSArray* shoppingLists, NSError* error))completionHandler;
-
-@end

@@ -188,16 +188,27 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 #pragma mark - Session Setters
 
 - (void) setIfSameOrNewerSession:(ETA_Session *)session
-{    
-    if (session && [session isExpirySameOrNewerThanSession:self.session])
+{
+    if ([session isExpiryTheSameAsSession:self.session] ||
+        [session isExpiryNewerThanSession:self.session])
+    {
+        self.session = session;
+    }
+}
+- (void) setIfNewerSession:(ETA_Session *)session
+{
+    if ([session isExpiryNewerThanSession:self.session])
     {
         self.session = session;
     }
 }
 
+
 // Setting the session causes the change to be persisted to User Defaults
 - (void) setSession:(ETA_Session *)session
 {
+    DLog(@"setSession: '%@' %@", session.token, session.expires);
+    
     _session = session;
     
     [self updateHeaders];
@@ -207,10 +218,47 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 // This will only update the session token/expiry if the expiry is newer
 - (void) updateSessionTokenFromHeaders:(NSDictionary*)headers
 {
-    [self.session setToken:headers[@"X-Token"]
-           ifExpiresBefore:headers[@"X-Token-Expires"]];
+    NSString* newToken = headers[@"X-Token"];
+    NSDate* newExpiryDate = [[ETA_Session dateFormatter] dateFromString:headers[@"X-Token-Expires"]];
+    
+    if (!newExpiryDate || !newToken)
+        return;
+    
+    // check if it would change anything about the session.
+    // if the tokens are the same and the new date is not newer then it's a no-op
+    if ([self.session.token isEqualToString:newToken] && self.session.expires && [newExpiryDate compare: self.session.expires]!=NSOrderedDescending)
+        return;
+    
+    // merge the expiry/token with the current session
+    ETA_Session* newSession = [self.session copy];
+    [newSession setValuesForKeysWithDictionary:@{@"token":newToken,
+                                                 @"expires":newExpiryDate}];
+    
+    DLog(@"Updating Session Tokens");
+    self.session = newSession;
+    
+//    
+//    
+//    
+//    
+//    if (!newExpiryDate || !newToken)
+//        return;
+//    
+//    if (!self.expires || [self.expires compare:newExpiryDate] == NSOrderedAscending)
+//    {
+//        self.token = newToken;
+//        self.expires = newExpiryDate;
+//    }
+//    
+//    [self.session setToken:headers[@"X-Token"]
+//           ifExpiresBefore:headers[@"X-Token-Expires"]];
 }
 
+//- (void) replaceSessionPropertiesIfExpiryIsSameOrNewer:(NSDictionary*)sessionJSONDict
+//{
+
+//    ETA_Session* session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:sessionJSONDict error:&err];
+//}
 
 
 #pragma mark - Session Loading / Updating / Saving
@@ -231,7 +279,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
         {
             if (completionHandler)
             {
-                dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
                     completionHandler(nil);
                 });
             }
@@ -324,15 +372,10 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
     ETA_Session* session = nil;
     if (sessionDict)
     {
-        NSError* err = nil;
-        session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:sessionDict error:&err];
-        if (!err)
-        {
-            self.session = session;
-            return;
-        }
+        session = [ETA_Session sessionFromJSONDictionary:sessionDict];
     }
-    self.session = nil;
+    DLog(@"Loading Session");
+    self.session = session;
 }
 
 // save the session to local storage
@@ -344,7 +387,8 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
     NSString* sessionJSON = nil;
     if (self.session)
     {
-        NSDictionary* sessionDict = [MTLJSONAdapter JSONDictionaryFromModel:self.session];
+        NSDictionary* sessionDict = [self.session JSONDictionary];
+        
         sessionJSON = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:sessionDict options:0 error:nil]
                                             encoding: NSUTF8StringEncoding];
     }
@@ -359,10 +403,13 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
         parameters:@{ @"api_key": (self.apiKey) ?: [NSNull null] }
            success:^(AFHTTPRequestOperation *operation, id responseObject) {
                NSError* error = nil;
-               ETA_Session* session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:responseObject error:&error];
+               ETA_Session* session = [ETA_Session sessionFromJSONDictionary:responseObject];
+               DLog(@"Creating Session");
                // save the session that was created, only if we have created it after any previous requests
-               if (!error)
+               if (session)
                    [self setIfSameOrNewerSession:session];
+
+               //TODO: create error if nil session
                
                if (completionHandler)
                    completionHandler(error);
@@ -380,10 +427,13 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
        parameters:nil
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSError* error = nil;
-              ETA_Session* session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:responseObject error:&error];
-              // merge the updated session properties
-              if (!error)
+              ETA_Session* session = [ETA_Session sessionFromJSONDictionary:responseObject];
+              DLog(@"Updating Session");
+              // save the session that was update, only if we have updated it after any previous requests
+              if (session)
                   [self setIfSameOrNewerSession:session];
+              
+              //TODO: create error if nil session
               
               if (completionHandler)
                   completionHandler(error);
@@ -401,10 +451,13 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
        parameters:nil
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSError* error = nil;
-              ETA_Session* session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:responseObject error:&error];
-              // merge the renewed session properties
-              if (!error)
+              ETA_Session* session = [ETA_Session sessionFromJSONDictionary:responseObject];
+              DLog(@"Renewing Session");
+              // save the session that was renewed, only if we have renewed it after any previous requests
+              if (session)
                   [self setIfSameOrNewerSession:session];
+              
+              //TODO: create error if nil session
               
               if (completionHandler)
                   completionHandler(error);
@@ -421,37 +474,51 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 
 - (void) attachUser:(NSDictionary*)userCredentials withCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self makeRequest:ETA_APIEndpoints.sessions
-                 type:ETARequestTypePUT
-           parameters:userCredentials
-           completion:^(NSDictionary *JSONResponse, NSError *error) {
-               if (!error)
-               {
-                   ETA_Session* session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:JSONResponse error:&error];
-                   if (!error)
-                       [self setIfSameOrNewerSession:session];
-               }
-               if (completionHandler)
-                   completionHandler(error);
-           }];
+    [self putPath:ETA_APIEndpoints.sessions
+       parameters:userCredentials
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSError* error = nil;
+              ETA_Session* session = [ETA_Session sessionFromJSONDictionary:responseObject];
+              DLog(@"Attaching User");
+              
+              // save the session, only if after any previous requests
+              if (session)
+                  [self setIfSameOrNewerSession:session];
+                  
+              //TODO: create error if nil session
+              
+              if (completionHandler)
+                  completionHandler(error);
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              if (completionHandler)
+                  completionHandler(error);
+          }];
 }
 
 
 - (void) detachUserWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self makeRequest:ETA_APIEndpoints.sessions
-                 type:ETARequestTypePUT
-           parameters:@{ @"email":@"" }
-           completion:^(NSDictionary *JSONResponse, NSError *error) {
-               if (!error)
-               {
-                   ETA_Session* session = [MTLJSONAdapter modelOfClass:[ETA_Session class] fromJSONDictionary:JSONResponse error:&error];
-                   if (!error)
-                       [self setIfSameOrNewerSession:session];
-               }
-               if (completionHandler)
-                   completionHandler(error);
-           }];
+    [self putPath:ETA_APIEndpoints.sessions
+       parameters:@{ @"email":@"" }
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSError* error = nil;
+              ETA_Session* session = [ETA_Session sessionFromJSONDictionary:responseObject];
+              DLog(@"Detaching User");
+              
+              // save the session, only if after any previous requests
+              if (session)
+                  [self setIfSameOrNewerSession:session];
+              
+              //TODO: create error if nil session
+              
+              if (completionHandler)
+                  completionHandler(error);
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              if (completionHandler)
+                  completionHandler(error);
+          }];
 }
 
 

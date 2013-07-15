@@ -28,6 +28,8 @@
 		177DC0D7178F5675005E0B4D /* ETA_ModelItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 177DC0D5178F5675005E0B4D /* ETA_ModelItem.m */; };
 		177DC0D8178F608E005E0B4D /* ETA_APIEndpoints.m in Sources */ = {isa = PBXBuildFile; fileRef = 177DC0D3178F55C4005E0B4D /* ETA_APIEndpoints.m */; };
 		177DC0D9178F608E005E0B4D /* ETA_APIEndpoints.m in Sources */ = {isa = PBXBuildFile; fileRef = 177DC0D3178F55C4005E0B4D /* ETA_APIEndpoints.m */; };
+		177DC0DC1793E6C0005E0B4D /* ETA_WebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 177DC0DB1793E6C0005E0B4D /* ETA_WebView.m */; };
+		177DC0DD1793E6C0005E0B4D /* ETA_WebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 177DC0DB1793E6C0005E0B4D /* ETA_WebView.m */; };
 		179E6A3F178DBCAD006D31A8 /* NSString+ETA_Permission.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6A3E178DBCAD006D31A8 /* NSString+ETA_Permission.m */; };
 		179E6A40178DBCAD006D31A8 /* NSString+ETA_Permission.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6A3E178DBCAD006D31A8 /* NSString+ETA_Permission.m */; };
 		179E6A43178DEEBF006D31A8 /* ETA_ShoppingList.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6A42178DEEBC006D31A8 /* ETA_ShoppingList.m */; };
@@ -69,6 +71,8 @@
 		177DC0D3178F55C4005E0B4D /* ETA_APIEndpoints.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_APIEndpoints.m; sourceTree = "<group>"; };
 		177DC0D4178F5675005E0B4D /* ETA_ModelItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_ModelItem.h; sourceTree = "<group>"; };
 		177DC0D5178F5675005E0B4D /* ETA_ModelItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_ModelItem.m; sourceTree = "<group>"; };
+		177DC0DA1793E6C0005E0B4D /* ETA_WebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_WebView.h; sourceTree = "<group>"; };
+		177DC0DB1793E6C0005E0B4D /* ETA_WebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_WebView.m; sourceTree = "<group>"; };
 		179E6A3D178DBCAD006D31A8 /* NSString+ETA_Permission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ETA_Permission.h"; sourceTree = "<group>"; };
 		179E6A3E178DBCAD006D31A8 /* NSString+ETA_Permission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ETA_Permission.m"; sourceTree = "<group>"; };
 		179E6A41178DEEBC006D31A8 /* ETA_ShoppingList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ShoppingList.h; sourceTree = "<group>"; };
@@ -131,16 +135,18 @@
 			children = (
 				1730FAC6178D66BE00FC5386 /* ETA.h */,
 				1730FAC7178D66BE00FC5386 /* ETA.m */,
-				1730FAC8178D66BE00FC5386 /* ETA_APIClient.h */,
-				1730FAC9178D66BE00FC5386 /* ETA_APIClient.m */,
-				177DC0D4178F5675005E0B4D /* ETA_ModelItem.h */,
-				177DC0D5178F5675005E0B4D /* ETA_ModelItem.m */,
-				1730FACA178D66BE00FC5386 /* ETA_Session.h */,
-				1730FACB178D66BE00FC5386 /* ETA_Session.m */,
 				177DC0D2178F55C4005E0B4D /* ETA_APIEndpoints.h */,
 				177DC0D3178F55C4005E0B4D /* ETA_APIEndpoints.m */,
+				1730FAC8178D66BE00FC5386 /* ETA_APIClient.h */,
+				1730FAC9178D66BE00FC5386 /* ETA_APIClient.m */,
+				1730FACA178D66BE00FC5386 /* ETA_Session.h */,
+				1730FACB178D66BE00FC5386 /* ETA_Session.m */,
+				177DC0DA1793E6C0005E0B4D /* ETA_WebView.h */,
+				177DC0DB1793E6C0005E0B4D /* ETA_WebView.m */,
 				179E6A3D178DBCAD006D31A8 /* NSString+ETA_Permission.h */,
 				179E6A3E178DBCAD006D31A8 /* NSString+ETA_Permission.m */,
+				177DC0D4178F5675005E0B4D /* ETA_ModelItem.h */,
+				177DC0D5178F5675005E0B4D /* ETA_ModelItem.m */,
 				179E6A41178DEEBC006D31A8 /* ETA_ShoppingList.h */,
 				179E6A42178DEEBC006D31A8 /* ETA_ShoppingList.m */,
 			);
@@ -413,6 +419,7 @@
 				1730FB0C178D716F00FC5386 /* ETA_APIClient.m in Sources */,
 				177DC0D9178F608E005E0B4D /* ETA_APIEndpoints.m in Sources */,
 				179E6A44178DEEBF006D31A8 /* ETA_ShoppingList.m in Sources */,
+				177DC0DD1793E6C0005E0B4D /* ETA_WebView.m in Sources */,
 				1730FB0D178D716F00FC5386 /* ETA_Session.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -424,6 +431,7 @@
 				17EE7679178ACD4E00EBDC6E /* main.m in Sources */,
 				17EE767D178ACD4E00EBDC6E /* ETAAppDelegate.m in Sources */,
 				179E6A43178DEEBF006D31A8 /* ETA_ShoppingList.m in Sources */,
+				177DC0DC1793E6C0005E0B4D /* ETA_WebView.m in Sources */,
 				179E6A3F178DBCAD006D31A8 /* NSString+ETA_Permission.m in Sources */,
 				17EE76B5178AD9F500EBDC6E /* ETAExampleViewController.m in Sources */,
 				1730FACC178D66BE00FC5386 /* ETA.m in Sources */,

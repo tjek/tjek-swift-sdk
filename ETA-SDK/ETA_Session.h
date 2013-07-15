@@ -19,10 +19,16 @@
 @property (nonatomic, strong) NSDictionary* permissions;
 
 - (BOOL) willExpireSoon;
-- (BOOL) isExpirySameOrNewerThanSession:(ETA_Session*)session;
-- (void) setToken:(NSString*)newToken ifExpiresBefore:(NSString*)expiryDateString;
+- (BOOL) isExpiryTheSameAsSession:(ETA_Session*)session;
+- (BOOL) isExpiryNewerThanSession:(ETA_Session*)session;
+//- (void) setToken:(NSString*)newToken ifExpiresBefore:(NSString*)expiryDateString;
 
 - (BOOL) allowsPermission:(NSString*)actionPermission;
 
 - (NSString*) userID;
+
++ (NSDateFormatter *)dateFormatter;
+
++ (instancetype) sessionFromJSONDictionary:(NSDictionary*)JSONDictionary;
+- (NSDictionary*) JSONDictionary;
 @end

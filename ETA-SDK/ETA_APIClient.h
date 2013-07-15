@@ -8,14 +8,7 @@
 
 #import "AFHTTPClient.h"
 
-typedef enum {
-    ETARequestTypeGET,
-    ETARequestTypePOST,
-    ETARequestTypePUT,
-    ETARequestTypeDELETE
-} ETARequestType;
-
-static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
+#import "ETA.h"
 
 @class ETA_Session;
 @interface ETA_APIClient : AFHTTPClient
@@ -35,6 +28,11 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
 
 // The current session. nil until connected. Do not modify directly.
 @property (nonatomic, readonly, strong) ETA_Session* session;
+
+// use this method to update the session
+- (void) setIfSameOrNewerSession:(ETA_Session *)session;
+- (void) setIfNewerSession:(ETA_Session *)session;
+
 
 // Whether we should read and save the session to UserDefaults. Defaults to YES.
 @property (nonatomic, readwrite, assign) BOOL storageEnabled;
