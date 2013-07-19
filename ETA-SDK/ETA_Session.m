@@ -8,22 +8,25 @@
 
 #import "ETA_Session.h"
 
-#import "NSString+ETA_Permission.h"
+#import "ETA_APIEndpoints.h"
+#import "ETA_PermissionCategories.h"
 
 static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
 
 @implementation ETA_Session
 
-+ (NSDateFormatter *)dateFormatter {
-    static NSDateFormatter *dateFormatter = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        dateFormatter = [[NSDateFormatter alloc] init];
-        dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZ";
-        
-    });    
-    return dateFormatter;
++ (NSString*) APIEndpoint { return ETA_APIEndpoints.sessions; }
+
+
+#pragma mark - JSON transformers
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey
+{
+    // session's dont have id/ern in the JSON    
+    return [super.JSONKeyPathsByPropertyKey
+            mtl_dictionaryByAddingEntriesFromDictionary:@{ @"uuid": NSNull.null,
+                                                           @"ern": NSNull.null
+                                                           }];
 }
 
 + (NSValueTransformer *)expiresJSONTransformer {
@@ -34,12 +37,9 @@ static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
     }];
 }
 
-
-+ (NSDictionary *)JSONKeyPathsByPropertyKey
-{
-    return @{};
++ (NSValueTransformer *)userJSONTransformer {
+    return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ETA_User.class];
 }
-
 
 
 #pragma mark - Utilities
@@ -62,65 +62,22 @@ static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
 }
 
 
-- (void) setToken:(NSString*)newToken ifExpiresBefore:(NSString*)expiryDateString
-{
-    NSDate* newExpiryDate = [[[self class] expiresJSONTransformer] transformedValue:expiryDateString];
-    
-    if (!newExpiryDate || !newToken)
-        return;
-
-    if (!self.expires || [self.expires compare:newExpiryDate] == NSOrderedAscending)
-    {
-        self.token = newToken;
-        self.expires = newExpiryDate;
-    }
-}
-
-
 - (BOOL) allowsPermission:(NSString*)actionPermission
 {
-    if (!actionPermission)
-        return YES;
-    if (!self.permissions)
-        return NO;
-    
-    __block BOOL allowed = NO;
-    [self.permissions enumerateKeysAndObjectsUsingBlock:^(NSString* permissionGroupName, NSArray* permissionList, BOOL *stop) {
-        [permissionList enumerateObjectsUsingBlock:^(NSString* permission, NSUInteger idx, BOOL *stop) {
-            if ([permission allowsPermission:actionPermission])
-            {
-                allowed = YES;
-                *stop = YES;
-            }
-        }];
-    }];
-    
-    return allowed;
+    return [self.permissions allowsPermission:actionPermission];
 }
 
 - (NSString*) userID
 {
-    return self.user[@"id"];
+    return self.user.uuid;
 }
 
-#pragma mark - JSON
-+ (instancetype) sessionFromJSONDictionary:(NSDictionary*)JSONDictionary
-{
-    if (!JSONDictionary)
-        return nil;
-    else
-        return [MTLJSONAdapter modelOfClass:[self class] fromJSONDictionary:JSONDictionary error:nil];
-}
-- (NSDictionary*)JSONDictionary
-{
-    return [MTLJSONAdapter JSONDictionaryFromModel:self];
-}
-
-- (NSString*) description
-{
-    NSString* sessionJSON = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:self.JSONDictionary options:NSJSONWritingPrettyPrinted error:nil]
-                                        encoding: NSUTF8StringEncoding];
-    return [NSString stringWithFormat:@"<ETA_Session: %@>", sessionJSON];
-}
+//
+//- (NSString*) description
+//{
+//    NSString* sessionJSON = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:self.JSONDictionary options:NSJSONWritingPrettyPrinted error:nil]
+//                                        encoding: NSUTF8StringEncoding];
+//    return [NSString stringWithFormat:@"<ETA_Session: %@>", sessionJSON];
+//}
 
 @end

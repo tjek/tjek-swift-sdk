@@ -1,12 +1,12 @@
 //
-//  NSString+ETA_Permission.m
+//  ETA_PermissionCategories.m
 //  ETA-SDKExample
 //
 //  Created by Laurie Hufford on 7/10/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
 //
 
-#import "NSString+ETA_Permission.h"
+#import "ETA_PermissionCategories.h"
 
 @implementation NSString (ETA_Permission)
 
@@ -53,6 +53,39 @@
 - (NSArray*) tokenizePermission
 {
     return [[self lowercaseString] componentsSeparatedByString:@"."];
+}
+
+@end
+
+
+@implementation NSDictionary (ETA_Permission)
+
+- (BOOL) allowsPermission:(NSString*)actionPermission
+{
+    if (!actionPermission)
+        return YES;
+    
+    __block BOOL allowed = NO;
+    [self enumerateKeysAndObjectsUsingBlock:^(NSString* permissionGroupName, id permissionList, BOOL *stop) {
+        if ([permissionList isKindOfClass:[NSArray class]] == NO) {
+            *stop = YES;
+            return;
+        }
+        [(NSArray*)permissionList enumerateObjectsUsingBlock:^(id permission, NSUInteger idx, BOOL *stop) {
+            if ([permission isKindOfClass:[NSString class]] == NO) {
+                *stop = YES;
+                return;
+            }
+            
+            if ([(NSString*)permission allowsPermission:actionPermission])
+            {
+                allowed = YES;
+                *stop = YES;
+            }
+        }];
+    }];
+    
+    return allowed;
 }
 
 @end
