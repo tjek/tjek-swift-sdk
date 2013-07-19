@@ -176,7 +176,7 @@
     else if ([eventName isEqualToString:@"eta-session-change"])
     {
         // a session changed event - update the SDK
-        ETA_Session* session = [ETA_Session sessionFromJSONDictionary:eventData[@"data"]];
+        ETA_Session* session = [ETA_Session objectFromJSONDictionary:eventData[@"data"]];
         if (session)
             [self.eta.client setIfNewerSession:session];
         

@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString* const kETAEndpoint_ShortName;                  // eg. "catalog"
 extern NSString* const kETAEndpoint_ERNPrefix;                  // eg. "ern:catalog:"
 extern NSString* const kETAEndpoint_ItemFilterKey;              // eg. "catalog_id"
 extern NSString* const kETAEndpoint_MultipleItemsFilterKey;     // eg. "catalog_ids"
@@ -18,23 +17,31 @@ extern NSString* const kETAEndpoint_CacheLifespan;              // eg. 900 secs
 
 extern NSTimeInterval const kETAEndpoint_DefaultCacheLifespan; // in seconds
 
+// A Utility class for getting info about API endpoints
 @interface ETA_APIEndpoints : NSObject
 
 #pragma mark - Endpoints
 
-// eg. "/v2/catalogs"
+// eg. "catalogs"
 + (NSString*) sessions;
 + (NSString*) catalogs;
-
++ (NSString*) offers;
++ (NSString*) stores;
++ (NSString*) users;
++ (NSString*) dealers;
++ (NSString*) shoppingLists;
++ (NSString*) shoppingListItems;
 
 #pragma mark - Endpoint properties
 
++ (NSString*) apiURLForEndpoint:(NSString*)endpoint;
++ (NSString*) apiURLForEndpointComponents:(NSArray*)components; // eg. "/v2/users/1234/test"
+
 + (NSArray*) allEndpoints;
++ (BOOL) isValidEndpoint:(NSString*)endpoint;
 
 + (NSDictionary*) endpointPropertiesByEndpoint;
-+ (NSDictionary*) endpointsByShortName;
 + (NSDictionary*) propertiesForEndpoint:(NSString*)endpoint;
-+ (NSString*) endpointForShortName:(NSString*)shortName;
 
 
 #pragma mark - Filter Keys

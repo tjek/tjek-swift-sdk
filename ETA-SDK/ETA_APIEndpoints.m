@@ -8,7 +8,6 @@
 
 #import "ETA_APIEndpoints.h"
 
-NSString* const kETAEndpoint_ShortName = @"kETAEndpoint_ShortName";
 NSString* const kETAEndpoint_ERNPrefix = @"kETAEndpoint_ERNPrefix";
 NSString* const kETAEndpoint_ItemFilterKey = @"kETAEndpoint_ItemFilterKey";
 NSString* const kETAEndpoint_MultipleItemsFilterKey = @"kETAEndpoint_MultipleItemsFilterKey";
@@ -22,9 +21,14 @@ NSTimeInterval const kETAEndpoint_DefaultCacheLifespan = 900; //15 mins
 
 #pragma mark - Endpoints
 
-+ (NSString*) sessions  {   return @"/v2/sessions"; }
-+ (NSString*) catalogs  {   return @"/v2/catalogs"; }
-
++ (NSString*) sessions  {   return @"sessions"; }
++ (NSString*) catalogs  {   return @"catalogs"; }
++ (NSString*) offers    {   return @"offers"; }
++ (NSString*) stores    {   return @"stores"; }
++ (NSString*) users     {   return @"users"; }
++ (NSString*) dealers   {   return @"dealers"; }
++ (NSString*) shoppingLists     {   return @"shoppinglists"; }
++ (NSString*) shoppingListItems {   return @"items"; }
 #pragma mark - Properties
 
 + (NSDictionary*) endpointPropertiesByEndpoint
@@ -35,9 +39,7 @@ NSTimeInterval const kETAEndpoint_DefaultCacheLifespan = 900; //15 mins
         endpointProperties =  @{
                                 self.sessions: @{},
                                 self.catalogs: @{
-                                        kETAEndpoint_ShortName:                 @"catalogs",
                                         kETAEndpoint_ERNPrefix:                 @"ern:catalog:",
-                                        kETAEndpoint_CacheLifespan:             @12,
                                         kETAEndpoint_ItemFilterKey:             @"catalog_id",
                                         kETAEndpoint_MultipleItemsFilterKey:    @"catalog_ids",
                                         kETAEndpoint_OtherFilterKeys:           @[  @"dealer_ids",
@@ -51,39 +53,75 @@ NSTimeInterval const kETAEndpoint_DefaultCacheLifespan = 900; //15 mins
                                                                                     @"distance",
                                                                                 ],
                                         },
+                                self.offers: @{
+                                        kETAEndpoint_ERNPrefix:                 @"ern:offer:",
+                                        kETAEndpoint_ItemFilterKey:             @"offer_id",
+                                        kETAEndpoint_MultipleItemsFilterKey:    @"offer_ids",
+                                        kETAEndpoint_OtherFilterKeys:           @[  @"catalog_ids",
+                                                                                    @"dealer_ids",
+                                                                                    @"store_ids",
+                                                                                    ],
+                                        kETAEndpoint_SortKeys:                  @[  @"popularity",
+                                                                                    @"page",
+                                                                                    @"created",
+                                                                                    @"distance",
+                                                                                    @"price",
+                                                                                    @"quantity",
+                                                                                    @"count",
+                                                                                    @"expiration_date",
+                                                                                    @"publication_date",
+                                                                                    @"valid_date",
+                                                                                    @"dealer",
+                                                                                    ],
+
+                                        },
+                                self.stores: @{
+                                        kETAEndpoint_ERNPrefix: @"ern:store:",
+                                        },
+                                self.users: @{
+                                        kETAEndpoint_ERNPrefix: @"ern:user:",
+                                        },
+                                self.dealers: @{
+                                        kETAEndpoint_ERNPrefix: @"ern:dealer:",
+                                        },
+                                self.shoppingLists: @{
+                                        kETAEndpoint_ERNPrefix: @"ern:shopping:list:",
+                                        },
+                                self.shoppingListItems: @{
+                                        kETAEndpoint_ERNPrefix: @"ern:shopping:item:",
+                                        },
                                 };
     });
     return endpointProperties;
 }
 
-+ (NSDictionary*)endpointsByShortName
++ (NSString*) apiURLForEndpoint:(NSString*)endpoint
 {
-    static NSDictionary* endpointsByShortName = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSMutableDictionary* endByShort = [NSMutableDictionary dictionary];
-        
-        [self.endpointPropertiesByEndpoint enumerateKeysAndObjectsUsingBlock:^(NSString* endpoint, NSDictionary* properties, BOOL *stop) {
-            NSString* shortName = properties[kETAEndpoint_ShortName];
-            if (shortName)
-                [endByShort setValue:endpoint forKey:shortName];
-        }];
-        
-        endpointsByShortName = [NSDictionary dictionaryWithDictionary:endByShort];
-    });
-    return endpointsByShortName;
-}
-
-+ (NSString*) endpointForShortName:(NSString*)shortName
-{
-    if (!shortName)
+    if (endpoint)
+        return [self apiURLForEndpointComponents:@[endpoint]];
+    else
         return nil;
-    return self.endpointsByShortName[shortName];
 }
-
++ (NSString*) apiURLForEndpointComponents:(NSArray*)components
+{
+    if (!components)
+        return nil;
+    else
+        return [@"/v2/" stringByAppendingPathComponent:[NSString pathWithComponents:components]];
+}
 + (NSArray*) allEndpoints
 {
-    return [self.endpointPropertiesByEndpoint allKeys];
+    static NSArray* allEndpoints = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        allEndpoints = [self.endpointPropertiesByEndpoint allKeys];
+    });
+    return allEndpoints;
+}
+
++ (BOOL) isValidEndpoint:(NSString*)endpoint
+{
+    return endpoint && [self.allEndpoints containsObject:endpoint];
 }
 
 + (NSDictionary*) propertiesForEndpoint:(NSString*)endpoint
@@ -131,7 +169,7 @@ NSTimeInterval const kETAEndpoint_DefaultCacheLifespan = 900; //15 mins
 }
 + (NSString*) ernForEndpoint:(NSString*)endpoint withItemID:(NSString*)itemID
 {
-    if (!itemID.length)
+    if (!endpoint || !itemID.length)
         return nil;
     NSString* prefix = [self ernPrefixForEndpoint:endpoint];
     return (prefix) ? [NSString stringWithFormat:@"%@%@", prefix, itemID] : nil;

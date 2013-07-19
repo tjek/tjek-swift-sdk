@@ -10,6 +10,8 @@
 
 #import "ETA.h"
 
+extern NSString* const ETA_APIResponseErrorKey;
+
 @class ETA_Session;
 @interface ETA_APIClient : AFHTTPClient
 
