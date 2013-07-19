@@ -11,10 +11,11 @@
 #import "ETA_APIClient.h"
 #import "ETA_Session.h"
 
-#import "ETA_APIEndpoints.h"
+
+NSString* const ETA_SessionUserIDChangedNotification = @"ETA_SessionUserIDChangedNotification";
 
 
-@interface ETA () <UIWebViewDelegate>
+@interface ETA ()
 
 @property (nonatomic, readwrite, strong) ETA_APIClient* client;
 
@@ -23,9 +24,6 @@
 @property (nonatomic, readwrite, strong) NSURL *baseURL;
 
 @property (nonatomic, readwrite, strong) NSCache* itemCache;
-
-@property (nonatomic, readwrite, strong) UIWebView* webView;
-@property (nonatomic, readwrite, strong) NSString* webViewUUID;
 @end
 
 
@@ -88,19 +86,30 @@
     if (_client == client)
         return;
     
-    [_client removeObserver:self forKeyPath:@"session"];
+    [_client removeObserver:self forKeyPath:@"session.user.uuid"];
     
     _client = client;
     
-    [_client addObserver:self forKeyPath:@"session" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:NULL];
+    [_client addObserver:self forKeyPath:@"session.user.uuid" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:@"session"])
+    if ([keyPath isEqualToString:@"session.user.uuid"])
     {
-        // TODO: post out session change notifications ?
-//        DLog(@"Session Changed! %@", change[NSKeyValueChangeNewKey]);
+        NSString* old = change[NSKeyValueChangeOldKey];
+        old = ([old isEqual:NSNull.null]) ? nil : old;
+        
+        NSString* new = change[NSKeyValueChangeNewKey];
+        new = ([new isEqual:NSNull.null]) ? nil : new;
+        
+        if (old == new || [old isEqualToString:new])
+            return;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:ETA_SessionUserIDChangedNotification
+                                                            object:self
+                                                          userInfo:@{@"oldUserID": change[NSKeyValueChangeOldKey],
+                                                                     @"newUserID": change[NSKeyValueChangeNewKey]}];
     }
 }
 
@@ -113,17 +122,10 @@
 
 - (void) connectWithUserEmail:(NSString*)email password:(NSString*)password completion:(void (^)(BOOL connected, NSError* error))completionHandler
 {
-    [self connect:^(NSError *error) {
-        if (!error)
+    [self attachUserEmail:email password:password completion:^(NSError *error) {
+        if (completionHandler)
         {
-            [self attachUserEmail:email password:password completion:^(NSError *error) {
-                if (completionHandler)
-                    completionHandler(YES, error);
-            }];
-        }
-        else if (completionHandler)
-        {
-            completionHandler(NO, error);
+            completionHandler(!error, error);
         }
     }];
 }
@@ -142,7 +144,15 @@
     [self.client detachUserWithCompletion:completionHandler];
 }
 
+- (BOOL) allowsPermission:(NSString*)actionPermission
+{
+    return [self.client allowsPermission:actionPermission];
+}
 
+- (NSString*) attachedUserID
+{
+    return self.client.session.userID;
+}
 
 
 #pragma mark - Sending API Requests
@@ -190,7 +200,7 @@
     [mergedParameters setValuesForKeysWithDictionary:parameters];
     
     
-    if (completionHandler)
+    if (useCache && completionHandler)
     {
         id cacheResponse = [self getCacheResponseForRequest:requestPath type:type parameters:mergedParameters];
         if (cacheResponse)
@@ -203,7 +213,8 @@
     
     [self.client makeRequest:requestPath type:type parameters:mergedParameters completion:^(id response, NSError *error)
     {
-        [self addJSONItemToCache:response];
+        if (useCache)
+            [self addJSONItemToCache:response];
         
         if (completionHandler)
             completionHandler(response, error, NO);
@@ -230,9 +241,10 @@
     
     // get the multiple keys from the parameters
     id itemIDParam = nil;
-    NSString* endpoint = [ETA_APIEndpoints endpointForShortName:pathComponents[pathComponents.count-2]];
+    NSString* endpoint = pathComponents[pathComponents.count-2];
+    
     // take the penultimate component and figure out if it is a valid endpoint
-    if (endpoint)
+    if ([ETA_APIEndpoints isValidEndpoint:endpoint])
     {
         // if the penultimate component is a valud endpoint, assume the final item is the id
         itemIDParam = pathComponents[pathComponents.count-1];
@@ -240,8 +252,8 @@
     // it wasnt valid - try the final endpoint to use the parameters with
     else
     {
-        endpoint = [ETA_APIEndpoints endpointForShortName:pathComponents[pathComponents.count-1]];
-        if (endpoint)
+        endpoint = pathComponents[pathComponents.count-1];
+        if ([ETA_APIEndpoints isValidEndpoint:endpoint])
         {
             // try to get the multiple-ids parameter
             NSString* multiItemFilterKey = [ETA_APIEndpoints multipleItemsFilterKeyForEndpoint:endpoint];
@@ -354,7 +366,7 @@
     {
         for (id subitem in jsonItem)
         {
-            [self addJSONItemToCache:jsonItem];
+            [self addJSONItemToCache:subitem];
         }
     }
     else if ([jsonItem isKindOfClass:[NSDictionary class]])
@@ -415,6 +427,8 @@
     self.distance = @(distance);
     self.isLocationFromSensor = isFromSensor;
 }
+
+
 
 
 @end

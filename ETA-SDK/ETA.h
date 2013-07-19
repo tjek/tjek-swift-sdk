@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
+#import "ETA_APIEndpoints.h"
 
 typedef enum {
     ETARequestTypeGET,
@@ -18,6 +19,9 @@ typedef enum {
 } ETARequestType;
 
 static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
+
+extern NSString* const ETA_SessionUserIDChangedNotification;
+
 
 
 @interface ETA : NSObject
@@ -49,7 +53,10 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
 - (void) attachUserEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completionHandler;
 // remove the user from the current session
 - (void) detachUserWithCompletion:(void (^)(NSError* error))completionHandler;
-
+// does the current session allow the specified action
+- (BOOL) allowsPermission:(NSString*)actionPermission;
+// the ID of the user that is attached
+- (NSString*) attachedUserID;
 
 #pragma mark - Sending API Requests
 
