@@ -154,6 +154,11 @@ NSString* const ETA_SessionUserIDChangedNotification = @"ETA_SessionUserIDChange
     return self.client.session.userID;
 }
 
+- (ETA_User*) attachedUser
+{
+    return self.client.session.user;
+}
+
 
 #pragma mark - Sending API Requests
 

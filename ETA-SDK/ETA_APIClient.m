@@ -89,7 +89,6 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
     // push the makeRequest to the sync queue, which will be blocked while creating sessions
     // as it is quickly sent on to AFNetworking's operation queue, it wont block the sync queue for long
     dispatch_async(_syncQueue, ^{
-        DLog(@"Make Request: %@", requestPath);
         // the code that does the actual sending of the request
         void (^sendBlock)() = ^{
             // get the base parameters, and override them with those passed in
@@ -109,6 +108,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
             
             void (^successBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, id responseObject)
             {
+                
                 [self updateSessionTokenFromHeaders:operation.response.allHeaderFields];
                 if (completionHandler)
                     completionHandler(responseObject, nil);
@@ -184,6 +184,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
     {
         hash = [[NSString stringWithFormat:@"%@%@", self.apiSecret, self.session.token] SHA256HexDigest];
     }
+//    DLog(@"[CLIENT] Updating Headers - Token:'%@'->'%@' Sig:'%@'->'%@'", [self defaultValueForHeader:@"X-Token"], self.session.token, [self defaultValueForHeader:@"X-Signature"], hash);
     
     [self setDefaultHeader:@"X-Token"       value:self.session.token];
     [self setDefaultHeader:@"X-Signature"   value:hash];
@@ -231,15 +232,17 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
     
     // check if it would change anything about the session.
     // if the tokens are the same and the new date is not newer then it's a no-op
-    if ([self.session.token isEqualToString:newToken] && self.session.expires && [newExpiryDate compare: self.session.expires]!=NSOrderedDescending)
+    if ([self.session.token isEqualToString:newToken])
         return;
-    
+    if (self.session.expires && [newExpiryDate compare: self.session.expires]!=NSOrderedDescending)
+        return;
+        
     // merge the expiry/token with the current session
     ETA_Session* newSession = [self.session copy];
     [newSession setValuesForKeysWithDictionary:@{@"token":newToken,
                                                  @"expires":newExpiryDate}];
     
-    DLog(@"[SESSION] Updating Session Tokens - '%@' => '%@'", self.session.token, newSession.token);
+//    DLog(@"[SESSION] Updating Session Tokens - '%@' (%@) => '%@' (%@)", self.session.token, self.session.expires, newSession.token, newSession.expires);
     self.session = newSession;
 }
 
@@ -471,77 +474,49 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 
 - (void) attachUser:(NSDictionary*)userCredentials withCompletion:(void (^)(NSError* error))completionHandler
 {
-//    [self makeRequest:[ETA_APIEndpoints apiURLForEndpoint:ETA_APIEndpoints.sessions]
-//                 type:ETARequestTypePUT
-//           parameters:userCredentials
-//           completion:^(id response, NSError *error) {
-//               
-//               error = ([[self class] etaErrorFromAFNetworkingError:error]) ?: error;
-//               
-//               DLog(@"Attaching User %@", error);
-//               
-//               ETA_Session* session = [ETA_Session objectFromJSONDictionary:response];
-//               
-//               // save the session, only if after any previous requests
-//               if (session)
-//                   [self setIfSameOrNewerSession:session];
-//               
-//               //TODO: create error if nil session
-//               
-//               if (completionHandler)
-//                   completionHandler(error);
-//           }];
-
-    [self putPath:[ETA_APIEndpoints apiURLForEndpoint:ETA_APIEndpoints.sessions]
-       parameters:userCredentials
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-              
-              NSError* error = nil;
-              ETA_Session* session = [ETA_Session objectFromJSONDictionary:responseObject];
-              
-              // save the session, only if after any previous requests
-              if (session)
-              {
-                  DLog(@"[SESSION] Attaching User to Session - '%@' => '%@'", self.session.token, session.token);
-                  [self setIfSameOrNewerSession:session];
-              }
-              //TODO: create error if nil session
-              
-              if (completionHandler)
-                  completionHandler(error);
-          }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
-              
-              if (completionHandler)
-                  completionHandler((etaError) ?: error);
-          }];
+    [self makeRequest:[ETA_APIEndpoints apiURLForEndpoint:ETA_APIEndpoints.sessions]
+                 type:ETARequestTypePUT
+           parameters:userCredentials
+           completion:^(id response, NSError *error) {
+               
+               error = ([[self class] etaErrorFromAFNetworkingError:error]) ?: error;
+               
+               ETA_Session* session = [ETA_Session objectFromJSONDictionary:response];
+               
+               // save the session, only if after any previous requests
+               if (session)
+               {
+                   DLog(@"[SESSION] Attaching User to Session - '%@' => '%@'", self.session.token, session.token);
+                   [self setIfSameOrNewerSession:session];
+               }
+               //TODO: create error if nil session
+               
+               if (completionHandler)
+                   completionHandler(error);
+           }];
 }
 - (void) detachUserWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self putPath:[ETA_APIEndpoints apiURLForEndpoint:ETA_APIEndpoints.sessions]
-       parameters:@{ @"email":@"" }
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-              NSError* error = nil;
-              ETA_Session* session = [ETA_Session objectFromJSONDictionary:responseObject];
-              
-              // save the session, only if after any previous requests
-              if (session)
-              {
-                  DLog(@"[SESSION] Detaching User from Session - '%@' => '%@'", self.session.token, session.token);
-                  [self setIfSameOrNewerSession:session];
-              }
-              //TODO: create error if nil session
-              
-              if (completionHandler)
-                  completionHandler(error);
-          }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
-              
-              if (completionHandler)
-                  completionHandler((etaError) ?: error);
-          }];
+    [self makeRequest:[ETA_APIEndpoints apiURLForEndpoint:ETA_APIEndpoints.sessions]
+                 type:ETARequestTypePUT
+           parameters:@{ @"email":@"" }
+           completion:^(id response, NSError *error) {
+               
+               error = ([[self class] etaErrorFromAFNetworkingError:error]) ?: error;
+               
+               ETA_Session* session = [ETA_Session objectFromJSONDictionary:response];
+               
+               // save the session, only if after any previous requests
+               if (session)
+               {
+                   DLog(@"[SESSION] Detaching User from Session - '%@' => '%@'", self.session.token, session.token);
+                   [self setIfSameOrNewerSession:session];
+               }
+               //TODO: create error if nil session
+               
+               if (completionHandler)
+                   completionHandler(error);
+           }];
 }
 
 

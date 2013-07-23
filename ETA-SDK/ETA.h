@@ -23,7 +23,7 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
 extern NSString* const ETA_SessionUserIDChangedNotification;
 
 
-
+@class ETA_User;
 @interface ETA : NSObject
 
 @property (nonatomic, readonly, strong) NSURL* baseURL;
@@ -57,6 +57,8 @@ extern NSString* const ETA_SessionUserIDChangedNotification;
 - (BOOL) allowsPermission:(NSString*)actionPermission;
 // the ID of the user that is attached
 - (NSString*) attachedUserID;
+// a copy of the user object that has been attached (changes to this user have no effect)
+- (ETA_User*) attachedUser;
 
 #pragma mark - Sending API Requests
 

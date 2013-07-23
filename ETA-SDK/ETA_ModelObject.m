@@ -70,6 +70,7 @@
 
 - (void) setUuid:(NSString *)uuid
 {
+    uuid = [uuid lowercaseString];
     if (_uuid == uuid || (_uuid && [_uuid isEqualToString:uuid]))
         return;
     
@@ -81,6 +82,7 @@
 
 - (void) setErn:(NSString *)ern
 {
+    ern = [ern lowercaseString];
     if (_ern == ern || (_ern && [_ern isEqualToString:ern]))
         return;
     

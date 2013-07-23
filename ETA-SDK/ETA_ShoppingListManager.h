@@ -11,109 +11,98 @@
 extern NSString* const ETA_ShoppingListManager_ListsChangedNotification;
 extern NSString* const ETA_ShoppingListManager_ItemsChangedNotification;
 
+typedef enum {
+    ETA_ShoppingListItemFilter_All = 0,
+    ETA_ShoppingListItemFilter_Ticked = 1,
+    ETA_ShoppingListItemFilter_Unticked = 2,
+} ETA_ShoppingListItemFilter;
+
+
+typedef enum{
+    ETA_ShoppingListManager_PollRate_Default = 0,
+    ETA_ShoppingListManager_PollRate_Rapid = 1,
+    ETA_ShoppingListManager_PollRate_Slow = 2,
+    ETA_ShoppingListManager_PollRate_None = 3,
+} ETA_ShoppingListManager_PollRate;
+
+
 @class ETA;
 @class ETA_ShoppingList;
+@class ETA_ShoppingListItem;
 @interface ETA_ShoppingListManager : NSObject
 
 + (instancetype) managerWithETA:(ETA*)eta;
 
 
-#pragma mark - Polling
-@property (nonatomic, readwrite, assign) NSTimeInterval pollInterval; // changing the pollInterval while polling will trigger a restart
-@property (nonatomic, readonly, assign) BOOL isPolling;
-- (void) startPollingServer;
-- (void) stopPollingServer;
+// This is how regularly we should ask the server for item/list changes
+// It can be default, rapid, slow, or off.
+@property (nonatomic, readwrite, assign) ETA_ShoppingListManager_PollRate pollRate;
 
+
+
+#pragma mark - Shopping Lists
 
 // creates a new shopping list with 'name' and calls addShoppingList:
 - (void) createShoppingList:(NSString*)name;
 
 // try to add the list to both the local store and the server
-- (void) addShoppingList:(ETA_ShoppingList*)newList;
+- (void) addShoppingList:(ETA_ShoppingList*)list;
+
+// try to remove the shopping list from both the local store and the server
+- (void) removeShoppingList:(ETA_ShoppingList*)list;
+
+// save the changes in 'list' to local store and server (will also add the list if it doesnt exist)
+- (void) updateShoppingList:(ETA_ShoppingList*)list;
+
+
+// return the shopping list with the specified listID from the local store
+// nil if not found
+- (ETA_ShoppingList*) getShoppingList:(NSString*)listID;
+
+// return a list of all the shopping lists from the local store
+- (NSArray*) getAllShoppingLists;
 
 
 
-// create a new shopping list (if user logged in) and send request to server
-// mark list as not-synced, and if request succeeds mark as synced.
-// send 'listAdded' notification
+
+
+#pragma mark - Shopping List Items
+
+// creates a new item with 'name' in 'listID' and calls addShoppingListItem:
+- (void) createShoppingListItem:(NSString *)name inList:(NSString*)listID;
+
+// try to add the item to both the local store and the server
+- (void) addShoppingListItem:(ETA_ShoppingListItem *)item;
+
+// remove the specified item from both the local store and the sever
+- (void) removeShoppingListItem:(ETA_ShoppingListItem *)item;
+
+// remove all the items in 'list that match the filter from both the local store and the sever
+- (void) removeAllShoppingListItemsFromList:(ETA_ShoppingList*)list filter:(ETA_ShoppingListItemFilter)filter;
+
+// save the changes in 'item' to local store and server
+- (void) updateShoppingListItem:(ETA_ShoppingListItem*)item;
+
+
+// return the shopping list item with the specified itemID from the local store
+// nil if not found
+- (ETA_ShoppingListItem*) getShoppingListItem:(NSString*)itemID;
+
+// return a list of all the shopping list items from the local store
+- (NSArray*) getAllShoppingListItemsInList:(NSString*)listID;
+
+// return a list of all the shopping list items from the local store that match the filter
+- (NSArray*) getAllShoppingListItemsInList:(NSString*)listID withFilter:(ETA_ShoppingListItemFilter)filter;
+
+
+
+
 
 
 
 // if this is true, queries will act as if there is no user attached to the session
 // use this if you want to get the state of the userless shopping lists after a user has logged in
 @property (nonatomic, readwrite, assign) BOOL ignoreSessionUser;
-
-//
-//// go to the server and get the latest state of all the shopping lists.
-//// does not use the cache.
-//- (void) fetchAllShoppingListsForUser:(NSString*)userID completion:(void (^)(NSArray* lists, NSError* error))completionHandler;
-//
-//// get the latest modified date for the specified shopping list
-//- (void) fetchShoppingList:(NSString*)listID modifiedDateForUser:(NSString*)userID completion:(void (^)(NSDate* modifiedDate, NSError* error))completionHandler;
-
-
-// the shopping list to use if there is no user
-@property (nonatomic, readonly, strong) ETA_ShoppingList* loggedOutShoppingList;
-
-// the userID for the shopping lists. nil if there is no connected users
-@property (nonatomic, readonly, strong) NSString* userID;
-// the shopping lists to use when the user is signed in
-@property (nonatomic, readonly, strong) NSArray* userShoppingLists;
-
-//// take the changes from the 'updatedList' and modify the list locally. Also send request to server
-//// mark list as not synced, and if request succeeds mark as synced.
-//// send 'listChanged' notification
-//- (void) updateShoppingList:(NSString*)listUUID name:(NSString*)name;
-////- (void) updateShoppingList:(ETA_ShoppingList*)updatedList;
-//
-//// remove the list locally. Send request to server.
-//// save timestamped request. If server succeeds remove request.
-//- (void) removeShoppingList:(NSString*)listUUID;
-//
-//
-//- (void) shareShoppingList:(NSString*)listUUID withUser:(NSString*)email properties:(NSDictionary*)properties;
-//
-//// poll the server for changes to the shopping lists.
-//// triggered every 6 secs
-//// sends listChanged and itemChanged notifications
-//- (void) checkForUpdates;
-
-
-
-
-// will remove the items from 'fromList' and add them to 'toList'
-//- (void) moveItemsFrom:(ETA_ShoppingList*)fromList to:(ETA_ShoppingList*)toList;
-
-
-#pragma mark - Lists
-- (void) getShoppingLists:(void (^)(NSArray* shoppingLists, NSError* error))completionHandler;
-- (void) createShoppingList:(NSString*)listUUID
-             withProperties:(NSDictionary*)listProperties
-                 completion:(void (^)(ETA_ShoppingList* list, NSError* error))completionHandler;
-
-- (void) deleteShoppingList:(NSString*)listUUID
-                 completion:(void (^)(NSError* error))completionHandler;
-- (void) getShoppingListModifiedDate:(NSString*)listUUID
-                          completion:(void (^)(NSDate* modifiedDate, NSError* error))completionHandler;
-- (void) getShoppingListShares:(NSString*)listUUID
-                    completion:(void (^)(NSArray* users, NSError* error))completionHandler;
-- (void) shareShoppingList:(NSString*)listUUID
-                  withUser:(NSString*)email
-                properties:(NSDictionary*)properties
-                completion:(void (^)(id response, NSError* error))completionHandler;
-
-#pragma mark - Items
-- (void) getShoppingListItemsForShoppingList:(NSString*)listUUID
-                                  completion:(void (^)(NSArray* shoppingListItems, NSError* error))completionHandler;
-- (void) createShoppingListItem:(NSString*)itemUUID
-                 withProperties:(NSDictionary*)itemProperties
-                 inShoppingList:(NSString*)listUUID
-                     completion:(void (^)(id item, NSError* error))completionHandler;
-- (void) deleteShoppingListItem:(NSString *)itemUUID
-                     completion:(void (^)(NSError *))completionHandler;
-- (void) deleteAllShoppingListItemsFromShoppingList:(NSString *)listUUID
-                                             filter:(NSString*)filter
-                                         completion:(void (^)(NSError *))completionHandler;
 
 
 #pragma mark - Permissions

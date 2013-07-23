@@ -11,7 +11,7 @@
 @interface ETA_ModelObject : MTLModel <MTLJSONSerializing>
 
 // setting either uuid or ern will keep the other updated
-@property (nonatomic, readwrite, strong) NSString* uuid;
+@property (nonatomic, readwrite, strong) NSString* uuid; // will always be lowercase, no matter the input case 
 @property (nonatomic, readwrite, strong) NSString* ern;
 
 

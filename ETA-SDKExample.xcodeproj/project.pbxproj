@@ -42,6 +42,8 @@
 		177DC0F21796D535005E0B4D /* ETA_ShoppingListItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 177DC0F01796D535005E0B4D /* ETA_ShoppingListItem.m */; };
 		177DC0F51796D5B9005E0B4D /* ETA_Catalog.m in Sources */ = {isa = PBXBuildFile; fileRef = 177DC0F41796D5B9005E0B4D /* ETA_Catalog.m */; };
 		177DC0F61796D5B9005E0B4D /* ETA_Catalog.m in Sources */ = {isa = PBXBuildFile; fileRef = 177DC0F41796D5B9005E0B4D /* ETA_Catalog.m */; };
+		177EF5D2179D70C500D0B4D9 /* ETA_ShoppingListItem+FMDB.m in Sources */ = {isa = PBXBuildFile; fileRef = 177EF5D1179D70C500D0B4D9 /* ETA_ShoppingListItem+FMDB.m */; };
+		177EF5D3179D70C500D0B4D9 /* ETA_ShoppingListItem+FMDB.m in Sources */ = {isa = PBXBuildFile; fileRef = 177EF5D1179D70C500D0B4D9 /* ETA_ShoppingListItem+FMDB.m */; };
 		179E6A3F178DBCAD006D31A8 /* ETA_PermissionCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6A3E178DBCAD006D31A8 /* ETA_PermissionCategories.m */; };
 		179E6A40178DBCAD006D31A8 /* ETA_PermissionCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6A3E178DBCAD006D31A8 /* ETA_PermissionCategories.m */; };
 		179E6A43178DEEBF006D31A8 /* ETA_ShoppingList.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6A42178DEEBC006D31A8 /* ETA_ShoppingList.m */; };
@@ -97,6 +99,8 @@
 		177DC0F01796D535005E0B4D /* ETA_ShoppingListItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_ShoppingListItem.m; sourceTree = "<group>"; };
 		177DC0F31796D5B9005E0B4D /* ETA_Catalog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_Catalog.h; sourceTree = "<group>"; };
 		177DC0F41796D5B9005E0B4D /* ETA_Catalog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_Catalog.m; sourceTree = "<group>"; };
+		177EF5D0179D70C500D0B4D9 /* ETA_ShoppingListItem+FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ETA_ShoppingListItem+FMDB.h"; sourceTree = "<group>"; };
+		177EF5D1179D70C500D0B4D9 /* ETA_ShoppingListItem+FMDB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ETA_ShoppingListItem+FMDB.m"; sourceTree = "<group>"; };
 		179E6A3D178DBCAD006D31A8 /* ETA_PermissionCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_PermissionCategories.h; sourceTree = "<group>"; };
 		179E6A3E178DBCAD006D31A8 /* ETA_PermissionCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_PermissionCategories.m; sourceTree = "<group>"; };
 		179E6A41178DEEBC006D31A8 /* ETA_ShoppingList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ShoppingList.h; sourceTree = "<group>"; };
@@ -169,6 +173,8 @@
 				177DC0DF1794A315005E0B4D /* ETA_ShoppingListManager.m */,
 				177DC0E31796A9C1005E0B4D /* ETA_ShoppingList+FMDB.h */,
 				177DC0E41796A9C1005E0B4D /* ETA_ShoppingList+FMDB.m */,
+				177EF5D0179D70C500D0B4D9 /* ETA_ShoppingListItem+FMDB.h */,
+				177EF5D1179D70C500D0B4D9 /* ETA_ShoppingListItem+FMDB.m */,
 				177DC0E217955A83005E0B4D /* ETA_Model */,
 				179E6A3D178DBCAD006D31A8 /* ETA_PermissionCategories.h */,
 				179E6A3E178DBCAD006D31A8 /* ETA_PermissionCategories.m */,
@@ -458,6 +464,7 @@
 				1730FB03178D6DFC00FC5386 /* ETA_SDKTests.m in Sources */,
 				177DC0EA1796CFC3005E0B4D /* ETA_DBSyncModelObject.m in Sources */,
 				179E6A40178DBCAD006D31A8 /* ETA_PermissionCategories.m in Sources */,
+				177EF5D3179D70C500D0B4D9 /* ETA_ShoppingListItem+FMDB.m in Sources */,
 				177DC0EE1796D4FB005E0B4D /* ETA_User.m in Sources */,
 				1730FB0A178D6E2C00FC5386 /* ETA_SessionTests.m in Sources */,
 				177DC0E61796A9C1005E0B4D /* ETA_ShoppingList+FMDB.m in Sources */,
@@ -492,6 +499,7 @@
 				177DC0E01794A315005E0B4D /* ETA_ShoppingListManager.m in Sources */,
 				177DC0F51796D5B9005E0B4D /* ETA_Catalog.m in Sources */,
 				177DC0D6178F5675005E0B4D /* ETA_ModelObject.m in Sources */,
+				177EF5D2179D70C500D0B4D9 /* ETA_ShoppingListItem+FMDB.m in Sources */,
 				177DC0F11796D535005E0B4D /* ETA_ShoppingListItem.m in Sources */,
 				1730FACE178D66BE00FC5386 /* ETA_APIClient.m in Sources */,
 				1730FAD0178D66BE00FC5386 /* ETA_Session.m in Sources */,

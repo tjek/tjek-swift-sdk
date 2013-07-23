@@ -16,10 +16,6 @@ typedef enum {
 
 
 @interface ETA_ShoppingList : ETA_DBSyncModelObject
-//
-//// setting either uuid or ern will keep the other updated
-//@property (nonatomic, readwrite, strong) NSString* uuid;
-//@property (nonatomic, readwrite, strong) NSString* ern;
 
 @property (nonatomic, readwrite, strong) NSString* name;
 @property (nonatomic, readwrite, strong) NSDate* modified;

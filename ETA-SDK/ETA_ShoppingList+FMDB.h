@@ -15,6 +15,8 @@
 // create the shopping list table with the specified name in the db
 + (BOOL) createTable:(NSString*)tableName inDB:(FMDatabase*)db;
 
+// empty the table specified with the name in the db
++ (BOOL) clearTable:(NSString*)tableName inDB:(FMDatabase*)db;
 
 #pragma mark - Converters
 
@@ -37,10 +39,11 @@
 // get the shopping list with the specified human-readable name
 + (ETA_ShoppingList*) getListWithName:(NSString*)listName fromTable:(NSString*)tableName inDB:(FMDatabase*)db;
 
+// get the lists that have the specified sync state
++ (NSArray*) getAllListsWithSyncState:(ETA_DBSyncState)syncState fromTable:(NSString*)tableName inDB:(FMDatabase*)db;
+
 // does the specified shopping list id exist in the table/db?
 + (BOOL) listExistsWithID:(NSString*)listID inTable:(NSString*)tableName inDB:(FMDatabase*)db;
-
-+ (NSArray*) getListsWithSyncState:(ETA_DBSyncState)syncState fromTable:(NSString*)tableName inDB:(FMDatabase*)db;
 
 
 #pragma mark - Setters

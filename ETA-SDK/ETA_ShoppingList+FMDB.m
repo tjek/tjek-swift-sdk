@@ -63,12 +63,13 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
     
     NSMutableDictionary* jsonDict = [NSMutableDictionary dictionaryWithCapacity:resDict.count];
     
-    jsonDict[@"id"] = [res stringForColumn:kSL_ID];
-    jsonDict[@"modified"] = [res stringForColumn:kSL_MODIFIED];
-    jsonDict[@"ern"] = [res stringForColumn:kSL_ERN];
-    jsonDict[@"name"] = [res stringForColumn:kSL_NAME];
-    jsonDict[@"access"] = [res stringForColumn:kSL_ACCESS];
     
+    [jsonDict setValue:[res stringForColumn:kSL_ID] forKey:@"id"];
+    [jsonDict setValue:[res stringForColumn:kSL_MODIFIED] forKey:@"modified"];
+    [jsonDict setValue:[res stringForColumn:kSL_ERN] forKey:@"ern"];
+    [jsonDict setValue:[res stringForColumn:kSL_NAME] forKey:@"name"];
+    [jsonDict setValue:[res stringForColumn:kSL_ACCESS] forKey:@"access"];
+
     NSMutableDictionary* owner = [@{} mutableCopy];
     [owner setValue:[res stringForColumn:kSL_OWNER_USER] forKey:@"user"];
     [owner setValue:[res stringForColumn:kSL_OWNER_ACCESS] forKey:@"access"];
@@ -77,10 +78,12 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
     
     
     ETA_ShoppingList* list = [ETA_ShoppingList objectFromJSONDictionary:jsonDict];
+    // state is not part of the JSON parsing, so set manually
     list.state = [res longForColumn:kSL_STATE];
     
     return list;
 }
+
 - (NSDictionary*) dbParameterDictionary
 {
     // get the json-ified values for the shopping list
@@ -105,6 +108,7 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
     return params;
 }
 
+#pragma mark - table operations
 
 + (BOOL) createTable:(NSString*)tableName inDB:(FMDatabase*)db
 {
@@ -123,6 +127,16 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
         DLog(@"Unable to create table '%@': %@", tableName, db.lastError);
+    
+    return success;
+}
+
++ (BOOL) clearTable:(NSString*)tableName inDB:(FMDatabase*)db
+{
+    NSString* queryStr = [NSString stringWithFormat:@"DELETE FROM %@;", tableName];
+    BOOL success = [db executeUpdate:queryStr];
+    if (!success)
+        DLog(@"Unable to empty table '%@': %@", tableName, db.lastError);
     
     return success;
 }
@@ -200,14 +214,14 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
 }
 
 
-+ (NSArray*) getListsWithSyncState:(ETA_DBSyncState)syncState fromTable:(NSString*)tableName inDB:(FMDatabase*)db
++ (NSArray*) getAllListsWithSyncState:(ETA_DBSyncState)syncState fromTable:(NSString*)tableName inDB:(FMDatabase*)db
 {
     if (!tableName || !db)
         return nil;
     
     NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@=?", tableName, kSL_STATE];
     
-    FMResultSet* s = [db executeQuery:query];
+    FMResultSet* s = [db executeQuery:query, @(syncState)];
     NSMutableArray* lists = [NSMutableArray array];
     while ([s next])
     {
