@@ -18,16 +18,12 @@
 @property (nonatomic, readwrite, strong) NSString* creator;
 @property (nonatomic, readwrite, strong) NSString* shoppingListID;
 
-//// uuid and description are required
-//// if modified is nil, current date is used
-//+ (instancetype) shoppingListItemWithUUID:(NSString*)uuid
-//                              description:(NSString*)name
-//                                    count:(NSInteger)count
-//                                   ticked:(BOOL)ticked
-//                                  offerID:(NSString*)offerID
-//                           shoppingListID:(NSString*)shoppingListID
-//                                  creator:(NSString*)creator
-//                             modifiedDate:(NSDate*)modified;
+// the shopping list item that comes before this item in the user-defined sort order
+// null if undefined. "" if first item in list.
+@property (nonatomic, readwrite, strong) NSString* prevItemID;
 
+// calculated sort order id based on the prevItemID. Not sent to server.
+// -1 if not set.
+@property (nonatomic, readwrite, assign) NSInteger orderIndex;
 
 @end

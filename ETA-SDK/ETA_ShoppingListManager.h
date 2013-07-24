@@ -17,7 +17,6 @@ typedef enum {
     ETA_ShoppingListItemFilter_Unticked = 2,
 } ETA_ShoppingListItemFilter;
 
-
 typedef enum{
     ETA_ShoppingListManager_PollRate_Default = 0,
     ETA_ShoppingListManager_PollRate_Rapid = 1,
@@ -102,7 +101,7 @@ typedef enum{
 
 // if this is true, queries will act as if there is no user attached to the session
 // use this if you want to get the state of the userless shopping lists after a user has logged in
-@property (nonatomic, readwrite, assign) BOOL ignoreSessionUser;
+@property (nonatomic, readwrite, assign) BOOL ignoreAttachedUser;
 
 
 #pragma mark - Permissions

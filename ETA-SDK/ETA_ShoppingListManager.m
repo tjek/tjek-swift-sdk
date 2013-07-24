@@ -33,17 +33,12 @@ NSTimeInterval const kETA_ShoppingListManager_SlowPollInterval      = 10.0; // s
 NSTimeInterval const kETA_ShoppingListManager_DefaultRetrySyncInterval = 10.0; // secs
 NSUInteger const kETA_ShoppingListManager_DefaultRetryCount = 5;
 
+
 NSString* const kSL_TBLNAME             = @"shoppinglists";
 NSString* const kSL_USERLESS_TBLNAME    = @"userless_shoppinglists";
 
 NSString* const kSLI_TBLNAME            = @"shoppinglistitems";
 NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
-
-
-// expose the client to the manager
-@interface ETA (ShoppingListPrivate)
-//@property (nonatomic, readonly, strong) ETA_APIClient* client;
-@end
 
 
 @interface ETA_ShoppingListManager ()
@@ -58,14 +53,12 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
 @property (nonatomic, readwrite, strong) NSTimer* retrySyncTimer;
 @property (nonatomic, readwrite, assign) NSTimeInterval retrySyncInterval;
 
-//@property (nonatomic, readwrite, strong) NSMutableDictionary* listIDsBySyncState;
-
 @property (nonatomic, readwrite, strong) NSMutableSet* objIDsWithLocalChanges;
-//@property (nonatomic, readwrite, strong) NSMutableSet* objIDsBeingDeleted;
 @end
 
 
 @implementation ETA_ShoppingListManager
+@synthesize userID = _userID;
 
 + (instancetype) managerWithETA:(ETA*)eta
 {
@@ -90,11 +83,9 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
         self.retrySyncTimer = nil;
         self.retrySyncInterval = kETA_ShoppingListManager_DefaultRetrySyncInterval;
         
-//        self.listIDsBySyncState = [NSMutableDictionary dictionary];
-        
         self.objIDsWithLocalChanges = [NSMutableSet set];
         
-        self.ignoreSessionUser = NO;
+        self.ignoreAttachedUser = NO;
     }
     return self;
 }
@@ -145,6 +136,11 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     DLog(@"UserID changed '%@'=>'%@'", _userID, userID);
     _userID = userID;
     
+    NSUInteger unresolvedLocalChanges = self.objIDsWithLocalChanges.count;
+    if (unresolvedLocalChanges)
+        DLog(@"User changed with %d unresolved changes!", unresolvedLocalChanges);
+    
+    [self.objIDsWithLocalChanges removeAllObjects];
     [self stopRetrySyncTimer];
     if (_userID)
     {
@@ -170,7 +166,13 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
 }
 
 
-
+- (NSString*) userID
+{
+    if(self.ignoreAttachedUser)
+        return nil;
+    else
+        return _userID;
+}
 
 
 #pragma mark - Public Methods
@@ -190,33 +192,35 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
 // add the specified shopping list
 - (void) addShoppingList:(ETA_ShoppingList*)list
 {
-    if (!list.uuid || !list.name)
-    {
-        //TODO: Error if invalid list
+    [self updateShoppingList:list];
+}
+
+- (void) updateShoppingList:(ETA_ShoppingList*)list
+{
+    if (!list.uuid)
         return;
-    }
     
-    // are we adding to the local or server list?
     NSString* userID = self.userID;
     
-    
-    // check if a list with that ID already exists
-    if ([self localDBContainsShoppingListWithID:list.uuid userID:userID])
-        return;
-    
+    BOOL isAdding = ([self localDBContainsShoppingListWithID:list.uuid userID:userID] == NO);
     
     list.modified = [NSDate date];
     
-    // we are logged in - try to send to the server
+    // we are logged in - try to sending to the server
     if (userID)
     {
         [self syncObjectToServer:list remainingRetries:kETA_ShoppingListManager_DefaultRetryCount userID:userID];
     }
-    // no user logged in - simply send the list to the local db
+    // no user - simply send the list to the local db
     else
     {
         [self localDBUpdateSyncState:ETA_DBSyncState_ToBeSynced forObject:list userID:userID];
     }
+    
+    if (isAdding)
+        [self sendNotificationForAdded:@[list] removed:nil modified:nil type:ETA_ShoppingList.class];
+    else
+        [self sendNotificationForAdded:nil removed:nil modified:@[list] type:ETA_ShoppingList.class];
 }
 
 
@@ -241,27 +245,8 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
         // this will do the delete from the server
         [self localDBUpdateSyncState:ETA_DBSyncState_Deleted forObject:list userID:userID];
     }
-}
-
-- (void) updateShoppingList:(ETA_ShoppingList*)list
-{
-    if (!list.uuid)
-        return;
     
-    NSString* userID = self.userID;
-    
-    list.modified = [NSDate date];
-    
-    // we are logged in - try to sending to the server
-    if (userID)
-    {
-        [self syncObjectToServer:list remainingRetries:kETA_ShoppingListManager_DefaultRetryCount userID:userID];
-    }
-    // no user - simply send the list to the local db
-    else
-    {
-        [self localDBUpdateSyncState:ETA_DBSyncState_ToBeSynced forObject:list userID:userID];
-    }
+    [self sendNotificationForAdded:nil removed:@[list] modified:nil type:ETA_ShoppingList.class];
 }
 
 - (ETA_ShoppingList*) getShoppingList:(NSString*)listID
@@ -296,37 +281,41 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
 
 - (void) addShoppingListItem:(ETA_ShoppingListItem *)item
 {
-    if (!item.uuid || !item.name || !item.shoppingListID)
+    [self updateShoppingListItem:item];
+}
+
+- (void) updateShoppingListItem:(ETA_ShoppingListItem*)item
+{
+    if (!item.uuid)
         return;
     
-    // are we adding to the local or server list?
     NSString* userID = self.userID;
     
-    // check if a list with that ID already exists
-    if ([self localDBContainsShoppingListItemWithID:item.uuid userID:userID])
-        return;
-    
-    ETA_ShoppingList* list = [self getShoppingList:item.shoppingListID];
-    if (!list)
-        return;
+    BOOL isAdding = ([self localDBContainsShoppingListItemWithID:item.uuid userID:userID] == NO);
     
     item.modified = [NSDate date];
     
-    // update the modified of the list that contains the item
-    [self updateShoppingList:list];
-    
-    
-    // we are logged in - try to send to the server
+    // we are logged in - try to sending to the server
     if (userID)
     {
         [self syncObjectToServer:item remainingRetries:kETA_ShoppingListManager_DefaultRetryCount userID:userID];
     }
-    // no user logged in - simply send the list to the local db
+    // no user - simply send the item to the local db
     else
     {
         [self localDBUpdateSyncState:ETA_DBSyncState_ToBeSynced forObject:item userID:userID];
     }
+    
+    // recalc the orderID for all the items when something changed on the server
+    NSArray* allItems = [self localDBGetAllShoppingListItemsForShoppingList:item.shoppingListID withFilter:ETA_ShoppingListItemFilter_All userID:userID];
+    [self localDBUpdateSortOrderIndexesForItems:allItems userID:userID];
+    
 
+    if (isAdding)
+        [self sendNotificationForAdded:@[item] removed:nil modified:nil type:ETA_ShoppingListItem.class];
+    else
+        [self sendNotificationForAdded:nil removed:nil modified:@[item] type:ETA_ShoppingListItem.class];
+    
 }
 
 - (void) removeShoppingListItem:(ETA_ShoppingListItem *)item
@@ -355,6 +344,8 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
         // this will do the delete from the server
         [self localDBUpdateSyncState:ETA_DBSyncState_Deleted forObject:item userID:userID];
     }
+    
+    [self sendNotificationForAdded:nil removed:@[item] modified:nil type:ETA_ShoppingListItem.class];
 }
 
 - (void) removeAllShoppingListItemsFromList:(ETA_ShoppingList*)list filter:(ETA_ShoppingListItemFilter)filter
@@ -385,27 +376,8 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     {
         [self deleteShoppingListItemsFromServer:filter fromShoppingList:list.uuid remainingRetries:kETA_ShoppingListManager_DefaultRetryCount userID:userID];
     }
-}
-
-- (void) updateShoppingListItem:(ETA_ShoppingListItem*)item
-{
-    if (!item.uuid)
-        return;
     
-    NSString* userID = self.userID;
-    
-    item.modified = [NSDate date];
-    
-    // we are logged in - try to sending to the server
-    if (userID)
-    {
-        [self syncObjectToServer:item remainingRetries:kETA_ShoppingListManager_DefaultRetryCount userID:userID];
-    }
-    // no user - simply send the item to the local db
-    else
-    {
-        [self localDBUpdateSyncState:ETA_DBSyncState_ToBeSynced forObject:item userID:userID];
-    }
+    [self sendNotificationForAdded:nil removed:localItems modified:nil type:ETA_ShoppingListItem.class];
 }
 
 
@@ -423,6 +395,11 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
 {
     return [self localDBGetAllShoppingListItemsForShoppingList:listID withFilter:filter userID:self.userID];
 }
+
+
+
+
+
 
 
 #pragma mark - Polling
@@ -554,7 +531,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                          if (!error)
                          {
                              ETA_ShoppingList* localList = [self localDBGetShoppingList:listID userID:userID];
-                             [self saveLocallyAndNotifyChangesBetweenLocalShoppingLists:@[localList] andListsFromServer:@[serverList]];
+                             [self saveLocallyAndNotifyChangesBetweenLocalShoppingLists:@[localList] andListsFromServer:@[serverList] userID:userID];
                          }
                          else
                          {
@@ -585,7 +562,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                                     if (!error)
                                     {
                                         NSArray* localLists = [self localDBGetAllShoppingListsForUserID:userID];
-                                        [self saveLocallyAndNotifyChangesBetweenLocalShoppingLists:localLists andListsFromServer:serverLists];
+                                        [self saveLocallyAndNotifyChangesBetweenLocalShoppingLists:localLists andListsFromServer:serverLists userID:userID];
                                     }
                                     else
                                     {
@@ -643,11 +620,9 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                                                    NSArray* localItems = [self localDBGetAllShoppingListItemsForShoppingList:listID
                                                                                                                   withFilter:ETA_ShoppingListItemFilter_All
                                                                                                                       userID:userID];
-                                                   
                                                    DLog(@"[SERVER=>LOCAL ITEMS] successfully got %d server, %d local for list: %@", serverItems.count, localItems.count, listID);
                                                    
-                                                   [self saveLocallyAndNotifyChangesBetweenLocalShoppingListItems:localItems
-                                                                                               andItemsFromServer:serverItems];
+                                                   [self saveLocallyAndNotifyChangesBetweenLocalShoppingListItems:localItems andItemsFromServer:serverItems userID:userID];
                                                }
                                                else
                                                {
@@ -662,7 +637,8 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
 // go through the lists of local and server objects, comparing them
 // returns a dict of the objects that have been 'added' to the server, 'removed' from the server, or 'modified' more recently on the server
 // this works with any ETA_ModelObject that has a 'modified' property
-- (NSDictionary*) getDifferencesBetweenLocalObjects:(NSArray*)localObjects andServerObjects:(NSArray*)serverObjects
+// mergeHandler allows for merging of the local object into the server object, returning a new object that will be used added to the differences dict
+- (NSDictionary*) getDifferencesBetweenLocalObjects:(NSArray*)localObjects andServerObjects:(NSArray*)serverObjects mergeHandler:(ETA_ModelObject* (^)(ETA_ModelObject* serverObject, ETA_ModelObject* localObject))mergeHandler
 {
     // make maps based on the objects uuids
     NSMutableDictionary* localObjectsByUUID = [NSMutableDictionary dictionaryWithCapacity:localObjects.count];
@@ -687,6 +663,12 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
 
         ETA_ModelObject* localObj = localObjectsByUUID[serverObj.uuid];
         
+        if (mergeHandler)
+            serverObj = mergeHandler([serverObj copy], [localObj copy]);
+        
+        if (!serverObj.uuid)
+            return;
+        
         // the object is on the server, but not locally. It needs to be added locally
         if (!localObj)
         {
@@ -697,7 +679,6 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
         {
             // mark as not needing to be removed
             [removed removeObject:localObj];
-            
             
             // check the modified dates of the objects
             NSDate* localModifiedDate = [localObj valueForKey:@"modified"];
@@ -749,19 +730,19 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     return differencesDict;
 }
 
-- (void) saveLocallyAndNotifyChangesBetweenLocalShoppingLists:(NSArray*)localLists andListsFromServer:(NSArray*)serverLists
+- (void) saveLocallyAndNotifyChangesBetweenLocalShoppingLists:(NSArray*)localLists andListsFromServer:(NSArray*)serverLists userID:(NSString*)userID
 {
-    NSDictionary* differencesDict = [self getDifferencesBetweenLocalObjects:localLists andServerObjects:serverLists];
-    
-    // modify the local version
-    NSString* userID = self.userID;
+    NSDictionary* differencesDict = [self getDifferencesBetweenLocalObjects:localLists andServerObjects:serverLists mergeHandler:nil];
     
     NSArray* removed = differencesDict[@"removed"];
     NSArray* added = differencesDict[@"added"];
     NSArray* modified = differencesDict[@"modified"];
     
-    if (removed.count + added.count + modified.count > 0)
-        DLog(@"[SERVER=>LOCAL LISTS] list changes - %d added / %d removed / %d modified", added.count, removed.count, modified.count);
+    NSUInteger changeCount = removed.count + added.count + modified.count;
+    if (changeCount == 0)
+        return;
+    
+    DLog(@"[SERVER=>LOCAL LISTS] list changes - %d added / %d removed / %d modified", added.count, removed.count, modified.count);
     
     [removed enumerateObjectsUsingBlock:^(ETA_ShoppingList* list, NSUInteger idx, BOOL *stop) {
         // this will do the delete from the local DB
@@ -789,20 +770,31 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                                                           userInfo:differencesDict];
 }
 
-- (void) saveLocallyAndNotifyChangesBetweenLocalShoppingListItems:(NSArray*)localItems andItemsFromServer:(NSArray*)serverItems
+- (void) saveLocallyAndNotifyChangesBetweenLocalShoppingListItems:(NSArray*)localItems andItemsFromServer:(NSArray*)serverItems userID:(NSString*)userID
 {
-    NSDictionary* differencesDict = [self getDifferencesBetweenLocalObjects:localItems andServerObjects:serverItems];
-    
-    // modify the local version
-    NSString* userID = self.userID;
+    NSDictionary* differencesDict = [self getDifferencesBetweenLocalObjects:localItems
+                                                           andServerObjects:serverItems
+                                                               mergeHandler:^ETA_ModelObject *(ETA_ModelObject *serverObject, ETA_ModelObject *localObject) {
+                                                                   // if the server doesnt define a prevItemID then use the local item's prevItemID
+                                                                   // this allows for the server not implementing this feature yet
+                                                                   NSString* serverPrevID = ((ETA_ShoppingListItem*)serverObject).prevItemID;
+                                                                   NSString* localPrevID = ((ETA_ShoppingListItem*)localObject).prevItemID;
+                                                                   if (!serverPrevID)
+                                                                       ((ETA_ShoppingListItem*)serverObject).prevItemID = localPrevID;
+                                                                   
+                                                                   return serverObject;
+                                                               }];
     
     NSArray* removed = differencesDict[@"removed"];
     NSArray* added = differencesDict[@"added"];
     NSArray* modified = differencesDict[@"modified"];
     
-    if (removed.count + added.count + modified.count > 0)
-        DLog(@"[SERVER=>LOCAL ITEMS] item changes - %d added / %d removed / %d modified", added.count, removed.count, modified.count);
-
+    NSUInteger changeCount = removed.count + added.count + modified.count;
+    if (changeCount == 0)
+        return;
+    
+    DLog(@"[SERVER=>LOCAL ITEMS] item changes - %d added / %d removed / %d modified", added.count, removed.count, modified.count);
+    
     [removed enumerateObjectsUsingBlock:^(ETA_ShoppingListItem* item, NSUInteger idx, BOOL *stop) {
         [self localDBDeleteShoppingListItem:item.uuid userID:userID];
     }];
@@ -816,13 +808,44 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     }];
     
     
-    if (differencesDict.count)
-        [[NSNotificationCenter defaultCenter] postNotificationName:ETA_ShoppingListManager_ItemsChangedNotification
-                                                            object:self
-                                                          userInfo:differencesDict];
+    // recalc the orderID for all the items when something changed on the server
+    NSArray* allItems = [self localDBGetAllShoppingListItemsForShoppingList:nil withFilter:ETA_ShoppingListItemFilter_All userID:userID];
+    [self localDBUpdateSortOrderIndexesForItems:allItems userID:userID];
+    
+    
+    [self sendNotificationForAdded:added removed:removed modified:modified type:ETA_ShoppingListItem.class];
 }
 
 
+- (void) sendNotificationForAdded:(NSArray*)added removed:(NSArray*)removed modified:(NSArray*)modified type:(Class)type
+{
+    NSString* notificationName = nil;
+    if (type == ETA_ShoppingListItem.class)
+    {
+        notificationName = ETA_ShoppingListManager_ItemsChangedNotification;
+    } else if (type == ETA_ShoppingList.class)
+    {
+        notificationName = ETA_ShoppingListManager_ListsChangedNotification;
+    }
+    else
+        return;
+    
+    NSMutableDictionary* differencesDict = [NSMutableDictionary dictionaryWithCapacity:3];
+    
+    if (removed.count)
+        differencesDict[@"removed"] = removed;
+    
+    if (added.count)
+        differencesDict[@"added"] = added;
+    
+    if (modified.count)
+        differencesDict[@"modified"] = modified;
+    
+    if (differencesDict.count)
+        [[NSNotificationCenter defaultCenter] postNotificationName:notificationName
+                                                            object:self
+                                                          userInfo:differencesDict];
+}
 #pragma mark - Local => Server
 
 - (BOOL) thereAreObjectsWithLocalChanges
@@ -893,7 +916,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     [self localDBUpdateSyncState:ETA_DBSyncState_Syncing forObject:objToSync userID:userID];
 
     
-    DLog(@"[SYNC %@] started '%@' (%@)", NSStringFromClass([objToSync class]), [(ETA_ShoppingList*)objToSync name], objToSync.uuid);
+//    DLog(@"[SYNC %@] started '%@' (%@)", NSStringFromClass([objToSync class]), [(ETA_ShoppingList*)objToSync name], objToSync.uuid);
     
     // send request to insert/update to server
     [self serverInsertOrReplaceObject:objToSync
@@ -970,6 +993,8 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                                         {
                                             [self localDBUpdateSyncState:ETA_DBSyncState_Deleted forObject:item userID:userID];
                                         }
+                                        
+                                        [self sendNotificationForAdded:nil removed:localItems modified:nil type:ETA_ShoppingListItem.class];
                                         
                                         // stop the retry timer if there are no more objects that need to be synced
                                         if ([self thereAreObjectsWithLocalChanges] == NO)
@@ -1234,6 +1259,76 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
 
 
 #pragma mark Shopping List Items
+
+- (void) localDBUpdateSortOrderIndexesForItems:(NSArray*)items userID:(NSString*)userID
+{
+    if (!items)
+        return;
+    
+    NSArray* changedItems = [self changeSortOrderIndexesForItems:items];
+    
+    for (ETA_ShoppingListItem* item in changedItems)
+        [self localDBInsertOrReplaceShoppingListItem:item userID:userID];
+}
+
+- (NSArray*) changeSortOrderIndexesForItems:(NSArray*)items
+{
+    NSMutableDictionary* itemsByPrevItemID = [NSMutableDictionary dictionary];
+    
+    NSMutableArray* changedItems = [NSMutableArray array];
+    NSMutableArray* firstItems = [NSMutableArray array];
+    
+    for (ETA_ShoppingListItem* item in items)
+    {
+        NSString* prevID = item.prevItemID;
+        if (prevID)
+        {
+            if (prevID.length == 0)
+                [firstItems addObject:item];
+            else
+                itemsByPrevItemID[prevID] = item;
+        }
+        // it doesnt have a previous item - it isnt in the sorting
+        else if (item.orderIndex != -1)
+        {
+            item.orderIndex = -1;
+            [changedItems addObject:item];
+        }
+    }
+    
+    for (ETA_ShoppingListItem* firstItem in firstItems)
+    {
+        NSUInteger orderIndex = 0;
+        ETA_ShoppingListItem* nextItem = firstItem;
+        
+        while (nextItem)
+        {
+            if (nextItem.orderIndex != orderIndex)
+            {
+                nextItem.orderIndex = orderIndex;
+                [changedItems addObject:nextItem];
+            }
+            
+            // clear from item dict
+            [itemsByPrevItemID setValue:nil forKey:nextItem.prevItemID];
+            
+            // move on to the next item
+            nextItem = itemsByPrevItemID[nextItem.uuid];
+        }
+    }
+    
+    // mark the remaining unsorted items
+    for (ETA_ShoppingListItem* item in itemsByPrevItemID.allValues)
+    {
+        if (item.orderIndex != -1)
+        {
+            item.orderIndex = -1;
+            [changedItems addObject:item];
+        }
+    }
+    
+    return changedItems;
+}
 
 + (NSString*) localDBTableName_ShoppingListItem:(NSString*)userID
 {

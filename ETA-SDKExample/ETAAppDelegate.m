@@ -8,10 +8,16 @@
 
 #import "ETAAppDelegate.h"
 
+#import "ETA.h"
+#import "ETA-APIKeyAndSecret.h"
+
 @implementation ETAAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    self.eta = [ETA etaWithAPIKey:ETA_APIKey apiSecret:ETA_APISecret];    
+    [self.eta setLatitude:55.40227410 longitude:12.1873010 distance:5000 isFromSensor:NO];
+
     return YES;
 }
 

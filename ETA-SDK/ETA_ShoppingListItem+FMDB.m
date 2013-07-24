@@ -21,6 +21,8 @@ NSString* const kSLI_OFFER_ID   = @"offer_id";
 NSString* const kSLI_CREATOR    = @"creator";
 NSString* const kSLI_SHOPPING_LIST_ID = @"shopping_list_id";
 NSString* const kSLI_STATE      = @"state";
+NSString* const kSLI_PREV_ITEM_ID = @"previous_item_id";
+NSString* const kSLI_ORDER_INDEX = @"order_index";
 
 @implementation ETA_ShoppingListItem (FMDB)
 
@@ -36,6 +38,8 @@ NSString* const kSLI_STATE      = @"state";
              kSLI_CREATOR,
              kSLI_SHOPPING_LIST_ID,
              kSLI_STATE,
+             kSLI_PREV_ITEM_ID,
+             kSLI_ORDER_INDEX,
              ];
 }
 
@@ -51,6 +55,8 @@ NSString* const kSLI_STATE      = @"state";
              kSLI_CREATOR: @"creator",
              kSLI_SHOPPING_LIST_ID: @"shopping_list_id",
              kSLI_STATE: @"state",
+             kSLI_PREV_ITEM_ID: @"previous_item_id",
+             kSLI_ORDER_INDEX: @"order_index",
              };
 }
 
@@ -74,10 +80,12 @@ NSString* const kSLI_STATE      = @"state";
     [jsonDict setValue:[res stringForColumn:kSLI_OFFER_ID] forKey:@"offer_id"];
     [jsonDict setValue:[res stringForColumn:kSLI_CREATOR] forKey:@"creator"];
     [jsonDict setValue:[res stringForColumn:kSLI_SHOPPING_LIST_ID] forKey:@"shopping_list_id"];
+    [jsonDict setValue:[res stringForColumn:kSLI_PREV_ITEM_ID] forKey:@"previous_item_id"];
     
     ETA_ShoppingListItem* item = [ETA_ShoppingListItem objectFromJSONDictionary:jsonDict];
     // state is not part of the JSON parsing, so set manually
     item.state = [res longForColumn:kSLI_STATE];
+    item.orderIndex = [res longForColumn:kSLI_ORDER_INDEX];
     
     return item;
 }
@@ -89,6 +97,7 @@ NSString* const kSLI_STATE      = @"state";
     jsonDict[@"state"] = @(self.state);
     jsonDict[@"tick"] = @(self.tick); // because server's json needs to be in string form 'true' / 'false'
     jsonDict[@"offer_id"] = (self.offerID) ?: NSNull.null; // because server can't handle json with NULL or nil
+    jsonDict[@"order_index"] = @(self.orderIndex);
     
     NSDictionary* jsonKeysByFieldNames = [[self class] JSONKeyPathsByDBFieldName];
     
@@ -121,7 +130,9 @@ NSString* const kSLI_STATE      = @"state";
                              kSLI_OFFER_ID, @"text,",
                              kSLI_CREATOR, @"text not null,",
                              kSLI_SHOPPING_LIST_ID, @"text not null,",
-                             kSLI_STATE, @"integer not null",
+                             kSLI_STATE, @"integer not null,",
+                             kSLI_PREV_ITEM_ID, @"text,",
+                             kSLI_ORDER_INDEX, @"integer not null",
                              ] componentsJoinedByString:@" "];
     
     NSString* queryStr = [NSString stringWithFormat:@"create table if not exists %@(%@);", tableName, fieldsStr];

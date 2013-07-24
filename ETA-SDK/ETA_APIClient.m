@@ -215,8 +215,9 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 // Setting the session causes the change to be persisted to User Defaults
 - (void) setSession:(ETA_Session *)session
 {
-    _session = session;
+    DLog(@"[CLIENT] Setting Session '%@' (%@) => '%@' (%@)", _session.token, _session.expires, session.token, session.expires);
     
+    _session = session;
     [self updateHeaders];
     [self saveSessionToStorage];
 }

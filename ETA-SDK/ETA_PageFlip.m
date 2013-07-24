@@ -1,34 +1,41 @@
 //
-//  ETA_WebView.m
+//  ETA_PageFlip.m
 //  ETA-SDKExample
 //
 //  Created by Laurie Hufford on 7/15/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
 //
 
-#import "ETA_WebView.h"
+#import "ETA_PageFlip.h"
 
 #import "ETA.h"
 #import "ETA_APIClient.h"
 #import "ETA_Session.h"
 #import "MTLJSONAdapter.h"
 
-// expose the client to the webview
-@interface ETA (WebViewPrivate)
+
+
+NSString* const ETA_PageFlipErrorDomain = @"ETA_PageFlipErrorDomain";
+NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
+
+
+// expose the client to the pageFlip
+@interface ETA (PageFlipPrivate)
 @property (nonatomic, readonly, strong) ETA_APIClient* client;
 @end
 
 
-@interface ETA_WebView () <UIWebViewDelegate>
+@interface ETA_PageFlip () <UIWebViewDelegate>
 
 @property (nonatomic, readwrite, strong) ETA* eta;
 @property (nonatomic, readwrite, assign) BOOL isInitialized;
 @property (nonatomic, readwrite, strong) NSString* uuid;
 @property (nonatomic, readwrite, strong) NSURL* baseURL;
 
+@property (nonatomic, readwrite, strong) NSString* pendingShowCatalogRequest;
 @end
 
-@implementation ETA_WebView
+@implementation ETA_PageFlip
 
 - (id) init
 {
@@ -48,9 +55,37 @@
 // wrap the delegate in an eta-delegate method
 - (void) setDelegate:(id<UIWebViewDelegate>)delegate
 {
-    NSAssert(NO, @"You may not set the UIWebView delegate on an ETA_WebView");
+    NSAssert(NO, @"You may not set the UIWebView delegate on an ETA_PageFlip");
 }
 
+- (void) setEta:(ETA *)eta
+{
+    if (_eta == eta)
+        return;
+    
+    [_eta removeObserver:self forKeyPath:@"location"];
+    [_eta removeObserver:self forKeyPath:@"distance"];
+    [_eta removeObserver:self forKeyPath:@"sensor"];
+    _eta = eta;
+    [_eta addObserver:self forKeyPath:@"location" options:NSKeyValueObservingOptionNew context:NULL];
+    [_eta addObserver:self forKeyPath:@"distance" options:NSKeyValueObservingOptionNew context:NULL];
+    [_eta addObserver:self forKeyPath:@"sensor" options:NSKeyValueObservingOptionNew context:NULL];
+}
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"location"] || [keyPath isEqualToString:@"distance"] || [keyPath isEqualToString:@"sensor"])
+    {
+        if (self.isInitialized)
+        {
+            SEL selector = @selector(changeLocationWithETALocation);
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:selector object:nil];
+            [self performSelector:selector withObject:nil afterDelay:0.1];
+        }
+    }
+    else
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
 
 #pragma mark - Starting
 
@@ -65,62 +100,54 @@
     
     if (!self.uuid)
     {
-        self.eta = eta;
-        // TODO: Maybe connect to a session?
-        
+        self.uuid = [[self class] generateUUID];
+        self.baseURL = (baseURL) ?: [NSURL URLWithString:kETA_PageFlipBaseURLString];
         super.delegate = self;
         
-        self.uuid = [[self class] generateUUID];
-        self.baseURL = (baseURL) ?: [NSURL URLWithString:kETA_WebViewBaseURLString];
-        
-        NSString* proxyURL = [NSString stringWithFormat:@"%@proxy/%@/", [self.baseURL absoluteString], self.uuid];
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyURL]];
-        
-        [self loadRequest:request];
+        self.eta = eta;
+        [self.eta connect:^(NSError *error) {
+            
+            NSString* proxyURL = [NSString stringWithFormat:@"%@proxy/%@/", [self.baseURL absoluteString], self.uuid];
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyURL]];
+            
+            [self loadRequest:request];
+        }];
     }
 }
 
-- (void) setEta:(ETA *)eta
-{
-    if (_eta == eta)
-        return;
-    
-    [_eta removeObserver:self forKeyPath:@"client.session"];
-    _eta = eta;
-    [_eta addObserver:self forKeyPath:@"client.session" options:NSKeyValueObservingOptionNew context:NULL];
-}
-
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if ([keyPath isEqualToString:@"client.session"])
-    {
-        if (self.isInitialized)
-        {
-            ETA_Session* new = change[NSKeyValueChangeNewKey];
-            if (new)
-            {
-                [self changeSession:new];
-            }
-        }
-    }
-    else
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-}
 
 #pragma mark - Catalog View Actions
 
+- (void) setCatalogID:(NSString *)catalogID
+{
+    if (_catalogID == catalogID)
+        return;
+    
+    _catalogID = catalogID;
+    
+    if (_catalogID == nil)
+    {
+        [self closeCatalogView];
+    }
+    else
+    {
+        [self showCatalogView:_catalogID parameters:nil];
+    }
+    
+}
 - (void) showCatalogView:(NSString*)catalogID parameters:(NSDictionary*)parameters
 {
     if (!catalogID)
         return;
     
-    if (!self.uuid)
-        return;
-    //TODO: better defaults?
+    [self willChangeValueForKey:@"catalogID"];
+    _catalogID = catalogID;
+    [self didChangeValueForKey:@"catalogID"];
+    
     NSMutableDictionary* data = [@{@"catalog": catalogID,
                                    @"page": @1,
-                                   @"hotspots": @NO,
-                                   @"hotspotOverlay": @YES,
+                                   @"hotspots": @YES,
+                                   @"hotspotOverlay": @NO,
                                    @"canClose": @NO,
                                    @"headless": @YES,
                                    @"outOfBounds": @NO,
@@ -129,33 +156,55 @@
     if (parameters)
         [data setValuesForKeysWithDictionary:parameters];
     
-    [self performJSProxyMethodWithName:@"catalog-view" data:data];
+    NSString* jsRequest = [self jsRequestWithProxyMethodName:@"catalog-view" data:data];
+    if (self.isInitialized)
+        [self performJSRequest:jsRequest];
+    else
+        self.pendingShowCatalogRequest = jsRequest;
 }
+
 - (void) closeCatalogView
 {
+    [self willChangeValueForKey:@"catalogID"];
+    _catalogID = nil;
+    [self didChangeValueForKey:@"catalogID"];
+    
+    self.pendingShowCatalogRequest = nil;
+    
     [self performJSProxyMethodWithName:@"catalog-view-close" data:nil];
 }
 - (void) toggleCatalogViewThumbnails
 {
+    if (self.verbose)
+        NSLog(@"ETA_PageFlip(%@) Toggling Catalog Thumbnails", self.uuid);
+    
     [self performJSProxyMethodWithName:@"catalog-view-thumbnails" data:nil];
 }
+
+
 - (void) changeSession:(ETA_Session*)session
 {
     if (!session)
         return;
     
-    DLog(@"WebView change session '%@' %@", session.token, session.expires);
-    
     NSDictionary* sessionJSONDict = session.JSONDictionary;
     [self performJSProxyMethodWithName:@"session-change" data:sessionJSONDict];
-
 }
+
 - (void) changeLocation:(CLLocation*)location distance:(NSNumber*)distance fromSensor:(BOOL)fromSensor
 {
     NSDictionary* geoDict = [self geolocationDictionaryWithLocation:location distance:distance fromSensor:fromSensor];
-    if (geoDict)
-        [self performJSProxyMethodWithName:@"geolocation-change" data:geoDict];
+    if (!geoDict)
+        return;
+    
+    [self performJSProxyMethodWithName:@"geolocation-change" data:geoDict];
 }
+
+- (void) changeLocationWithETALocation
+{
+    [self changeLocation:self.eta.location distance:self.eta.distance fromSensor:self.eta.isLocationFromSensor];
+}
+
 
 #pragma mark - Event handling
 
@@ -167,66 +216,63 @@
     
     NSString* eventName = [eventData[@"eventName"] lowercaseString];
     
+    // get the data about that event
+    NSDictionary* specificEventData = eventData[@"data"];
+    
     BOOL handled = NO;
     if ([eventName isEqualToString:@"eta-proxy-ready"])
     {
-        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaWebView:proxyReadyEvent:)]))
-            [self.etaDelegate etaWebView:self proxyReadyEvent:eventData];
+        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaPageFlip:readyEvent:)]))
+            [self.etaDelegate etaPageFlip:self readyEvent:specificEventData];
     }
     else if ([eventName isEqualToString:@"eta-session-change"])
     {
         // a session changed event - update the SDK
-        ETA_Session* session = [ETA_Session objectFromJSONDictionary:eventData[@"data"]];
+        ETA_Session* session = [ETA_Session objectFromJSONDictionary:specificEventData];
         if (session)
             [self.eta.client setIfNewerSession:session];
         
-        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaWebView:sessionChangeEvent:)]))
-            [self.etaDelegate etaWebView:self sessionChangeEvent:eventData];
+        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaPageFlip:sessionChangeEvent:)]))
+            [self.etaDelegate etaPageFlip:self sessionChangeEvent:session];
+    }
+    else if ([eventName isEqualToString:@"eta-geolocation-change"])
+    {
+        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaPageFlip:geolocationChangeEvent:)]))
+            [self.etaDelegate etaPageFlip:self geolocationChangeEvent:specificEventData];
     }
     else if ([eventName isEqualToString:@"eta-catalog-view-pagechange"])
     {
-        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaWebView:catalogViewPageChangeEvent:)]))
-            [self.etaDelegate etaWebView:self catalogViewPageChangeEvent:eventData];
-    }
-    else if ([eventName isEqualToString:@"eta-catalog-view-outofbounds"])
-    {
-        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaWebView:catalogViewOutOfBoundsEvent:)]))
-            [self.etaDelegate etaWebView:self catalogViewOutOfBoundsEvent:eventData];
+        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaPageFlip:catalogViewPageChangeEvent:)]))
+            [self.etaDelegate etaPageFlip:self catalogViewPageChangeEvent:specificEventData];
     }
     else if ([eventName isEqualToString:@"eta-catalog-view-hotspot"])
     {
-        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaWebView:catalogViewHotspotEvent:)]))
-            [self.etaDelegate etaWebView:self catalogViewHotspotEvent:eventData];
+        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaPageFlip:catalogViewHotspotEvent:)]))
+            [self.etaDelegate etaPageFlip:self catalogViewHotspotEvent:specificEventData];
     }
     else if ([eventName isEqualToString:@"eta-catalog-view-singletap"])
     {
-        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaWebView:catalogViewSingleTapEvent:)]))
-            [self.etaDelegate etaWebView:self catalogViewSingleTapEvent:eventData];
+        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaPageFlip:catalogViewSingleTapEvent:)]))
+            [self.etaDelegate etaPageFlip:self catalogViewSingleTapEvent:specificEventData];
     }
     else if ([eventName isEqualToString:@"eta-catalog-view-doubletap"])
     {
-        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaWebView:catalogViewDoubleTapEvent:)]))
-            [self.etaDelegate etaWebView:self catalogViewDoubleTapEvent:eventData];
+        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaPageFlip:catalogViewDoubleTapEvent:)]))
+            [self.etaDelegate etaPageFlip:self catalogViewDoubleTapEvent:specificEventData];
     }
     else if ([eventName isEqualToString:@"eta-catalog-view-dragstart"])
     {
-        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaWebView:catalogViewDragStartEvent:)]))
-            [self.etaDelegate etaWebView:self catalogViewDragStartEvent:eventData];
+        if ((handled = [self.etaDelegate respondsToSelector:@selector(etaPageFlip:catalogViewDragStartEvent:)]))
+            [self.etaDelegate etaPageFlip:self catalogViewDragStartEvent:specificEventData];
     }
     
-    if (!handled && [self.etaDelegate respondsToSelector:@selector(etaWebView:triggeredEventWithClass:type:dataDictionary:)])
-        [self.etaDelegate etaWebView:self triggeredEventWithClass:eventClass type:eventType dataDictionary:eventData];
+    if (!handled && [self.etaDelegate respondsToSelector:@selector(etaPageFlip:triggeredEventWithClass:type:dataDictionary:)])
+        [self.etaDelegate etaPageFlip:self triggeredEventWithClass:eventClass type:eventType dataDictionary:eventData];
     
 }
 
 #pragma mark - Webview Delegate methods
 
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-    if ([self.etaDelegate respondsToSelector:@selector(etaWebViewDidStartLoad:)])
-        [self.etaDelegate etaWebViewDidStartLoad:self];
-
-}
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     
@@ -247,23 +293,38 @@
             data[@"session"] = sessionDict;
     }
     
-    DLog(@"Init Webview with session: '%@' %@", self.eta.client.session.token, self.eta.client.session.expires);
-    
     NSString* response = nil;
     if (data)
+    {
         response = [self performJSProxyMethodWithName:@"initialize" data:data];
-    
-    self.isInitialized = YES;
-    
-    if ([self.etaDelegate respondsToSelector:@selector(etaWebViewDidFinishLoad:)])
-        [self.etaDelegate etaWebViewDidFinishLoad:self];
+        self.isInitialized = YES;
+        
+        if (self.pendingShowCatalogRequest)
+        {
+            [self performJSRequest:self.pendingShowCatalogRequest];
+            self.pendingShowCatalogRequest = nil;
+        }
+    }
+    else
+    {
+        self.isInitialized = NO;
+        if ([self.etaDelegate respondsToSelector:@selector(etaPageFlip:didFailLoadWithError:)])
+        {
+            NSError* error = [NSError errorWithDomain:ETA_PageFlipErrorDomain
+                                                 code:ETA_PageFlipErrorCode_InitFailed
+                                             userInfo:@{ NSLocalizedDescriptionKey: @"Failed to initialize PageFlip",
+                                                         NSLocalizedFailureReasonErrorKey: @"PageFlip initialize call was missing required data - maybe ETA object's API key/secret?"
+                                                         }];
+            [self.etaDelegate etaPageFlip:self didFailLoadWithError:error];
+        }
+    }
 }
 
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
-    if ([self.etaDelegate respondsToSelector:@selector(etaWebView:didFailLoadWithError:)])
-        [self.etaDelegate etaWebView:self didFailLoadWithError:error];
+    if ([self.etaDelegate respondsToSelector:@selector(etaPageFlip:didFailLoadWithError:)])
+        [self.etaDelegate etaPageFlip:self didFailLoadWithError:error];
 }
 
 
@@ -281,7 +342,7 @@
         NSDictionary *eventDataDictionary = [NSJSONSerialization JSONObjectWithData:[eventDataJSON dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingAllowFragments error:nil];
         
         if (self.verbose)
-            NSLog(@"ETA_WebView(%@) Event: %@", self.uuid, eventDataDictionary);
+            NSLog(@"ETA_PageFlip(%@) Event: %@", self.uuid, eventDataDictionary);
         
         [self eventTriggered:eventClass type:eventType data:eventDataDictionary];
 
@@ -293,7 +354,7 @@
 
 #pragma mark - Utility methods
 
-- (NSString*) performJSProxyMethodWithName:(NSString*)name data:(NSDictionary*)data
+- (NSString*) jsRequestWithProxyMethodName:(NSString*)name data:(NSDictionary*)data
 {
     NSString* jsRequest = nil;
     if (name)
@@ -310,14 +371,23 @@
             jsRequest = [NSString stringWithFormat:@"window.etaProxy.push(['%@']);", name];
     }
     
+    return jsRequest;
+}
+- (NSString*) performJSRequest:(NSString*)jsRequest
+{
     if (!jsRequest)
         return nil;
     
     NSString* jsResponse = [self stringByEvaluatingJavaScriptFromString:jsRequest];
     
     if (self.verbose)
-        NSLog(@"ETA_WebView(%@) Request: %@\nResponse: '%@'", self.uuid, jsRequest, jsResponse);
+        NSLog(@"ETA_PageFlip(%@) Request: %@\nResponse: '%@'", self.uuid, jsRequest, jsResponse);
+    
     return jsResponse;
+}
+- (NSString*) performJSProxyMethodWithName:(NSString*)name data:(NSDictionary*)data
+{
+    return [self performJSRequest:[self jsRequestWithProxyMethodName:name data:data]];
 }
 
 

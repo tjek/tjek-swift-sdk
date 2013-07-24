@@ -10,4 +10,11 @@
 
 @interface ETAExampleViewController : UIViewController
 
+- (IBAction)addList:(id)sender;
+- (IBAction)deleteList:(id)sender;
+
+- (IBAction)disconnectUser:(id)sender;
+- (IBAction)connectUser:(id)sender;
+@property (nonatomic, readwrite, strong) IBOutlet UILabel* userIDLabel;
+
 @end

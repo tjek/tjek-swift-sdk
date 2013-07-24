@@ -20,7 +20,9 @@
 {
     return [super.JSONKeyPathsByPropertyKey mtl_dictionaryByAddingEntriesFromDictionary:@{ @"name": @"description",
                                                                                            @"offerID": @"offer_id",
-                                                                                           @"shoppingListID": @"shopping_list_id"
+                                                                                           @"shoppingListID": @"shopping_list_id",
+                                                                                           @"prevItemID": @"previous_item_id",
+                                                                                           @"orderIndex": NSNull.null,
                                                                                         }];
 }
 
