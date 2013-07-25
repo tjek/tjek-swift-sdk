@@ -8,10 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class ETA;
 @interface ETAAppDelegate : UIResponder <UIApplicationDelegate>
-
-@property (nonatomic, readwrite, strong) ETA* eta;
 
 @property (strong, nonatomic) UIWindow *window;
 

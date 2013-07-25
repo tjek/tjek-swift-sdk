@@ -26,9 +26,30 @@ NSString* const ETA_SessionUserIDChangedNotification = @"ETA_SessionUserIDChange
 @property (nonatomic, readwrite, strong) NSCache* itemCache;
 @end
 
+static ETA* ETA_SingletonSDK = nil;
 
 @implementation ETA
 @synthesize client = _client;
+
++ (void)initializeSDKWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret
+{
+    [self initializeSDKWithAPIKey:apiKey apiSecret:apiSecret baseURL:nil];
+}
++ (void)initializeSDKWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret baseURL:(NSURL*)baseURL
+{
+    if (!apiKey || !apiSecret)
+        return;
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        ETA_SingletonSDK = [ETA etaWithAPIKey:apiKey apiSecret:apiSecret baseURL:baseURL];
+    });
+}
+
++ (ETA*)SDK
+{
+    return ETA_SingletonSDK;
+}
 
 + (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret
 {

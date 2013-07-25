@@ -22,19 +22,44 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.eta = ((ETAAppDelegate*)UIApplication.sharedApplication.delegate).eta;
-    
 
-    self.pageFlip = [[ETA_PageFlip alloc] init];
+    self.pageFlip = [[ETA_PageFlip alloc] initWithETA:ETA.SDK];
+    self.pageFlip.delegate = self;
 //    self.pageFlip.verbose = YES;
+    
     self.pageFlip.frame = self.view.bounds;
     self.pageFlip.alpha = 0;
     self.pageFlip.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.pageFlip];
     
-    self.pageFlip.etaDelegate = self;
-    [self.pageFlip startLoadWithETA:self.eta];
-    self.pageFlip.catalogID = @"d05d8Ig";
+    
+    UIButton* toggleButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [toggleButton addTarget:self action:@selector(toggleCatalog:) forControlEvents:UIControlEventTouchUpInside];
+    toggleButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
+    [toggleButton setTitle:@"Toggle Catalog" forState:UIControlStateNormal];
+    [toggleButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    [toggleButton sizeToFit];
+    toggleButton.frame = CGRectMake(CGRectGetMidX(self.view.bounds) - (toggleButton.frame.size.width/2),
+                                    CGRectGetMaxY(self.view.bounds) - (toggleButton.frame.size.height + 10),
+                                    toggleButton.frame.size.width, toggleButton.frame.size.height);
+    
+    toggleButton.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:toggleButton];
+}
+- (void) viewDidAppear:(BOOL)animated
+{
+}
+
+- (IBAction)toggleCatalog:(id)sender
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:0.5
+                         animations:^{
+                             self.pageFlip.alpha = 0.0;
+                         } completion:^(BOOL finished) {
+                             [self.pageFlip loadCatalog:([self.pageFlip.catalogID isEqualToString:@"bdea9Ig"]) ? @"d05d8Ig" : @"bdea9Ig"];
+                         }];
+    });
 }
 
 #pragma mark - PageFlip Delegate methods
@@ -43,7 +68,7 @@
 - (void)etaPageFlip:(ETA_PageFlip*)pageFlip readyEvent:(NSDictionary*)data
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:2
+        [UIView animateWithDuration:1
                          animations:^{
                              pageFlip.alpha = 1.0;
                          }];
@@ -65,4 +90,8 @@
 //    NSLog(@"triggeredEvent: '%@' '%@' %@", eventClass, type, dataDictionary);
 }
 
+- (void) etaPageFlip:(ETA_PageFlip *)pageFlip catalogViewPageChangeEvent:(NSDictionary *)data
+{
+    NSLog(@"Changed to %d / %d (%.2f%%)", pageFlip.currentPage, pageFlip.pageCount, pageFlip.pageProgress*100);
+}
 @end

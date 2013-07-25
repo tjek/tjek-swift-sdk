@@ -26,21 +26,18 @@ extern NSString* const ETA_SessionUserIDChangedNotification;
 @class ETA_User;
 @interface ETA : NSObject
 
-@property (nonatomic, readonly, strong) NSURL* baseURL;
-@property (nonatomic, readonly, strong) NSString* apiKey;
-@property (nonatomic, readonly, strong) NSString* apiSecret;
+// Returns the ETA SDK singleton
++ (ETA*)SDK;
 
-@property (nonatomic, readonly, assign, getter=isConnected) BOOL connected;
-
-
-// Construct an ETA object. Must use this method otherwise you wont have an API Key, and nothing will work
-+ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret;
-+ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret baseURL:(NSURL*)baseURL;
+// You must call one of theses with an API key & secret BEFORE you ask for the [ETA SDK] object, otherwise you will just get nil
++ (void)initializeSDKWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret;
++ (void)initializeSDKWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret baseURL:(NSURL*)baseURL;
 
 
 #pragma mark - Connecting
 
 // start a session. This is not required, as any API/user requests that you make will create the session automatically.
+// you would use this method to avoid a slow first API request
 - (void) connect:(void (^)(NSError* error))completionHandler;
 // start a session and attach a user
 - (void) connectWithUserEmail:(NSString*)email password:(NSString*)password completion:(void (^)(BOOL connected, NSError* error))completionHandler;
@@ -89,6 +86,24 @@ extern NSString* const ETA_SessionUserIDChangedNotification;
 // A list of the distances that we prefer to use.
 // The 'distance' property will be clamped to within these numbers before being sent
 + (NSArray*) preferredDistances;
+
+
+
+
+
+
+@property (nonatomic, readonly, assign, getter=isConnected) BOOL connected;
+
+@property (nonatomic, readonly, strong) NSURL* baseURL;
+@property (nonatomic, readonly, strong) NSString* apiKey;
+@property (nonatomic, readonly, strong) NSString* apiSecret;
+
+
+#pragma mark - Non-Singleton constructors
+// Construct an ETA object - use these if you want multiple ETA objects, for some reason
++ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret;
++ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret baseURL:(NSURL*)baseURL;
+
 
 @end
 

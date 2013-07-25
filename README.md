@@ -56,24 +56,20 @@ All the `get…` queries will give you the results from the local store, as up t
 
 `ETA_PageFlip` is a UIView that contains all the functionality you need to show an interactive catalog.
 
-Simply add an instance of the `ETA_PageFlip` to a view, and call `-startLoadWithETA:`, passing in the `ETA` SDK object. Now, calling `-showCatalogView:` with a catalog's UUID will update the PageFlip view to show an interactive catalog. You can optionally pass in a dictionary with parameters for how to display the catalog. These parameters are:
+First, simply add an instance of the `ETA_PageFlip` to a view. This will by default use the `ETA.SDK` singleton, but there are other `-init…` methods that allow you to use a different ETA instance, and also a different `baseURL` (to which "proxy/{UUID}/" is appended when loading the catalog).
 
-- `page`: The desired page to start on (`NSUInteger` default=1)
-- `hotspots`: Whether to send events when a hotspot is pressed (`BOOL` default=YES)
-- `hotspotOverlay`: Whether to show an overlay when hovering over a hotspot - doesnt make sense for iOS (`BOOL` default=NO)
-- `canClose`: Whether the catalog view can close or not (`BOOL` default=NO)
-- `headless`: Whether the header should be hidden or shown (`BOOL` default=YES)
-- `outOfBounds`: Whether to show a dialog when past the last page (`BOOL` default=NO)
-- `whiteLabel`: Whether to show ETA branding (`BOOL` default=YES)
+Now, to show an interactive catalog, call `-loadCatalog:`, with the catalog's UUID. You can optionally pass in a starting page number or a dictionary of parameters.
 
-For example, to open a PageFlip to page 5 of a catalog, send the following message:
-`[self.pageFlip showCatalog:@"abcdef123" parameters:@{
-@"page":@5 }];`
+You can change the catalog that is shown by simply calling `-loadCatalog:` again, though this will have no effect if the catalog is in the process of being loaded.
 
-Additionally, the `-toggleCatalogViewThumbnails` will show an overlay of all the pages to allow the user to quickly pick the page they wish to go to.
+To close the catalog call `-closeCatalog`, or pass *nil* to `-loadCatalog:` - this will remove the catalog from the PageFlip view, and also inform the server that the catalog was closed.
+
+There are several properties to keep track of what page you are looking at. `currentPage` is the page number of the first visible page (starting at 1). `pageCount` is the total number of pages in the catalog. `pageProgress` is a float representing how far through the catalog you are from 0 to 1. When multiple pages are visible, the progress is taken from the last visible page. All these properties are 0 if no catalog is loaded.
+
+Finally, the `-toggleCatalogThumbnails` will show an overlay of all the pages to allow the user to quickly pick the page they wish to go to.
 
 #### PageFlip events
-If you want to know what the user is doing within the PageFlip view, set your ViewController as the PageFlip's `etaDelegate`, and implement as many of the (optional) `ETAPageFlipDelegate` methods as you need. 
+If you want to know what the user is doing within the PageFlip view, set your ViewController as the PageFlip's `delegate`, and implement as many of the (optional) `ETAPageFlipDelegate` methods as you need. 
 
 A special delegate method is `-etaPageFlip:triggeredEventWithClass:type:dataDictionary:`. This will be triggered for **all** catalog events _unless_ you implement the corresponding delegate method. For example, if you implement the `-etaPageFlip:catalogViewSingleTapEvent:` delegate method you will not receive the `…triggeredEventWithClass:…` delegate call for that event.
 
@@ -81,5 +77,5 @@ A special delegate method is `-etaPageFlip:triggeredEventWithClass:type:dataDict
 
 
 
-
+---
 *2013-07-24*

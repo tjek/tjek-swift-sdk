@@ -11,7 +11,7 @@
 
 static NSString * const kETA_PageFlipBaseURLString = @"https://etilbudsavis.dk/";
 
-@class ETA_PageFlip, ETA_Session;
+@class ETA_PageFlip, ETA, ETA_Session;
 @protocol ETAPageFlipDelegate <NSObject>
 
 @optional
@@ -33,47 +33,44 @@ static NSString * const kETA_PageFlipBaseURLString = @"https://etilbudsavis.dk/"
 @end
 
 
-@class ETA;
-@interface ETA_PageFlip : UIWebView
+@interface ETA_PageFlip : UIView
 
-// you must not set the UIWebView delegate on ETA_PageFlip objects - it will assert
-@property (nonatomic, readwrite, assign) id<ETAPageFlipDelegate> etaDelegate;
-
-@property (nonatomic, readonly, strong) NSString* uuid;
+// implement the delegate methods to get events from the page flip
+@property (nonatomic, readwrite, assign) id<ETAPageFlipDelegate> delegate;
 
 
-- (void) startLoadWithETA:(ETA*)eta;
-- (void) startLoadWithETA:(ETA*)eta baseURL:(NSURL*)baseURL;
+// If you init with no ETA object (or send nil) it will use the [ETA SDK] singleton.
+// if the ETA object doesnt have an API key or secret (eg. you havn't initialized the singleton) this will return nil
+- (id) init;
+- (id) initWithETA:(ETA*)eta;
+- (id) initWithETA:(ETA*)eta baseURL:(NSURL*)baseURL;
 
+
+// try to show the catalog with the specified ID
+// passing nil will close the catalog
+// if currently in the process of loading a catalog, this will be a no-op
+- (void) loadCatalog:(NSString *)catalogID;
+- (void) loadCatalog:(NSString *)catalogID page:(NSUInteger)pageNumber;
+- (void) loadCatalog:(NSString *)catalogID parameters:(NSDictionary*)parameters;
+
+// remove the active catalog, and sets catalogID to nil
+- (void) closeCatalog;
 
 // the id of the catalog currently being shown.
-// setting this will try to show the catalog with default parameters
-// setting to nil will close the catalog
-@property (nonatomic, readwrite, strong) NSString* catalogID;
-
-// show a catalog view. updates the catalogID property.
-// Optional parameters:
-// - page: The desired page to start on (NSUInteger, default=1).
-// - hotspots: Whether to send events when a hotspot is pressed (BOOL, default=YES).
-// - hotspotOverlay: Whether to show an overlay when hovering over a hotspot - doesnt make sense for iOS (BOOL, default=NO).
-// - canClose: Whether the catalog view can close or not (BOOL, default=NO).
-// - headless: Whether the header should be hidden or shown (BOOL, default=YES).
-// - outOfBounds: Whether to show a dialog when past the last page (BOOL, default=NO).
-// - whiteLabel: Whether to show ETA branding (BOOL, default=YES).
-- (void) showCatalogView:(NSString*)catalogID parameters:(NSDictionary*)parameters;
-
-// hide the catalogview and sets catalogID to nil
-- (void) closeCatalogView;
-
-// toggle the display of thumbnail picker
-- (void) toggleCatalogViewThumbnails;
-
-// these shouldn't be public?
-- (void) changeSession:(ETA_Session*)session;
-- (void) changeLocation:(CLLocation*)location distance:(NSNumber*)distance fromSensor:(BOOL)fromSensor;
+// if loading a catalog fails, will be set to nil
+@property (nonatomic, readonly, strong) NSString* catalogID;
 
 
-// print out all requests and events
+// toggle the display of the thumbnail picker
+- (void) toggleCatalogThumbnails;
+
+
+@property (nonatomic, readonly, assign) NSUInteger currentPage;
+@property (nonatomic, readonly, assign) NSUInteger pageCount;
+@property (nonatomic, readonly, assign) CGFloat pageProgress;
+
+
+// print out all requests and events. Defaults to NO.
 @property (nonatomic, readwrite, assign) BOOL verbose;
 
 @end
