@@ -18,7 +18,6 @@
 
 @property (nonatomic, readwrite, strong) ETA* eta;
 @property (nonatomic, readwrite, strong) ETA_ShoppingListManager* shoppingListManager;
-@property (nonatomic, readwrite, strong) ETA_PageFlip* webview;
 @end
 
 @implementation ETAExampleViewController
@@ -181,30 +180,4 @@
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
-- (void)etaWebViewDidStartLoad:(UIWebView *)webView
-{
-//    DLog(@"Did Start Load: %@", webView);
-}
-- (void)etaWebViewDidFinishLoad:(UIWebView *)webView
-{
-//    DLog(@"Did Finish Load: %@", webView);
-}
-- (void)etaWebView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-    DLog(@"Did Fail Load: %@ %@", webView, error);
-}
-
-- (void)etaWebView:(UIWebView *)webView triggeredEventWithClass:(NSString *)eventClass type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary
-{
-//    DLog(@"triggeredEvent: '%@' '%@' %@", eventClass, type, dataDictionary);
-}
-- (void)etaWebView:(UIWebView*)webview proxyReadyEvent:(NSDictionary*)data
-{
-    [self.webview showCatalogView:@"f4e4uHg" parameters:@{@"headless":@YES}];
-}
-
-- (void) etaWebView:(UIWebView *)webview catalogViewSingleTapEvent:(NSDictionary *)data
-{
-    [self connectUser:nil];
-}
 @end

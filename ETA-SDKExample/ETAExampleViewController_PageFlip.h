@@ -8,9 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@class ETA;
 @interface ETAExampleViewController_PageFlip : UIViewController
-
-@property (nonatomic, readwrite, strong) ETA* eta;
 
 @end
