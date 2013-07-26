@@ -1,19 +1,19 @@
 //
 //  ETA_User.m
-//  ETA-SDKExample
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/17/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
 //
 
 #import "ETA_User.h"
-#import "ETA_APIEndpoints.h"
+#import "ETA_API.h"
 
 #import "ETA_PermissionCategories.h"
 
 @implementation ETA_User
 
-+ (NSString*) APIEndpoint { return ETA_APIEndpoints.users; }
++ (NSString*) APIEndpoint { return ETA_API.users; }
 
 
 #pragma mark - JSON transformers

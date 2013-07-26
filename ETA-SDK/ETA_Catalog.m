@@ -1,16 +1,16 @@
 //
 //  ETA_Catalog.m
-//  ETA-SDKExample
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/17/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
 //
 
 #import "ETA_Catalog.h"
-#import "ETA_APIEndpoints.h"
+#import "ETA_API.h"
 
 @implementation ETA_Catalog
 
-+ (NSString*) APIEndpoint { return ETA_APIEndpoints.catalogs; }
++ (NSString*) APIEndpoint { return ETA_API.catalogs; }
 
 @end

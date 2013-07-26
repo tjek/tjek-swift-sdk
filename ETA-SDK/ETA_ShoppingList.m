@@ -1,17 +1,17 @@
 //
 //  ETA_ShoppingList.m
-//  ETA-SDKExample
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/10/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
 //
 
 #import "ETA_ShoppingList.h"
-#import "ETA_APIEndpoints.h"
+#import "ETA_API.h"
 
 @implementation ETA_ShoppingList
 
-+ (NSString*) APIEndpoint { return ETA_APIEndpoints.shoppingLists; }
++ (NSString*) APIEndpoint { return ETA_API.shoppingLists; }
 
 
 #pragma mark - Init

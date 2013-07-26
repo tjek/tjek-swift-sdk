@@ -1,6 +1,6 @@
 //
-//  ETA_APIEndpoints.h
-//  ETA-SDKExample
+//  ETA_API.h
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/11/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
@@ -18,7 +18,7 @@ extern NSString* const kETAEndpoint_CacheLifespan;              // eg. 900 secs
 extern NSTimeInterval const kETAEndpoint_DefaultCacheLifespan; // in seconds
 
 // A Utility class for getting info about API endpoints
-@interface ETA_APIEndpoints : NSObject
+@interface ETA_API : NSObject
 
 #pragma mark - Endpoints
 
@@ -34,8 +34,8 @@ extern NSTimeInterval const kETAEndpoint_DefaultCacheLifespan; // in seconds
 
 #pragma mark - Endpoint properties
 
-+ (NSString*) apiURLForEndpoint:(NSString*)endpoint;
-+ (NSString*) apiURLForEndpointComponents:(NSArray*)components; // eg. "/v2/users/1234/test"
++ (NSString*) path:(NSString*)endpoint;
++ (NSString*) pathWithComponents:(NSArray*)components; // eg. "/v2/users/1234/test"
 
 + (NSArray*) allEndpoints;
 + (BOOL) isValidEndpoint:(NSString*)endpoint;
@@ -59,5 +59,5 @@ extern NSTimeInterval const kETAEndpoint_DefaultCacheLifespan; // in seconds
 #pragma mark - Cache
 
 + (NSTimeInterval) cacheLifespanForEndpoint:(NSString*)endpoint; //invalid endpoint results in default lifespan
-
++ (NSTimeInterval) maxCacheLifespan; // the largest lifespan of all the endpoints
 @end

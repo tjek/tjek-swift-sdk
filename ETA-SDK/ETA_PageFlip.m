@@ -1,6 +1,6 @@
 //
 //  ETA_PageFlip.m
-//  ETA-SDKExample
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/15/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
@@ -378,17 +378,17 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
         data[@"session"] = sessionDict;
     
     
-    NSString* response = nil;
     NSString* pendingRequest = self.pendingShowCatalogRequest;
     self.pendingShowCatalogRequest = nil;
     if (data)
     {
         self.initState = ETA_PageFlip_InitState_Initialized;
         
-        response = [self performJSProxyMethodWithName:@"initialize" data:data];
+        [self performJSProxyMethodWithName:@"initialize" data:data];
         
         if (pendingRequest)
         {
+            //TODO: Maybe handle responses, if we know how
             [self performJSRequest:pendingRequest];
         }
     }
@@ -517,10 +517,13 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
 
 + (NSString*) generateUUID
 {
-    CFUUIDRef theUUID = CFUUIDCreate(NULL);
-    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
-    CFRelease(theUUID);
-    return [(__bridge NSString *)string lowercaseString];
+    CFUUIDRef uuidRef = CFUUIDCreate(NULL);
+    CFStringRef uuidStringRef = CFUUIDCreateString(NULL, uuidRef);
+    CFRelease(uuidRef);
+    NSString *uuid = [NSString stringWithString:(__bridge NSString *)uuidStringRef];
+    CFRelease(uuidStringRef);
+    
+    return [uuid lowercaseString];
 }
 
 @end

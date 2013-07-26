@@ -1,6 +1,6 @@
 //
 //  ETA_Session.m
-//  ETA-SDKExample
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/8/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
@@ -8,14 +8,14 @@
 
 #import "ETA_Session.h"
 
-#import "ETA_APIEndpoints.h"
+#import "ETA_API.h"
 #import "ETA_PermissionCategories.h"
 
 static NSTimeInterval const kETA_SoonToExpireTimeInterval = 86400; // 1 day
 
 @implementation ETA_Session
 
-+ (NSString*) APIEndpoint { return ETA_APIEndpoints.sessions; }
++ (NSString*) APIEndpoint { return ETA_API.sessions; }
 
 
 #pragma mark - JSON transformers

@@ -1,12 +1,12 @@
 //
-//  ETA_APIEndpoints.m
-//  ETA-SDKExample
+//  ETA_API.m
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/11/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
 //
 
-#import "ETA_APIEndpoints.h"
+#import "ETA_API.h"
 
 NSString* const kETAEndpoint_ERNPrefix = @"kETAEndpoint_ERNPrefix";
 NSString* const kETAEndpoint_ItemFilterKey = @"kETAEndpoint_ItemFilterKey";
@@ -17,7 +17,7 @@ NSString* const kETAEndpoint_CacheLifespan = @"kETAEndpoint_CacheLifespan";
 
 NSTimeInterval const kETAEndpoint_DefaultCacheLifespan = 900; //15 mins
 
-@implementation ETA_APIEndpoints
+@implementation ETA_API
 
 #pragma mark - Endpoints
 
@@ -95,14 +95,14 @@ NSTimeInterval const kETAEndpoint_DefaultCacheLifespan = 900; //15 mins
     return endpointProperties;
 }
 
-+ (NSString*) apiURLForEndpoint:(NSString*)endpoint
++ (NSString*) path:(NSString*)endpoint
 {
     if (endpoint)
-        return [self apiURLForEndpointComponents:@[endpoint]];
+        return [self pathWithComponents:@[endpoint]];
     else
         return nil;
 }
-+ (NSString*) apiURLForEndpointComponents:(NSArray*)components
++ (NSString*) pathWithComponents:(NSArray*)components
 {
     if (!components)
         return nil;
@@ -177,6 +177,21 @@ NSTimeInterval const kETAEndpoint_DefaultCacheLifespan = 900; //15 mins
 
 
 #pragma mark - Cache
+
++ (NSTimeInterval) maxCacheLifespan
+{
+    static NSTimeInterval maxCacheLifespan;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSTimeInterval lifespan = 0;
+        for (NSString* endpoint in [self allEndpoints])
+        {
+            lifespan = MAX(lifespan, [self cacheLifespanForEndpoint:endpoint]);
+        }
+        maxCacheLifespan = lifespan;
+    });
+    return maxCacheLifespan;
+}
 
 + (NSTimeInterval) cacheLifespanForEndpoint:(NSString*)endpoint
 {

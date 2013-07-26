@@ -1,6 +1,6 @@
 //
 //  ETA_ModelObject.h
-//  ETA-SDKExample
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/11/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.

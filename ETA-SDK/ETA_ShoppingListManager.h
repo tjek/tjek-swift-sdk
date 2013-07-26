@@ -1,6 +1,6 @@
 //
 //  ETA_ShoppingListManager.h
-//  ETA-SDKExample
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/15/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
@@ -42,7 +42,7 @@ typedef enum{
 #pragma mark - Shopping Lists
 
 // creates a new shopping list with 'name' and calls addShoppingList:
-- (void) createShoppingList:(NSString*)name;
+- (ETA_ShoppingList*) createShoppingList:(NSString*)name;
 
 // try to add the list to both the local store and the server
 - (void) addShoppingList:(ETA_ShoppingList*)list;
@@ -68,7 +68,7 @@ typedef enum{
 #pragma mark - Shopping List Items
 
 // creates a new item with 'name' in 'listID' and calls addShoppingListItem:
-- (void) createShoppingListItem:(NSString *)name inList:(NSString*)listID;
+- (ETA_ShoppingListItem *) createShoppingListItem:(NSString *)name inList:(NSString*)listID;
 
 // try to add the item to both the local store and the server
 - (void) addShoppingListItem:(ETA_ShoppingListItem *)item;
@@ -105,9 +105,11 @@ typedef enum{
 
 
 #pragma mark - Permissions
+
+// does the current session support the attached user reading and writing shopping lists
+// returns YES if no attached user
 - (BOOL) canReadShoppingLists;
 - (BOOL) canWriteShoppingLists;
-
 
 
 @end

@@ -1,6 +1,6 @@
 //
 //  ETA_ShoppingListManager.m
-//  ETA-SDKExample
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/15/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
@@ -8,7 +8,6 @@
 
 #import "ETA_ShoppingListManager.h"
 #import "ETA.h"
-#import "ETA_APIEndpoints.h"
 
 #import "ETA_User.h"
 #import "ETA_Session.h"
@@ -180,13 +179,14 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
 #pragma mark Shopping Lists
 
 // create and add a totally new shopping list
-- (void) createShoppingList:(NSString*)name
+- (ETA_ShoppingList*) createShoppingList:(NSString*)name
 {
     ETA_ShoppingList* shoppingList = [ETA_ShoppingList shoppingListWithUUID:[[self class] generateUUID]
                                                                        name:name
                                                                modifiedDate:nil
                                                                      access:ETA_ShoppingList_Access_Private];
     [self addShoppingList:shoppingList];
+    return shoppingList;
 }
 
 // add the specified shopping list
@@ -264,10 +264,10 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
 
 #pragma mark Shopping List Items
 
-- (void) createShoppingListItem:(NSString *)name inList:(NSString*)listID
+- (ETA_ShoppingListItem *) createShoppingListItem:(NSString *)name inList:(NSString*)listID
 {
     if (!name || !listID)
-        return;
+        return nil;
     
     ETA_ShoppingListItem* item = [[ETA_ShoppingListItem alloc] initWithDictionary:@{@"uuid":[[self class] generateUUID],
                                                                                     @"name": name,
@@ -277,6 +277,8 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     item.creator = self.eta.attachedUser.email;
     
     [self addShoppingListItem:item];
+    
+    return item;
 }
 
 - (void) addShoppingListItem:(ETA_ShoppingListItem *)item
@@ -528,7 +530,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                              return;
                          
                          
-                         if (!error)
+                         if (!error && serverList)
                          {
                              ETA_ShoppingList* localList = [self localDBGetShoppingList:listID userID:userID];
                              [self saveLocallyAndNotifyChangesBetweenLocalShoppingLists:@[localList] andListsFromServer:@[serverList] userID:userID];
@@ -1475,10 +1477,10 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     }
     
     //   "/v2/users/{userID}/shoppinglists/{listID}"
-    NSString* request = [ETA_APIEndpoints apiURLForEndpointComponents:@[ ETA_User.APIEndpoint,
-                                                                         userID,
-                                                                         ETA_ShoppingList.APIEndpoint,
-                                                                         listID]];
+    NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
+                                                       userID,
+                                                       ETA_API.shoppingLists,
+                                                       listID]];
     
     [self.eta api:request
              type:ETARequestTypeGET
@@ -1506,9 +1508,9 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     }
     
     //   "/v2/users/{userID}/shoppinglists"
-    NSString* request = [ETA_APIEndpoints apiURLForEndpointComponents:@[ ETA_User.APIEndpoint,
-                                                                         userID,
-                                                                         ETA_ShoppingList.APIEndpoint]];
+    NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
+                                                       userID,
+                                                       ETA_API.shoppingLists]];
     
     [self.eta api:request
              type:ETARequestTypeGET
@@ -1546,11 +1548,11 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
         return;
     }
     //   "/v2/users/{userID}/shoppinglists/{listID}/modified"
-    NSString* request = [ETA_APIEndpoints apiURLForEndpointComponents:@[ ETA_User.APIEndpoint,
-                                                                         userID,
-                                                                         ETA_ShoppingList.APIEndpoint,
-                                                                         listID,
-                                                                         @"modified"]];
+    NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
+                                                       userID,
+                                                       ETA_API.shoppingLists,
+                                                       listID,
+                                                       @"modified"]];
     [self.eta api:request
              type:ETARequestTypeGET
        parameters:nil
@@ -1581,10 +1583,10 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     NSDictionary* jsonDict = [list JSONDictionary];
     
     // "/v2/users/{userID}/shoppinglists/{listID}"
-    NSString* request = [ETA_APIEndpoints apiURLForEndpointComponents:@[ ETA_User.APIEndpoint,
-                                                                         userID,
-                                                                         ETA_ShoppingList.APIEndpoint,
-                                                                         list.uuid]];
+    NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
+                                                       userID,
+                                                       ETA_API.shoppingLists,
+                                                       list.uuid]];
     [self.eta api:request
              type:ETARequestTypePUT
        parameters:jsonDict
@@ -1611,10 +1613,10 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     }
     
     // "/v2/users/{userID}/shoppinglists/{listID}?modified={now}"
-    NSString* request = [ETA_APIEndpoints apiURLForEndpointComponents:@[ ETA_User.APIEndpoint,
-                                                                         userID,
-                                                                         ETA_ShoppingList.APIEndpoint,
-                                                                         list.uuid]];
+    NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
+                                                       userID,
+                                                       ETA_API.shoppingLists,
+                                                       list.uuid]];
     [self.eta api:request
              type:ETARequestTypeDELETE
        parameters:@{@"modified":[ETA_ShoppingList.dateFormatter stringFromDate:list.modified]}
@@ -1642,11 +1644,11 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     }
     
     //   "/v2/users/{userID}/shoppinglists/{listID}/items"
-    NSString* request = [ETA_APIEndpoints apiURLForEndpointComponents:@[ ETA_User.APIEndpoint,
-                                                                         userID,
-                                                                         ETA_ShoppingList.APIEndpoint,
-                                                                         listID,
-                                                                         ETA_ShoppingListItem.APIEndpoint]];
+    NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
+                                                       userID,
+                                                       ETA_API.shoppingLists,
+                                                       listID,
+                                                       ETA_API.shoppingListItems]];
     
     [self.eta api:request
              type:ETARequestTypeGET
@@ -1691,13 +1693,13 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     NSMutableDictionary* jsonDict = [[item JSONDictionary] mutableCopy];
     
     // "/v2/users/{userID}/shoppinglists/{listID}/items/{itemID}"
-    NSString* request = [ETA_APIEndpoints apiURLForEndpointComponents:@[ ETA_User.APIEndpoint,
-                                                                         userID,
-                                                                         ETA_ShoppingList.APIEndpoint,
-                                                                         listID,
-                                                                         ETA_ShoppingListItem.APIEndpoint,
-                                                                         item.uuid
-                                                                         ]];
+    NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
+                                                       userID,
+                                                       ETA_API.shoppingLists,
+                                                       listID,
+                                                       ETA_API.shoppingListItems,
+                                                       item.uuid
+                                                       ]];
     [self.eta api:request
              type:ETARequestTypePUT
        parameters:jsonDict
@@ -1726,13 +1728,13 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     }
     
     // "/v2/users/{userID}/shoppinglists/{listID}/items/{itemID}"
-    NSString* request = [ETA_APIEndpoints apiURLForEndpointComponents:@[ ETA_User.APIEndpoint,
-                                                                         userID,
-                                                                         ETA_ShoppingList.APIEndpoint,
-                                                                         item.shoppingListID,
-                                                                         ETA_ShoppingListItem.APIEndpoint,
-                                                                         item.uuid
-                                                                         ]];
+    NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
+                                                       userID,
+                                                       ETA_API.shoppingLists,
+                                                       item.shoppingListID,
+                                                       ETA_API.shoppingListItems,
+                                                       item.uuid
+                                                       ]];
     [self.eta api:request
              type:ETARequestTypeDELETE
        parameters:nil
@@ -1764,12 +1766,12 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     NSString* filterStr = [filterStrings objectForKey:@(filter)];
     
     // "/v2/users/{userID}/shoppinglists/{listID}/empty"
-    NSString* request = [ETA_APIEndpoints apiURLForEndpointComponents:@[ ETA_User.APIEndpoint,
-                                                                         userID,
-                                                                         ETA_ShoppingList.APIEndpoint,
-                                                                         listID,
-                                                                         @"empty",
-                                                                         ]];
+    NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
+                                                       userID,
+                                                       ETA_API.shoppingLists,
+                                                       listID,
+                                                       @"empty",
+                                                       ]];
     [self.eta api:request
              type:ETARequestTypeDELETE
        parameters:(filterStr) ? @{ @"filter": filterStr } : nil
@@ -1795,7 +1797,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     if (userID)
         return [self.eta allowsPermission:[NSString stringWithFormat:@"api.users.%@.read",userID]];
     else
-        return NO;
+        return YES;
 }
 - (BOOL) canWriteShoppingLists
 {
@@ -1803,8 +1805,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     if (userID)
         return [self.eta allowsPermission:[NSString stringWithFormat:@"api.users.%@.update",userID]];
     else
-        return NO;
-    return NO;
+        return YES;
 }
 
 
@@ -1813,10 +1814,13 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
 
 + (NSString*) generateUUID
 {
-    CFUUIDRef theUUID = CFUUIDCreate(NULL);
-    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
-    CFRelease(theUUID);
-    return [(__bridge NSString *)string lowercaseString];
+    CFUUIDRef uuidRef = CFUUIDCreate(NULL);
+    CFStringRef uuidStringRef = CFUUIDCreateString(NULL, uuidRef);
+    CFRelease(uuidRef);
+    NSString *uuid = [NSString stringWithString:(__bridge NSString *)uuidStringRef];
+    CFRelease(uuidStringRef);
+    
+    return [uuid lowercaseString];
 }
 
 

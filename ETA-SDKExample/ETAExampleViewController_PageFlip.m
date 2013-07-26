@@ -46,6 +46,8 @@
     toggleButton.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:toggleButton];
 }
+
+
 - (void) viewDidAppear:(BOOL)animated
 {
 }

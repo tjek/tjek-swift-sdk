@@ -12,7 +12,7 @@
 #import "ETA_Session.h"
 
 
-NSString* const ETA_SessionUserIDChangedNotification = @"ETA_SessionUserIDChangedNotification";
+NSString* const ETA_AttachedUserChangedNotification = @"ETA_AttachedUserChangedNotification";
 
 
 @interface ETA ()
@@ -23,7 +23,8 @@ NSString* const ETA_SessionUserIDChangedNotification = @"ETA_SessionUserIDChange
 @property (nonatomic, readwrite, strong) NSString *apiSecret;
 @property (nonatomic, readwrite, strong) NSURL *baseURL;
 
-@property (nonatomic, readwrite, strong) NSCache* itemCache;
+@property (nonatomic, readwrite, strong) NSMutableDictionary* itemCache;
+
 @end
 
 static ETA* ETA_SingletonSDK = nil;
@@ -79,7 +80,10 @@ static ETA* ETA_SingletonSDK = nil;
 {
     if((self = [super init]))
     {
-        self.itemCache = [[NSCache alloc] init];
+        // start the clearing of the cache
+        [self repeatClearCacheEventEvery:[ETA_API maxCacheLifespan]];
+        self.itemCache = [[NSMutableDictionary alloc] initWithCapacity:100];
+        
         self.baseURL = [NSURL URLWithString: kETA_APIBaseURLString];
     }
     return self;
@@ -107,30 +111,33 @@ static ETA* ETA_SingletonSDK = nil;
     if (_client == client)
         return;
     
-    [_client removeObserver:self forKeyPath:@"session.user.uuid"];
+    [_client removeObserver:self forKeyPath:@"session"];
     
     _client = client;
     
-    [_client addObserver:self forKeyPath:@"session.user.uuid" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:NULL];
+    [_client addObserver:self forKeyPath:@"session" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:@"session.user.uuid"])
+    if ([keyPath isEqualToString:@"session"])
     {
-        NSString* old = change[NSKeyValueChangeOldKey];
-        old = ([old isEqual:NSNull.null]) ? nil : old;
+        ETA_Session* oldSession = change[NSKeyValueChangeOldKey];
+        oldSession = ([oldSession isEqual:NSNull.null]) ? nil : oldSession;
         
-        NSString* new = change[NSKeyValueChangeNewKey];
-        new = ([new isEqual:NSNull.null]) ? nil : new;
+        ETA_Session* newSession = change[NSKeyValueChangeNewKey];
+        newSession = ([newSession isEqual:NSNull.null]) ? nil : newSession;
         
-        if (old == new || [old isEqualToString:new])
+        ETA_User* oldUser = oldSession.user;
+        ETA_User* newUser = newSession.user;
+        
+        if (oldUser.uuid == newUser.uuid || [oldUser.uuid isEqualToString:newUser.uuid])
             return;
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:ETA_SessionUserIDChangedNotification
+        [[NSNotificationCenter defaultCenter] postNotificationName:ETA_AttachedUserChangedNotification
                                                             object:self
-                                                          userInfo:@{@"oldUserID": change[NSKeyValueChangeOldKey],
-                                                                     @"newUserID": change[NSKeyValueChangeNewKey]}];
+                                                          userInfo:@{@"oldUser": (oldUser) ?: NSNull.null,
+                                                                     @"newUser": (newUser) ?: NSNull.null }];
     }
 }
 
@@ -139,16 +146,6 @@ static ETA* ETA_SingletonSDK = nil;
 - (void) connect:(void (^)(NSError* error))completionHandler
 {
     [self.client startSessionWithCompletion:completionHandler];
-}
-
-- (void) connectWithUserEmail:(NSString*)email password:(NSString*)password completion:(void (^)(BOOL connected, NSError* error))completionHandler
-{
-    [self attachUserEmail:email password:password completion:^(NSError *error) {
-        if (completionHandler)
-        {
-            completionHandler(!error, error);
-        }
-    }];
 }
 
 
@@ -172,12 +169,12 @@ static ETA* ETA_SingletonSDK = nil;
 
 - (NSString*) attachedUserID
 {
-    return self.client.session.userID;
+    return [self.client.session.userID copy];
 }
 
 - (ETA_User*) attachedUser
 {
-    return self.client.session.user;
+    return [self.client.session.user copy];
 }
 
 
@@ -250,6 +247,44 @@ static ETA* ETA_SingletonSDK = nil;
 
 #pragma mark - Cache
 
+- (void) clearCache
+{
+    @synchronized(self.itemCache)
+    {
+        [self.itemCache removeAllObjects];
+    }
+}
+- (void) clearOutOfDateCache
+{
+    if (!self.itemCache)
+        return;
+        
+    @synchronized(self.itemCache)
+    {
+        NSTimeInterval nowTimestamp = [NSDate timeIntervalSinceReferenceDate];
+        NSTimeInterval maxCacheLifespan = [ETA_API maxCacheLifespan];
+        NSArray* allERNs = self.itemCache.allKeys;
+        for (NSString* ern in allERNs)
+        {
+            NSDictionary* cachedItemDict = [self.itemCache objectForKey:ern];
+            
+            if ((nowTimestamp - [cachedItemDict[@"timestamp"] doubleValue]) > maxCacheLifespan)
+                [self.itemCache removeObjectForKey:ern];
+        }
+    }
+}
+
+- (void) repeatClearCacheEventEvery:(NSTimeInterval)repeatEverySecs
+{
+    [self clearOutOfDateCache];
+    if (repeatEverySecs <= DBL_EPSILON)
+        return;
+    
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(repeatEverySecs * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_global_queue(0, 0), ^(void){
+        [self repeatClearCacheEventEvery:repeatEverySecs];
+    });
+}
 
 - (NSArray*)itemIDsFromRequestPath:(NSString*)requestPath parameters:(NSDictionary*)parameters endpointForItems:(NSString**)resultingEndpoint
 {
@@ -270,7 +305,7 @@ static ETA* ETA_SingletonSDK = nil;
     NSString* endpoint = pathComponents[pathComponents.count-2];
     
     // take the penultimate component and figure out if it is a valid endpoint
-    if ([ETA_APIEndpoints isValidEndpoint:endpoint])
+    if ([ETA_API isValidEndpoint:endpoint])
     {
         // if the penultimate component is a valud endpoint, assume the final item is the id
         itemIDParam = pathComponents[pathComponents.count-1];
@@ -279,16 +314,16 @@ static ETA* ETA_SingletonSDK = nil;
     else
     {
         endpoint = pathComponents[pathComponents.count-1];
-        if ([ETA_APIEndpoints isValidEndpoint:endpoint])
+        if ([ETA_API isValidEndpoint:endpoint])
         {
             // try to get the multiple-ids parameter
-            NSString* multiItemFilterKey = [ETA_APIEndpoints multipleItemsFilterKeyForEndpoint:endpoint];
+            NSString* multiItemFilterKey = [ETA_API multipleItemsFilterKeyForEndpoint:endpoint];
             if (multiItemFilterKey)
                 itemIDParam = parameters[multiItemFilterKey];
             
             
             // if there were no multiple keys, try to get the single key
-            NSString* itemFilterKey = [ETA_APIEndpoints itemFilterKeyForEndpoint:endpoint];
+            NSString* itemFilterKey = [ETA_API itemFilterKeyForEndpoint:endpoint];
             if (!itemIDParam && itemFilterKey)
                 itemIDParam = parameters[itemFilterKey];
         }
@@ -343,7 +378,7 @@ static ETA* ETA_SingletonSDK = nil;
     if (itemIDs.count && endpoint)
     {
         NSTimeInterval nowTimestamp = [NSDate timeIntervalSinceReferenceDate];
-        NSTimeInterval cacheLifespan = [ETA_APIEndpoints cacheLifespanForEndpoint:endpoint];
+        NSTimeInterval cacheLifespan = [ETA_API cacheLifespanForEndpoint:endpoint];
         
         NSMutableArray* cachedItems = [@[] mutableCopy];
         
@@ -352,30 +387,33 @@ static ETA* ETA_SingletonSDK = nil;
         BOOL foundAll = YES;
         for (NSString* itemID in itemIDs)
         {
-            NSString* itemERN = [ETA_APIEndpoints ernForEndpoint:endpoint withItemID:itemID];
+            NSString* itemERN = [ETA_API ernForEndpoint:endpoint withItemID:itemID];
             
-            NSDictionary* cachedItemDict = (itemERN) ? [self.itemCache objectForKey:itemERN] : nil;
-            // item not in cache
-            if (!cachedItemDict)
+            @synchronized(self.itemCache)
             {
-                foundAll = NO;
-                break;
-            }
-            // item in cache
-            else
-            {
-                id cachedItem = cachedItemDict[@"item"];
-                // invalid item, or out of date. remove from cache and fail
-                if (!cachedItem || (nowTimestamp - [cachedItemDict[@"timestamp"] doubleValue]) > cacheLifespan)
+                NSDictionary* cachedItemDict = (itemERN) ? [self.itemCache objectForKey:itemERN] : nil;
+                // item not in cache
+                if (!cachedItemDict)
                 {
-                    [self.itemCache removeObjectForKey:itemERN];
                     foundAll = NO;
                     break;
                 }
-                // yay - it's in the cache
+                // item in cache
                 else
                 {
-                    [cachedItems addObject:cachedItem];
+                    id cachedItem = [cachedItemDict[@"item"] copy];
+                    // invalid item, or out of date. remove from cache and fail
+                    if (!cachedItem || (nowTimestamp - [cachedItemDict[@"timestamp"] doubleValue]) > cacheLifespan)
+                    {
+                        [self.itemCache removeObjectForKey:itemERN];
+                        foundAll = NO;
+                        break;
+                    }
+                    // yay - it's in the cache
+                    else
+                    {
+                        [cachedItems addObject:cachedItem];
+                    }
                 }
             }
         }
@@ -400,8 +438,11 @@ static ETA* ETA_SingletonSDK = nil;
         NSString* ern = jsonItem[@"ern"];
         if (ern)
         {
-            [self.itemCache setObject:@{ @"item": jsonItem, @"timestamp":@([NSDate timeIntervalSinceReferenceDate]) }
-                               forKey:ern];
+            @synchronized(self.itemCache)
+            {
+                [self.itemCache setObject:@{ @"item": jsonItem, @"timestamp":@([NSDate timeIntervalSinceReferenceDate]) }
+                                   forKey:ern];
+            }
         }
     }
 }

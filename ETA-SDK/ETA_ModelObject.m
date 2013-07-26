@@ -1,13 +1,13 @@
 //
 //  ETA_ModelObject.m
-//  ETA-SDKExample
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/11/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
 //
 
 #import "ETA_ModelObject.h"
-#import "ETA_APIEndpoints.h"
+#import "ETA_API.h"
 
 @implementation ETA_ModelObject
 
@@ -48,7 +48,7 @@
 
 + (NSString*) ernForItemID:(NSString*)itemID
 {
-    return [ETA_APIEndpoints ernForEndpoint:self.APIEndpoint withItemID:itemID];
+    return [ETA_API ernForEndpoint:self.APIEndpoint withItemID:itemID];
 }
 
 

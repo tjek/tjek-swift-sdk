@@ -1,6 +1,6 @@
 //
 //  ETA_ShoppingList+FMDB.m
-//  ETA-SDKExample
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/17/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.

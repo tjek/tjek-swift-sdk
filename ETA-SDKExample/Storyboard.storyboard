@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="4471.1" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" useAutolayout="YES" initialViewController="tfY-U3-lFo">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="4471.1" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" useAutolayout="YES" initialViewController="cHr-Ea-nLh">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
         <development version="4600" identifier="xcode"/>
@@ -106,22 +106,163 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8LQ-Tv-xli" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="65" y="47"/>
+            <point key="canvasLocation" x="1568" y="-325"/>
         </scene>
-        <!--Example View Controller Page Flip-->
+        <!--Navigation Controller-->
+        <scene sceneID="uKY-RP-9ss">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="cHr-Ea-nLh" sceneMemberID="viewController">
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="9wF-Un-DdD">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="ED9-7w-baO" kind="relationship" relationship="rootViewController" id="iEL-cu-35B"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rsk-8C-mfy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-780" y="-44"/>
+        </scene>
+        <!--Table View Controller - ETA SDK-->
+        <scene sceneID="4BP-0R-2nD">
+            <objects>
+                <tableViewController id="ED9-7w-baO" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="MQe-jo-0XK">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <sections>
+                            <tableViewSection id="Tb0-fV-Dxo">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="ugS-JO-XsD" style="IBUITableViewCellStyleDefault" id="55m-3d-nDk">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="-1" y="0.0" width="301" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Shopping List Manager" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ugS-JO-XsD">
+                                                    <rect key="frame" x="10" y="0.0" width="281" height="43"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <connections>
+                                            <segue destination="Ooh-uK-a1f" kind="push" id="9Qg-eG-DlK"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="SAm-xu-0Ye" style="IBUITableViewCellStyleDefault" id="w4B-S3-8bF">
+                                        <rect key="frame" x="0.0" y="44" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="w4B-S3-8bF">
+                                            <rect key="frame" x="-1" y="0.0" width="301" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Page Flip" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="SAm-xu-0Ye">
+                                                    <rect key="frame" x="10" y="0.0" width="281" height="43"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="tfY-U3-lFo" kind="push" id="4Ug-GL-mQt"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="ED9-7w-baO" id="Fow-aZ-HIG"/>
+                            <outlet property="delegate" destination="ED9-7w-baO" id="55e-DO-Fsu"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="ETA SDK" id="KI9-Kd-y9N"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hNq-C1-StX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-287" y="-50"/>
+        </scene>
+        <!--Example View Controller Page Flip - Page Flip-->
         <scene sceneID="1ns-OT-90Z">
             <objects>
                 <viewController id="tfY-U3-lFo" customClass="ETAExampleViewController_PageFlip" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="AmY-JL-Hrh">
-                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.1896683415" green="0.69951519600000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <navigationItem key="navigationItem" title="Page Flip" id="X3N-7y-Sr2"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CQT-nq-XxS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="499" y="-103"/>
+            <point key="canvasLocation" x="389" y="303"/>
+        </scene>
+        <!--Example View Controller Shopping Lists - Shopping Lists-->
+        <scene sceneID="Nwo-1i-Q7A">
+            <objects>
+                <viewController id="Ooh-uK-a1f" customClass="ETAExampleViewController_ShoppingLists" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="X7l-SC-JGf">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="SUs-gz-k9B">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="SUs-gz-k9B" firstAttribute="trailing" secondItem="X7l-SC-JGf" secondAttribute="trailing" type="default" id="4Ux-OY-4RJ"/>
+                            <constraint firstItem="SUs-gz-k9B" firstAttribute="leading" secondItem="X7l-SC-JGf" secondAttribute="leading" type="default" id="Bb4-Zg-HPc"/>
+                            <constraint firstItem="SUs-gz-k9B" firstAttribute="bottom" secondItem="X7l-SC-JGf" secondAttribute="bottom" type="default" id="Nhh-hU-GKC"/>
+                            <constraint firstItem="SUs-gz-k9B" firstAttribute="top" secondItem="X7l-SC-JGf" secondAttribute="top" type="default" id="VNL-qa-ika"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Shopping Lists" id="073-AF-t7t">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="jyd-BC-KnT">
+                            <connections>
+                                <action selector="addList:" destination="Ooh-uK-a1f" id="Fq4-eQ-60a"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+                    <connections>
+                        <segue destination="Abg-OX-yTS" kind="push" id="6cB-Wx-aig"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Aa1-EW-cJk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="389" y="-411"/>
+        </scene>
+        <!--Example View Controller Shopping List Items - List Title-->
+        <scene sceneID="FFd-CF-suo">
+            <objects>
+                <viewController id="Abg-OX-yTS" customClass="ETAExampleViewController_ShoppingListItems" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="RNt-d1-O6S">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="List Title" id="WMZ-8C-1eJ">
+                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="add" id="0lz-Ix-b94"/>
+                    </navigationItem>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kfW-oO-Uvq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="910" y="-421"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

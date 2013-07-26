@@ -39,11 +39,8 @@
 {
     [super viewDidLoad];
     
-    self.eta = [ETA etaWithAPIKey:ETA_APIKey apiSecret:ETA_APISecret];
     
-    [self.eta setLatitude:55.40227410 longitude:12.1873010 distance:5000 isFromSensor:NO];
-    
-    self.shoppingListManager = [ETA_ShoppingListManager managerWithETA:self.eta];
+    self.shoppingListManager = [ETA_ShoppingListManager managerWithETA:ETA.SDK];
     self.shoppingListManager.pollRate = ETA_ShoppingListManager_PollRate_Default;
     
 
@@ -60,9 +57,8 @@
                                                       DLog(@"Items Modified: %@", note.userInfo);
                                                   }];
     
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:ETA_SessionUserIDChangedNotification
-                                                      object:self.eta
+    [[NSNotificationCenter defaultCenter] addObserverForName:ETA_AttachedUserChangedNotification
+                                                      object:ETA.SDK
                                                        queue:nil
                                                   usingBlock:^(NSNotification *note) {
                                                       [self updateUserIDLabel];
@@ -70,13 +66,19 @@
     
     
 //    
-//    [eta api:@"/v2/catalogs?catalog_ids=15,12"
-//        type:ETARequestTypeGET
-//  parameters:nil
-//  completion:^(id response, NSError *error, BOOL fromCache) {
-//      DLog(@"%@, %@, %@", response, error, @(fromCache));
-//  }];
+    [ETA.SDK api:@"/v2/catalogs"
+            type:ETARequestTypeGET
+      parameters:@{@"catalog_ids": @[@15,@12] }
+      completion:^(id response, NSError *error, BOOL fromCache) {
+          
+      }];
+
+    
+    
+//    [ETA_API path: ETA_API.catalogs]
 //    
+//    [ETA_API path: ETA_API.offers, @"12345", ]
+    
 //    return;
 ////    [eta attachUserEmail:userEmail password:userPassword completion:^(NSError *error) {
 ////        DLog(@"userAttached");

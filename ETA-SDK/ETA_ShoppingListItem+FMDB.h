@@ -1,6 +1,6 @@
 //
 //  ETA_ShoppingListItem+FMDB.h
-//  ETA-SDKExample
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/22/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
@@ -11,6 +11,11 @@
 #import "ETA_ShoppingListManager.h"
 
 @class FMResultSet, FMDatabase;
+
+
+// This category adds a lot of handy methods for talking to an FMDB database.
+// It contains the table definition for an object of this type.
+
 @interface ETA_ShoppingListItem (FMDB)
 
 // create the shopping list items table with the specified name in the db

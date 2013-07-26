@@ -1,6 +1,6 @@
 //
 //  ETA_APIClient.m
-//  ETA-SDKExample
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/8/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
@@ -10,7 +10,7 @@
 
 #import "ETA.h"
 #import "ETA_Session.h"
-#import "ETA_APIEndpoints.h"
+#import "ETA_API.h"
 
 #import "AFJSONRequestOperation.h"
 
@@ -387,7 +387,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 // create a new session, and assign
 - (void) createSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self postPath:[ETA_APIEndpoints apiURLForEndpoint:ETA_Session.APIEndpoint]
+    [self postPath:[ETA_API path:ETA_API.sessions]
         parameters:@{ @"api_key": (self.apiKey) ?: [NSNull null] }
            success:^(AFHTTPRequestOperation *operation, id responseObject) {
                NSError* error = nil;
@@ -416,7 +416,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 // get the latest state of the session
 - (void) updateSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self getPath:[ETA_APIEndpoints apiURLForEndpoint:ETA_APIEndpoints.sessions]
+    [self getPath:[ETA_API path:ETA_API.sessions]
        parameters:nil
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSError* error = nil;
@@ -444,7 +444,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 // Ask for a new expiration date / token
 - (void) renewSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self putPath:[ETA_APIEndpoints apiURLForEndpoint:ETA_APIEndpoints.sessions]
+    [self putPath:[ETA_API path:ETA_API.sessions]
        parameters:nil
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSError* error = nil;
@@ -475,7 +475,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 
 - (void) attachUser:(NSDictionary*)userCredentials withCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self makeRequest:[ETA_APIEndpoints apiURLForEndpoint:ETA_APIEndpoints.sessions]
+    [self makeRequest:[ETA_API path:ETA_API.sessions]
                  type:ETARequestTypePUT
            parameters:userCredentials
            completion:^(id response, NSError *error) {
@@ -498,7 +498,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 }
 - (void) detachUserWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self makeRequest:[ETA_APIEndpoints apiURLForEndpoint:ETA_APIEndpoints.sessions]
+    [self makeRequest:[ETA_API path:ETA_API.sessions]
                  type:ETARequestTypePUT
            parameters:@{ @"email":@"" }
            completion:^(id response, NSError *error) {
