@@ -65,11 +65,13 @@ For example, to get an array of catalogs for some specific dealers, sorted by di
 
 
 ##### Caching
-Every time an API call returns a valid object (when `useCache` is true), the JSON is (re-)cached, keyed on the object's `ern`. The next time an API call is made that is asking for a specific object or list of objects, the SDK looks in the cache for previous results matching the requested object. 
+Every time an API call returns a valid object (when `useCache` is true), the JSON dictionary is saved to the cache, keyed on the object's `ern`. The next time an API call is made that is asking for a specific object or list of objects, the SDK looks in the cache for previous results matching the requested object. 
 
 It will always still send the request to the server, but if it does find matching objects in the cache the `completionHandler` will be called twice, the `fromCache` property specifying whether the response came from the cache or not (the response will be a copy of the cache data). If you are asking for a list of objects, and not all of the objects are in the cache, it will be as if none of the objects are in the cache. 
 
-Objects have a limited cache lifespan, and will not be returned if out of date (lifespan depends on the object type, but defaults to around 15mins). The cache will be cleaned of out-of-date objects at a regular interval, or if you request an object that is out-of-date. You can manually clear all objects from the cache by calling `-(void)clearCache;`, or just out of date objects with `-(void)clearOutOfDateCache;` (note that this iterates the cache, so should not be done regularly). You might want to do this if you get an memory warning).
+Objects have a limited cache lifespan, and will not be returned if out of date (lifespan depends on the object type, but defaults to around 15mins). The cache will be cleaned of out-of-date objects at a regular interval, and whenever you request an object that is out-of-date. 
+
+You can manually clear all objects from the cache by calling `-clearCache`, or just out of date objects with `-clearOutOfDateCache`. Note that clearing out of date objects iterates the entire cache, so should not be done regularly - you probably only want to do this if you get a low memory warning, in which case you should just clear the entire cache.
 
 
 ##### Endpoints
