@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+@class ETA_Catalog;
 @interface ETAExampleViewController_PageFlip : UIViewController
+
+@property (nonatomic, readwrite, strong) ETA_Catalog* catalog;
 
 @end

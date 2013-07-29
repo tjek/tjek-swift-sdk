@@ -123,13 +123,13 @@ You can also listen for changes to the attached user in the `NSNotificationCente
                                            selector:@selector(userChanged:)
                                                name:ETA_AttachedUserChangedNotification
                                              object:ETA.SDK];
-The `userInfo` of the `NSNotification` object that is passed to the selector handling the notification is a dictionary containing both the old and new users (set to NSNull.null if logged out). This will only be triggered when the `uuid` of the attached user changes, not if a property of the user changes.
+The `userInfo` of the `NSNotification` object that is passed to the selector handling the notification is a dictionary containing both the old and new users (set to `NSNull.null` if logged out). This will only be triggered when the `uuid` of the attached user changes, not if a property of the user changes.
 
 
 ### Location
 Everything in the eTilbudsAvis world is location based, so it is **very** important that you set the location on the ETA object, and keep it up to date. Even if you don't think it is relevant, please still send it, as the analytics are vital. The location info that you set will be sent with every subsequent API call. 
 
-To update the all the location properties at once, user the following methods:
+To update all the location properties at once, use the following methods:
 
     [ETA.SDK setLatitude:55.631219
                longitude:12.577426 

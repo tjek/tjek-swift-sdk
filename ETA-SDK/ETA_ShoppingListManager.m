@@ -1563,7 +1563,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
            {
                NSString* dateStr = [response valueForKey:@"modified"];
                if (dateStr)
-                   modified = [[ETA_ShoppingList dateFormatter] dateFromString:dateStr];
+                   modified = [ETA_API.dateFormatter dateFromString:dateStr];
            }
            
            completionHandler(modified, error);
@@ -1619,7 +1619,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                                                        list.uuid]];
     [self.eta api:request
              type:ETARequestTypeDELETE
-       parameters:@{@"modified":[ETA_ShoppingList.dateFormatter stringFromDate:list.modified]}
+       parameters:@{@"modified":[ETA_API.dateFormatter stringFromDate:list.modified]}
          useCache:NO
        completion:^(id response, NSError *error, BOOL fromCache) {
            if (completionHandler)

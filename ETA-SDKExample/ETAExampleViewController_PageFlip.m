@@ -12,17 +12,31 @@
 #import "ETA_PageFlip.h"
 #import "ETA.h"
 #import "ETA-APIKeyAndSecret.h"
+#import "ETA_Catalog.h"
 
 @interface ETAExampleViewController_PageFlip ()<ETAPageFlipDelegate>
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activitySpinner;
 @property (nonatomic, readwrite, strong) ETA_PageFlip* pageFlip;
+@property (nonatomic, readwrite, assign) BOOL isReady;
 @end
 
 @implementation ETAExampleViewController_PageFlip
 
+- (void) setCatalog:(ETA_Catalog *)catalog
+{
+    NSString* catalogID = catalog.uuid;
+    if (catalogID==_catalog.uuid || [catalogID isEqualToString:_catalog.uuid])
+        return;
+    
+    _catalog = catalog;
+    
+    [self updateViewForCatalog];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     self.pageFlip = [[ETA_PageFlip alloc] initWithETA:ETA.SDK];
     self.pageFlip.delegate = self;
 //    self.pageFlip.verbose = YES;
@@ -31,37 +45,40 @@
     self.pageFlip.alpha = 0;
     self.pageFlip.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.pageFlip];
-    
-    
-    UIButton* toggleButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [toggleButton addTarget:self action:@selector(toggleCatalog:) forControlEvents:UIControlEventTouchUpInside];
-    toggleButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
-    [toggleButton setTitle:@"Toggle Catalog" forState:UIControlStateNormal];
-    [toggleButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-    [toggleButton sizeToFit];
-    toggleButton.frame = CGRectMake(CGRectGetMidX(self.view.bounds) - (toggleButton.frame.size.width/2),
-                                    CGRectGetMaxY(self.view.bounds) - (toggleButton.frame.size.height + 10),
-                                    toggleButton.frame.size.width, toggleButton.frame.size.height);
-    
-    toggleButton.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:toggleButton];
 }
 
-
-- (void) viewDidAppear:(BOOL)animated
+- (void) viewWillAppear:(BOOL)animated
 {
+    [self updateViewForCatalog];
 }
 
-- (IBAction)toggleCatalog:(id)sender
+- (void) updateViewForCatalog
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:0.5
-                         animations:^{
-                             self.pageFlip.alpha = 0.0;
-                         } completion:^(BOOL finished) {
-                             [self.pageFlip loadCatalog:([self.pageFlip.catalogID isEqualToString:@"bdea9Ig"]) ? @"d05d8Ig" : @"bdea9Ig"];
-                         }];
-    });
+    if (self.catalog)
+    {
+        [self.activitySpinner startAnimating];
+        
+        self.title = self.catalog.branding.name;
+        
+        UIColor* brandColor = (self.catalog.branding.pageflipColor) ?: self.catalog.branding.color;
+        
+        // if the brand color is white, make it grey (so we can see it)
+        UIColor* brandTextColor = ([brandColor isEqual:[UIColor colorWithRed:1 green:1 blue:1 alpha:1]]) ? [UIColor grayColor] : brandColor;
+        
+        self.navigationController.navigationBar.tintColor = brandTextColor;
+        self.view.backgroundColor = brandColor;
+    }
+    else
+    {
+        [self.activitySpinner stopAnimating];
+        self.title = @"";
+        
+        self.navigationController.navigationBar.tintColor = nil;
+        self.view.backgroundColor = [UIColor viewFlipsideBackgroundColor];
+    }
+    
+    self.isReady = NO;
+    [self.pageFlip loadCatalog:self.catalog.uuid];
 }
 
 #pragma mark - PageFlip Delegate methods
@@ -69,21 +86,20 @@
 // called when something is appears
 - (void)etaPageFlip:(ETA_PageFlip*)pageFlip readyEvent:(NSDictionary*)data
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:1
-                         animations:^{
-                             pageFlip.alpha = 1.0;
-                         }];
-    });
+    
 }
 - (void)etaPageFlip:(ETA_PageFlip *)pageFlip didFailLoadWithError:(NSError *)error
 {
-    NSLog(@"Did Fail Load: %@ %@", pageFlip, error);
+    [self.activitySpinner stopAnimating];
 }
 
 - (void)etaPageFlip:(ETA_PageFlip*)pageFlip catalogViewHotspotEvent:(NSDictionary*)data
 {
     NSLog(@"Clicked Hotspot '%@'", data[@"heading"]);
+    UIAlertView* alert = [[UIAlertView alloc] init];
+    alert.title = data[@"heading"];
+    [alert addButtonWithTitle:NSLocalizedString(@"OK",@"OK")];
+    [alert show];
 }
 
 // triggered for any event that you don't have a delegate method for
@@ -94,6 +110,17 @@
 
 - (void) etaPageFlip:(ETA_PageFlip *)pageFlip catalogViewPageChangeEvent:(NSDictionary *)data
 {
+    // although etaPageFlip:readyEvent: marks when the pageflip is ready, the catalog may not be fully drawn yet
+    // the page change event is a better point for knowing when drawing is ready
+    if (self.isReady == NO)
+    {
+        self.isReady = YES;
+        [self.activitySpinner stopAnimating];
+        [UIView animateWithDuration:1
+                         animations:^{
+                                pageFlip.alpha = 1.0;
+                            }];
+    }
     NSLog(@"Changed to %d / %d (%.2f%%)", pageFlip.currentPage, pageFlip.pageCount, pageFlip.pageProgress*100);
 }
 @end
