@@ -14,3 +14,7 @@ xcuserdata
 profile
 *.moved-aside
 .DS_Store
+
+# CocoaPods
+Pods
+Podfile.lock
