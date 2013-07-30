@@ -7,6 +7,9 @@ The following libraries are required for the ETA SDK to work.
 - [Mantle](https://github.com/github/Mantle) - Super-class to all the model objects. Allows for easy conversion to/from a JSON dictionary.
 - [FMDB](https://github.com/ccgus/fmdb) - Handles all the SQLite database communication.
 
+### Required Frameworks
+- <CoreLocation/CoreLocation.h>
+
 
 # Usage
 There are 3 components to the ETA SDK, `ETA`, `ETA_ShoppingListManager` and `ETA_PageFlip`. 
@@ -16,7 +19,7 @@ The `ETA_ShoppingListManager` and `ETA_PageFlip` both make use of the `ETA` obje
 ## ETA SDK
 > \#import "ETA.h"
 
-The `ETA` class is the main interface into the eTilbudsAvis SDK. It handles all the boring session management stuff, freeing you to simply make API requests.
+The `ETA` class is the main interface into the eTilbudsavis SDK. It handles all the boring session management stuff, freeing you to simply make API requests.
 
 ### Initialization
 
@@ -127,7 +130,7 @@ The `userInfo` of the `NSNotification` object that is passed to the selector han
 
 
 ### Location
-Everything in the eTilbudsAvis world is location based, so it is **very** important that you set the location on the ETA object, and keep it up to date. Even if you don't think it is relevant, please still send it, as the analytics are vital. The location info that you set will be sent with every subsequent API call. 
+Everything in the eTilbudsavis world is location based, so it is **very** important that you set the location on the ETA object, and keep it up to date. Even if you don't think it is relevant, please still send it, as the analytics are vital. The location info that you set will be sent with every subsequent API call. 
 
 To update all the location properties at once, use the following methods:
 
