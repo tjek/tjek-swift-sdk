@@ -85,13 +85,20 @@ static ETA* ETA_SingletonSDK = nil;
         self.itemCache = [[NSMutableDictionary alloc] initWithCapacity:100];
         
         self.baseURL = [NSURL URLWithString: kETA_APIBaseURLString];
+        
+        self.verbose = NO;
     }
     return self;
 }
 
-- (void) dealloc
+- (void) setVerbose:(BOOL)verbose
 {
-    self.client = nil;
+    if (_verbose == verbose)
+        return;
+    
+    _verbose = verbose;
+    
+    _client.verbose = _verbose;
 }
 
 - (ETA_APIClient*) client
@@ -122,6 +129,7 @@ static ETA* ETA_SingletonSDK = nil;
 {
     if ([keyPath isEqualToString:@"session"])
     {
+        // watch for changes to the user
         ETA_Session* oldSession = change[NSKeyValueChangeOldKey];
         oldSession = ([oldSession isEqual:NSNull.null]) ? nil : oldSession;
         

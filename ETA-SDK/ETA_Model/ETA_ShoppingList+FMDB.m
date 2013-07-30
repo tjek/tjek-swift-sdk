@@ -126,7 +126,7 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
     NSString* queryStr = [NSString stringWithFormat:@"create table if not exists %@(%@);", tableName, fieldsStr];
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
-        DLog(@"Unable to create table '%@': %@", tableName, db.lastError);
+        NSLog(@"[ETA_ShoppingList+FMDB] Unable to create table '%@': %@", tableName, db.lastError);
     
     return success;
 }
@@ -136,7 +136,7 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
     NSString* queryStr = [NSString stringWithFormat:@"DELETE FROM %@;", tableName];
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
-        DLog(@"Unable to empty table '%@': %@", tableName, db.lastError);
+        NSLog(@"[ETA_ShoppingList+FMDB] Unable to empty table '%@': %@", tableName, db.lastError);
     
     return success;
 }
@@ -246,7 +246,7 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
     
     BOOL success = [db executeUpdate:query withParameterDictionary:params];
     if (!success)
-        DLog(@"Unable to Insert/Replace List %@: %@", params, db.lastError);
+        NSLog(@"[ETA_ShoppingList+FMDB] Unable to Insert/Replace List %@: %@", params, db.lastError);
 
     return success;
 }
@@ -258,7 +258,7 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
     
     BOOL success = [db executeUpdate:query, listID];
     if (!success)
-        DLog(@"Unable to Delete List %@: %@", listID, db.lastError);
+        NSLog(@"[ETA_ShoppingList+FMDB] Unable to Delete List %@: %@", listID, db.lastError);
     
     return success;
 }

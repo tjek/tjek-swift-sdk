@@ -124,6 +124,7 @@ extern NSString* const ETA_AttachedUserChangedNotification;
 @property (nonatomic, readonly, strong) NSString* apiKey;
 @property (nonatomic, readonly, strong) NSString* apiSecret;
 
-
+// whether the SDK logs errors and events. Defaults to NO.
+@property (nonatomic, readwrite, assign) BOOL verbose;
 @end
 

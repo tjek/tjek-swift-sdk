@@ -16,7 +16,7 @@
 
 #import "AFJSONRequestOperation.h"
 
-#import "NSString+SHA256Digest.h"
+#import <CommonCrypto/CommonDigest.h>
 
 static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 
@@ -71,10 +71,24 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
         [self setDefaultHeader:@"Accept" value:@"application/json"];
         
         self.storageEnabled = YES;
+        self.verbose = NO;
     }
     return self;
 }
 
+
+- (void) log:(NSString*)format, ...
+{
+    if (!self.verbose)
+        return;
+    
+    va_list args;
+    va_start(args, format);
+    NSString* msg = [[NSString alloc] initWithFormat:format arguments:args];
+    va_end(args);
+    
+    NSLog(@"[ETA_APIClient] %@", msg);
+}
 
 
 #pragma mark - API Requests
@@ -184,9 +198,19 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
     NSString* hash = nil;
     if (self.session.token && self.apiSecret)
     {
-        hash = [[NSString stringWithFormat:@"%@%@", self.apiSecret, self.session.token] SHA256HexDigest];
+        // try to make an SHA256 Hex string
+        NSData* hashData = [[NSString stringWithFormat:@"%@%@", self.apiSecret, self.session.token] dataUsingEncoding:NSUTF8StringEncoding];
+        
+        unsigned char result[CC_SHA256_DIGEST_LENGTH];
+        if (CC_SHA256(hashData.bytes, hashData.length, result)) {
+            NSMutableString *res = [NSMutableString stringWithCapacity:CC_SHA256_DIGEST_LENGTH*2];
+            for (int i = 0; i<CC_SHA256_DIGEST_LENGTH; i++) {
+                [res appendFormat:@"%02x",result[i]];
+            }
+            hash = [NSString stringWithString: res];
+        }
     }
-//    DLog(@"[CLIENT] Updating Headers - Token:'%@'->'%@' Sig:'%@'->'%@'", [self defaultValueForHeader:@"X-Token"], self.session.token, [self defaultValueForHeader:@"X-Signature"], hash);
+    [self log: @"Updating Headers - Token:'%@'->'%@' Sig:'%@'->'%@'", [self defaultValueForHeader:@"X-Token"], self.session.token, [self defaultValueForHeader:@"X-Signature"], hash];
     
     [self setDefaultHeader:@"X-Token"       value:self.session.token];
     [self setDefaultHeader:@"X-Signature"   value:hash];
@@ -217,7 +241,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 // Setting the session causes the change to be persisted to User Defaults
 - (void) setSession:(ETA_Session *)session
 {
-    DLog(@"[CLIENT] Setting Session '%@' (%@) => '%@' (%@)", _session.token, _session.expires, session.token, session.expires);
+    [self log: @"Setting Session '%@' (%@) => '%@' (%@)", _session.token, _session.expires, session.token, session.expires];
     
     _session = session;
     [self updateHeaders];
@@ -246,7 +270,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
     [newSession setValuesForKeysWithDictionary:@{@"token":newToken,
                                                  @"expires":newExpiryDate}];
     
-//    DLog(@"[SESSION] Updating Session Tokens - '%@' (%@) => '%@' (%@)", self.session.token, self.session.expires, newSession.token, newSession.expires);
+    [self log: @"Updating Session Tokens - '%@' (%@) => '%@' (%@)", self.session.token, self.session.expires, newSession.token, newSession.expires];
     self.session = newSession;
 }
 
@@ -284,12 +308,12 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
         
         // if there is no session, or either renew or update fail, call this block, which tries to create a new session
         void (^createSessionBlock)() = ^{
-            DLog(@"[SESSION] Resetting before creating - '%@' => '%@'", self.session.token, nil);
+            [self log: @"Resetting session before creating - '%@' => '%@'", self.session.token, nil];
             self.session = nil;
             [self createSessionWithCompletion:^(NSError *error) {
                 if (error)
                 {
-                    DLog(@"Unable to create session. Now what?");
+                    [self log: @"Unable to create session - %@", error];
                 }
                 dispatch_semaphore_signal(sema); // tell the syncQueue block to finish
                 if (completionHandler)
@@ -306,7 +330,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
                 [self renewSessionWithCompletion:^(NSError *error) {
                     if (error)
                     {
-                        DLog(@"Unable to renew session - trying to create a new one instead: %@", error);
+                        [self log: @"Unable to renew session - trying to create a new one instead: %@", error];
                         createSessionBlock();
                     }
                     else
@@ -323,7 +347,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
                 [self updateSessionWithCompletion:^(NSError *error) {
                     if (error)
                     {
-                        DLog(@"Unable to update session - trying to create a new one instead: %@", error.localizedDescription);
+                        [self log: @"Unable to update session - trying to create a new one instead: %@", error.localizedDescription];
                         createSessionBlock();
                     }
                     else
@@ -364,8 +388,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
     {
         session = [ETA_Session objectFromJSONDictionary:sessionDict];
     }
-    
-    DLog(@"[SESSION] Loading Session - '%@' => '%@'", self.session.token, session.token);
+    [self log: @"Loading Session - '%@' => '%@'", self.session.token, session.token];
     self.session = session;
 }
 
@@ -399,7 +422,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
                // save the session that was created, only if we have created it after any previous requests
                if (session)
                {
-                   DLog(@"[SESSION] Creating Session - '%@' => '%@'", self.session.token, session.token);
+                   [self log: @"Creating Session - '%@' => '%@'", self.session.token, session.token];
                    
                    [self setIfSameOrNewerSession:session];
                }
@@ -428,7 +451,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
               // save the session that was update, only if we have updated it after any previous requests
               if (session)
               {
-                  DLog(@"[SESSION] Updating Session - '%@' => '%@'", self.session.token, session.token);
+                  [self log: @"Updating Session - '%@' => '%@'", self.session.token, session.token];
                   [self setIfSameOrNewerSession:session];
               }
               //TODO: create error if nil session
@@ -456,7 +479,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
               // save the session that was renewed, only if we have renewed it after any previous requests
               if (session)
               {
-                  DLog(@"[SESSION] Renewing Session - '%@' => '%@'", self.session.token, session.token);
+                  [self log: @"Renewing Session - '%@' => '%@'", self.session.token, session.token];
                   [self setIfSameOrNewerSession:session];
               }
               //TODO: create error if nil session
@@ -490,7 +513,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
                // save the session, only if after any previous requests
                if (session)
                {
-                   DLog(@"[SESSION] Attaching User to Session - '%@' => '%@'", self.session.token, session.token);
+                   [self log: @"Attaching User to Session - '%@' => '%@'", self.session.token, session.token];
                    [self setIfSameOrNewerSession:session];
                }
                //TODO: create error if nil session
@@ -513,7 +536,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
                // save the session, only if after any previous requests
                if (session)
                {
-                   DLog(@"[SESSION] Detaching User from Session - '%@' => '%@'", self.session.token, session.token);
+                   [self log: @"Detaching User from Session - '%@' => '%@'", self.session.token, session.token];
                    [self setIfSameOrNewerSession:session];
                }
                //TODO: create error if nil session

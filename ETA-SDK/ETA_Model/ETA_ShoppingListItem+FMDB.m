@@ -138,7 +138,7 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
     NSString* queryStr = [NSString stringWithFormat:@"create table if not exists %@(%@);", tableName, fieldsStr];
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
-        DLog(@"Unable to create table '%@': %@", tableName, db.lastError);
+        NSLog(@"[ETA_ShoppingListItem+FMDB] Unable to create table '%@': %@", tableName, db.lastError);
     
     return success;
 }
@@ -148,7 +148,7 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
     NSString* queryStr = [NSString stringWithFormat:@"DELETE FROM %@;", tableName];
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
-        DLog(@"Unable to empty table '%@': %@", tableName, db.lastError);
+        NSLog(@"[ETA_ShoppingListItem+FMDB] Unable to empty table '%@': %@", tableName, db.lastError);
     
     return success;
 }
@@ -269,7 +269,7 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
     
     BOOL success = [db executeUpdate:query withParameterDictionary:params];
     if (!success)
-        DLog(@"Unable to Insert/Replace Item %@: %@", params, db.lastError);
+        NSLog(@"[ETA_ShoppingListItem+FMDB] Unable to Insert/Replace Item %@: %@", params, db.lastError);
     
     return success;
 }
@@ -280,7 +280,7 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
     
     BOOL success = [db executeUpdate:query, itemID];
     if (!success)
-        DLog(@"Unable to Delete Item %@: %@", itemID, db.lastError);
+        NSLog(@"[ETA_ShoppingListItem+FMDB] Unable to Delete Item %@: %@", itemID, db.lastError);
     
     return success;
 }
@@ -298,7 +298,7 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
     
     BOOL success = [db executeUpdate:query withParameterDictionary:params];
     if (!success)
-        DLog(@"Unable to Delete Items in Shopping List %@: %@", listID, db.lastError);
+        NSLog(@"[ETA_ShoppingListItem+FMDB] Unable to Delete Items in Shopping List %@: %@", listID, db.lastError);
     
     return success;
 }

@@ -287,14 +287,14 @@
 				17EE767B178ACD4E00EBDC6E /* ETAAppDelegate.h */,
 				17EE767C178ACD4E00EBDC6E /* ETAAppDelegate.m */,
 				17EE76B1178AD9BC00EBDC6E /* Storyboard.storyboard */,
-				171C03F317A1962E0097FDC8 /* ETAExampleViewController_ShoppingLists.h */,
-				171C03F417A1962E0097FDC8 /* ETAExampleViewController_ShoppingLists.m */,
-				171C03F617A199F70097FDC8 /* ETAExampleViewController_ShoppingListItems.h */,
-				171C03F717A199F70097FDC8 /* ETAExampleViewController_ShoppingListItems.m */,
 				179C830317A654F0007B01D1 /* ETAExampleViewController_Catalogs.h */,
 				179C830417A654F0007B01D1 /* ETAExampleViewController_Catalogs.m */,
 				171C03F0179FF00C0097FDC8 /* ETAExampleViewController_PageFlip.h */,
 				171C03F1179FF00C0097FDC8 /* ETAExampleViewController_PageFlip.m */,
+				171C03F317A1962E0097FDC8 /* ETAExampleViewController_ShoppingLists.h */,
+				171C03F417A1962E0097FDC8 /* ETAExampleViewController_ShoppingLists.m */,
+				171C03F617A199F70097FDC8 /* ETAExampleViewController_ShoppingListItems.h */,
+				171C03F717A199F70097FDC8 /* ETAExampleViewController_ShoppingListItems.m */,
 				17EE7673178ACD4E00EBDC6E /* Supporting Files */,
 			);
 			path = "ETA-SDKExample";

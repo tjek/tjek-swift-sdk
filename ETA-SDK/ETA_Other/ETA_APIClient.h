@@ -54,6 +54,6 @@ extern NSString* const ETA_APIResponseErrorKey;
 - (BOOL) allowsPermission:(NSString*)actionPermission;
 
 
-
+@property (nonatomic, readwrite, assign) BOOL verbose;
 
 @end
