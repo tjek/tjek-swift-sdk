@@ -1,0 +1,4 @@
+platform :ios, '5.0'
+
+pod 'ETA-SDK', :path => '../../'
+pod 'SDWebImage', '~> 3.3'

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="l1U-KT-MLO">
+    <dependencies>
+        <deployment defaultVersion="1552" identifier="iOS"/>
+        <development version="4600" identifier="xcode"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
+    </dependencies>
+    <scenes>
+        <!--Example View Controller Catalogs - Catalogs-->
+        <scene sceneID="suc-Nb-8hd">
+            <objects>
+                <viewController id="X2B-WG-7WR" customClass="ETA_ExampleViewController_Catalogs" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="NNV-Bt-efJ">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="76" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="MC7-Bd-AgU">
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ETACatalogCellIdentifier" textLabel="R8o-Yh-tfZ" detailTextLabel="ngs-dU-rms" rowHeight="76" style="IBUITableViewCellStyleSubtitle" id="BQD-ND-n90">
+                                        <rect key="frame" x="0.0" y="22" width="320" height="76"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="300" height="75"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R8o-Yh-tfZ">
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </label>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ngs-dU-rms">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <connections>
+                                            <segue destination="Cmz-vg-40e" kind="push" identifier="CatalogCellToPageFlipSegue" id="UGR-n0-Qrb"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="X2B-WG-7WR" id="9G0-0W-hmA"/>
+                                    <outlet property="delegate" destination="X2B-WG-7WR" id="dCU-mV-Hx6"/>
+                                </connections>
+                            </tableView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="92F-Bp-rhe"/>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="MC7-Bd-AgU" firstAttribute="trailing" secondItem="NNV-Bt-efJ" secondAttribute="trailing" type="default" id="0iG-uB-LOI"/>
+                            <constraint firstItem="MC7-Bd-AgU" firstAttribute="bottom" secondItem="NNV-Bt-efJ" secondAttribute="bottom" type="default" id="58e-9S-bVW"/>
+                            <constraint firstItem="92F-Bp-rhe" firstAttribute="centerX" secondItem="MC7-Bd-AgU" secondAttribute="centerX" type="default" id="FOZ-xs-z1k"/>
+                            <constraint firstItem="MC7-Bd-AgU" firstAttribute="leading" secondItem="NNV-Bt-efJ" secondAttribute="leading" type="default" id="J7H-ub-syW"/>
+                            <constraint firstItem="MC7-Bd-AgU" firstAttribute="top" secondItem="NNV-Bt-efJ" secondAttribute="top" type="default" id="P5v-Y5-3ph"/>
+                            <constraint firstItem="92F-Bp-rhe" firstAttribute="centerY" secondItem="MC7-Bd-AgU" secondAttribute="centerY" type="default" id="jxU-He-xTk"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Catalogs" id="oUP-cG-aAv"/>
+                    <connections>
+                        <outlet property="activitySpinner" destination="92F-Bp-rhe" id="jjh-id-NGK"/>
+                        <outlet property="tableView" destination="MC7-Bd-AgU" id="zbF-w9-W8r"/>
+                        <outlet property="view" destination="NNV-Bt-efJ" id="n7o-GT-0Oy"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KKw-0W-AWR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="630" y="68"/>
+        </scene>
+        <!--Example View Controller Page Flip - Page Flip-->
+        <scene sceneID="tzz-9M-ZKm">
+            <objects>
+                <viewController id="Cmz-vg-40e" customClass="ETA_ExampleViewController_PageFlip" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="NfQ-rK-JTi">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="dFH-bw-742"/>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="dFH-bw-742" firstAttribute="centerX" secondItem="NfQ-rK-JTi" secondAttribute="centerX" type="default" id="MCE-kd-h9g"/>
+                            <constraint firstItem="dFH-bw-742" firstAttribute="centerY" secondItem="NfQ-rK-JTi" secondAttribute="centerY" type="default" id="YUm-9j-PSP"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Page Flip" id="Xen-UG-S8T"/>
+                    <connections>
+                        <outlet property="activitySpinner" destination="dFH-bw-742" id="JuP-kS-D0m"/>
+                        <outlet property="view" destination="NfQ-rK-JTi" id="JU3-XS-RkO"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iNy-v1-g45" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1126" y="68"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="TAN-2f-pJx">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="l1U-KT-MLO" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="tFZ-pd-RSn">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="X2B-WG-7WR" kind="relationship" relationship="rootViewController" id="Qrq-fr-23L"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BVh-VI-Ewa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="73" y="68"/>
+        </scene>
+    </scenes>
+    <classes>
+        <class className="ETA_ExampleViewController_Catalogs" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ETA_ExampleViewController_Catalogs.h"/>
+            <relationships>
+                <relationship kind="outlet" name="activitySpinner" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+            </relationships>
+        </class>
+        <class className="ETA_ExampleViewController_PageFlip" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ETA_ExampleViewController_PageFlip.h"/>
+            <relationships>
+                <relationship kind="outlet" name="activitySpinner" candidateClass="UIActivityIndicatorView"/>
+            </relationships>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+    </classes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>
