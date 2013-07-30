@@ -1,14 +1,43 @@
 # Installation
 
-### Third-party libraries
-The following libraries are required for the ETA SDK to work.
+## CocoaPods
+The easiest way to install the eTilbudsavis SDK is using [CocoaPods](http://cocoapods.org).
+
+Simply add the `ETA-SDK` pod to your Podfile:
+
+    pod 'ETA-SDK'
+    
+Then run `pod install` in your project directory - this will add the ETA SDK to your project, and manage all the dependencies.
+
+See the documentation on the CocoaPods website if you are new to them.
+
+## Manual Installation
+
+### 1. Download SDK
+If for some reason you dont want to use CocoaPods (you really should, they're great), you can download the SDK and the associated examples from [GitHub](https://github.com/eTilbudsavis/native-ios-eta-sdk/).
+
+### 2. Add to project
+You then need to add the ETA-SDK folder into your project, making sure that the "*Copy items into destination group’s folder (if needed)*" checkbox is checked".
+
+Now, in your project's **Build Phases**, under the **Link Binary With Libraries** phase, add `CoreLocation.framework`.
+
+Note that the ETA-SDK uses ARC.
+
+
+### 3. Install third-party libraries
+
+ETA-SDK has a number of dependencies with third-party libraries (all use the MIT license). You must follow the installation instructions for each library:
 
 - [AFNetworking](https://github.com/AFNetworking/AFNetworking) - Handles all the networking requests.
 - [Mantle](https://github.com/github/Mantle) - Super-class to all the model objects. Allows for easy conversion to/from a JSON dictionary.
 - [FMDB](https://github.com/ccgus/fmdb) - Handles all the SQLite database communication.
 
-### Required Frameworks
-- <CoreLocation/CoreLocation.h>
+
+# API Key & Secret
+
+Visit the [eTilbudavis Developers page](https://etilbudsavis.dk/developers/) to find out how to get yout API Key and Secret.
+
+See the `Usage -> ETA SDK -> Initialization` section below for how to use the key and secret.
 
 
 # Usage
