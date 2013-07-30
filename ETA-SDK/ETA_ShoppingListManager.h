@@ -103,6 +103,8 @@ typedef enum{
 // use this if you want to get the state of the userless shopping lists after a user has logged in
 @property (nonatomic, readwrite, assign) BOOL ignoreAttachedUser;
 
+// whether the shopping list manager logs errors and events. Defaults to NO.
+@property (nonatomic, readwrite, assign) BOOL verbose;
 
 #pragma mark - Permissions
 

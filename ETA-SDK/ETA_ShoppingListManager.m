@@ -85,6 +85,8 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
         self.objIDsWithLocalChanges = [NSMutableSet set];
         
         self.ignoreAttachedUser = NO;
+        
+        self.verbose = NO;
     }
     return self;
 }
@@ -96,6 +98,21 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     
     self.eta = nil;
     self.dbQ = nil;
+}
+
+
+
+- (void) log:(NSString*)format, ...
+{
+    if (!self.verbose)
+        return;
+    
+    va_list args;
+    va_start(args, format);
+    NSString* msg = [[NSString alloc] initWithFormat:format arguments:args];
+    va_end(args);
+    
+    NSLog(@"[ETA_ShoppingListManager] %@", msg);
 }
 
 
@@ -132,12 +149,12 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     if (_userID == userID || [userID isEqualToString:_userID])
         return;
     
-    DLog(@"UserID changed '%@'=>'%@'", _userID, userID);
+    [self log: @"UserID changed '%@'=>'%@'", _userID, userID];
     _userID = userID;
     
     NSUInteger unresolvedLocalChanges = self.objIDsWithLocalChanges.count;
     if (unresolvedLocalChanges)
-        DLog(@"User changed with %d unresolved changes!", unresolvedLocalChanges);
+        [self log: @"User changed with %d unresolved changes!", unresolvedLocalChanges];
     
     [self.objIDsWithLocalChanges removeAllObjects];
     [self stopRetrySyncTimer];
@@ -494,7 +511,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     if ([self thereAreObjectsWithLocalChanges])
         return;
     
-    DLog(@"[POLLING] %d", pollCount);
+    [self log: @"[POLLING] %d", pollCount];
     // every first poll ask for all the lists, not just the modified's of the local lists
     if (pollCount == 0)
     {
@@ -537,7 +554,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                          }
                          else
                          {
-                             DLog(@"[SERVER=>LOCAL LISTS] !!! failed getting list %@ for userID %@ : %@ / %@", listID, userID, error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]);
+                             [self log: @"[SERVER=>LOCAL LISTS] !!! failed getting list %@ for userID %@ : %@ / %@", listID, userID, error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]];
                          }
                      }];
 }
@@ -568,7 +585,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                                     }
                                     else
                                     {
-                                        DLog(@"[SERVER=>LOCAL LISTS] !!! failed getting all lists userID %@ : %@ / %@", userID, error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]);
+                                        [self log: @"[SERVER=>LOCAL LISTS] !!! failed getting all lists userID %@ : %@ / %@", userID, error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]];
                                     }
                                 }];
 }
@@ -595,7 +612,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                                             }
                                             else if (error)
                                             {
-                                                DLog(@"[SERVER=>LOCAL ITEMS] !!! Failed Getting modified for List '%@' : %@ / %@",listID, error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]);
+                                                [self log: @"[SERVER=>LOCAL ITEMS] !!! Failed Getting modified for List '%@' : %@ / %@",listID, error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]];
                                             }
                                             
                                         }];
@@ -622,13 +639,13 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                                                    NSArray* localItems = [self localDBGetAllShoppingListItemsForShoppingList:listID
                                                                                                                   withFilter:ETA_ShoppingListItemFilter_All
                                                                                                                       userID:userID];
-                                                   DLog(@"[SERVER=>LOCAL ITEMS] successfully got %d server, %d local for list: %@", serverItems.count, localItems.count, listID);
+                                                   [self log: @"[SERVER=>LOCAL ITEMS] successfully got %d server, %d local for list: %@", serverItems.count, localItems.count, listID];
                                                    
                                                    [self saveLocallyAndNotifyChangesBetweenLocalShoppingListItems:localItems andItemsFromServer:serverItems userID:userID];
                                                }
                                                else
                                                {
-                                                   DLog(@"[SERVER=>LOCAL ITEMS] failure getting items for list '%@': %@ / %@",listID, error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]);
+                                                   [self log: @"[SERVER=>LOCAL ITEMS] failure getting items for list '%@': %@ / %@",listID, error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]];
                                                }
                                            }];
 }
@@ -659,7 +676,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     [serverObjects enumerateObjectsUsingBlock:^(ETA_ModelObject* serverObj, NSUInteger idx, BOOL *stop) {
         if (!serverObj.uuid)
         {
-            DLog(@"Got an object without a UUID... should not happen! %@", serverObj);
+            [self log: @"Got a server object without a UUID... should not happen! %@", serverObj];
             return;
         }
 
@@ -669,7 +686,10 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
             serverObj = mergeHandler([serverObj copy], [localObj copy]);
         
         if (!serverObj.uuid)
+        {
+            [self log: @"After merging the server object didnt have a UUID! %@", serverObj];
             return;
+        }
         
         // the object is on the server, but not locally. It needs to be added locally
         if (!localObj)
@@ -744,7 +764,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     if (changeCount == 0)
         return;
     
-    DLog(@"[SERVER=>LOCAL LISTS] list changes - %d added / %d removed / %d modified", added.count, removed.count, modified.count);
+    [self log: @"[SERVER=>LOCAL LISTS] list changes - %d added / %d removed / %d modified", added.count, removed.count, modified.count];
     
     [removed enumerateObjectsUsingBlock:^(ETA_ShoppingList* list, NSUInteger idx, BOOL *stop) {
         // this will do the delete from the local DB
@@ -795,7 +815,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     if (changeCount == 0)
         return;
     
-    DLog(@"[SERVER=>LOCAL ITEMS] item changes - %d added / %d removed / %d modified", added.count, removed.count, modified.count);
+    [self log: @"[SERVER=>LOCAL ITEMS] item changes - %d added / %d removed / %d modified", added.count, removed.count, modified.count];
     
     [removed enumerateObjectsUsingBlock:^(ETA_ShoppingListItem* item, NSUInteger idx, BOOL *stop) {
         [self localDBDeleteShoppingListItem:item.uuid userID:userID];
@@ -878,7 +898,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                             // success! delete from the local store
                             if (!error)
                             {
-                                DLog(@"[DELETE %@] successfully deleted '%@'(%@)", NSStringFromClass(objToDelete.class), ((ETA_ShoppingList*)objToDelete).name, objToDelete.uuid);
+                                [self log: @"[DELETE %@] successfully deleted '%@'(%@)", NSStringFromClass(objToDelete.class), ((ETA_ShoppingList*)objToDelete).name, objToDelete.uuid];
                                 
                                 // this will do the delete from the server
                                 [self localDBUpdateSyncState:ETA_DBSyncState_Deleted forObject:objToDelete userID:userID];
@@ -890,7 +910,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                             // for some reason we couldnt delete the object - remember it and retry
                             else
                             {
-                                DLog(@"[DELETE %@] failed (%d remaining) to delete '%@'(%@) - %@ / %@", NSStringFromClass(objToDelete.class), remainingRetries, ((ETA_ShoppingList*)objToDelete).name, objToDelete.uuid, error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]);
+                                [self log: @"[DELETE %@] failed (%d remaining) to delete '%@'(%@) - %@ / %@", NSStringFromClass(objToDelete.class), remainingRetries, ((ETA_ShoppingList*)objToDelete).name, objToDelete.uuid, error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]];
                                 
                                 // mark as needing to be deleted
                                 [self localDBUpdateSyncState:ETA_DBSyncState_ToBeDeleted forObject:objToDelete userID:userID];
@@ -918,7 +938,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     [self localDBUpdateSyncState:ETA_DBSyncState_Syncing forObject:objToSync userID:userID];
 
     
-//    DLog(@"[SYNC %@] started '%@' (%@)", NSStringFromClass([objToSync class]), [(ETA_ShoppingList*)objToSync name], objToSync.uuid);
+    [self log: @"[SYNC %@] started '%@' (%@)", NSStringFromClass([objToSync class]), [(ETA_ShoppingList*)objToSync name], objToSync.uuid];
     
     // send request to insert/update to server
     [self serverInsertOrReplaceObject:objToSync
@@ -933,7 +953,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                                      // on success, mark as synced
                                      if (!error && syncedObj)
                                      {
-                                         DLog(@"[SYNC %@] successfully synced '%@'(%@)", NSStringFromClass([syncedObj class]), [(ETA_ShoppingList*)syncedObj name], syncedObj.uuid);
+                                         [self log: @"[SYNC %@] successfully synced '%@'(%@)", NSStringFromClass([syncedObj class]), [(ETA_ShoppingList*)syncedObj name], syncedObj.uuid];
                                          
                                          // mark locally as having been successfully synced (and save returned list back to localDB
                                          [self localDBUpdateSyncState:ETA_DBSyncState_Synced forObject:syncedObj userID:userID];
@@ -945,7 +965,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                                      // something bad happened while trying to send changes to the server
                                      else
                                      {
-                                         DLog(@"[SYNC %@] failed (%d remaining) to sync list '%@'(%@) - %@ / %@", NSStringFromClass([objToSync class]),remainingRetries, [(ETA_ShoppingList*)objToSync name], objToSync.uuid, error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]);
+                                         [self log: @"[SYNC %@] failed (%d remaining) to sync list '%@'(%@) - %@ / %@", NSStringFromClass([objToSync class]),remainingRetries, [(ETA_ShoppingList*)objToSync name], objToSync.uuid, error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]];
                                          
                                          // mark as un-synced
                                          [self localDBUpdateSyncState:ETA_DBSyncState_ToBeSynced forObject:objToSync userID:userID];
@@ -1004,7 +1024,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
                                     }
                                     else
                                     {
-                                        DLog(@"[DELETING ITEMS] failed %@ / %@", error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey])
+                                        [self log: @"[DELETING ITEMS] failed %@ / %@", error.userInfo[NSLocalizedDescriptionKey], error.userInfo[NSLocalizedFailureReasonErrorKey]];
                                         
                                         // mark as needing to be deleted
                                         for (ETA_ShoppingListItem* item in localItems)
@@ -1088,7 +1108,7 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     }
     
     if (toBeSynced.count+toBeDeleted.count)
-        DLog(@"[RETRY] retrying %d syncs / %d deletes", toBeSynced.count, toBeDeleted.count);
+        [self log: @"[RETRY] retrying %d syncs / %d deletes", toBeSynced.count, toBeDeleted.count];
     
     
     // go through each list, trying to add it to the server
