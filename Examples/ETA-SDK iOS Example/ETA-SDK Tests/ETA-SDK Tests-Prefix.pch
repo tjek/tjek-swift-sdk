@@ -1,0 +1,8 @@
+//
+// Prefix header for all source files of the 'ETA-SDK Tests' target in the 'ETA-SDK Tests' project
+//
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+#endif
