@@ -12,6 +12,9 @@
 
 - (BOOL) allowsPermission:(NSString*)actionPermission
 {
+    if (!actionPermission.length)
+        return YES;
+    
     NSArray* actionTokens = [actionPermission tokenizePermission];
     NSArray* permissionTokens = [self tokenizePermission];
     
@@ -34,6 +37,9 @@
             else if ([actionToken isEqualToString:@"*"])
             {
                 allowed = YES;
+                // if the last action token is a '*' all extra permissions are allowed
+                if (i == actionTokens.count-1)
+                    break;
             }
             else
             {
@@ -62,7 +68,7 @@
 
 - (BOOL) allowsPermission:(NSString*)actionPermission
 {
-    if (!actionPermission)
+    if (!actionPermission.length)
         return YES;
     
     __block BOOL allowed = NO;

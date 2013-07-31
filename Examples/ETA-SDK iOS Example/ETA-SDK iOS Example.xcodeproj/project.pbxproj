@@ -26,6 +26,8 @@
 		17F5305117A9919700CB1DDE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17DBD18517A7DF5F008EFAEF /* Foundation.framework */; };
 		17F5305717A9919700CB1DDE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17F5305517A9919700CB1DDE /* InfoPlist.strings */; };
 		17F5306117A991CC00CB1DDE /* ETA_SessionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 17F5305F17A991CC00CB1DDE /* ETA_SessionTests.m */; };
+		17F5306417A9942E00CB1DDE /* ETA_ETATests.m in Sources */ = {isa = PBXBuildFile; fileRef = 17F5306317A9942E00CB1DDE /* ETA_ETATests.m */; };
+		17F5306717A9987600CB1DDE /* ETA_PermissionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 17F5306617A9987600CB1DDE /* ETA_PermissionsTests.m */; };
 		FDD67AA22915447798D7090D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE9E8E35B29843B690E233FB /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +60,10 @@
 		17F5305B17A9919700CB1DDE /* ETA-SDK Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ETA-SDK Tests-Prefix.pch"; sourceTree = "<group>"; };
 		17F5305F17A991CC00CB1DDE /* ETA_SessionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_SessionTests.m; sourceTree = "<group>"; };
 		17F5306017A991CC00CB1DDE /* ETA_SessionTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_SessionTests.h; sourceTree = "<group>"; };
+		17F5306217A9942E00CB1DDE /* ETA_ETATests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_ETATests.h; sourceTree = "<group>"; };
+		17F5306317A9942E00CB1DDE /* ETA_ETATests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_ETATests.m; sourceTree = "<group>"; };
+		17F5306517A9987600CB1DDE /* ETA_PermissionsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_PermissionsTests.h; sourceTree = "<group>"; };
+		17F5306617A9987600CB1DDE /* ETA_PermissionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_PermissionsTests.m; sourceTree = "<group>"; };
 		77709CE9799F4DDAA95A2183 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E879721C4D284582B9433684 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		FE9E8E35B29843B690E233FB /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -157,8 +163,12 @@
 		17F5305217A9919700CB1DDE /* ETA-SDK Tests */ = {
 			isa = PBXGroup;
 			children = (
-				17F5305F17A991CC00CB1DDE /* ETA_SessionTests.m */,
+				17F5306217A9942E00CB1DDE /* ETA_ETATests.h */,
+				17F5306317A9942E00CB1DDE /* ETA_ETATests.m */,
+				17F5306517A9987600CB1DDE /* ETA_PermissionsTests.h */,
+				17F5306617A9987600CB1DDE /* ETA_PermissionsTests.m */,
 				17F5306017A991CC00CB1DDE /* ETA_SessionTests.h */,
+				17F5305F17A991CC00CB1DDE /* ETA_SessionTests.m */,
 				17F5305317A9919700CB1DDE /* Supporting Files */,
 			);
 			path = "ETA-SDK Tests";
@@ -357,6 +367,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				17F5306117A991CC00CB1DDE /* ETA_SessionTests.m in Sources */,
+				17F5306417A9942E00CB1DDE /* ETA_ETATests.m in Sources */,
+				17F5306717A9987600CB1DDE /* ETA_PermissionsTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
