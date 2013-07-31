@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '5.0'
   s.requires_arc = true
 
-  s.source       = { :git => "https://github.com/eTilbudsavis/native-ios-eta-sdk.git", :tag => "v2.0.0-beta1" }
+  s.source       = { :git => "https://github.com/eTilbudsavis/native-ios-eta-sdk.git", :tag => "v2.0.0" }
   s.source_files = 'ETA-SDK/**/*.{h,m}'
   s.frameworks   = 'CoreLocation', 'Foundation', 'UIKit'
 
