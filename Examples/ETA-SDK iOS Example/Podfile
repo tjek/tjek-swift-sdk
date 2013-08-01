@@ -2,5 +2,5 @@ platform :ios, '5.0'
 
 link_with ['ETA-SDK iOS Example', 'ETA-SDK Tests']
 
-pod 'ETA-SDK', :path => '../../'
+pod 'ETA-SDK', '~>2'
 pod 'SDWebImage', '~> 3.3'
