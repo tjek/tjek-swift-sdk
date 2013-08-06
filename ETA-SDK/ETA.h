@@ -112,20 +112,12 @@ extern NSString* const ETA_AttachedUserChangedNotification;
 
 
 
-#pragma mark - Caching
-// remove all the objects from the cache
-- (void) clearCache;
-
-// remove all the old objects from the cache - automatically triggered, and slow, so use sparingly
-- (void) clearOutOfDateCache;
-
-
-
 #pragma mark - Errors
 // a dictionary of all the ETA error names, keyed by their codes
 + (NSDictionary*) errors;
 
-// quick access to the name of an error, based on it's code.
+// quick access to the name of an error, based on it's errorcode.
+// returns nil if not an ETA error code.
 + (NSString*) errorForCode:(NSUInteger)errorCode;
 
 

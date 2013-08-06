@@ -23,7 +23,7 @@ NSString* const ETA_AttachedUserChangedNotification = @"ETA_AttachedUserChangedN
 @property (nonatomic, readwrite, strong) NSString *apiSecret;
 @property (nonatomic, readwrite, strong) NSURL *baseURL;
 
-@property (nonatomic, readwrite, strong) NSMutableDictionary* itemCache;
+@property (nonatomic, readwrite, strong) NSCache* itemCache;
 
 @end
 
@@ -80,9 +80,7 @@ static ETA* ETA_SingletonSDK = nil;
 {
     if((self = [super init]))
     {
-        // start the clearing of the cache
-        [self repeatClearCacheEventEvery:[ETA_API maxCacheLifespan]];
-        self.itemCache = [[NSMutableDictionary alloc] initWithCapacity:100];
+        self.itemCache = [[NSCache alloc] init];
         
         self.baseURL = [NSURL URLWithString: kETA_APIBaseURLString];
         
@@ -256,45 +254,6 @@ static ETA* ETA_SingletonSDK = nil;
 
 #pragma mark - Cache
 
-- (void) clearCache
-{
-    @synchronized(self.itemCache)
-    {
-        [self.itemCache removeAllObjects];
-    }
-}
-- (void) clearOutOfDateCache
-{
-    if (!self.itemCache)
-        return;
-        
-    @synchronized(self.itemCache)
-    {
-        NSTimeInterval nowTimestamp = [NSDate timeIntervalSinceReferenceDate];
-        NSTimeInterval maxCacheLifespan = [ETA_API maxCacheLifespan];
-        NSArray* allERNs = self.itemCache.allKeys;
-        for (NSString* ern in allERNs)
-        {
-            NSDictionary* cachedItemDict = [self.itemCache objectForKey:ern];
-            
-            if ((nowTimestamp - [cachedItemDict[@"timestamp"] doubleValue]) > maxCacheLifespan)
-                [self.itemCache removeObjectForKey:ern];
-        }
-    }
-}
-
-- (void) repeatClearCacheEventEvery:(NSTimeInterval)repeatEverySecs
-{
-    [self clearOutOfDateCache];
-    if (repeatEverySecs <= DBL_EPSILON)
-        return;
-    
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(repeatEverySecs * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_global_queue(0, 0), ^(void){
-        [self repeatClearCacheEventEvery:repeatEverySecs];
-    });
-}
-
 - (NSArray*)itemIDsFromRequestPath:(NSString*)requestPath parameters:(NSDictionary*)parameters endpointForItems:(NSString**)resultingEndpoint
 {
     NSMutableArray* itemIDs = [@[] mutableCopy];
@@ -398,31 +357,28 @@ static ETA* ETA_SingletonSDK = nil;
         {
             NSString* itemERN = [ETA_API ernForEndpoint:endpoint withItemID:itemID];
             
-            @synchronized(self.itemCache)
+            NSDictionary* cachedItemDict = (itemERN) ? [self.itemCache objectForKey:itemERN] : nil;
+            // item not in cache
+            if (!cachedItemDict)
             {
-                NSDictionary* cachedItemDict = (itemERN) ? [self.itemCache objectForKey:itemERN] : nil;
-                // item not in cache
-                if (!cachedItemDict)
+                foundAll = NO;
+                break;
+            }
+            // item in cache
+            else
+            {
+                id cachedItem = [cachedItemDict[@"item"] copy];
+                // invalid item, or out of date. remove from cache and fail
+                if (!cachedItem || (nowTimestamp - [cachedItemDict[@"timestamp"] doubleValue]) > cacheLifespan)
                 {
+                    [self.itemCache removeObjectForKey:itemERN];
                     foundAll = NO;
                     break;
                 }
-                // item in cache
+                // yay - it's in the cache
                 else
                 {
-                    id cachedItem = [cachedItemDict[@"item"] copy];
-                    // invalid item, or out of date. remove from cache and fail
-                    if (!cachedItem || (nowTimestamp - [cachedItemDict[@"timestamp"] doubleValue]) > cacheLifespan)
-                    {
-                        [self.itemCache removeObjectForKey:itemERN];
-                        foundAll = NO;
-                        break;
-                    }
-                    // yay - it's in the cache
-                    else
-                    {
-                        [cachedItems addObject:cachedItem];
-                    }
+                    [cachedItems addObject:cachedItem];
                 }
             }
         }
@@ -447,11 +403,8 @@ static ETA* ETA_SingletonSDK = nil;
         NSString* ern = jsonItem[@"ern"];
         if (ern)
         {
-            @synchronized(self.itemCache)
-            {
-                [self.itemCache setObject:@{ @"item": jsonItem, @"timestamp":@([NSDate timeIntervalSinceReferenceDate]) }
-                                   forKey:ern];
-            }
+            [self.itemCache setObject:@{ @"item": jsonItem, @"timestamp":@([NSDate timeIntervalSinceReferenceDate]) }
+                               forKey:ern];
         }
     }
 }

@@ -23,14 +23,6 @@
 
 @implementation ETA_ExampleViewController_Catalogs
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -38,11 +30,11 @@
     self.title = NSLocalizedString(@"Catalogs",@"Catalogs title");
     self.catalogs = nil;
     
-    
-	// Do any additional setup after loading the view.
-    
+    // start the spinner spinning
     self.activitySpinner.color = [UIColor blackColor];
     [self.activitySpinner startAnimating];
+    
+    // start looking for catalogs
     [self refreshCatalogs];
 }
 
@@ -51,22 +43,52 @@
     self.navigationController.navigationBar.tintColor = nil;
 }
 
+- (void) viewDidAppear:(BOOL)animated
+{
+    // make sure we stop highlighting the row when we return to this view controller
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+}
+
+
+// This method will send a request to the SDK, asking for a list of ETA_Catalogs
+// Note that before any API requests you must have first called +initializeSDKWithAPIKey:apiSecret: (see AppDelegate)
 - (void) refreshCatalogs
 {
+    // We are using the ETA_API object to get the api path for a specific endpoint -
+    //   this makes handling the URLs a lot easier and future proof
+    // We are also sending 2 order-by parameters: distance and name -
+    //   the results will be sorted first by the distance from the location we set in the AppDelegate,
+    //   and then by the name of the catalog.
     [ETA.SDK api:[ETA_API path:ETA_API.catalogs]
             type:ETARequestTypeGET
       parameters:@{@"order_by": @[@"distance", @"name"]}
       completion:^(NSArray* jsonCatalogs, NSError *error, BOOL fromCache) {
-          if (error)
-          {
-              NSLog(@"Could not refresh: %@ (%d)", [ETA errorForCode:error.code], error.code);
-              return;
-          }
+          // The completion handler is called on the main thread and returns a JSON response -
+          //   this can be in NSArray, NSDictionary, NSString or NSNumber.
+          
+          // Ignore results that come from the cache - a server result will arrive shortly.
+          // You can also explicitly ignore cached results by using a different -api:... method
           if (fromCache)
               return;
           
-          NSMutableArray* catalogs = [NSMutableArray arrayWithCapacity:jsonCatalogs.count];
           
+          // Something went wrong if the `error` object is not nil
+          if (error)
+          {
+              NSLog(@"Could not refresh: %@ (%d)", error.userInfo[NSLocalizedDescriptionKey], error.code);
+              return;
+          }
+          
+          // As we are asking for a list of catalogs we can assume the result is an array.
+          // If not then something went wrong.
+          if (![jsonCatalogs isKindOfClass:[NSArray class]])
+              return;
+          
+          
+          // loop through all the json dictionaries that the SDK sent us
+          // for each one, convert it into an ETA_Catalog object.
+          // this parses a lot of the JSON strings into useful objects, and makes your life a lot easier
+          NSMutableArray* catalogs = [NSMutableArray arrayWithCapacity:jsonCatalogs.count];
           for (NSDictionary* catalogDict in jsonCatalogs)
           {
               ETA_Catalog* catalog = [[ETA_Catalog objectFromJSONDictionary:catalogDict] copy];
@@ -74,36 +96,54 @@
                   [catalogs addObject:catalog];
           }
           
-          [self.activitySpinner stopAnimating];
+          // save the resulting data
           self.catalogs = catalogs;
+          
+          // update the tableview and spinner
+          [self.activitySpinner stopAnimating];
           [self.tableView reloadData];
       }];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
 
-    [ETA.SDK clearCache];
-}
-
-
+// This method is called before we transition to the CatalogView viewcontroller
+// The segue source and its ID are defined in the storyboard
+// Here we want to give the CatalogView catalog we want to see
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    // see storyboard for segue
     if ([segue.identifier isEqualToString:@"CatalogCellToCatalogViewSegue"])
     {
-        ETA_ExampleViewController_CatalogView* catalogView = (ETA_ExampleViewController_CatalogView*)segue.destinationViewController;
         NSIndexPath* selectedIndexPath = [self.tableView indexPathForSelectedRow];
         if (selectedIndexPath)
         {
+            // get the destination view controller from the storyboard
+            ETA_ExampleViewController_CatalogView* catalogView = (ETA_ExampleViewController_CatalogView*)segue.destinationViewController;
+            
+            
+            // get the catalog object that was selected
             ETA_Catalog* catalog = self.catalogs[selectedIndexPath.row];
+            
+            // assign the catalog object to the destination view controller
             catalogView.catalog = catalog;
         }
     }
 }
 
+
 #pragma mark - TableView Datasource
+
+// The dateformatter for pretty-printing the catalog's date
+- (NSDateFormatter*)tableViewDateFormatter
+{
+    static NSDateFormatter* df = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        df = [[NSDateFormatter alloc] init];
+        df.dateStyle = NSDateFormatterShortStyle;
+        df.timeStyle = NSDateFormatterNoStyle;
+    });
+    return df;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -116,50 +156,44 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
     
-    NSDateFormatter* df = [[NSDateFormatter alloc] init];
-    df.dateStyle = NSDateFormatterShortStyle;
-    df.timeStyle = NSDateFormatterNoStyle;
-
     
+    // get the catalog we want to update the cell for
     ETA_Catalog* catalog = self.catalogs[indexPath.row];
     
-    NSURL* thumbURL = [catalog imageURLForSize:ETA_Catalog_ImageSize_Thumb];
-    NSString* brandName = catalog.branding.name;
     
+    // get the brand color of the catalog.
+    // if the brand color is white, make it grey (so we can see it against the white bg)
     UIColor* brandColor = (catalog.branding.pageflipColor) ?: catalog.branding.color;
-    
-    // if the brand color is white, make it grey (so we can see it)
     if ([brandColor isEqual:[UIColor colorWithRed:1 green:1 blue:1 alpha:1]])
         brandColor = [UIColor grayColor];
     
     
-    NSString* dateRangeStr = [NSString stringWithFormat:@"%@ - %@", [df stringFromDate:catalog.runFromDate],[df stringFromDate:catalog.runTillDate]];
-    
-    
-    cell.textLabel.text = brandName;
+    // update the cell's text label properties
+    // the text is the name of the catalog's dealer from the branding object
+    cell.textLabel.text = catalog.branding.name;
     cell.textLabel.textColor = brandColor;
-    cell.detailTextLabel.text = dateRangeStr;
     
+    // use the catalog's run dates in the cell's detail label
+    NSDateFormatter* df = [self tableViewDateFormatter];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@", [df stringFromDate:catalog.runFromDate],[df stringFromDate:catalog.runTillDate]];
+    
+    // we are using the catalog's thumbnail image url as the imageView
+    // here we are using SDWebImage to handle network image loading
+    // this is a handy 3rd-party library that will dynamically update the imageView when it is loaded from the internet.
+    // until then, it will use the placeholderImage
+    [cell.imageView setImageWithURL:[catalog imageURLForSize:ETA_Catalog_ImageSize_Thumb]
+                   placeholderImage:[UIImage imageNamed:@"catalogThumbPlaceholder.png"]];
+    
+    // when the cell is selected it will highlight to be the brand color
     cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
     cell.selectedBackgroundView.backgroundColor = brandColor;
     
-    // using SDWebImage
-    [cell.imageView setImageWithURL:thumbURL
-                   placeholderImage:[UIImage imageNamed:@"catalogThumbPlaceholder.png"]];
-
     return cell;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return self.catalogs.count;
-}
-
-#pragma mark - TableView Delegate
-
-- (void) viewDidAppear:(BOOL)animated
-{
-    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }
 
 

@@ -15,9 +15,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // First thing you must do is initialize the SDK with your API key and secret (see ETA_APIKeyAndSecret.h)
+    // Once you call this initialize method, ETA.SDK will return a valid object.
     [ETA initializeSDKWithAPIKey:ETA_APIKey apiSecret:ETA_APISecret];
+    
+    // Always keep the location of the SDK up to date.
+    // In this case we are hard-coding it, but in your app you should use the CLLocationManager
     [ETA.SDK setLatitude:55.40227410 longitude:12.1873010 radius:50000 isFromSensor:NO];
-
+    
     return YES;
 }
 							

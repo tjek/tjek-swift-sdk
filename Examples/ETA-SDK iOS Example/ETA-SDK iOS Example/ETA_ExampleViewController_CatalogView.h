@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+// This example shows how to present an interactive ETA_CatalogView
+// It places a resizing ETA_CatalogView (a UIView subclass) on the screen and
+//  loads the specified catalog object into it.
+// It also handles the delegate messages the ETA_CatalogView sends
+
 @class ETA_Catalog;
 @interface ETA_ExampleViewController_CatalogView : UIViewController
 
