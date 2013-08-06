@@ -1,3 +1,19 @@
+#	eTilbudsavis iOS SDK
+
+The ETA-SDK makes it easy to communicate with the eTilbudsavis API. The SDK handles all the concurrent networking issues and session management, so that you can focus on presenting the data.
+
+In this README:
+
+- Installation
+  - [CocoaPods](#cocoapods)
+  - [Manual Installation](#manual-installation)
+  - [API Key and Secret](#api-key-and-secret)
+- Usage
+  - [ETA SDK](#eta-sdk)
+  - [Shopping List Manager](#shopping-list-manager)
+  - [Catalog View](#catalog-view)
+
+
 # Installation
 
 ## CocoaPods
@@ -11,20 +27,21 @@ Then run `pod install` in your project directory - this will add the ETA SDK to 
 
 See the documentation on the CocoaPods website if you are new to them.
 
+
 ## Manual Installation
 
-### 1. Download SDK
+#### 1. Download SDK
 If for some reason you dont want to use CocoaPods (you really should, they're great), you can download the SDK and the associated examples from [GitHub](https://github.com/eTilbudsavis/native-ios-eta-sdk/).
 
-### 2. Add to project
+#### 2. Add to project
 You then need to add the ETA-SDK folder into your project, making sure that the "*Copy items into destination group’s folder (if needed)*" checkbox is checked".
 
 Now, in your project's **Build Phases**, under the **Link Binary With Libraries** phase, add `CoreLocation.framework`.
 
 Note that the ETA-SDK uses ARC.
 
-
-### 3. Install third-party libraries
+- 
+#### 3. Install third-party libraries
 
 ETA-SDK has a number of dependencies with third-party libraries (all use the MIT license). You must follow the installation instructions for each library:
 
@@ -33,17 +50,21 @@ ETA-SDK has a number of dependencies with third-party libraries (all use the MIT
 - [FMDB](https://github.com/ccgus/fmdb) - Handles all the SQLite database communication.
 
 
-# API Key & Secret
+## API Key and Secret
 
-Visit the [eTilbudavis Developers page](https://etilbudsavis.dk/developers/) to find out how to get yout API Key and Secret.
+To begin using the SDK, you must obtain an API key. Visit [our developer page](http://etilbudsavis.dk/developers/) where you can create a user and an app.
 
-See the `Usage -> ETA SDK -> Initialization` section below for how to use the key and secret.
+See the **[Initialization](#initialization)** section below for how to use the key and secret.
 
+&nbsp;
+&nbsp;
+
+---
 
 # Usage
-There are 3 components to the ETA SDK, `ETA`, `ETA_ShoppingListManager` and `ETA_PageFlip`. 
+There are 3 components to the ETA SDK, `ETA`, `ETA_ShoppingListManager` and `ETA_CatalogView`. 
 
-The `ETA_ShoppingListManager` and `ETA_PageFlip` both make use of the `ETA` object, but are independant of each other.
+The `ETA_ShoppingListManager` and `ETA_CatalogView` both make use of the `ETA` object, but are independant of each other.
 
 ## ETA SDK
 > \#import "ETA.h"
@@ -77,11 +98,11 @@ In order to make API requests you use the following method on an `ETA` instance:
 - `requestPath` is a string containing the API request (optionally including "?key1=val1,key2=val2" style parameters)
 - `type` describes how you want to send the request to the server: `GET`, `POST`, `PUT`, or `DELETE`
 - `parameters` is an optional dictionary to be sent with the request. It will be merged with and override any "?key1=val1,key2=val2" parameters included in the `requestPath`. When using `GET` these will usually be filter or sort queries, while with `PUSH` it can be a JSON dictionary of a model object.
-- `useCache` lets you choose whether to quickly try to first get results from the SDK's cache. See the ***Caching*** section below for more details.
+- `useCache` lets you choose whether to quickly try to first get results from the SDK's cache. See the **[Caching](#caching)** section below for more details.
 - `completionHandler` is a callback that is called when the API request finishes (and possibly also when a result is found in the cache). It is called on the main queue. It provides the following values:
 	- `response` is the JSON response from the server. It has been pre-parsed, and so can be in the form of an `NSArray`, `NSDictionary`, `NSNumber` or `NSString`. If something went wrong it will be `nil`.
 	- `error` contains a description of the problem, if something went wrong. Otherwise it is `nil`.
-	- `fromCache` shows whether or not the response came from the cache (as described in the ***Caching*** section below).
+	- `fromCache` shows whether or not the response came from the cache (as described in the **[Caching](#caching)** section below).
 
 
 For example, to get an array of catalogs for some specific dealers, sorted by distance and then name, use the following call:
@@ -158,20 +179,20 @@ You can also listen for changes to the attached user in the `NSNotificationCente
 The `userInfo` of the `NSNotification` object that is passed to the selector handling the notification is a dictionary containing both the old and new users (set to `NSNull.null` if logged out). This will only be triggered when the `uuid` of the attached user changes, not if a property of the user changes.
 
 
-### Location
-Everything in the eTilbudsavis world is location based, so it is **very** important that you set the location on the ETA object, and keep it up to date. Even if you don't think it is relevant, please still send it, as the analytics are vital. The location info that you set will be sent with every subsequent API call. 
+### Geolocation
+Everything in the eTilbudsavis world is geolocation based, so it is **very** important that you set the geolocation on the ETA object, and keep it up to date. Even if you don't think it is relevant, please still send it, as the analytics are vital. The location info that you set will be sent with every subsequent API call. 
 
-To update all the location properties at once, use the following methods:
+To update all the geolocation properties at once, use the following methods:
 
     [ETA.SDK setLatitude:55.631219
                longitude:12.577426 
-                distance:5000 
+                  radius:5000 
             isFromSensor:NO];      
 If you wish to change each part separately, use these properties:
 
-    ETA.SDK.location = [[CLLocation alloc] initWithLatitude:55.631219 
-                                                  longitude:12.577426];                                                  
-    ETA.SDK.distance = @(5000);                      
+    ETA.SDK.geolocation = [[CLLocation alloc] initWithLatitude:55.631219 
+                                                     longitude:12.577426];                                                  
+    ETA.SDK.radius = @(5000);                      
     ETA.SDK.isLocationFromSensor = NO;
 
 
@@ -187,7 +208,7 @@ You create an instance of the manager with `+managerWithETA:`, passing in the `E
 
 The main job of the manager is keeping a local store of `ETA_ShoppingList` and `ETA_ShoppingListItem` objects in sync with the the server. It does this by polling the server at a regular interval for changes to the lists and items.
 
-When something changes a notification will be triggered (see ***Notifications*** section below).
+When something changes a notification will be triggered (see **[Notifications](#notifications)** section below).
 
 You can change the rate of this polling using the `pollRate` property (for example, perhaps you want to slow down or stop the polling when not looking at the shopping lists).
 
@@ -228,14 +249,14 @@ If the object already exists in the local store then the local store will be upd
 
 Before adding or updating, the object's `modified` date will be updated to the current date and time.
 
-A notification will be triggered containing the object (see ***Notifications*** section below). 
+A notification will be triggered containing the object (see **[Notifications](#notifications)** section below). 
 
 You would use this method whenever you change a property on an object (for example when ticking a shopping list item).
 
 ##### `-remove…` 
 Removing an object will mark it as needing to be deleted from the local store, and send a delete request to the server. Only when the object is successfully deleted from the server is the object removed from the local store. Obviously, if there is no user logged in it is instantly removed from the local store.
 
-A notification will be triggered containing the deleted object (see ***Notifications*** section below). 
+A notification will be triggered containing the deleted object (see **[Notifications](#notifications)** section below). 
 
 When removing a shopping list, all the items in that list will also be removed from the local store (the server will automatically take care of removing these orphaned items from the server). It will, however, only send a notification about the removal of the list, not the items.
 
@@ -257,27 +278,27 @@ The `modified` notification will be called for shopping lists whenever anything 
 
 
 &nbsp;
-## Page Flip
-> \#import "ETA_PageFlip.h"
+## Catalog View
+> \#import "ETA_CatalogView.h"
 
-`ETA_PageFlip` is a UIView that contains all the functionality you need to show an interactive catalog.
+`ETA_CatalogView` is a UIView that contains all the functionality you need to show an interactive catalog.
 
-First, simply add an instance of the `ETA_PageFlip` to a view. This will by default use the `ETA.SDK` singleton, but there are other `-init…` methods that allow you to use a different ETA instance, and also a different `baseURL` (to which "proxy/{UUID}/" is appended when loading the catalog).
+First, simply add an instance of the `ETA_CatalogView` to a view. This will by default use the `ETA.SDK` singleton, but there are other `-init…` methods that allow you to use a different ETA instance, and also a different `baseURL` (to which "proxy/{UUID}/" is appended when loading the catalog).
 
 Now, to show an interactive catalog, call `-loadCatalog:`, with the catalog's UUID. You can optionally pass in a starting page number or a dictionary of parameters.
 
 You can change the catalog that is shown by simply calling `-loadCatalog:` again, though this will have no effect if the catalog is in the process of being loaded.
 
-To close the catalog call `-closeCatalog`, or pass *nil* to `-loadCatalog:` - this will remove the catalog from the PageFlip view, and also inform the server that the catalog was closed.
+To close the catalog call `-closeCatalog`, or pass *nil* to `-loadCatalog:` - this will remove the catalog from the CatalogView, and also inform the server that the catalog was closed.
 
 There are several properties to keep track of what page you are looking at. `currentPage` is the page number of the first visible page (starting at 1). `pageCount` is the total number of pages in the catalog. `pageProgress` is a float representing how far through the catalog you are from 0 to 1. When multiple pages are visible, the progress is taken from the last visible page. All these properties are 0 if no catalog is loaded.
 
 Finally, the `-toggleCatalogThumbnails` will show an overlay of all the pages to allow the user to quickly pick the page they wish to go to.
 
-### PageFlip events
-If you want to know what the user is doing within the PageFlip view, set your ViewController as the PageFlip's `delegate`, and implement as many of the (optional) `ETAPageFlipDelegate` methods as you need. 
+### CatalogView events
+If you want to know what the user is doing within the CatalogView, set your ViewController as the CatalogView's `delegate`, and implement as many of the (optional) `ETACatalogViewDelegate` methods as you need. 
 
-A special delegate method is `-etaPageFlip:triggeredEventWithClass:type:dataDictionary:`. This will be triggered for **all** catalog events _unless_ you implement the corresponding delegate method. For example, if you implement the `-etaPageFlip:catalogViewSingleTapEvent:` delegate method you will not receive the `…triggeredEventWithClass:…` delegate call for that event.
+A special delegate method is `-etaCatalogView:triggeredEventWithClass:type:dataDictionary:`. This will be triggered for **all** catalog events _unless_ you implement the corresponding delegate method. For example, if you implement the `-etaCatalogView:catalogViewSingleTapEvent:` delegate method you will not receive the `…triggeredEventWithClass:…` delegate call for that event.
 
 
 
