@@ -16,7 +16,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [ETA initializeSDKWithAPIKey:ETA_APIKey apiSecret:ETA_APISecret];
-    [ETA.SDK setLatitude:55.40227410 longitude:12.1873010 distance:50000 isFromSensor:NO];
+    [ETA.SDK setLatitude:55.40227410 longitude:12.1873010 radius:50000 isFromSensor:NO];
 
     return YES;
 }

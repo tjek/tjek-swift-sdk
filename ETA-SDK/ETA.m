@@ -457,7 +457,7 @@ static ETA* ETA_SingletonSDK = nil;
 
 #pragma mark - Geolocation
 
-+ (NSArray*) preferredDistances
++ (NSArray*) preferredRadiuses
 {
     return @[ @100, @150, @200, @250, @300, @350,
               @400, @450, @500, @600, @700, @800,
@@ -475,19 +475,19 @@ static ETA* ETA_SingletonSDK = nil;
 - (NSDictionary*) geolocationParameters
 {
     NSMutableDictionary* params = [@{} mutableCopy];
-    if (self.location)
+    if (self.geolocation)
     {
-        params[@"r_lat"] = @(self.location.coordinate.latitude);
-        params[@"r_lng"] = @(self.location.coordinate.longitude);
+        params[@"r_lat"] = @(self.geolocation.coordinate.latitude);
+        params[@"r_lng"] = @(self.geolocation.coordinate.longitude);
         
-        if (self.distance)
+        if (self.radius)
         {
-            NSArray* dists = [[self class] preferredDistances];
-            CGFloat minDistance = [dists[0] floatValue];
-            CGFloat maxDistance = [[dists lastObject] floatValue];
+            NSArray* radiuses = [[self class] preferredRadiuses];
+            CGFloat minRadius = [radiuses[0] floatValue];
+            CGFloat maxRadius = [[radiuses lastObject] floatValue];
             
-            CGFloat clampedDistance = MIN(MAX(self.distance.floatValue, minDistance), maxDistance);
-            params[@"r_radius"] = @(clampedDistance);
+            CGFloat clampedRadius = MIN(MAX(self.radius.floatValue, minRadius), maxRadius);
+            params[@"r_radius"] = @(clampedRadius);
         }
         
         params[@"r_sensor"] = @(self.isLocationFromSensor);
@@ -496,10 +496,10 @@ static ETA* ETA_SingletonSDK = nil;
     return params;
 }
 
-- (void) setLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude distance:(CLLocationDistance)distance isFromSensor:(BOOL)isFromSensor
+- (void) setLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude radius:(CLLocationDistance)radius isFromSensor:(BOOL)isFromSensor
 {
-    self.location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-    self.distance = @(distance);
+    self.geolocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+    self.radius = @(radius);
     self.isLocationFromSensor = isFromSensor;
 }
 

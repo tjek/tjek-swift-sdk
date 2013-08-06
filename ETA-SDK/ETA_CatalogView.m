@@ -120,22 +120,22 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     if (_eta == eta)
         return;
     
-    [_eta removeObserver:self forKeyPath:@"location"];
-    [_eta removeObserver:self forKeyPath:@"distance"];
-    [_eta removeObserver:self forKeyPath:@"sensor"];
+    [_eta removeObserver:self forKeyPath:@"geolocation"];
+    [_eta removeObserver:self forKeyPath:@"radius"];
+    [_eta removeObserver:self forKeyPath:@"isLocationFromSensor"];
     _eta = eta;
-    [_eta addObserver:self forKeyPath:@"location" options:NSKeyValueObservingOptionNew context:NULL];
-    [_eta addObserver:self forKeyPath:@"distance" options:NSKeyValueObservingOptionNew context:NULL];
-    [_eta addObserver:self forKeyPath:@"sensor" options:NSKeyValueObservingOptionNew context:NULL];
+    [_eta addObserver:self forKeyPath:@"geolocation" options:NSKeyValueObservingOptionNew context:NULL];
+    [_eta addObserver:self forKeyPath:@"radius" options:NSKeyValueObservingOptionNew context:NULL];
+    [_eta addObserver:self forKeyPath:@"isLocationFromSensor" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:@"location"] || [keyPath isEqualToString:@"distance"] || [keyPath isEqualToString:@"sensor"])
+    if ([keyPath isEqualToString:@"geolocation"] || [keyPath isEqualToString:@"radius"] || [keyPath isEqualToString:@"isLocationFromSensor"])
     {
         if (self.isInitialized)
         {
-            SEL selector = @selector(changeLocationWithETALocation);
+            SEL selector = @selector(changeLocationWithETAGeolocation);
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:selector object:nil];
             [self performSelector:selector withObject:nil afterDelay:0.1];
         }
@@ -263,18 +263,18 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     [self performJSProxyMethodWithName:@"session-change" data:sessionJSONDict];
 }
 
-- (void) changeLocation:(CLLocation*)location distance:(NSNumber*)distance fromSensor:(BOOL)fromSensor
+- (void) changeLocation:(CLLocation*)location radius:(NSNumber*)radius fromSensor:(BOOL)fromSensor
 {
-    NSDictionary* geoDict = [self geolocationDictionaryWithLocation:location distance:distance fromSensor:fromSensor];
+    NSDictionary* geoDict = [self geolocationDictionaryWithLocation:location radius:radius fromSensor:fromSensor];
     if (!geoDict)
         return;
     
     [self performJSProxyMethodWithName:@"geolocation-change" data:geoDict];
 }
 
-- (void) changeLocationWithETALocation
+- (void) changeLocationWithETAGeolocation
 {
-    [self changeLocation:self.eta.location distance:self.eta.distance fromSensor:self.eta.isLocationFromSensor];
+    [self changeLocation:self.eta.geolocation radius:self.eta.radius fromSensor:self.eta.isLocationFromSensor];
 }
 
 
@@ -368,7 +368,7 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
                                    @"apiSecret":self.eta.apiSecret} mutableCopy];
         
     // setup optional location data
-    NSDictionary* geoDict = [self geolocationDictionaryWithLocation:self.eta.location distance:self.eta.distance fromSensor:self.eta.isLocationFromSensor];
+    NSDictionary* geoDict = [self geolocationDictionaryWithLocation:self.eta.geolocation radius:self.eta.radius fromSensor:self.eta.isLocationFromSensor];
     if (geoDict)
         data[@"geolocation"] = geoDict;
     
@@ -487,7 +487,7 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
 }
 
 
-- (NSDictionary*)geolocationDictionaryWithLocation:(CLLocation*)location distance:(NSNumber*)distance fromSensor:(BOOL)fromSensor
+- (NSDictionary*)geolocationDictionaryWithLocation:(CLLocation*)location radius:(NSNumber*)radius fromSensor:(BOOL)fromSensor
 {
     NSMutableDictionary* geoDict = nil;
     // setup optional location data
@@ -497,8 +497,8 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
         geoDict[@"longitude"] = @(location.coordinate.longitude);
         geoDict[@"latitude"] = @(location.coordinate.latitude);
         geoDict[@"sensor"] = @(fromSensor);
-        if (distance)
-            geoDict[@"radius"] = distance;
+        if (radius)
+            geoDict[@"radius"] = radius;
     }
     return geoDict;
 }

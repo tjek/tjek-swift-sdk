@@ -86,21 +86,21 @@ extern NSString* const ETA_AttachedUserChangedNotification;
 
 // Changes to any of the location properties will be applied to all future requests.
 // There will be no location info sent by default.
-@property (nonatomic, readwrite, strong) CLLocation* location;
+@property (nonatomic, readwrite, strong) CLLocation* geolocation;
 
-// Distance will only be sent if there is also a location to send.
-@property (nonatomic, readwrite, strong) NSNumber* distance; // meters
+// Radius will only be sent if there is also a location to send.
+@property (nonatomic, readwrite, strong) NSNumber* radius; // meters
 
 // 'isLocationFromSensor' is currently just metadata for the server.
 // Set to YES if the location property comes from the device's sensor.
 @property (nonatomic, readwrite, assign) BOOL isLocationFromSensor;
 
 // A utility geolocation setter method
-- (void) setLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude distance:(CLLocationDistance)distance isFromSensor:(BOOL)isFromSensor;
+- (void) setLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude radius:(CLLocationDistance)radius isFromSensor:(BOOL)isFromSensor;
 
-// A list of the distances that we prefer to use.
-// The 'distance' property will be clamped to within these numbers before being sent
-+ (NSArray*) preferredDistances;
+// A list of the radiuses that we prefer to use.
+// The 'radius' property will be clamped to within these numbers before being sent
++ (NSArray*) preferredRadiuses;
 
 
 
