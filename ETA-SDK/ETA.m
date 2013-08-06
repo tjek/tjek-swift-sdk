@@ -505,5 +505,71 @@ static ETA* ETA_SingletonSDK = nil;
 
 
 
+#pragma mark - Errors
+
++ (NSDictionary*) errors
+{
+    static NSDictionary* errors = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        errors = @{
+                   // Session errors
+                   @(1100): @"ETA_Error_SessionError",
+                   @(1101): @"ETA_Error_SessionTokenExpired",
+                   @(1102): @"ETA_Error_SessionInvalidAPIKey",
+                   @(1103): @"ETA_Error_SessionMissingSignature",
+                   @(1104): @"ETA_Error_SessionInvalidSignature",
+                   @(1105): @"ETA_Error_SessionTokenNotAllowed",
+                   @(1106): @"ETA_Error_SessionMissingOrigin",
+                   @(1107): @"ETA_Error_SessionMissingToken",
+                   @(1108): @"ETA_Error_SessionInvalidToken",
+                   
+                   
+                   // Authentication
+                   @(1200): @"ETA_Error_AuthenticationError",
+                   @(1201): @"ETA_Error_AuthenticationInvalidCredentials",
+                   @(1202): @"ETA_Error_AuthenticationNoUser",
+                   @(1203): @"ETA_Error_AuthenticationEmailNotVerified",
+                   
+                   
+                   // Authorization
+                   @(1300): @"ETA_Error_AuthorizationError",
+                   @(1301): @"ETA_Error_AuthorizationActionNotAllowed",
+                   
+                   
+                   // Missing information
+                   @(1400): @"ETA_Error_InfoRequestInvalid",
+                   @(1401): @"ETA_Error_InfoMissingGeolocation",
+                   @(1402): @"ETA_Error_InfoMissingRadius",
+                   @(1411): @"ETA_Error_InfoMissingAuthentication",
+                   @(1431): @"ETA_Error_InfoMissingEmail",
+                   @(1432): @"ETA_Error_InfoMissingBirthday",
+                   @(1433): @"ETA_Error_InfoMissingGender",
+                   @(1434): @"ETA_Error_InfoMissingLocale",
+                   @(1435): @"ETA_Error_InfoMissingName",
+                   @(1440): @"ETA_Error_InfoResourceNotFound",
+                   
+                   // Invalid information
+                   @(1500): @"ETA_Error_InfoInvalid",
+                   @(1501): @"ETA_Error_InfoInvalidResourceID",
+                   @(1530): @"ETA_Error_InfoResourceDuplication",
+                   @(1566): @"ETA_Error_InfoInvalidBodyData",
+                   
+                   // Internal corruption of data
+                   @(2000): @"ETA_Error_InternalIntegrityError",
+                   @(2010): @"ETA_Error_InternalSearchError",
+                   @(2015): @"ETA_Error_InternalNonCriticalError",
+                   
+                   // Misc.
+                   @(4000): @"ETA_Error_MiscActionNotExists",
+                   };
+    });
+    return errors;
+}
++ (NSString*) errorForCode:(NSUInteger)errorCode
+{
+    return [[ETA errors] objectForKey:@(errorCode)];
+}
 
 @end
