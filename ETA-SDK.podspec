@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
                      Allows you to easily embed catalogs and shopping lists in your own iOS app.
                     DESC
 
-  s.homepage     = "http://engineering.etilbudsavis.dk/"
+  s.homepage     = "https://github.com/eTilbudsavis/native-ios-eta-sdk"
   s.license      = 'MIT'
   s.author       = { "Laurie Hufford" => "lh@etilbudsavis.dk" }
 
