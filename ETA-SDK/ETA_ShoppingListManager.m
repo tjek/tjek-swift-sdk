@@ -26,7 +26,6 @@ NSString* const ETA_ShoppingListManager_ItemsChangedNotification = @"ETA_Shoppin
 
 
 NSTimeInterval const kETA_ShoppingListManager_DefaultPollInterval   = 6.0; // secs
-NSTimeInterval const kETA_ShoppingListManager_RapidPollInterval     = 2.0; // secs
 NSTimeInterval const kETA_ShoppingListManager_SlowPollInterval      = 10.0; // secs
 
 NSTimeInterval const kETA_ShoppingListManager_DefaultRetrySyncInterval = 10.0; // secs
@@ -440,9 +439,6 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
 {
     switch (pollRate)
     {
-        case ETA_ShoppingListManager_PollRate_Rapid:
-            return kETA_ShoppingListManager_RapidPollInterval;
-            break;
         case ETA_ShoppingListManager_PollRate_Slow:
             return kETA_ShoppingListManager_SlowPollInterval;
             break;
@@ -1157,6 +1153,8 @@ NSString* const kSLI_USERLESS_TBLNAME   = @"userless_shoppinglistitems";
     
     if (!isItem && !isList)
         return;
+    
+    // TODO: only update when modified is the same or newer. Use in all localDB methods.
     
     // if it is deleted, remove from the local db
     if (syncState == ETA_DBSyncState_Deleted)

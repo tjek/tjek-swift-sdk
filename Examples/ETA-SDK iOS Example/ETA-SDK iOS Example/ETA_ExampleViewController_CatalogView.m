@@ -1,24 +1,24 @@
 //
-//  ETA_ExampleViewController_PageFlip.m
+//  ETA_ExampleViewController_CatalogView.m
 //  ETA-SDK iOS Example
 //
 //  Created by Laurie Hufford on 7/24/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
 //
 
-#import "ETA_ExampleViewController_PageFlip.h"
+#import "ETA_ExampleViewController_CatalogView.h"
 
-#import "ETA_PageFlip.h"
+#import "ETA_CatalogView.h"
 #import "ETA.h"
 #import "ETA_Catalog.h"
 
-@interface ETA_ExampleViewController_PageFlip ()<ETAPageFlipDelegate>
+@interface ETA_ExampleViewController_CatalogView ()<ETACatalogViewDelegate>
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activitySpinner;
-@property (nonatomic, readwrite, strong) ETA_PageFlip* pageFlip;
+@property (nonatomic, readwrite, strong) ETA_CatalogView* catalogView;
 @property (nonatomic, readwrite, assign) BOOL isReady;
 @end
 
-@implementation ETA_ExampleViewController_PageFlip
+@implementation ETA_ExampleViewController_CatalogView
 
 - (void) setCatalog:(ETA_Catalog *)catalog
 {
@@ -35,14 +35,14 @@
 {
     [super viewDidLoad];
     
-    self.pageFlip = [[ETA_PageFlip alloc] initWithETA:ETA.SDK];
-    self.pageFlip.delegate = self;
-//    self.pageFlip.verbose = YES;
+    self.catalogView = [[ETA_CatalogView alloc] initWithETA:ETA.SDK];
+    self.catalogView.delegate = self;
+//    self.catalogView.verbose = YES;
     
-    self.pageFlip.frame = self.view.bounds;
-    self.pageFlip.alpha = 0;
-    self.pageFlip.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [self.view addSubview:self.pageFlip];
+    self.catalogView.frame = self.view.bounds;
+    self.catalogView.alpha = 0;
+    self.catalogView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:self.catalogView];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -76,22 +76,22 @@
     }
     
     self.isReady = NO;
-    [self.pageFlip loadCatalog:self.catalog.uuid];
+    [self.catalogView loadCatalog:self.catalog.uuid];
 }
 
-#pragma mark - PageFlip Delegate methods
+#pragma mark - CatalogView Delegate methods
 
 // called when something is ready to appear
-- (void)etaPageFlip:(ETA_PageFlip*)pageFlip readyEvent:(NSDictionary*)data
+- (void)etaCatalogView:(ETA_CatalogView*)catalogView readyEvent:(NSDictionary*)data
 {
     
 }
-- (void)etaPageFlip:(ETA_PageFlip *)pageFlip didFailLoadWithError:(NSError *)error
+- (void)etaCatalogView:(ETA_CatalogView *)catalogView didFailLoadWithError:(NSError *)error
 {
     [self.activitySpinner stopAnimating];
 }
 
-- (void)etaPageFlip:(ETA_PageFlip*)pageFlip catalogViewHotspotEvent:(NSDictionary*)data
+- (void)etaCatalogView:(ETA_CatalogView*)catalogView catalogViewHotspotEvent:(NSDictionary*)data
 {
     NSLog(@"Clicked Hotspot '%@'", data[@"heading"]);
     UIAlertView* alert = [[UIAlertView alloc] init];
@@ -101,14 +101,14 @@
 }
 
 // triggered for any event that you don't have a delegate method for
-- (void)etaPageFlip:(ETA_PageFlip *)pageFlip triggeredEventWithClass:(NSString *)eventClass type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary
+- (void)etaCatalogView:(ETA_CatalogView *)catalogView triggeredEventWithClass:(NSString *)eventClass type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary
 {
 //    NSLog(@"triggeredEvent: '%@' '%@' %@", eventClass, type, dataDictionary);
 }
 
-- (void) etaPageFlip:(ETA_PageFlip *)pageFlip catalogViewPageChangeEvent:(NSDictionary *)data
+- (void) etaCatalogView:(ETA_CatalogView *)catalogView catalogViewPageChangeEvent:(NSDictionary *)data
 {
-    // although etaPageFlip:readyEvent: marks when the pageflip is ready, the catalog may not be fully drawn yet
+    // although etaCatalogView:readyEvent: marks when the catalog is ready, the catalog may not be fully drawn yet
     // the page change event is a better point for knowing when drawing is ready
     if (self.isReady == NO)
     {
@@ -116,9 +116,9 @@
         [self.activitySpinner stopAnimating];
         [UIView animateWithDuration:1
                          animations:^{
-                                pageFlip.alpha = 1.0;
+                                catalogView.alpha = 1.0;
                             }];
     }
-    NSLog(@"Changed to %d / %d (%.2f%%)", pageFlip.currentPage, pageFlip.pageCount, pageFlip.pageProgress*100);
+    NSLog(@"Changed to %d / %d (%.2f%%)", catalogView.currentPage, catalogView.pageCount, catalogView.pageProgress*100);
 }
 @end

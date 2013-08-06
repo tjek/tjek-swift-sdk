@@ -1,5 +1,5 @@
 //
-//  ETA_ExampleViewController_PageFlip.h
+//  ETA_ExampleViewController_CatalogView.h
 //  ETA-SDK iOS Example
 //
 //  Created by Laurie Hufford on 7/24/13.
@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class ETA_Catalog;
-@interface ETA_ExampleViewController_PageFlip : UIViewController
+@interface ETA_ExampleViewController_CatalogView : UIViewController
 
 @property (nonatomic, readwrite, strong) ETA_Catalog* catalog;
 

@@ -19,7 +19,6 @@ typedef enum {
 
 typedef enum{
     ETA_ShoppingListManager_PollRate_Default = 0,
-    ETA_ShoppingListManager_PollRate_Rapid = 1,
     ETA_ShoppingListManager_PollRate_Slow = 2,
     ETA_ShoppingListManager_PollRate_None = 3,
 } ETA_ShoppingListManager_PollRate;

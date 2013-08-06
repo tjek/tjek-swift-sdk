@@ -19,7 +19,7 @@
 		17DBD19A17A7DF5F008EFAEF /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17DBD19917A7DF5F008EFAEF /* Default-568h@2x.png */; };
 		17DBD19D17A7DF5F008EFAEF /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17DBD19B17A7DF5F008EFAEF /* MainStoryboard.storyboard */; };
 		17DBD1AF17A7E073008EFAEF /* ETA_ExampleViewController_Catalogs.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBD1A817A7E073008EFAEF /* ETA_ExampleViewController_Catalogs.m */; };
-		17DBD1B017A7E073008EFAEF /* ETA_ExampleViewController_PageFlip.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBD1AA17A7E073008EFAEF /* ETA_ExampleViewController_PageFlip.m */; };
+		17DBD1B017A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBD1AA17A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.m */; };
 		17DBD1B717A7E4B6008EFAEF /* catalogThumbPlaceholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 17DBD1B617A7E4B6008EFAEF /* catalogThumbPlaceholder.png */; };
 		17F5304F17A9919700CB1DDE /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F5304E17A9919700CB1DDE /* SenTestingKit.framework */; };
 		17F5305017A9919700CB1DDE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17DBD18317A7DF5F008EFAEF /* UIKit.framework */; };
@@ -49,9 +49,9 @@
 		17DBD19C17A7DF5F008EFAEF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		17DBD1A617A7E026008EFAEF /* ETA_APIKeyAndSecret.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_APIKeyAndSecret.h; sourceTree = "<group>"; };
 		17DBD1A717A7E073008EFAEF /* ETA_ExampleViewController_Catalogs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_ExampleViewController_Catalogs.h; sourceTree = "<group>"; };
-		17DBD1A817A7E073008EFAEF /* ETA_ExampleViewController_Catalogs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_ExampleViewController_Catalogs.m; sourceTree = "<group>"; };
-		17DBD1A917A7E073008EFAEF /* ETA_ExampleViewController_PageFlip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_ExampleViewController_PageFlip.h; sourceTree = "<group>"; };
-		17DBD1AA17A7E073008EFAEF /* ETA_ExampleViewController_PageFlip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_ExampleViewController_PageFlip.m; sourceTree = "<group>"; };
+		17DBD1A817A7E073008EFAEF /* ETA_ExampleViewController_Catalogs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ETA_ExampleViewController_Catalogs.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		17DBD1A917A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ETA_ExampleViewController_CatalogView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		17DBD1AA17A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ETA_ExampleViewController_CatalogView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		17DBD1B617A7E4B6008EFAEF /* catalogThumbPlaceholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = catalogThumbPlaceholder.png; sourceTree = "<group>"; };
 		17F5304D17A9919700CB1DDE /* ETA-SDK Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ETA-SDK Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		17F5304E17A9919700CB1DDE /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -138,8 +138,8 @@
 				17DBD19B17A7DF5F008EFAEF /* MainStoryboard.storyboard */,
 				17DBD1A717A7E073008EFAEF /* ETA_ExampleViewController_Catalogs.h */,
 				17DBD1A817A7E073008EFAEF /* ETA_ExampleViewController_Catalogs.m */,
-				17DBD1A917A7E073008EFAEF /* ETA_ExampleViewController_PageFlip.h */,
-				17DBD1AA17A7E073008EFAEF /* ETA_ExampleViewController_PageFlip.m */,
+				17DBD1A917A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.h */,
+				17DBD1AA17A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.m */,
 				17DBD18A17A7DF5F008EFAEF /* Supporting Files */,
 			);
 			path = "ETA-SDK iOS Example";
@@ -358,7 +358,7 @@
 				17DBD19017A7DF5F008EFAEF /* main.m in Sources */,
 				17DBD19417A7DF5F008EFAEF /* ETA_AppDelegate.m in Sources */,
 				17DBD1AF17A7E073008EFAEF /* ETA_ExampleViewController_Catalogs.m in Sources */,
-				17DBD1B017A7E073008EFAEF /* ETA_ExampleViewController_PageFlip.m in Sources */,
+				17DBD1B017A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,5 +1,5 @@
 //
-//  ETA_PageFlip.h
+//  ETA_CatalogView.h
 //  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/15/13.
@@ -9,34 +9,34 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-static NSString * const kETA_PageFlipBaseURLString = @"https://etilbudsavis.dk/";
+static NSString * const kETA_CatalogViewBaseURLString = @"https://etilbudsavis.dk/";
 
-@class ETA_PageFlip, ETA, ETA_Session;
-@protocol ETAPageFlipDelegate <NSObject>
+@class ETA_CatalogView, ETA, ETA_Session;
+@protocol ETACatalogViewDelegate <NSObject>
 
 @optional
 
-- (void)etaPageFlip:(ETA_PageFlip *)pageFlip didFailLoadWithError:(NSError *)error;
+- (void)etaCatalogView:(ETA_CatalogView *)catalogView didFailLoadWithError:(NSError *)error;
 
 // all events trigger this method, unless you implement the optional event methods below
-- (void)etaPageFlip:(ETA_PageFlip*)pageFlip triggeredEventWithClass:(NSString *)eventClass type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary;
+- (void)etaCatalogView:(ETA_CatalogView*)catalogView triggeredEventWithClass:(NSString *)eventClass type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary;
 
-- (void)etaPageFlip:(ETA_PageFlip*)pageFlip readyEvent:(NSDictionary*)data;
-- (void)etaPageFlip:(ETA_PageFlip*)pageFlip sessionChangeEvent:(ETA_Session*)session;
-- (void)etaPageFlip:(ETA_PageFlip*)pageFlip geolocationChangeEvent:(NSDictionary*)data;
-- (void)etaPageFlip:(ETA_PageFlip*)pageFlip catalogViewPageChangeEvent:(NSDictionary*)data;
-- (void)etaPageFlip:(ETA_PageFlip*)pageFlip catalogViewHotspotEvent:(NSDictionary*)data;
-- (void)etaPageFlip:(ETA_PageFlip*)pageFlip catalogViewSingleTapEvent:(NSDictionary*)data;
-- (void)etaPageFlip:(ETA_PageFlip*)pageFlip catalogViewDoubleTapEvent:(NSDictionary*)data;
-- (void)etaPageFlip:(ETA_PageFlip*)pageFlip catalogViewDragStartEvent:(NSDictionary*)data;
+- (void)etaCatalogView:(ETA_CatalogView*)catalogView readyEvent:(NSDictionary*)data;
+- (void)etaCatalogView:(ETA_CatalogView*)catalogView sessionChangeEvent:(ETA_Session*)session;
+- (void)etaCatalogView:(ETA_CatalogView*)catalogView geolocationChangeEvent:(NSDictionary*)data;
+- (void)etaCatalogView:(ETA_CatalogView*)catalogView catalogViewPageChangeEvent:(NSDictionary*)data;
+- (void)etaCatalogView:(ETA_CatalogView*)catalogView catalogViewHotspotEvent:(NSDictionary*)data;
+- (void)etaCatalogView:(ETA_CatalogView*)catalogView catalogViewSingleTapEvent:(NSDictionary*)data;
+- (void)etaCatalogView:(ETA_CatalogView*)catalogView catalogViewDoubleTapEvent:(NSDictionary*)data;
+- (void)etaCatalogView:(ETA_CatalogView*)catalogView catalogViewDragStartEvent:(NSDictionary*)data;
 
 @end
 
 
-@interface ETA_PageFlip : UIView
+@interface ETA_CatalogView : UIView
 
 // implement the delegate methods to get events from the page flip
-@property (nonatomic, readwrite, assign) id<ETAPageFlipDelegate> delegate;
+@property (nonatomic, readwrite, assign) id<ETACatalogViewDelegate> delegate;
 
 
 // If you init with no ETA object (or send nil) it will use the [ETA SDK] singleton.

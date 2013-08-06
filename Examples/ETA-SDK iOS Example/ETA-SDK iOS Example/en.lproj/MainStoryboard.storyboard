@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="l1U-KT-MLO">
     <dependencies>
-        <deployment defaultVersion="1552" identifier="iOS"/>
         <development version="4600" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
@@ -38,7 +37,7 @@
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <connections>
-                                            <segue destination="Cmz-vg-40e" kind="push" identifier="CatalogCellToPageFlipSegue" id="UGR-n0-Qrb"/>
+                                            <segue destination="Cmz-vg-40e" kind="push" identifier="CatalogCellToCatalogViewSegue" id="UGR-n0-Qrb"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -70,10 +69,10 @@
             </objects>
             <point key="canvasLocation" x="630" y="68"/>
         </scene>
-        <!--Example View Controller Page Flip - Page Flip-->
+        <!--Example View Controller Catalog View - Catalog View-->
         <scene sceneID="tzz-9M-ZKm">
             <objects>
-                <viewController id="Cmz-vg-40e" customClass="ETA_ExampleViewController_PageFlip" sceneMemberID="viewController">
+                <viewController id="Cmz-vg-40e" customClass="ETA_ExampleViewController_CatalogView" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NfQ-rK-JTi">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -86,7 +85,7 @@
                             <constraint firstItem="dFH-bw-742" firstAttribute="centerY" secondItem="NfQ-rK-JTi" secondAttribute="centerY" type="default" id="YUm-9j-PSP"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Page Flip" id="Xen-UG-S8T"/>
+                    <navigationItem key="navigationItem" title="Catalog View" id="Xen-UG-S8T"/>
                     <connections>
                         <outlet property="activitySpinner" destination="dFH-bw-742" id="JuP-kS-D0m"/>
                         <outlet property="view" destination="NfQ-rK-JTi" id="JU3-XS-RkO"/>
@@ -113,17 +112,17 @@
         </scene>
     </scenes>
     <classes>
+        <class className="ETA_ExampleViewController_CatalogView" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ETA_ExampleViewController_CatalogView.h"/>
+            <relationships>
+                <relationship kind="outlet" name="activitySpinner" candidateClass="UIActivityIndicatorView"/>
+            </relationships>
+        </class>
         <class className="ETA_ExampleViewController_Catalogs" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ETA_ExampleViewController_Catalogs.h"/>
             <relationships>
                 <relationship kind="outlet" name="activitySpinner" candidateClass="UIActivityIndicatorView"/>
                 <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="ETA_ExampleViewController_PageFlip" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ETA_ExampleViewController_PageFlip.h"/>
-            <relationships>
-                <relationship kind="outlet" name="activitySpinner" candidateClass="UIActivityIndicatorView"/>
             </relationships>
         </class>
         <class className="NSLayoutConstraint" superclassName="NSObject">

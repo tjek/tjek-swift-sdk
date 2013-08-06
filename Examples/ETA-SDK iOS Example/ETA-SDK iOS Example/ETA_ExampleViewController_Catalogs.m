@@ -13,7 +13,7 @@
 #import "ETA.h"
 #import "ETA_Catalog.h"
 
-#import "ETA_ExampleViewController_PageFlip.h"
+#import "ETA_ExampleViewController_CatalogView.h"
 
 @interface ETA_ExampleViewController_Catalogs () <UITableViewDataSource, UITableViewDelegate>
 
@@ -89,14 +89,14 @@
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     // see storyboard for segue
-    if ([segue.identifier isEqualToString:@"CatalogCellToPageFlipSegue"])
+    if ([segue.identifier isEqualToString:@"CatalogCellToCatalogViewSegue"])
     {
-        ETA_ExampleViewController_PageFlip* pageFlip = (ETA_ExampleViewController_PageFlip*)segue.destinationViewController;
+        ETA_ExampleViewController_CatalogView* catalogView = (ETA_ExampleViewController_CatalogView*)segue.destinationViewController;
         NSIndexPath* selectedIndexPath = [self.tableView indexPathForSelectedRow];
         if (selectedIndexPath)
         {
             ETA_Catalog* catalog = self.catalogs[selectedIndexPath.row];
-            pageFlip.catalog = catalog;
+            catalogView.catalog = catalog;
         }
     }
 }

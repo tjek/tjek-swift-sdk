@@ -1,12 +1,12 @@
 //
-//  ETA_PageFlip.m
+//  ETA_CatalogView.m
 //  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/15/13.
 //  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
 //
 
-#import "ETA_PageFlip.h"
+#import "ETA_CatalogView.h"
 
 #import "ETA.h"
 #import "ETA_APIClient.h"
@@ -14,22 +14,22 @@
 #import "MTLJSONAdapter.h"
 
 typedef enum {
-    ETA_PageFlip_InitState_NotInitialized,
-    ETA_PageFlip_InitState_Initializing,
-    ETA_PageFlip_InitState_Initialized,
-} ETA_PageFlip_InitState;
+    ETA_CatalogView_InitState_NotInitialized,
+    ETA_CatalogView_InitState_Initializing,
+    ETA_CatalogView_InitState_Initialized,
+} ETA_CatalogView_InitState;
 
-NSString* const ETA_PageFlipErrorDomain = @"ETA_PageFlipErrorDomain";
-NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
+NSString* const ETA_CatalogViewErrorDomain = @"ETA_CatalogViewErrorDomain";
+NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
 
 
-// expose the client to the pageFlip
-@interface ETA (PageFlipPrivate)
+// expose the client to the catalogView
+@interface ETA (CatalogViewPrivate)
 @property (nonatomic, readonly, strong) ETA_APIClient* client;
 @end
 
 
-@interface ETA_PageFlip () <UIWebViewDelegate>
+@interface ETA_CatalogView () <UIWebViewDelegate>
 
 @property (nonatomic, readwrite, strong) UIWebView* webview;
 
@@ -38,7 +38,7 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
 @property (nonatomic, readwrite, strong) NSString* catalogID;
 @property (nonatomic, readwrite, strong) NSString* pendingShowCatalogRequest;
 
-@property (nonatomic, readwrite, assign) ETA_PageFlip_InitState initState;
+@property (nonatomic, readwrite, assign) ETA_CatalogView_InitState initState;
 @property (nonatomic, readonly, assign) BOOL isInitialized;
 @property (nonatomic, readwrite, strong) NSString* uuid;
 @property (nonatomic, readwrite, strong) NSURL* baseURL;
@@ -50,7 +50,7 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
 
 @end
 
-@implementation ETA_PageFlip
+@implementation ETA_CatalogView
 
 - (id) init
 {
@@ -100,9 +100,9 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
         self.eta = eta;
         
         self.verbose = NO;
-        self.initState = ETA_PageFlip_InitState_NotInitialized;
+        self.initState = ETA_CatalogView_InitState_NotInitialized;
         
-        self.baseURL = (baseURL) ?: [NSURL URLWithString:kETA_PageFlipBaseURLString];
+        self.baseURL = (baseURL) ?: [NSURL URLWithString:kETA_CatalogViewBaseURLString];
         
         return YES;
     }
@@ -111,7 +111,7 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
 
 - (void) dealloc
 {
-    // send a close request to the server when the pageflip view is destroyed
+    // send a close request to the server when the catalog view is destroyed
     [self closeCatalog];
 }
 
@@ -157,7 +157,7 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
 }
 - (void) loadCatalog:(NSString *)catalogID parameters:(NSDictionary*)parameters
 {
-    if (self.catalogID == catalogID || [self.catalogID isEqualToString:catalogID] || self.initState == ETA_PageFlip_InitState_Initializing)
+    if (self.catalogID == catalogID || [self.catalogID isEqualToString:catalogID] || self.initState == ETA_CatalogView_InitState_Initializing)
         return;
     
     self.catalogID = catalogID;
@@ -187,7 +187,7 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
     self.pageCount = 0;
     self.pageProgress = 0;
     
-    self.initState = ETA_PageFlip_InitState_Initializing;
+    self.initState = ETA_CatalogView_InitState_Initializing;
     
     // create a new webview, destroying the old
     [self.webview removeFromSuperview];
@@ -245,7 +245,7 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
     [self.webview removeFromSuperview];
     self.webview = nil;
     
-    self.initState = ETA_PageFlip_InitState_NotInitialized;
+    self.initState = ETA_CatalogView_InitState_NotInitialized;
 }
 
 - (void) toggleCatalogThumbnails
@@ -294,8 +294,8 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
     BOOL handled = NO;
     if ([eventName isEqualToString:@"eta-proxy-ready"])
     {
-        if ((handled = [self.delegate respondsToSelector:@selector(etaPageFlip:readyEvent:)]))
-            [self.delegate etaPageFlip:self readyEvent:specificEventData];
+        if ((handled = [self.delegate respondsToSelector:@selector(etaCatalogView:readyEvent:)]))
+            [self.delegate etaCatalogView:self readyEvent:specificEventData];
     }
     else if ([eventName isEqualToString:@"eta-session-change"])
     {
@@ -304,13 +304,13 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
         if (session)
             [self.eta.client setIfNewerSession:session];
         
-        if ((handled = [self.delegate respondsToSelector:@selector(etaPageFlip:sessionChangeEvent:)]))
-            [self.delegate etaPageFlip:self sessionChangeEvent:session];
+        if ((handled = [self.delegate respondsToSelector:@selector(etaCatalogView:sessionChangeEvent:)]))
+            [self.delegate etaCatalogView:self sessionChangeEvent:session];
     }
     else if ([eventName isEqualToString:@"eta-geolocation-change"])
     {
-        if ((handled = [self.delegate respondsToSelector:@selector(etaPageFlip:geolocationChangeEvent:)]))
-            [self.delegate etaPageFlip:self geolocationChangeEvent:specificEventData];
+        if ((handled = [self.delegate respondsToSelector:@selector(etaCatalogView:geolocationChangeEvent:)]))
+            [self.delegate etaCatalogView:self geolocationChangeEvent:specificEventData];
     }
     else if ([eventName isEqualToString:@"eta-catalog-view-pagechange"])
     {
@@ -327,32 +327,32 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
             self.pageProgress = (CGFloat)(lastVisiblePage - 1) / (CGFloat)(self.pageCount - 1);
         }
         
-        if ((handled = [self.delegate respondsToSelector:@selector(etaPageFlip:catalogViewPageChangeEvent:)]))
-            [self.delegate etaPageFlip:self catalogViewPageChangeEvent:specificEventData];
+        if ((handled = [self.delegate respondsToSelector:@selector(etaCatalogView:catalogViewPageChangeEvent:)]))
+            [self.delegate etaCatalogView:self catalogViewPageChangeEvent:specificEventData];
     }
     else if ([eventName isEqualToString:@"eta-catalog-view-hotspot"])
     {
-        if ((handled = [self.delegate respondsToSelector:@selector(etaPageFlip:catalogViewHotspotEvent:)]))
-            [self.delegate etaPageFlip:self catalogViewHotspotEvent:specificEventData];
+        if ((handled = [self.delegate respondsToSelector:@selector(etaCatalogView:catalogViewHotspotEvent:)]))
+            [self.delegate etaCatalogView:self catalogViewHotspotEvent:specificEventData];
     }
     else if ([eventName isEqualToString:@"eta-catalog-view-singletap"])
     {
-        if ((handled = [self.delegate respondsToSelector:@selector(etaPageFlip:catalogViewSingleTapEvent:)]))
-            [self.delegate etaPageFlip:self catalogViewSingleTapEvent:specificEventData];
+        if ((handled = [self.delegate respondsToSelector:@selector(etaCatalogView:catalogViewSingleTapEvent:)]))
+            [self.delegate etaCatalogView:self catalogViewSingleTapEvent:specificEventData];
     }
     else if ([eventName isEqualToString:@"eta-catalog-view-doubletap"])
     {
-        if ((handled = [self.delegate respondsToSelector:@selector(etaPageFlip:catalogViewDoubleTapEvent:)]))
-            [self.delegate etaPageFlip:self catalogViewDoubleTapEvent:specificEventData];
+        if ((handled = [self.delegate respondsToSelector:@selector(etaCatalogView:catalogViewDoubleTapEvent:)]))
+            [self.delegate etaCatalogView:self catalogViewDoubleTapEvent:specificEventData];
     }
     else if ([eventName isEqualToString:@"eta-catalog-view-dragstart"])
     {
-        if ((handled = [self.delegate respondsToSelector:@selector(etaPageFlip:catalogViewDragStartEvent:)]))
-            [self.delegate etaPageFlip:self catalogViewDragStartEvent:specificEventData];
+        if ((handled = [self.delegate respondsToSelector:@selector(etaCatalogView:catalogViewDragStartEvent:)]))
+            [self.delegate etaCatalogView:self catalogViewDragStartEvent:specificEventData];
     }
     
-    if (!handled && [self.delegate respondsToSelector:@selector(etaPageFlip:triggeredEventWithClass:type:dataDictionary:)])
-        [self.delegate etaPageFlip:self triggeredEventWithClass:eventClass type:eventType dataDictionary:eventData];
+    if (!handled && [self.delegate respondsToSelector:@selector(etaCatalogView:triggeredEventWithClass:type:dataDictionary:)])
+        [self.delegate etaCatalogView:self triggeredEventWithClass:eventClass type:eventType dataDictionary:eventData];
     
 }
 
@@ -382,7 +382,7 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
     self.pendingShowCatalogRequest = nil;
     if (data)
     {
-        self.initState = ETA_PageFlip_InitState_Initialized;
+        self.initState = ETA_CatalogView_InitState_Initialized;
         
         [self performJSProxyMethodWithName:@"initialize" data:data];
         
@@ -394,10 +394,10 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
     }
     else
     {
-        NSError* error = [NSError errorWithDomain:ETA_PageFlipErrorDomain
-                                             code:ETA_PageFlipErrorCode_InitFailed
-                                         userInfo:@{ NSLocalizedDescriptionKey: @"Failed to initialize PageFlip",
-                                                     NSLocalizedFailureReasonErrorKey: @"PageFlip initialize call was missing required data - maybe ETA object's API key/secret?"
+        NSError* error = [NSError errorWithDomain:ETA_CatalogViewErrorDomain
+                                             code:ETA_CatalogViewErrorCode_InitFailed
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Failed to initialize CatalogView",
+                                                     NSLocalizedFailureReasonErrorKey: @"CatalogView initialize call was missing required data - maybe ETA object's API key/secret?"
                                                      }];
 
         [self webView:webView didFailLoadWithError:error];
@@ -412,8 +412,8 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
     
     [self closeCatalog];
     
-    if ([self.delegate respondsToSelector:@selector(etaPageFlip:didFailLoadWithError:)])
-        [self.delegate etaPageFlip:self didFailLoadWithError:error];
+    if ([self.delegate respondsToSelector:@selector(etaCatalogView:didFailLoadWithError:)])
+        [self.delegate etaCatalogView:self didFailLoadWithError:error];
 }
 
 
@@ -434,7 +434,7 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
         NSDictionary *eventDataDictionary = [NSJSONSerialization JSONObjectWithData:[eventDataJSON dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingAllowFragments error:nil];
         
         if (self.verbose)
-            NSLog(@"ETA_PageFlip(%@) Event: %@", self.uuid, eventDataDictionary);
+            NSLog(@"ETA_CatalogView(%@) Event: %@", self.uuid, eventDataDictionary);
         
         [self eventTriggered:eventClass type:eventType data:eventDataDictionary];
 
@@ -447,7 +447,7 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
 #pragma mark - Utility methods
 - (BOOL) isInitialized
 {
-    return self.initState == ETA_PageFlip_InitState_Initialized;
+    return self.initState == ETA_CatalogView_InitState_Initialized;
 }
         
 - (NSString*) jsRequestWithProxyMethodName:(NSString*)name data:(NSDictionary*)data
@@ -477,7 +477,7 @@ NSInteger const ETA_PageFlipErrorCode_InitFailed = -1983;
     NSString* jsResponse = [self.webview stringByEvaluatingJavaScriptFromString:jsRequest];
     
     if (self.verbose)
-        NSLog(@"ETA_PageFlip(%@) Request: %@\nResponse: '%@'", self.uuid, jsRequest, jsResponse);
+        NSLog(@"ETA_CatalogView(%@) Request: %@\nResponse: '%@'", self.uuid, jsRequest, jsResponse);
     
     return jsResponse;
 }
