@@ -52,17 +52,17 @@
 {
     ETA* eta = [ETA etaWithAPIKey:@"" apiSecret:@""];
     
-    STAssertNil(eta.location, @"ETA.location must be nil when first created");
-    STAssertNil(eta.distance, @"ETA.distance must be nil when first created");
+    STAssertNil(eta.geolocation, @"ETA.location must be nil when first created");
+    STAssertNil(eta.radius, @"ETA.radius must be nil when first created");
     STAssertEquals(eta.isLocationFromSensor, NO, @"ETA.isLocationFromSensor must be NO when first created");
     
     
-    [eta setLatitude:123.45 longitude:123.45 distance:10000 isFromSensor:YES];
+    [eta setLatitude:123.45 longitude:123.45 radius:10000 isFromSensor:YES];
     
-    STAssertEquals(eta.location.coordinate.latitude, 123.45, @"eta.location.latitude must be set correctly");
-    STAssertEquals(eta.location.coordinate.longitude, 123.45, @"eta.location.longitude must be set correctly");
-    STAssertEqualObjects(eta.distance, @(10000), @"eta.location.distance must be set correctly");
-    STAssertEquals(eta.isLocationFromSensor, YES, @"eta.location.isLocationFromSensor must be set correctly");
+    STAssertEquals(eta.geolocation.coordinate.latitude, 123.45, @"eta.geolocation.latitude must be set correctly");
+    STAssertEquals(eta.geolocation.coordinate.longitude, 123.45, @"eta.geolocation.longitude must be set correctly");
+    STAssertEqualObjects(eta.radius, @(10000), @"eta.radius must be set correctly");
+    STAssertEquals(eta.isLocationFromSensor, YES, @"eta.isLocationFromSensor must be set correctly");
 }
 
 @end
