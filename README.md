@@ -40,7 +40,7 @@ Now, in your project's **Build Phases**, under the **Link Binary With Libraries*
 
 Note that the ETA-SDK uses ARC.
 
-- 
+ 
 #### 3. Install third-party libraries
 
 ETA-SDK has a number of dependencies with third-party libraries (all use the MIT license). You must follow the installation instructions for each library:
