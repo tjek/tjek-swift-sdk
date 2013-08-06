@@ -107,7 +107,8 @@ static ETA* ETA_SingletonSDK = nil;
     {
         if (!_client)
         {
-            self.client = [ETA_APIClient clientWithBaseURL:self.baseURL apiKey:self.apiKey apiSecret:self.apiSecret];   
+            self.client = [ETA_APIClient clientWithBaseURL:self.baseURL apiKey:self.apiKey apiSecret:self.apiSecret];
+            self.client.verbose = self.verbose;
         }
     }
     return _client;

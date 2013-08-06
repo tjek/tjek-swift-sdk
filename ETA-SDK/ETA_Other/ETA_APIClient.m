@@ -133,8 +133,36 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
             {
                 NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
                 
-                if (completionHandler)
-                    completionHandler(nil, (etaError) ?: error);
+                NSInteger code = etaError.code;
+                
+                // errors that require a retry
+                // token expired / invalid token / non-critical error
+                if (code == 1101 || code == 1108)
+                {
+                    [self log:@"Error while making request - Reset Session and retry"];
+                    // create a new session, and if it was successful, repeat the request we were making
+                    [self startSessionOnSyncQueue:YES forceReset:YES withCompletion:^(NSError *error) {
+                        if (!error)
+                            [self makeRequest:requestPath type:type parameters:parameters completion:completionHandler];
+                    }];
+                }
+                else if (code == 2015)
+                {
+                    // find how long until we retry - if not set then will retry instantly
+                    NSInteger retryAfter = [operation.response.allHeaderFields[@"Retry-After"] integerValue];
+                    
+                    [self log:@"Non-critical error while making request - Retrying after %d secs", code, retryAfter];
+                    
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(retryAfter * NSEC_PER_SEC));
+                    dispatch_after(popTime, _syncQueue, ^(void){                        
+                        [self makeRequest:requestPath type:type parameters:parameters completion:completionHandler];
+                    });
+                }
+                // an unsolveable error - eject!
+                else if (completionHandler)
+                {
+                    completionHandler(nil, etaError ?: error);
+                }
             };
             
             switch (type)
@@ -161,7 +189,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
         // we are currently on the syncQ, so dont syncronously dispatch the start to the syncQ
         if (!self.session)
         {
-            [self startSessionOnSyncQueue:NO withCompletion:^(NSError *error) {
+            [self startSessionOnSyncQueue:NO forceReset:NO withCompletion:^(NSError *error) {
                 // if we were able to create the session, do the send request
                 if (!error)
                     sendBlock();
@@ -280,15 +308,20 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 // it will perform it on the sync queue
 - (void) startSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self startSessionOnSyncQueue:YES withCompletion:completionHandler];
+    [self startSessionOnSyncQueue:YES forceReset:NO withCompletion:completionHandler];
 }
 
-- (void) startSessionOnSyncQueue:(BOOL)dispatchOnSyncQ withCompletion:(void (^)(NSError* error))completionHandler
+- (void) startSessionOnSyncQueue:(BOOL)dispatchOnSyncQ forceReset:(BOOL)forceReset withCompletion:(void (^)(NSError* error))completionHandler
 {
     // do it on the sync queue, and block until the completion occurs - that way any other requests will have to wait for the session to have started
     void (^block)() = ^{
-        // previous connect was sucessful - dont bother connecting (and dont block syncQ with completion handler
-        if (self.session)
+        // we are asking to reset the session - just delete existing session
+        if (forceReset)
+        {
+            self.session = nil;
+        }
+        // a previous connect was sucessful - dont bother connecting (and dont block syncQ with completion handler
+        else if (self.session)
         {
             if (completionHandler)
             {
@@ -321,7 +354,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
             }];
         };
         
-        // no session stored, create one from scratch
+        // session loaded from local store - check its state
         if (self.session)
         {
             // if the session is out of date, renew it
@@ -341,7 +374,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
                     }
                 }];
             }
-            // otherwise, update it
+            // if not out of date, update it
             else
             {
                 [self updateSessionWithCompletion:^(NSError *error) {

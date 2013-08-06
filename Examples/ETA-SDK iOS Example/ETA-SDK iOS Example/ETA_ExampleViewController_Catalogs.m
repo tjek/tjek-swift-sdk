@@ -58,8 +58,10 @@
       parameters:@{@"order_by": @[@"distance", @"name"]}
       completion:^(NSArray* jsonCatalogs, NSError *error, BOOL fromCache) {
           if (error)
+          {
+              NSLog(@"Could not refresh: %@ (%d)", [ETA errorForCode:error.code], error.code);
               return;
-          
+          }
           if (fromCache)
               return;
           
