@@ -3,7 +3,7 @@
 //  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/8/13.
-//  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
+//  Copyright (c) 2013 eTilbudsavis. All rights reserved.
 //
 
 #import "ETA_APIClient.h"
@@ -62,7 +62,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 {
     if ((self = [super initWithBaseURL:url]))
     {
-        _syncQueue = dispatch_queue_create("com.eTilbudsAvis.ETA_APIClient.syncQ", 0);
+        _syncQueue = dispatch_queue_create("com.eTilbudsavis.ETA_APIClient.syncQ", 0);
         
         _startingSessionLock = dispatch_semaphore_create(1);
         

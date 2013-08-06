@@ -3,7 +3,7 @@
 //  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/15/13.
-//  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
+//  Copyright (c) 2013 eTilbudsavis. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -40,6 +40,7 @@ typedef enum{
 
 #pragma mark - Shopping Lists
 
+// TODO: Completion handlers
 // creates a new shopping list with 'name' and calls addShoppingList:
 - (ETA_ShoppingList*) createShoppingList:(NSString*)name;
 

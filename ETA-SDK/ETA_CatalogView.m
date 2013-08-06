@@ -3,7 +3,7 @@
 //  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/15/13.
-//  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
+//  Copyright (c) 2013 eTilbudsavis. All rights reserved.
 //
 
 #import "ETA_CatalogView.h"

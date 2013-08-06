@@ -3,7 +3,7 @@
 //  ETA-SDK
 //
 //  Created by Laurie Hufford on 7/22/13.
-//  Copyright (c) 2013 eTilbudsAvis. All rights reserved.
+//  Copyright (c) 2013 eTilbudsavis. All rights reserved.
 //
 
 #import "ETA_ShoppingListItem+FMDB.h"
