@@ -9,8 +9,6 @@
 #import "ETA_Catalog.h"
 #import "ETA_API.h"
 
-#import "ETA_Branding.h"
-
 @implementation ETA_Catalog
 
 + (NSString*) APIEndpoint { return ETA_API.catalogs; }
@@ -20,22 +18,25 @@
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey
 {
-    // session's dont have id/ern in the JSON
     return [super.JSONKeyPathsByPropertyKey
-            mtl_dictionaryByAddingEntriesFromDictionary:@{ @"backgroundColor": @"background",
-                                                           @"runFromDate": @"run_from",
-                                                           @"runTillDate": @"run_till",
-                                                           @"pageCount": @"page_count",
-                                                           @"offerCount": @"offer_count",
-                                                           
-                                                           @"dealerID": @"dealer_id",
-                                                           @"dealerURL": @"dealer_url",
-                                                           @"storeID": @"store_id",
-                                                           @"storeURL": @"store_url",
-                                                           
-                                                           @"imageURLBySize": @"images",
-                                                           @"pageImageURLsBySize": @"pages",
-                                                           }];
+            mtl_dictionaryByAddingEntriesFromDictionary:@{
+            @"backgroundColor": @"background",
+            @"runFromDate": @"run_from",
+            @"runTillDate": @"run_till",
+            @"pageCount": @"page_count",
+            @"offerCount": @"offer_count",
+            
+            @"dealerID": @"dealer_id",
+            @"dealerURL": @"dealer_url",
+            @"storeID": @"store_id",
+            @"storeURL": @"store_url",
+            
+            @"imageURLBySize": @"images",
+            @"pageImageURLsBySize": @"pages",
+            
+            @"store": NSNull.null,
+            
+            }];
 }
 
 + (NSValueTransformer *) runFromDateJSONTransformer {

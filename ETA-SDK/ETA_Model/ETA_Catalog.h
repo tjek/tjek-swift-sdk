@@ -8,6 +8,7 @@
 
 #import "ETA_ModelObject.h"
 #import "ETA_Branding.h"
+#import "ETA_Store.h"
 
 typedef enum {
     ETA_Catalog_ImageSize_Thumb = 0,
@@ -38,8 +39,12 @@ typedef enum {
 @property (nonatomic, readwrite, strong) NSDictionary* pageImageURLsBySize;
 
 
-
 - (NSURL*) imageURLForSize:(ETA_Catalog_ImageSize)imageSize;
 - (NSArray*) pageImageURLsForSize:(ETA_Catalog_ImageSize)pageSize;
+
+/**
+ *	You need to fetch/assign the Store property yourself using the storeID property - it will be nil until populated.
+ */
+@property (nonatomic, readwrite, strong) ETA_Store* store;
 
 @end
