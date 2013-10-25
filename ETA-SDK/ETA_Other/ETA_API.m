@@ -77,6 +77,7 @@ NSTimeInterval const kETAEndpoint_DefaultCacheLifespan = 900; //15 mins
                                         },
                                 self.stores: @{
                                         kETAEndpoint_ERNPrefix: @"ern:store:",
+                                        kETAEndpoint_CacheLifespan: @(60*60), // 1hr
                                         },
                                 self.users: @{
                                         kETAEndpoint_ERNPrefix: @"ern:user:",
