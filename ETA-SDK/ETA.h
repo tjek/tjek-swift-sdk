@@ -13,7 +13,6 @@
 @class ETA_User;
 
 
-
 /**
  *	The possible API request types you can make with -api:type:parameters:useCache:completion:
  */
@@ -162,6 +161,14 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  *	@param	completionHandler	Called on the main queue when the session is started. If a session is already started this will be triggered instantly
  */
 - (void) connect:(void (^)(NSError* error))completionHandler;
+
+
+
+/**
+ *	Whether the SDK is connected and a session has been created. Observable.
+ */
+@property (nonatomic, readonly, assign) BOOL connected;
+
 
 
 #pragma mark - User Management

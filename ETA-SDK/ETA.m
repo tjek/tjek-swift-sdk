@@ -14,6 +14,7 @@
 
 NSString* const ETA_AttachedUserChangedNotification = @"ETA_AttachedUserChangedNotification";
 
+NSString* const ETA_AvoidServerCallKey = @"ETA_AvoidServerCallKey";
 
 @interface ETA ()
 
@@ -24,6 +25,9 @@ NSString* const ETA_AttachedUserChangedNotification = @"ETA_AttachedUserChangedN
 @property (nonatomic, readwrite, strong) NSURL *baseURL;
 
 @property (nonatomic, readwrite, strong) NSCache* itemCache;
+
+@property (nonatomic, readwrite, assign) BOOL connected;
+@property (nonatomic, readwrite, strong) NSString* attachedUserID;
 
 @end
 
@@ -118,16 +122,22 @@ static ETA* ETA_SingletonSDK = nil;
         return;
     
     [_client removeObserver:self forKeyPath:@"session"];
+    [_client removeObserver:self forKeyPath:@"session.user.uuid"];
     
     _client = client;
     
-    [_client addObserver:self forKeyPath:@"session" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:NULL];
+    [_client addObserver:self forKeyPath:@"session.user.uuid" options:NSKeyValueObservingOptionInitial context:NULL];
+    [_client addObserver:self forKeyPath:@"session" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"session"])
     {
+        BOOL connected = (self.client.session != nil);
+        if (connected != self.connected)
+            self.connected = connected;
+        
         // watch for changes to the user
         ETA_Session* oldSession = change[NSKeyValueChangeOldKey];
         oldSession = ([oldSession isEqual:NSNull.null]) ? nil : oldSession;
@@ -137,7 +147,6 @@ static ETA* ETA_SingletonSDK = nil;
         
         ETA_User* oldUser = oldSession.user;
         ETA_User* newUser = newSession.user;
-        
         if (oldUser.uuid == newUser.uuid || [oldUser.uuid isEqualToString:newUser.uuid])
             return;
         
@@ -145,6 +154,14 @@ static ETA* ETA_SingletonSDK = nil;
                                                             object:self
                                                           userInfo:@{@"oldUser": (oldUser) ?: NSNull.null,
                                                                      @"newUser": (newUser) ?: NSNull.null }];
+    }
+    else if ([keyPath isEqualToString:@"session.user.uuid"])
+    {
+        if ((self.attachedUserID == self.client.session.user.uuid || [self.attachedUserID isEqualToString:self.client.session.user.uuid]) == NO)
+        {
+            NSLog(@"User %@ => %@", self.attachedUserID, self.client.session.user.uuid);
+            self.attachedUserID = self.client.session.user.uuid;
+        }
     }
 }
 
@@ -154,8 +171,6 @@ static ETA* ETA_SingletonSDK = nil;
 {
     [self.client startSessionWithCompletion:completionHandler];
 }
-
-
 
 
 #pragma mark - User Management
@@ -172,11 +187,6 @@ static ETA* ETA_SingletonSDK = nil;
 - (BOOL) allowsPermission:(NSString*)actionPermission
 {
     return [self.client allowsPermission:actionPermission];
-}
-
-- (NSString*) attachedUserID
-{
-    return [self.client.session.userID copy];
 }
 
 - (ETA_User*) attachedUser
@@ -202,7 +212,11 @@ static ETA* ETA_SingletonSDK = nil;
     [self api:requestPath type:type parameters:parameters useCache:YES completion:completionHandler];
 }
 
-- (void) api:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters useCache:(BOOL)useCache completion:(void (^)(id response, NSError* error, BOOL fromCache))completionHandler
+- (void) api:(NSString*)requestPath
+        type:(ETARequestType)type
+  parameters:(NSDictionary*)parameters
+    useCache:(BOOL)useCache
+  completion:(void (^)(id response, NSError* error, BOOL fromCache))completionHandler
 {
     // get the base parameters, and override them with those passed in
     NSMutableDictionary* mergedParameters = [[self baseRequestParameters] mutableCopy];
@@ -229,15 +243,21 @@ static ETA* ETA_SingletonSDK = nil;
     // then take those in the dictionary
     [mergedParameters setValuesForKeysWithDictionary:parameters];
     
+    // flag to avoid server calls if there is a valid cache response was set, so skip server call
+    BOOL cacheAvoidsServer = [mergedParameters[ETA_AvoidServerCallKey] boolValue];
+    [mergedParameters removeObjectForKey:ETA_AvoidServerCallKey];
     
     if (useCache && completionHandler)
     {
         id cacheResponse = [self getCacheResponseForRequest:requestPath type:type parameters:mergedParameters];
         if (cacheResponse)
         {
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
                 completionHandler(cacheResponse, nil, YES);
             });
+            
+            if (cacheAvoidsServer)
+                return;
         }
     }
     
