@@ -105,6 +105,7 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
     // push the makeRequest to the sync queue, which will be blocked while creating sessions
     // as it is quickly sent on to AFNetworking's operation queue, it wont block the sync queue for long
     dispatch_async(_syncQueue, ^{
+        
         // the code that does the actual sending of the request
         void (^sendBlock)() = ^{
             // get the base parameters, and override them with those passed in
@@ -135,9 +136,10 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
                 
                 NSInteger code = etaError.code;
                 
-                // errors that require a retry
-                // token expired / invalid token / non-critical error
-                if (code == 1101 || code == 1108)
+                // Errors that require a new session
+                // 1101 & 1108: token expired / invalid token
+                // 1300 & 1301: Auth error / Auth action not allowed
+                if (code == 1101 || code == 1108 || code == 1300 || code == 1301)
                 {
                     [self log:@"Error while making request - Reset Session and retry"];
                     // create a new session, and if it was successful, repeat the request we were making
@@ -146,6 +148,8 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
                             [self makeRequest:requestPath type:type parameters:parameters completion:completionHandler];
                     }];
                 }
+                // errors that require a retry
+                // 2015: non-critical error
                 else if (code == 2015)
                 {
                     // find how long until we retry - if not set then will retry instantly
