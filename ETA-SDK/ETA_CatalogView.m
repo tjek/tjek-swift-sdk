@@ -111,6 +111,9 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
 
 - (void) dealloc
 {
+    self.delegate = nil;
+    self.eta = nil;
+    
     // send a close request to the server when the catalog view is destroyed
     [self closeCatalog];
 }
