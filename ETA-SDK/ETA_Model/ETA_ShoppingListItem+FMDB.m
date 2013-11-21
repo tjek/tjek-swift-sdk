@@ -11,18 +11,26 @@
 #import "FMDatabase.h"
 #import "FMResultSet.h"
 
-NSString* const kSLI_ID         = @"id";
-NSString* const kSLI_ERN        = @"ern";
-NSString* const kSLI_MODIFIED   = @"modified";
-NSString* const kSLI_DESCRIPTION = @"description";
-NSString* const kSLI_COUNT      = @"count";
-NSString* const kSLI_TICK       = @"tick";
-NSString* const kSLI_OFFER_ID   = @"offer_id";
-NSString* const kSLI_CREATOR    = @"creator";
-NSString* const kSLI_SHOPPING_LIST_ID = @"shopping_list_id";
-NSString* const kSLI_STATE      = @"state";
-NSString* const kSLI_PREV_ITEM_ID = @"previous_item_id";
-NSString* const kSLI_ORDER_INDEX = @"order_index";
+#define kSLI_ID                 @"id"
+#define kSLI_ERN                @"ern"
+#define kSLI_MODIFIED           @"modified"
+#define kSLI_DESCRIPTION        @"description"
+#define kSLI_COUNT              @"count"
+#define kSLI_TICK               @"tick"
+#define kSLI_OFFER_ID           @"offer_id"
+#define kSLI_CREATOR            @"creator"
+#define kSLI_SHOPPING_LIST_ID   @"shopping_list_id"
+#define kSLI_STATE              @"state"
+#define kSLI_PREV_ITEM_ID       @"previous_item_id"
+#define kSLI_META               @"meta"
+#define kSLI_USERID             @"userID"
+
+
+NSString* const kETA_ListItem_DBQuery_UserID = kSLI_USERID;
+NSString* const kETA_ListItem_DBQuery_SyncState = kSLI_STATE;
+NSString* const kETA_ListItem_DBQuery_ListID = kSLI_SHOPPING_LIST_ID;
+NSString* const kETA_ListItem_DBQuery_PrevItemID = kSLI_PREV_ITEM_ID;
+NSString* const kETA_ListItem_DBQuery_OfferID = kSLI_OFFER_ID;
 
 @implementation ETA_ShoppingListItem (FMDB)
 
@@ -39,7 +47,8 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
              kSLI_SHOPPING_LIST_ID,
              kSLI_STATE,
              kSLI_PREV_ITEM_ID,
-             kSLI_ORDER_INDEX,
+             kSLI_META,
+             kSLI_USERID,
              ];
 }
 
@@ -55,8 +64,9 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
              kSLI_CREATOR: @"creator",
              kSLI_SHOPPING_LIST_ID: @"shopping_list_id",
              kSLI_STATE: @"state",
-             kSLI_PREV_ITEM_ID: @"previous_item_id",
-             kSLI_ORDER_INDEX: @"order_index",
+             kSLI_PREV_ITEM_ID: @"previous_id",
+             kSLI_META: @"meta",
+             kSLI_USERID: @"syncUserID",
              };
 }
 
@@ -80,13 +90,20 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
     [jsonDict setValue:[res stringForColumn:kSLI_OFFER_ID] forKey:@"offer_id"];
     [jsonDict setValue:[res stringForColumn:kSLI_CREATOR] forKey:@"creator"];
     [jsonDict setValue:[res stringForColumn:kSLI_SHOPPING_LIST_ID] forKey:@"shopping_list_id"];
-    [jsonDict setValue:[res stringForColumn:kSLI_PREV_ITEM_ID] forKey:@"previous_item_id"];
+    [jsonDict setValue:[res stringForColumn:kSLI_PREV_ITEM_ID] forKey:@"previous_id"];
+    
+    NSString* metaJSONString = [res stringForColumn:kSLI_META];
+    if (metaJSONString)
+    {
+        id metaDict = [NSJSONSerialization JSONObjectWithData:[metaJSONString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        if (metaDict)
+            jsonDict[@"meta"] = metaDict;
+    }
     
     ETA_ShoppingListItem* item = [ETA_ShoppingListItem objectFromJSONDictionary:jsonDict];
-    // state is not part of the JSON parsing, so set manually
+    // state & sync is not part of the JSON parsing, so set manually
     item.state = [res longForColumn:kSLI_STATE];
-    item.orderIndex = [res longForColumn:kSLI_ORDER_INDEX];
-    
+    item.syncUserID = [res stringForColumn:kSLI_USERID];
     return item;
 }
 
@@ -95,9 +112,17 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
     // get the json-ified values for the item
     NSMutableDictionary* jsonDict = [[self JSONDictionary] mutableCopy];
     jsonDict[@"state"] = @(self.state);
+    jsonDict[@"syncUserID"] = self.syncUserID ?: NSNull.null;
     jsonDict[@"tick"] = @(self.tick); // because server's json needs to be in string form 'true' / 'false'
     jsonDict[@"offer_id"] = (self.offerID) ?: NSNull.null; // because server can't handle json with NULL or nil
-    jsonDict[@"order_index"] = @(self.orderIndex);
+    
+    // convert meta dict into string
+    if (self.meta)
+    {
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.meta options:0 error:nil];
+        jsonDict[@"meta"] = jsonData ? [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] : nil;
+    }
+    
     
     NSDictionary* jsonKeysByFieldNames = [[self class] JSONKeyPathsByDBFieldName];
     
@@ -113,7 +138,6 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
         
         params[fieldName] = val;
     }];
-    
     return params;
 }
 
@@ -128,18 +152,20 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
                              kSLI_COUNT, @"integer not null,",
                              kSLI_TICK, @"integer not null,",
                              kSLI_OFFER_ID, @"text,",
-                             kSLI_CREATOR, @"text not null,",
+                             kSLI_CREATOR, @"text,",
                              kSLI_SHOPPING_LIST_ID, @"text not null,",
                              kSLI_STATE, @"integer not null,",
                              kSLI_PREV_ITEM_ID, @"text,",
-                             kSLI_ORDER_INDEX, @"integer not null",
+                             kSLI_META, @"text,",
+                             kSLI_USERID, @"text"
                              ] componentsJoinedByString:@" "];
     
-    NSString* queryStr = [NSString stringWithFormat:@"create table if not exists %@(%@);", tableName, fieldsStr];
+    NSString* queryStr = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@(%@);", tableName, fieldsStr];
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
+    {
         NSLog(@"[ETA_ShoppingListItem+FMDB] Unable to create table '%@': %@", tableName, db.lastError);
-    
+    }
     return success;
 }
 
@@ -155,6 +181,149 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
 
 
 #pragma mark - Getters
+
++ (ETA_ShoppingListItem*) getItemWithID:(NSString*)itemID fromTable:(NSString*)tableName inDB:(FMDatabase*)db
+{
+    if (!itemID || !tableName || !db)
+        return nil;
+    
+    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@=?", tableName, kSLI_ID];
+    
+    FMResultSet* s = [db executeQuery:query, itemID];
+    ETA_ShoppingListItem* res = nil;
+    if ([s next])
+        res = [self shoppingListItemFromResultSet:s];
+    [s close];
+    
+    return res;
+}
+
++ (NSArray*) getAllItemsWhere:(NSDictionary*)whereKeyValues fromTable:(NSString*)tableName inDB:(FMDatabase*)db
+{
+    if (!tableName || !db)
+        return nil;
+    
+    NSMutableDictionary* params = [NSMutableDictionary new];
+    
+    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@", tableName];
+    
+    if (whereKeyValues.count)
+    {
+        NSMutableArray* WHERE = [NSMutableArray array];
+        
+        NSArray* possibleWhereKeys = @[kETA_ListItem_DBQuery_UserID,
+                                       kETA_ListItem_DBQuery_SyncState,
+                                       kETA_ListItem_DBQuery_ListID,
+                                       kETA_ListItem_DBQuery_PrevItemID,
+                                       kETA_ListItem_DBQuery_OfferID];
+        
+        for (NSString* whereKey in possibleWhereKeys)
+        {
+            id whereVal = whereKeyValues[whereKey];
+            if (!whereVal)
+                continue;
+            if ([whereVal isEqual:NSNull.null])
+            {
+                [WHERE addObject:[NSString stringWithFormat:@"%@ IS NULL", whereKey]];
+            }
+            else if ([whereVal isKindOfClass:NSString.class] || [query isKindOfClass:NSNumber.class])
+            {
+                [WHERE addObject:[NSString stringWithFormat:@"%@ == :%@", whereKey, whereKey]];
+                params[whereKey] = whereVal;
+            }
+            else if ([whereVal isKindOfClass:NSArray.class] && ((NSArray*)whereVal).count > 0)
+            {
+                [WHERE addObject:[NSString stringWithFormat:@"%@ IN (%@)", whereKey, [(NSArray*)whereVal componentsJoinedByString:@","]]];
+            }
+        }
+        
+        if (WHERE.count)
+            query = [query stringByAppendingString:[NSString stringWithFormat:@" WHERE %@", [WHERE componentsJoinedByString:@" AND "]]];
+    }
+    
+    FMResultSet* s = [db executeQuery:query withParameterDictionary:params];
+    NSMutableArray* items = [NSMutableArray array];
+    while ([s next])
+    {
+        ETA_ShoppingListItem* item = [self shoppingListItemFromResultSet:s];
+        if (item)
+            [items addObject:item];
+    }
+    [s close];
+    return items;
+}
+
+
+
++ (NSArray*) getAllItemsWithSyncStates:(NSArray*)syncStates
+                                userID:(id)userID
+                                listID:(NSString*)listID
+                            prevItemID:(id)prevItemID
+                               offerID:(NSString*)offerID
+                             fromTable:(NSString*)tableName inDB:(FMDatabase*)db
+{
+    if (!tableName || !db)
+        return nil;
+    
+    NSMutableDictionary* params = [NSMutableDictionary new];
+    
+    
+    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@", tableName];
+    
+    NSMutableArray* WHERE = [NSMutableArray array];
+    if ([userID isEqual:NSNull.null])
+    {
+        [WHERE addObject:[NSString stringWithFormat:@"%@ IS NULL", kSLI_USERID]];
+    }
+    else if ([userID isKindOfClass:NSString.class])
+    {
+        [WHERE addObject:[NSString stringWithFormat:@"%@ == :userID", kSLI_USERID]];
+        params[@"userID"] = userID;
+    }
+    
+    if (syncStates.count)
+    {
+        [WHERE addObject:[NSString stringWithFormat:@"%@ IN (%@)", kSLI_STATE, [syncStates componentsJoinedByString:@","]]];
+    }
+    if (listID)
+    {
+        [WHERE addObject:[NSString stringWithFormat:@"%@ == :listID", kSLI_SHOPPING_LIST_ID]];
+        params[@"listID"] = listID;
+    }
+    if ([prevItemID isEqual:NSNull.null])
+    {
+        [WHERE addObject:[NSString stringWithFormat:@"%@ IS NULL", kSLI_PREV_ITEM_ID]];
+    }
+    else if ([prevItemID isKindOfClass:NSString.class])
+    {
+        [WHERE addObject:[NSString stringWithFormat:@"%@ == :prevItemID", kSLI_PREV_ITEM_ID]];
+        params[@"prevItemID"] = prevItemID;
+    }
+    
+    
+    if (offerID)
+    {
+        [WHERE addObject:[NSString stringWithFormat:@"%@ == :offerID", kSLI_OFFER_ID]];
+        params[@"offerID"] = offerID;
+    }
+    
+    if (WHERE.count)
+        query = [query stringByAppendingString:[NSString stringWithFormat:@" WHERE %@", [WHERE componentsJoinedByString:@" AND "]]];
+    
+    
+    FMResultSet* s = [db executeQuery:query withParameterDictionary:params];
+    NSMutableArray* items = [NSMutableArray array];
+    while ([s next])
+    {
+        ETA_ShoppingListItem* item = [self shoppingListItemFromResultSet:s];
+        if (item)
+            [items addObject:item];
+    }
+    [s close];
+    return items;
+}
+
+
 
 + (NSArray*) getAllItemsFromTable:(NSString*)tableName inDB:(FMDatabase*)db
 {
@@ -175,14 +344,31 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
     return items;
 }
 
-+ (ETA_ShoppingListItem*) getItemWithID:(NSString*)itemID fromTable:(NSString*)tableName inDB:(FMDatabase*)db
+
++ (ETA_ShoppingListItem*) getItemWithOfferID:(NSString*)offerID inList:(NSString*)listID fromTable:(NSString*)tableName inDB:(FMDatabase*)db
 {
-    if (!itemID || !tableName || !db)
+    if (!offerID || !tableName || !db)
         return nil;
     
-    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@=?", tableName, kSLI_ID];
+    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@=? AND %@=?", tableName, kSLI_OFFER_ID, kSLI_SHOPPING_LIST_ID];
     
-    FMResultSet* s = [db executeQuery:query, itemID];
+    FMResultSet* s = [db executeQuery:query, offerID, listID];
+    ETA_ShoppingListItem* res = nil;
+    if ([s next])
+        res = [self shoppingListItemFromResultSet:s];
+    [s close];
+    
+    return res;
+}
+
++ (ETA_ShoppingListItem*) getItemWithPrevItemID:(NSString*)prevItemID inList:(NSString*)listID fromTable:(NSString*)tableName inDB:(FMDatabase*)db
+{
+    if (!prevItemID || !tableName || !db)
+        return nil;
+    
+    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@=? AND %@=?", tableName, kSLI_PREV_ITEM_ID, kSLI_SHOPPING_LIST_ID];
+    
+    FMResultSet* s = [db executeQuery:query, prevItemID, listID];
     ETA_ShoppingListItem* res = nil;
     if ([s next])
         res = [self shoppingListItemFromResultSet:s];
@@ -199,8 +385,16 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
     if (!tableName || !db)
         return nil;
     
-    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@=:listID", tableName, kSLI_SHOPPING_LIST_ID];
+    
+    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@=:listID AND %@ NOT IN (%@)",
+                       tableName, kSLI_SHOPPING_LIST_ID,
+                       kSLI_STATE, [@[@(ETA_DBSyncState_ToBeDeleted), @(ETA_DBSyncState_Deleting), @(ETA_DBSyncState_Deleted)] componentsJoinedByString:@","]];
     NSMutableDictionary* params = [@{@"listID":listID} mutableCopy];
+    
+//    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@=:listID AND %@ NOT IN (:ignoreStates)", tableName, kSLI_SHOPPING_LIST_ID, kSLI_STATE];
+//    NSMutableDictionary* params = [@{@"listID":listID,
+//                                     @"ignoreStates":@[@(ETA_DBSyncState_ToBeDeleted), @(ETA_DBSyncState_Deleting), @(ETA_DBSyncState_Deleted)],
+//                                     } mutableCopy];
     
     
     if (filter != ETA_ShoppingListItemFilter_All)
@@ -208,7 +402,6 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
         query = [query stringByAppendingFormat:@" AND %@=:ticked", kSLI_TICK];
         params[@"ticked"] = (ETA_ShoppingListItemFilter_Ticked) ? @(1) : @(0);
     }
-    
     
     FMResultSet* s = [db executeQuery:query withParameterDictionary:params];
     NSMutableArray* items = [NSMutableArray array];
@@ -261,26 +454,30 @@ NSString* const kSLI_ORDER_INDEX = @"order_index";
 #pragma mark - Setters
 
 // replace or insert an item in the db with 'list'. returns success or failure.
-+ (BOOL) insertOrReplaceItem:(ETA_ShoppingListItem*)item intoTable:(NSString*)tableName inDB:(FMDatabase*)db
++ (BOOL) insertOrReplaceItem:(ETA_ShoppingListItem*)item intoTable:(NSString*)tableName inDB:(FMDatabase*)db error:(NSError * __autoreleasing *)error
 {
     NSDictionary* params = [item dbParameterDictionary];
     
     NSString* query = [NSString stringWithFormat:@"INSERT OR REPLACE INTO %@ VALUES (:%@)", tableName, [[self dbFieldNames] componentsJoinedByString:@", :"]];
-    
     BOOL success = [db executeUpdate:query withParameterDictionary:params];
-    if (!success)
+    if (!success) {
+        if (error)
+            *error = db.lastError;
         NSLog(@"[ETA_ShoppingListItem+FMDB] Unable to Insert/Replace Item %@: %@", params, db.lastError);
-    
+    }
     return success;
 }
 
-+ (BOOL) deleteItem:(NSString*)itemID fromTable:(NSString*)tableName inDB:(FMDatabase*)db
++ (BOOL) deleteItem:(NSString*)itemID fromTable:(NSString*)tableName inDB:(FMDatabase*)db error:(NSError * __autoreleasing *)error
 {
     NSString* query = [NSString stringWithFormat:@"DELETE FROM %@ WHERE %@=?", tableName, kSLI_ID];
     
     BOOL success = [db executeUpdate:query, itemID];
-    if (!success)
+    if (!success) {
+        if (error)
+            *error = db.lastError;
         NSLog(@"[ETA_ShoppingListItem+FMDB] Unable to Delete Item %@: %@", itemID, db.lastError);
+    }
     
     return success;
 }

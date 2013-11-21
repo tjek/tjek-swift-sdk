@@ -10,7 +10,6 @@
 
 @class FMResultSet, FMDatabase;
 
-
 // This category adds a lot of handy methods for talking to an FMDB database.
 // It contains the table definition for an object of this type.
 
@@ -34,6 +33,22 @@
 
 #pragma mark - Getters
 
++ (NSArray*) getAllListsWithSyncStates:(NSArray*)syncStates andUserID:(id)userID fromTable:(NSString*)tableName inDB:(FMDatabase*)db;
+
+
+#pragma mark - Setters
+
+// replace or insert a list in the db with 'list'. returns success or failure.
++ (BOOL) insertOrReplaceList:(ETA_ShoppingList*)list intoTable:(NSString*)tableName inDB:(FMDatabase*)db error:(NSError * __autoreleasing *)error;
+
+// remove the list from the table/db.  returns success or failure.
++ (BOOL) deleteList:(NSString*)listID fromTable:(NSString*)tableName inDB:(FMDatabase*)db error:(NSError * __autoreleasing *)error;
+
+
+
+
+// deprecated
+
 // get all the shopping lists
 + (NSArray*) getAllListsFromTable:(NSString*)tableName inDB:(FMDatabase*)db;
 
@@ -50,12 +65,6 @@
 + (BOOL) listExistsWithID:(NSString*)listID inTable:(NSString*)tableName inDB:(FMDatabase*)db;
 
 
-#pragma mark - Setters
 
-// replace or insert a list in the db with 'list'. returns success or failure.
-+ (BOOL) insertOrReplaceList:(ETA_ShoppingList*)list intoTable:(NSString*)tableName inDB:(FMDatabase*)db;
-
-// remove the list from the table/db.  returns success or failure.
-+ (BOOL) deleteList:(NSString*)listID fromTable:(NSString*)tableName inDB:(FMDatabase*)db;
 
 @end

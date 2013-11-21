@@ -8,6 +8,8 @@
 
 #import "ETA_DBSyncModelObject.h"
 
+extern NSString* const kETA_ShoppingListItem_MetaCommentKey;
+
 @interface ETA_ShoppingListItem : ETA_DBSyncModelObject
 
 @property (nonatomic, readwrite, strong) NSDate* modified;
@@ -18,12 +20,10 @@
 @property (nonatomic, readwrite, strong) NSString* creator;
 @property (nonatomic, readwrite, strong) NSString* shoppingListID;
 
+@property (nonatomic, readwrite, strong) NSDictionary* meta;
+
 // the shopping list item that comes before this item in the user-defined sort order
 // null if undefined. "" if first item in list.
 @property (nonatomic, readwrite, strong) NSString* prevItemID;
-
-// calculated sort order id based on the prevItemID. Not sent to server.
-// -1 if not set.
-@property (nonatomic, readwrite, assign) NSInteger orderIndex;
 
 @end

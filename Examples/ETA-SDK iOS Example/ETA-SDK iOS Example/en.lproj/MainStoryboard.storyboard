@@ -10,7 +10,7 @@
             <objects>
                 <viewController id="X2B-WG-7WR" customClass="ETA_ExampleViewController_Catalogs" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NNV-Bt-efJ">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="76" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="MC7-Bd-AgU">
@@ -74,7 +74,7 @@
             <objects>
                 <viewController id="Cmz-vg-40e" customClass="ETA_ExampleViewController_CatalogView" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NfQ-rK-JTi">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="dFH-bw-742"/>
@@ -103,12 +103,46 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="X2B-WG-7WR" kind="relationship" relationship="rootViewController" id="Qrq-fr-23L"/>
+                        <segue destination="3Wh-XR-Czi" kind="relationship" relationship="rootViewController" id="At6-Kj-p6W"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BVh-VI-Ewa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="73" y="68"/>
+        </scene>
+        <!--Example View Controller Shopping List Manager-->
+        <scene sceneID="s6E-Bq-mnY">
+            <objects>
+                <viewController id="3Wh-XR-Czi" customClass="ETA_ExampleViewController_ShoppingListManager" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Vtc-Ro-cdW">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SbU-rd-Tto">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Add list">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="addList:" destination="3Wh-XR-Czi" eventType="touchUpInside" id="zrJ-IF-Nat"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="SbU-rd-Tto" firstAttribute="centerX" secondItem="Vtc-Ro-cdW" secondAttribute="centerX" type="default" id="5Q7-K9-Y8P"/>
+                            <constraint firstItem="SbU-rd-Tto" firstAttribute="top" secondItem="Vtc-Ro-cdW" secondAttribute="top" constant="68" id="8Pf-9d-RYE"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="c29-rb-MwJ"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KDU-C3-Xwp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="394" y="668"/>
         </scene>
     </scenes>
     <classes>
@@ -123,6 +157,12 @@
             <relationships>
                 <relationship kind="outlet" name="activitySpinner" candidateClass="UIActivityIndicatorView"/>
                 <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+            </relationships>
+        </class>
+        <class className="ETA_ExampleViewController_ShoppingListManager" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ETA_ExampleViewController_ShoppingListManager.h"/>
+            <relationships>
+                <relationship kind="action" name="addList:"/>
             </relationships>
         </class>
         <class className="NSLayoutConstraint" superclassName="NSObject">

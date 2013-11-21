@@ -207,7 +207,7 @@ static ETA* ETA_SingletonSDK = nil;
 }
 
 
-- (void) api:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters completion:(void (^)(id response, NSError* error, BOOL fromCache))completionHandler
+- (void) api:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters completion:(ETA_RequestCompletionBlock)completionHandler
 {
     [self api:requestPath type:type parameters:parameters useCache:YES completion:completionHandler];
 }
@@ -216,7 +216,7 @@ static ETA* ETA_SingletonSDK = nil;
         type:(ETARequestType)type
   parameters:(NSDictionary*)parameters
     useCache:(BOOL)useCache
-  completion:(void (^)(id response, NSError* error, BOOL fromCache))completionHandler
+  completion:(ETA_RequestCompletionBlock)completionHandler
 {
     // get the base parameters, and override them with those passed in
     NSMutableDictionary* mergedParameters = [[self baseRequestParameters] mutableCopy];
@@ -252,9 +252,10 @@ static ETA* ETA_SingletonSDK = nil;
         id cacheResponse = [self getCacheResponseForRequest:requestPath type:type parameters:mergedParameters];
         if (cacheResponse)
         {
-            dispatch_async(dispatch_get_main_queue(), ^{
+//            dispatch_async(dispatch_get_main_queue(), ^{
+            
                 completionHandler(cacheResponse, nil, YES);
-            });
+//            });
             
             if (cacheAvoidsServer)
                 return;

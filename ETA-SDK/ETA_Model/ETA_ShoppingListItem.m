@@ -9,6 +9,8 @@
 #import "ETA_ShoppingListItem.h"
 #import "ETA_API.h"
 
+NSString* const kETA_ShoppingListItem_MetaCommentKey = @"eta_comment";
+
 @implementation ETA_ShoppingListItem
 
 + (NSString*) APIEndpoint { return ETA_API.shoppingListItems; }
@@ -20,9 +22,8 @@
 {
     return [super.JSONKeyPathsByPropertyKey mtl_dictionaryByAddingEntriesFromDictionary:@{ @"name": @"description",
                                                                                            @"offerID": @"offer_id",
-                                                                                           @"shoppingListID": @"shopping_list_id",
-                                                                                           @"prevItemID": @"previous_item_id",
-                                                                                           @"orderIndex": NSNull.null,
+                                                                                           @"shoppingListID":   @"shopping_list_id",
+                                                                                           @"prevItemID": @"previous_id",
                                                                                         }];
 }
 
@@ -36,6 +37,19 @@
         return fromJSON;
     } reverseBlock:^NSString*(NSNumber* fromModel) {
         return (fromModel.boolValue) ? @"true" : @"false";
+    }];
+}
+
++ (NSValueTransformer *)metaJSONTransformer
+{
+    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^(id fromJSON) {
+        if ([fromJSON isKindOfClass:NSDictionary.class] == NO)
+            fromJSON = nil;
+        return fromJSON;
+    } reverseBlock:^NSDictionary*(NSDictionary* fromModel) {
+        if ([fromModel isKindOfClass:NSDictionary.class] == NO)
+            fromModel = nil;
+        return fromModel;
     }];
 }
 

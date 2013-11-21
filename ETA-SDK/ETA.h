@@ -23,6 +23,9 @@ typedef enum {
     ETARequestTypeDELETE
 } ETARequestType;
 
+
+typedef void (^ETA_RequestCompletionBlock)(id, NSError *, BOOL);
+
 /**
  *	Whenever the attached user ID changes (because a user has logged in or out), an NSNotification with this name is sent to the NSNotificationCenter (the object of the notification is the ETA object to which the user is attached).
  */
@@ -126,7 +129,7 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
         type: (ETARequestType)type
   parameters: (NSDictionary*)parameters
     useCache: (BOOL)useCache
-  completion: (void (^)(id response, NSError* error, BOOL fromCache))completionHandler;
+  completion: (ETA_RequestCompletionBlock)completionHandler;
 
 /**
  *	Send an API request to the server, with caching turned on.
@@ -143,7 +146,7 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
 - (void) api:(NSString*)requestPath
         type:(ETARequestType)type
   parameters:(NSDictionary*)parameters
-  completion:(void (^)(id response, NSError* error, BOOL fromCache))completionHandler;
+  completion:(ETA_RequestCompletionBlock)completionHandler;
 
 
 

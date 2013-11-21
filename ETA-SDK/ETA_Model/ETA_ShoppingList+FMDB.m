@@ -20,9 +20,11 @@ NSString* const kSL_STATE       = @"state";
 NSString* const kSL_OWNER_USER  = @"owner_user";
 NSString* const kSL_OWNER_ACCESS = @"owner_access";
 NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
+NSString* const kSL_TYPE        = @"type";
+NSString* const kSL_META        = @"meta";
+NSString* const kSL_USERID        = @"userID";
 
 @implementation ETA_ShoppingList (FMDB)
-
 
 + (NSArray*) dbFieldNames
 {
@@ -35,6 +37,9 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
              kSL_OWNER_USER,
              kSL_OWNER_ACCESS,
              kSL_OWNER_ACCEPTED,
+             kSL_TYPE,
+             kSL_META,
+             kSL_USERID,
              ];
 }
 
@@ -50,6 +55,9 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
              kSL_OWNER_USER: @"owner.user",
              kSL_OWNER_ACCESS: @"owner.access",
              kSL_OWNER_ACCEPTED: @"owner.accepted",
+             kSL_TYPE: @"type",
+             kSL_META: @"meta",
+             kSL_USERID: @"syncUserID",
              };
 }
 
@@ -69,17 +77,29 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
     [jsonDict setValue:[res stringForColumn:kSL_ERN] forKey:@"ern"];
     [jsonDict setValue:[res stringForColumn:kSL_NAME] forKey:@"name"];
     [jsonDict setValue:[res stringForColumn:kSL_ACCESS] forKey:@"access"];
-
+    
     NSMutableDictionary* owner = [@{} mutableCopy];
     [owner setValue:[res stringForColumn:kSL_OWNER_USER] forKey:@"user"];
     [owner setValue:[res stringForColumn:kSL_OWNER_ACCESS] forKey:@"access"];
     [owner setValue:@([res intForColumn:kSL_OWNER_ACCEPTED]) forKey:@"accepted"];
     jsonDict[@"owner"] = owner;
     
+    NSString* metaJSONString = [res stringForColumn:kSL_META];
+    if (metaJSONString)
+    {
+        id metaDict = [NSJSONSerialization JSONObjectWithData:[metaJSONString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        if (metaDict)
+            jsonDict[@"meta"] = metaDict;
+    }
+    
     
     ETA_ShoppingList* list = [ETA_ShoppingList objectFromJSONDictionary:jsonDict];
-    // state is not part of the JSON parsing, so set manually
+    // state & sync user is not part of the JSON parsing, so set manually
     list.state = [res longForColumn:kSL_STATE];
+    list.syncUserID = [res stringForColumn:kSL_USERID];
+    
+    // type is saved as enum, not JSON string
+    list.type = [res longForColumn:kSL_TYPE];
     
     return list;
 }
@@ -89,6 +109,16 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
     // get the json-ified values for the shopping list
     NSMutableDictionary* jsonDict = [[self JSONDictionary] mutableCopy];
     jsonDict[@"state"] = @(self.state);
+    jsonDict[@"syncUserID"] = self.syncUserID ?: NSNull.null;
+    jsonDict[@"type"] = @(self.type);
+    
+    // convert meta dict into string
+    if (self.meta)
+    {
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.meta options:0 error:nil];
+        jsonDict[@"meta"] = jsonData ? [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] : nil;
+    }
+    
     
     NSDictionary* jsonKeysByFieldNames = [[self class] JSONKeyPathsByDBFieldName];
     
@@ -120,14 +150,19 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
                               kSL_STATE, @"integer not null,",
                               kSL_OWNER_USER, @"text,",
                               kSL_OWNER_ACCESS, @"text,",
-                              kSL_OWNER_ACCEPTED, @"integer"
+                              kSL_OWNER_ACCEPTED, @"integer,",
+                              kSL_TYPE, @"integer not null DEFAULT 0,",
+                              kSL_META, @"text,",
+                              kSL_USERID, @"text"
                               ] componentsJoinedByString:@" "];
     
-    NSString* queryStr = [NSString stringWithFormat:@"create table if not exists %@(%@);", tableName, fieldsStr];
+    
+    NSString* queryStr = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@(%@);", tableName, fieldsStr];
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
+    {
         NSLog(@"[ETA_ShoppingList+FMDB] Unable to create table '%@': %@", tableName, db.lastError);
-    
+    }
     return success;
 }
 
@@ -143,13 +178,60 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
 
 #pragma mark - Getters
 
++ (NSArray*) getAllListsWithSyncStates:(NSArray*)syncStates andUserID:(id)userID fromTable:(NSString*)tableName inDB:(FMDatabase*)db
+{
+    if (!tableName || !db)
+        return nil;
+    
+    NSMutableDictionary* params = [NSMutableDictionary new];
+    
+    
+    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@", tableName];
+    
+    NSMutableArray* WHERE = [NSMutableArray array];
+    
+    if ([userID isEqual:NSNull.null])
+    {
+        [WHERE addObject:[NSString stringWithFormat:@"%@ IS NULL", kSL_USERID]];
+    }
+    else if (userID)
+    {
+        [WHERE addObject:[NSString stringWithFormat:@"%@ == :userID", kSL_USERID]];
+        params[@"userID"] = userID;
+    }
+    
+    if (syncStates.count)
+    {
+        [WHERE addObject:[NSString stringWithFormat:@"%@ IN (%@)", kSL_STATE, [syncStates componentsJoinedByString:@","]]];
+    }
+    
+    
+    if (WHERE.count)
+        query = [query stringByAppendingString:[NSString stringWithFormat:@" WHERE %@", [WHERE componentsJoinedByString:@" AND "]]];
+    
+    
+    
+    FMResultSet* s = [db executeQuery:query withParameterDictionary:params];
+    NSMutableArray* lists = [NSMutableArray array];
+    while ([s next])
+    {
+        ETA_ShoppingList* list = [self shoppingListFromResultSet:s];
+        if (list)
+            [lists addObject:list];
+    }
+    [s close];
+    return lists;
+}
+
+
 // get all the shopping lists
 + (NSArray*) getAllListsFromTable:(NSString*)tableName inDB:(FMDatabase*)db
 {
     if (!tableName || !db)
         return nil;
     
-    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@", tableName];
+    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@ NOT IN (%@)", tableName,
+                       kSL_STATE, [@[@(ETA_DBSyncState_ToBeDeleted), @(ETA_DBSyncState_Deleting), @(ETA_DBSyncState_Deleted)] componentsJoinedByString:@","]];
     
     FMResultSet* s = [db executeQuery:query];
     NSMutableArray* lists = [NSMutableArray array];
@@ -238,28 +320,32 @@ NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
 #pragma mark - Setters
 
 // replace or insert a list in the db with 'list'
-+ (BOOL) insertOrReplaceList:(ETA_ShoppingList*)list intoTable:(NSString*)tableName inDB:(FMDatabase*)db
++ (BOOL) insertOrReplaceList:(ETA_ShoppingList*)list intoTable:(NSString*)tableName inDB:(FMDatabase*)db error:(NSError * __autoreleasing *)error
 {
     NSDictionary* params = [list dbParameterDictionary];
     
     NSString* query = [NSString stringWithFormat:@"INSERT OR REPLACE INTO %@ VALUES (:%@)", tableName, [[self dbFieldNames] componentsJoinedByString:@", :"]];
     
     BOOL success = [db executeUpdate:query withParameterDictionary:params];
-    if (!success)
+    if (!success) {
+        if (error)
+            *error = db.lastError;
         NSLog(@"[ETA_ShoppingList+FMDB] Unable to Insert/Replace List %@: %@", params, db.lastError);
-
+    }
     return success;
 }
 
 // remove the list from the table/db
-+ (BOOL) deleteList:(NSString*)listID fromTable:(NSString*)tableName inDB:(FMDatabase*)db
++ (BOOL) deleteList:(NSString*)listID fromTable:(NSString*)tableName inDB:(FMDatabase*)db error:(NSError * __autoreleasing *)error
 {
     NSString* query = [NSString stringWithFormat:@"DELETE FROM %@ WHERE %@=?", tableName, kSL_ID];
     
     BOOL success = [db executeUpdate:query, listID];
-    if (!success)
+    if (!success) {
+        if (error)
+            *error = db.lastError;
         NSLog(@"[ETA_ShoppingList+FMDB] Unable to Delete List %@: %@", listID, db.lastError);
-    
+    }
     return success;
 }
 

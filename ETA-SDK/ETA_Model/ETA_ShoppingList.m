@@ -9,6 +9,8 @@
 #import "ETA_ShoppingList.h"
 #import "ETA_API.h"
 
+NSString* const kETA_ShoppingList_MetaThemeKey = @"eta_theme";
+
 @implementation ETA_ShoppingList
 
 + (NSString*) APIEndpoint { return ETA_API.shoppingLists; }
@@ -16,7 +18,16 @@
 
 #pragma mark - Init
 
-+ (instancetype) shoppingListWithUUID:(NSString*)uuid name:(NSString*)name modifiedDate:(NSDate*)modified access:(ETA_ShoppingList_Access)access
++ (instancetype) shoppingListWithUUID:(NSString *)uuid name:(NSString *)name modifiedDate:(NSDate *)modified access:(ETA_ShoppingList_Access)access
+{
+    return [self listWithUUID:uuid name:name modifiedDate:modified access:access type:ETA_ShoppingList_Type_ShoppingList];
+}
++ (instancetype) wishListWithUUID:(NSString *)uuid name:(NSString *)name modifiedDate:(NSDate *)modified access:(ETA_ShoppingList_Access)access
+{
+    return [self listWithUUID:uuid name:name modifiedDate:modified access:access type:ETA_ShoppingList_Type_WishList];
+}
+
++ (instancetype) listWithUUID:(NSString*)uuid name:(NSString*)name modifiedDate:(NSDate*)modified access:(ETA_ShoppingList_Access)access type:(ETA_ShoppingList_Type)type
 {
     if (!uuid || !name)
         return nil;
@@ -28,6 +39,7 @@
                             @"name": name,
                             @"modified": modified,
                             @"access": @(access),
+                            @"type": @(type),
                             };
 	return [self modelWithDictionary:dict error:NULL];
 }
@@ -52,6 +64,39 @@
         return access[str];
     } reverseBlock:^NSString*(NSNumber *accessNum) {
         return [access allKeysForObject:accessNum].lastObject;
+    }];
+}
+
++ (NSValueTransformer *)typeJSONTransformer {
+    NSNumber* defaultType = @(ETA_ShoppingList_Type_ShoppingList);
+    NSDictionary *types = @{
+                             @"shopping_list": @(ETA_ShoppingList_Type_ShoppingList),
+                             @"wish_list": @(ETA_ShoppingList_Type_WishList),
+                             };
+    
+    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^NSNumber*(NSString *str) {
+        NSNumber* type = nil;
+        if (str.length)
+            type = types[str];
+        if (!type)
+            type = defaultType;
+        return type;
+    } reverseBlock:^NSString*(NSNumber *typeNum) {
+        return [types allKeysForObject:typeNum].lastObject;
+    }];
+}
+
+
++ (NSValueTransformer *)metaJSONTransformer
+{
+    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^(id fromJSON) {
+        if ([fromJSON isKindOfClass:NSDictionary.class] == NO)
+            fromJSON = nil;
+        return fromJSON;
+    } reverseBlock:^NSDictionary*(NSDictionary* fromModel) {
+        if ([fromModel isKindOfClass:NSDictionary.class] == NO)
+            fromModel = nil;
+        return fromModel;
     }];
 }
 

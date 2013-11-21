@@ -98,9 +98,13 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 {
     return @{};
 }
-
 // send a request, and on sucessful response update the session token, if newer
 - (void) makeRequest:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters completion:(void (^)(id JSONResponse, NSError* error))completionHandler
+{
+    [self makeRequest:requestPath type:type parameters:parameters remainingRetries:1 completion:completionHandler];
+}
+// send a request, and on sucessful response update the session token, if newer
+- (void) makeRequest:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters remainingRetries:(NSUInteger)remainingRetries completion:(void (^)(id JSONResponse, NSError* error))completionHandler
 {
     // push the makeRequest to the sync queue, which will be blocked while creating sessions
     // as it is quickly sent on to AFNetworking's operation queue, it wont block the sync queue for long
@@ -135,17 +139,30 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
                 NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
                 
                 NSInteger code = etaError.code;
-                
                 // Errors that require a new session
                 // 1101 & 1108: token expired / invalid token
+                // 1104: Invalid signature
                 // 1300 & 1301: Auth error / Auth action not allowed
-                if (code == 1101 || code == 1108 || code == 1300 || code == 1301)
+                if (code == 1101 || code == 1104 || code == 1108 || code == 1300 || code == 1301)
                 {
-                    [self log:@"Error while making request - Reset Session and retry"];
+                    [self log:@"Error %d while making request '' - Reset Session and retry '%@'", code, etaError.localizedDescription];
                     // create a new session, and if it was successful, repeat the request we were making
                     [self startSessionOnSyncQueue:YES forceReset:YES withCompletion:^(NSError *error) {
-                        if (!error)
-                            [self makeRequest:requestPath type:type parameters:parameters completion:completionHandler];
+                        if (!error && remainingRetries > 0)
+                        {
+                                [self makeRequest:requestPath type:type parameters:parameters remainingRetries:remainingRetries-1 completion:^(id response, NSError *error) {
+                                    if (error)
+                                        NSLog(@"Retry Error!");
+                                    completionHandler(response, error);
+                                }];
+                        }
+                        else
+                        {
+                            if (!error)
+                                error = etaError;
+
+                            completionHandler(nil, error);
+                        }
                     }];
                 }
                 // errors that require a retry

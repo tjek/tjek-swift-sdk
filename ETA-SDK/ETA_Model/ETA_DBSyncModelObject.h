@@ -22,5 +22,6 @@ typedef enum {
 @interface ETA_DBSyncModelObject : ETA_ModelObject
 
 @property (nonatomic, readwrite, assign) ETA_DBSyncState state;
+@property (nonatomic, readwrite, copy) NSString* syncUserID;
 
 @end

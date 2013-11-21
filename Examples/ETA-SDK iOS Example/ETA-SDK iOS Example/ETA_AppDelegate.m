@@ -23,6 +23,13 @@
     // In this case we are hard-coding it, but in your app you should use the CLLocationManager
     [ETA.SDK setLatitude:55.40227410 longitude:12.1873010 radius:50000 isFromSensor:NO];
     
+    [ETA.SDK attachUserEmail:@"lh@etilbudsavis.dk" password:@"lhlhlh" completion:^(NSError *error) {
+        if (error)
+            NSLog(@"Couldn't log user in: %@", error);
+        else
+            NSLog(@"User Logged In: %@", ETA.SDK.attachedUser);
+    }];
+    
     return YES;
 }
 							

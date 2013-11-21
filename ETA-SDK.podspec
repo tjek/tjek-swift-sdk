@@ -21,4 +21,6 @@ Pod::Spec.new do |s|
   s.dependency 'AFNetworking', '~> 1.3.1'
   s.dependency 'Mantle', '~> 1.2'
   s.dependency 'FMDB', '~> 2.1'
+  s.dependency 'MAKVONotificationCenter', '~> 0.0.2'
+
 end

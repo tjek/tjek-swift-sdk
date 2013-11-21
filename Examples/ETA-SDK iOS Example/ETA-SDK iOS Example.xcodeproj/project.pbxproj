@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		173FC42017B24E8400A6B076 /* Documentation */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 173FC42317B24E8500A6B076 /* Build configuration list for PBXAggregateTarget "Documentation" */;
+			buildPhases = (
+				173FC42417B24E8A00A6B076 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Documentation;
+			productName = Documentation;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		17A68BC23F9149A1A36A7A65 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 77709CE9799F4DDAA95A2183 /* libPods.a */; };
 		17DBD18417A7DF5F008EFAEF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17DBD18317A7DF5F008EFAEF /* UIKit.framework */; };
@@ -21,6 +35,7 @@
 		17DBD1AF17A7E073008EFAEF /* ETA_ExampleViewController_Catalogs.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBD1A817A7E073008EFAEF /* ETA_ExampleViewController_Catalogs.m */; };
 		17DBD1B017A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBD1AA17A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.m */; };
 		17DBD1B717A7E4B6008EFAEF /* catalogThumbPlaceholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 17DBD1B617A7E4B6008EFAEF /* catalogThumbPlaceholder.png */; };
+		17EA424E17B3B48F00F6AE80 /* ETA_ExampleViewController_ShoppingListManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 17EA424D17B3B48F00F6AE80 /* ETA_ExampleViewController_ShoppingListManager.m */; };
 		17F5304F17A9919700CB1DDE /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F5304E17A9919700CB1DDE /* SenTestingKit.framework */; };
 		17F5305017A9919700CB1DDE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17DBD18317A7DF5F008EFAEF /* UIKit.framework */; };
 		17F5305117A9919700CB1DDE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17DBD18517A7DF5F008EFAEF /* Foundation.framework */; };
@@ -53,6 +68,8 @@
 		17DBD1A917A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ETA_ExampleViewController_CatalogView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		17DBD1AA17A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ETA_ExampleViewController_CatalogView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		17DBD1B617A7E4B6008EFAEF /* catalogThumbPlaceholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = catalogThumbPlaceholder.png; sourceTree = "<group>"; };
+		17EA424C17B3B48F00F6AE80 /* ETA_ExampleViewController_ShoppingListManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA_ExampleViewController_ShoppingListManager.h; sourceTree = "<group>"; };
+		17EA424D17B3B48F00F6AE80 /* ETA_ExampleViewController_ShoppingListManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA_ExampleViewController_ShoppingListManager.m; sourceTree = "<group>"; };
 		17F5304D17A9919700CB1DDE /* ETA-SDK Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ETA-SDK Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		17F5304E17A9919700CB1DDE /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		17F5305417A9919700CB1DDE /* ETA-SDK Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ETA-SDK Tests-Info.plist"; sourceTree = "<group>"; };
@@ -140,6 +157,8 @@
 				17DBD1A817A7E073008EFAEF /* ETA_ExampleViewController_Catalogs.m */,
 				17DBD1A917A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.h */,
 				17DBD1AA17A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.m */,
+				17EA424C17B3B48F00F6AE80 /* ETA_ExampleViewController_ShoppingListManager.h */,
+				17EA424D17B3B48F00F6AE80 /* ETA_ExampleViewController_ShoppingListManager.m */,
 				17DBD18A17A7DF5F008EFAEF /* Supporting Files */,
 			);
 			path = "ETA-SDK iOS Example";
@@ -250,6 +269,7 @@
 			targets = (
 				17DBD17F17A7DF5F008EFAEF /* ETA-SDK iOS Example */,
 				17F5304C17A9919700CB1DDE /* ETA-SDK Tests */,
+				173FC42017B24E8400A6B076 /* Documentation */,
 			);
 		};
 /* End PBXProject section */
@@ -307,6 +327,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
 		};
+		173FC42417B24E8A00A6B076 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\n\nETA_ROOT_DIR=\"${PROJECT_DIR}/../..\"\n\n#--docset-feed-url \"http://cocoanetics.github.com/DTFoundation/%DOCSETATOMFILENAME\" \\\n#--docset-package-url \"http://cocoanetics.github.com/DTFoundation/%DOCSETPACKAGEFILENAME\" \\\n#--docset-fallback-url \"http://cocoanetics.github.com/DTFoundation/\" \\\n#--docset-atom-filename \"ETA-SDK.atom\" \\\n#--publish-docset \\\n\n/usr/local/bin/appledoc \\\n--project-name \"ETA-SDK\" \\\n--project-company \"eTilbudsavis\" \\\n--company-id \"com.etilbudsavis\" \\\n--output \"~/help\" \\\n--logformat xcode \\\n--keep-undocumented-objects \\\n--keep-undocumented-members \\\n--keep-intermediate-files \\\n--no-repeat-first-par \\\n--no-warn-invalid-crossref \\\n--ignore \"*.m\" \\\n--index-desc \"${ETA_ROOT_DIR}/README.md\" \\\n\"${ETA_ROOT_DIR}/ETA-SDK/\"\n\nexit 0";
+		};
 		17F5304B17A9919700CB1DDE /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -359,6 +392,7 @@
 				17DBD19417A7DF5F008EFAEF /* ETA_AppDelegate.m in Sources */,
 				17DBD1AF17A7E073008EFAEF /* ETA_ExampleViewController_Catalogs.m in Sources */,
 				17DBD1B017A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.m in Sources */,
+				17EA424E17B3B48F00F6AE80 /* ETA_ExampleViewController_ShoppingListManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,6 +436,20 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		173FC42117B24E8500A6B076 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		173FC42217B24E8500A6B076 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		17DBD1A117A7DF5F008EFAEF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -519,6 +567,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		173FC42317B24E8500A6B076 /* Build configuration list for PBXAggregateTarget "Documentation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				173FC42117B24E8500A6B076 /* Debug */,
+				173FC42217B24E8500A6B076 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		17DBD17B17A7DF5F008EFAEF /* Build configuration list for PBXProject "ETA-SDK iOS Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
