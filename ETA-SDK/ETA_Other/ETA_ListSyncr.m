@@ -17,7 +17,8 @@
 #import "ETA_ShoppingList+FMDB.h"
 #import "ETA_ShoppingListItem.h"
 #import "ETA_ShoppingListItem+FMDB.h"
-
+#import "ETA_ListShare.h"
+#import "ETA_ListShare+FMDB.h"
 
 NSString* const ETA_ListSyncr_ChangeNotification_Lists = @"ETA_ListSyncr_ChangeNotification_Lists";
 NSString* const ETA_ListSyncr_ChangeNotification_ListItems = @"ETA_ListSyncr_ChangeNotification_ListItems";
@@ -277,6 +278,25 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
         }
         
         
+        NSArray* pendingLocalShares = [self localDB_getAllObjectsWithSyncStates:pendingSyncStates
+                                                                            forUser:userID
+                                                                            class:ETA_ListShare.class];
+        for (ETA_ListShare* pendingShare in pendingLocalShares)
+        {
+            NSOperation* operation = nil;
+            if (pendingShare.state == ETA_DBSyncState_ToBeSynced || pendingShare.state == ETA_DBSyncState_Syncing)
+            {
+                operation = [self syncToServerOperationForShare:pendingShare];
+            }
+            else if (pendingShare.state == ETA_DBSyncState_ToBeDeleted || pendingShare.state == ETA_DBSyncState_Deleting)
+            {
+                operation = [self deleteFromServerOperationForShare:pendingShare];
+            }
+            
+            if (operation)
+                [self.serverQ addOperation:operation];
+        }
+        
         
         // Get Server Changes
         if (checkAllLists)
@@ -389,6 +409,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
     if (!_removedLists)
         _removedLists = [NSMutableArray new];
     return _removedLists;
+    
 }
 
 
@@ -480,6 +501,15 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                     NSDictionary* diffs = [self getDifferencesBetweenLocalObjects:localLists andServerObjects:serverLists mergeHandler:nil];
                     
                     
+                    for (ETA_ShoppingList* list in serverLists)
+                    {
+                        NSArray* localSharesForList = [self localDB_getAllSharesInList:list.uuid];
+                        NSError* err = nil;
+                        [self localDB_deleteObjects:localSharesForList error:&err];
+                        
+                        [self localDB_updateObjects:list.shares error:&err];
+                    }
+                    
                     // remove locally, and remove all the items locally
                     NSArray* removed = diffs[ETA_ListSyncr_ChangeNotificationInfo_RemovedKey];
                     if (removed.count)
@@ -489,6 +519,11 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                         {
                             NSArray* itemsToRemove = [self localDB_getAllListItemsInList:removedList.uuid withSyncStates:nil];
                             [self.removedItems addObjectsFromArray:itemsToRemove];
+                            
+                            
+                            NSArray* localSharesForList = [self localDB_getAllSharesInList:removedList.uuid];
+                            NSError* err = nil;
+                            [self localDB_deleteObjects:localSharesForList error:&err];
                         }
                     }
 
@@ -585,14 +620,28 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                                 // remove all the items for this list
                                 NSArray* itemsToRemove = [self localDB_getAllListItemsInList:listID withSyncStates:nil];
                                 [self.removedItems addObjectsFromArray:itemsToRemove];
-                            }
-                            else if (serverList && [self localDB_hasObjectChangedSince:serverList] == NO)
-                            {
-                                modifiedListCount++;
-                                [self.modifiedLists addObject:serverList];
                                 
-                                // tell the Q to get item changes from this modified list
-                                [self.serverQ addOperation:[self getServerChangesOperation_AllListItemsInList:serverList.uuid]];
+                                NSArray* localSharesForList = [self localDB_getAllSharesInList:listID];
+                                NSError* err = nil;
+                                [self localDB_deleteObjects:localSharesForList error:&err];
+                            }
+                            else if (serverList)
+                            {
+                                if ([self localDB_hasObjectChangedSince:serverList] == NO)
+                                {
+                                    modifiedListCount++;
+                                    [self.modifiedLists addObject:serverList];
+                                    
+                                    // tell the Q to get item changes from this modified list
+                                    [self.serverQ addOperation:[self getServerChangesOperation_AllListItemsInList:serverList.uuid]];
+                                }
+                                
+                                
+                                NSArray* localSharesForList = [self localDB_getAllSharesInList:listID];
+                                NSError* err = nil;
+                                [self localDB_deleteObjects:localSharesForList error:&err];
+                                
+                                [self localDB_updateObjects:serverList.shares error:&err];
                             }
                             
                             remainingLists--;
@@ -883,6 +932,92 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
 }
 
 
+- (NSOperation*) deleteFromServerOperationForShare:(ETA_ListShare*)share
+{
+    @weakify(self);
+    NSBlockOperation* op = [NSBlockOperation blockOperationWithBlock:^{
+        @strongify(self);
+        
+        [self log:@"[DeleteShareOperation(%@-%@)] started", share.userEmail, share.listUUID];
+        NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+        
+        NSString* userID = share.syncUserID;
+        NSString* listID = share.listUUID;
+        NSString* userEmail = share.userEmail;
+        
+        // check if the sdk has changed users while the item was waiting
+        if ([self.eta.attachedUserID isEqualToString:userID] == NO)
+        {
+            [self log:@"[DeleteShareOperation(%@-%@)] attachedUser different to Share being deleted... skip it", share.userEmail, share.listUUID];
+            return;
+        }
+        
+        // mark the item as being synced
+        share.state = ETA_DBSyncState_Deleting;
+        NSError* err;
+        if (![self localDB_updateObjects:@[share] error:&err])
+        {
+            [self log:@"[DeleteShareOperation(%@-%@)] Unable to mark Share as Deleting - abort", share.userEmail, share.listUUID];
+            return;
+        }
+        
+        
+        dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+        
+        
+        // "/v2/users/{userID}/shoppinglists/{listID}/shares/{userEmail}"
+        NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
+                                                           userID,
+                                                           ETA_API.shoppingLists,
+                                                           listID,
+                                                           @"shares",
+                                                           userEmail]];
+        
+        [self log:@"[DeleteShareOperation(%@-%@)] - Sending Request '%@'", share.userEmail, share.listUUID, request];
+        
+        [self.eta api:request
+                 type:ETARequestTypeDELETE
+           parameters:nil
+             useCache:NO
+           completion:^(id response, NSError *requestError, BOOL fromCache) {
+               
+               if (requestError)
+               {
+                   //TODO: if serious error mark item as Failed so we dont try it again?
+                   share.state = ETA_DBSyncState_ToBeDeleted;
+                   [self log:@"[DeleteShareOperation(%@-%@)] Request Error %d:'%@'", share.userEmail, share.listUUID, requestError.code, requestError.localizedDescription];
+                   
+                   NSError* updateErr = nil;
+                   if (![self localDB_updateObjects:@[share] error:&updateErr])
+                   {
+                       [self log:@"[DeleteShareOperation(%@-%@)] ALSO Failed to mark as 'ToBeDeleted' %d:'%@'", share.userEmail, share.listUUID, updateErr.code, updateErr.localizedDescription];
+                   }
+               }
+               else
+               {
+                   // try to remove from the local DB
+                   NSError* deleteErr;
+                   if (![self localDB_deleteObjects:@[share] error:&deleteErr])
+                   {
+                       [self log:@"[DeleteShareOperation(%@-%@)] Completed - Unable to remove from localDB %d:'%@'", share.userEmail, share.listUUID, deleteErr.code, deleteErr.localizedDescription];
+                   }
+               }
+               dispatch_semaphore_signal(sema);
+           }];
+        
+        
+        // block until server request is completed
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+        dispatch_release(sema);
+        
+        NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate]-start;
+        
+        [self log:@"[DeleteShareOperation(%@)] finished (%.4fs)", share.userEmail, share.listUUID, duration];
+    }];
+    return op;
+}
+
+
 
 
 #pragma mark Sync
@@ -951,6 +1086,103 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                                             useCache:NO
                                           completion:completionHandler];
                                    }];
+}
+
+// the action that will sync a share to the server
+- (NSOperation*) syncToServerOperationForShare:(ETA_ListShare*)share
+{
+    @weakify(self);
+    NSBlockOperation* op = [NSBlockOperation blockOperationWithBlock:^{
+        @strongify(self);
+        [self log:@"[SyncShareOperation(%@-%@)] started", share.userEmail, share.listUUID];
+        NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+        
+        NSString* userID = share.syncUserID;
+        
+        
+        // check if the sdk has changed users while the item was waiting
+        if ([self.eta.attachedUserID isEqualToString:userID] == NO)
+        {
+            [self log:@"[SyncShareOperation(%@-%@)] attachedUser different to share being synced... skip it", share.userEmail, share.listUUID];
+            return;
+        }
+        
+        
+        // mark the item as being synced
+        share.state = ETA_DBSyncState_Syncing;
+        NSError* err;
+        if (![self localDB_updateObjects:@[share] error:&err])
+        {
+            [self log:@"[SyncShareOperation(%@-%@)] Unable to mark Share as Syncing - abort", share.userEmail, share.listUUID];
+            return;
+        }
+        
+        
+        dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+        
+        NSString* listID = share.listUUID;
+        
+        NSDictionary* jsonDict = [share JSONDictionary];
+        
+        // "/v2/users/{userID}/shoppinglists/{listID}/shares/{email}"
+        NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
+                                                           userID,
+                                                           ETA_API.shoppingLists,
+                                                           listID,
+                                                           @"shares",
+                                                           share.userEmail]];
+        
+        [self log:@"[SyncShareOperation(%@-%@)] - Sending Request '%@'", share.userEmail, share.listUUID, request];
+            
+        // send request to server. Will not block operation
+        [self.eta api:request
+                 type:ETARequestTypePUT
+           parameters:@{@"access": jsonDict[@"access"],
+                        @"accept_url": jsonDict[@"acceptURL"],
+                        }
+             useCache:NO
+           completion:^(id response, NSError *requestError, BOOL fromCache) {
+               
+               if (requestError)
+               {
+                   //TODO: if serious error mark item as Failed so we dont try it again?
+                   share.state = ETA_DBSyncState_ToBeSynced;
+                   [self log:@"[SyncShareOperation(%@-%@)] Request Error %d:'%@'", share.userEmail, share.listUUID, requestError.code, requestError.localizedDescription];
+                   
+                   NSError* updateErr = nil;
+                   if (![self localDB_updateObjects:@[share] error:&updateErr])
+                   {
+                       [self log:@"[SyncShareOperation(%@-%@)] ALSO Failed to mark as 'ToBeSynced' %d:'%@'", share.userEmail, share.listUUID, updateErr.code, updateErr.localizedDescription];
+                   }
+               }
+               else
+               {
+                   share.state = ETA_DBSyncState_Synced;
+                   
+                   NSError* updateErr = nil;
+                   if (![self localDB_updateObjects:@[share] error:&updateErr])
+                   {
+                       [self log:@"[SyncShareOperation(%@-%@)] Completed - Failed to mark as 'Synced' %d:'%@'", share.userEmail, share.listUUID, updateErr.code, updateErr.localizedDescription];
+                   }
+                   else
+                   {
+                       [self log:@"[SyncShareOperation(%@-%@)] Completed - Marked as 'Synced'", share.userEmail, share.listUUID];
+                   }
+               }
+               
+               dispatch_semaphore_signal(sema);
+           }];
+        
+        // block until server request is completed
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+        dispatch_release(sema);
+        
+        NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate]-start;
+        
+        [self log:@"[SyncShareOperation(%@-%@)] finished (%.4fs)", share.userEmail, share.listUUID, duration];
+    }];
+    return op;
+
 }
 
 
@@ -1062,6 +1294,55 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
 
 #pragma mark - Server Getters
 
+- (void) server_getSharesForList:(NSString*)listID forUser:(NSString*)userID completion:(void (^)(NSArray* shares))completionHandler
+{
+    if (!completionHandler)
+        return;
+    
+    if (!userID)
+    {
+        completionHandler(nil);
+        return;
+    }
+    
+    //   "/v2/users/{userID}/shoppinglists/{listID}/shares"
+    NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
+                                                       userID,
+                                                       ETA_API.shoppingLists,
+                                                       listID,
+                                                       @"shares"]];
+    
+    [self.eta api:request
+             type:ETARequestTypeGET
+       parameters:nil
+         useCache:NO
+       completion:^(id response, NSError *error, BOOL fromCache) {
+           NSMutableArray* shares = nil;
+           if (!error)
+           {
+               if ([response isKindOfClass:[NSArray class]] == NO)
+                   response = @[response];
+               
+               shares = [NSMutableArray new];
+               for (id obj in response)
+               {
+                   ETA_ListShare* share = [ETA_ListShare objectFromJSONDictionary:obj];
+                   if (share)
+                   {
+                       share.syncUserID = userID;
+                       share.state = ETA_DBSyncState_Synced;
+                       [shares addObject:share];
+                   }
+               }
+           }
+           else
+           {
+               [self log:@"server_getAllSharesForListForUser: failed %d:'%@'", error.code, error.localizedDescription];
+           }
+           completionHandler(shares);
+       }];
+}
+
 
 #pragma mark Lists
 
@@ -1094,6 +1375,11 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                list = [ETA_ShoppingList objectFromJSONDictionary:response];
                list.syncUserID = userID;
                list.state = ETA_DBSyncState_Synced;
+               
+               for (ETA_ListShare* share in list.shares) {
+                   share.syncUserID = userID;
+                   share.state = ETA_DBSyncState_Synced;
+               }
            }
            else
            {
@@ -1102,6 +1388,8 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
            completionHandler(list, error);
        }];
 }
+
+
 - (void) server_getAllListsForUser:(NSString*)userID completion:(void (^)(NSArray* lists))completionHandler
 {
     if (!completionHandler)
@@ -1137,6 +1425,11 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                    {
                        list.syncUserID = userID;
                        list.state = ETA_DBSyncState_Synced;
+                       
+                       for (ETA_ListShare* share in list.shares) {
+                           share.syncUserID = userID;
+                           share.state = ETA_DBSyncState_Synced;
+                       }
                        [lists addObject:list];
                    }
                }
@@ -1290,7 +1583,10 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
 {
     return [self.dbHandler getAllDBListItemsInList:listID withSyncStates:syncStates];
 }
-
+- (NSArray*) localDB_getAllSharesInList:(NSString*)listID
+{
+    return [self.dbHandler getAllDBSharesInList:listID];
+}
 
      
      

@@ -35,7 +35,7 @@ typedef enum{
 - (NSArray*) getAllDBObjectsWithSyncStates:(NSArray*)syncStates forUser:(id)userID objClass:(Class)objClass;
 
 - (NSArray*) getAllDBListItemsInList:(NSString*)listID withSyncStates:(NSArray*)syncStates;
-
+- (NSArray*) getAllDBSharesInList:(NSString*)listID;
 @end
 
 @interface ETA_ListSyncr : NSObject

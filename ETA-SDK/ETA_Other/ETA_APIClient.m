@@ -145,25 +145,26 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
                 // 1300 & 1301: Auth error / Auth action not allowed
                 if (code == 1101 || code == 1104 || code == 1108 || code == 1300 || code == 1301)
                 {
-                    [self log:@"Error %d while making request '' - Reset Session and retry '%@'", code, etaError.localizedDescription];
+//                    [self log:@"Error %d while making request '' - Reset Session and retry '%@'", code, etaError.localizedDescription];
                     // create a new session, and if it was successful, repeat the request we were making
-                    [self startSessionOnSyncQueue:YES forceReset:YES withCompletion:^(NSError *error) {
-                        if (!error && remainingRetries > 0)
-                        {
-                                [self makeRequest:requestPath type:type parameters:parameters remainingRetries:remainingRetries-1 completion:^(id response, NSError *error) {
-                                    if (error)
-                                        NSLog(@"Retry Error!");
-                                    completionHandler(response, error);
-                                }];
-                        }
-                        else
-                        {
-                            if (!error)
-                                error = etaError;
-
-                            completionHandler(nil, error);
-                        }
-                    }];
+//                    [self startSessionOnSyncQueue:YES forceReset:YES withCompletion:^(NSError *error) {
+//                        if (!error && remainingRetries > 0)
+//                        {
+//                                [self makeRequest:requestPath type:type parameters:parameters remainingRetries:remainingRetries-1 completion:^(id response, NSError *error) {
+//                                    if (error)
+//                                        NSLog(@"Retry Error!");
+//                                    completionHandler(response, error);
+//                                }];
+//                        }
+//                        else
+//                        {
+//                            if (!error)
+//                                error = etaError;
+//
+//                            completionHandler(nil, error);
+//                        }
+//                    }];
+                    completionHandler(nil, etaError ?: error);
                 }
                 // errors that require a retry
                 // 2015: non-critical error

@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "ETA_ShoppingList.h"
+
 @class ETA;
 @class ETA_ShoppingList;
 @class ETA_ShoppingListItem;
@@ -23,6 +25,7 @@ extern NSString* const ETA_ListManager_ChangeNotificationInfo_RemovedKey;
 
 extern NSString* const kETA_ListManager_ErrorDomain;
 extern NSString* const kETA_ListManager_FirstPrevItemID;
+extern NSString* const kETA_ListManager_DefaultUserAccessAcceptURL;
 
 typedef enum {
     ETA_ListManager_SyncRate_None = 0,
@@ -96,9 +99,24 @@ typedef enum {
 - (BOOL) updateList:(ETA_ShoppingList*)list error:(NSError * __autoreleasing *)error;
 - (BOOL) removeList:(ETA_ShoppingList*)list error:(NSError * __autoreleasing *)error;
 
-
 - (ETA_ShoppingList*) getList:(NSString*)listID;
 - (NSArray*) getAllListsForUser:(NSString*)userID;
+
+
+#pragma mark - Shares
+
+- (ETA_ListShare*) getListShareForUserEmail:(NSString*)userEmail inList:(NSString*)listID;
+
+- (BOOL) setShareAccess:(ETA_ListShare_Access)shareAccess
+           forUserEmail:(NSString*)userEmail
+                 inList:(NSString*)listID
+              acceptURL:(NSString*)acceptURL
+                 asUser:(NSString*)syncUserID
+                  error:(NSError * __autoreleasing *)error;
+- (BOOL) removeShareForUserEmail:(NSString*)userEmail
+                          inList:(NSString*)listID
+                          asUser:(NSString*)syncUserID
+                           error:(NSError * __autoreleasing *)error;
 
 
 #pragma mark - List Items

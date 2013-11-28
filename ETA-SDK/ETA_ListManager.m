@@ -18,7 +18,10 @@
 #import "ETA_ShoppingListItem+FMDB.h"
 #import "ETA_ShoppingList.h"
 #import "ETA_ShoppingList+FMDB.h"
+#import "ETA_ListShare.h"
+#import "ETA_ListShare+FMDB.h"
 
+#import "ETA_User.h"
 
 NSString* const ETA_ListManager_ChangeNotification_Lists = @"ETA_ListManager_ChangeNotification_ServerLists";
 NSString* const ETA_ListManager_ChangeNotification_ListItems = @"ETA_ListManager_ChangeNotification_ServerListItems";
@@ -31,9 +34,12 @@ NSString* const ETA_ListManager_ChangeNotificationInfo_RemovedKey = @"removed";
 
 NSString* const kETA_ListManager_ErrorDomain = @"ETA_ListManager_ErrorDomain";
 NSString* const kETA_ListManager_FirstPrevItemID = @"00000000-0000-0000-0000-000000000000";
-NSInteger const kETA_ListManager_LatestDBVersion = 2;
+NSString* const kETA_ListManager_DefaultUserAccessAcceptURL = @"http://www.etilbudsavis.dk/";
+NSInteger const kETA_ListManager_LatestDBVersion = 4;
 
 @interface ETA_ListManager ()<ETA_ListSyncrDBHandlerProtocol>
+
+@property (nonatomic, strong) ETA* eta;
 
 @property (nonatomic, strong) ETA_ListSyncr* syncr;
 
@@ -80,6 +86,8 @@ NSInteger const kETA_ListManager_LatestDBVersion = 2;
 {
     if ((self = [super init]))
     {
+        self.eta = eta;
+        
         if (eta)
             self.syncr = [ETA_ListSyncr syncrWithETA:eta localDBQueryHandler:self];
         
@@ -328,7 +336,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 2;
 }
 - (ETA_ListManager_SyncRate) syncRate
 {
-    return self.syncr ? self.syncr.pollRate : ETA_ListManager_SyncRate_None;
+    return self.syncr ? (ETA_ListManager_SyncRate)self.syncr.pollRate : ETA_ListManager_SyncRate_None;
 }
 
 
@@ -401,6 +409,8 @@ NSInteger const kETA_ListManager_LatestDBVersion = 2;
     
     return success;
 }
+
+
 - (BOOL) removeList:(ETA_ShoppingList*)list error:(NSError * __autoreleasing *)error
 {
     NSDate* modified = [NSDate date];
@@ -448,6 +458,90 @@ NSInteger const kETA_ListManager_LatestDBVersion = 2;
                                       objClass:ETA_ShoppingList.class];
 }
 
+
+#pragma mark - Shares
+
+- (ETA_ListShare*) getShareForUserEmail:(NSString*)userEmail inList:(NSString*)listID
+{
+    __block ETA_ListShare* share = nil;
+    [self.dbQ inDatabase:^(FMDatabase *db) {
+        share = [ETA_ListShare getShareForUserEmail:userEmail inList:listID fromTable:[self localSharesTableName] inDB:db];
+    }];
+    return share;
+}
+
+- (BOOL) removeShareForUserEmail:(NSString*)userEmail inList:(NSString*)listID asUser:(NSString*)syncUserID error:(NSError * __autoreleasing *)error
+{
+    
+    if (!listID || !userEmail)
+    {
+        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                     code:ETA_ListManager_ErrorCode_MissingParameter
+                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove access - invalid listID or userEmail",@"")}];
+        return NO;
+    }
+    
+    
+    ETA_ListShare* share = [self getShareForUserEmail:userEmail inList:listID];
+    
+    BOOL success = YES;
+    if (share)
+    {
+        share.state = ETA_DBSyncState_ToBeDeleted;
+        share.syncUserID = syncUserID;
+        
+        if (!syncUserID)
+        {
+            success = [self deleteDBObjects:@[share] error:error];
+        }
+        else
+        {
+            success = [self updateDBObjects:@[share] error:error];
+        }
+    }
+    
+    return success;
+}
+
+- (BOOL) setShareAccess:(ETA_ListShare_Access)shareAccess
+           forUserEmail:(NSString*)userEmail
+                 inList:(NSString*)listID
+              acceptURL:(NSString*)acceptURL
+                 asUser:(NSString*)syncUserID
+                  error:(NSError * __autoreleasing *)error
+{
+    if (shareAccess == ETA_ListShare_Access_None)
+    {
+        return [self removeShareForUserEmail:userEmail inList:listID asUser:syncUserID error:error];
+    }
+
+    if (!listID || !userEmail)
+    {
+        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                     code:ETA_ListManager_ErrorCode_MissingParameter
+                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove access - invalid listID or userEmail",@"")}];
+        return NO;
+    }
+    
+    ETA_ListShare* share = [self getShareForUserEmail:userEmail inList:listID];
+    if (!share)
+    {
+        share = [ETA_ListShare new];
+        share.userEmail = userEmail;
+        share.userName = userEmail;
+        share.accepted = NO;
+        share.listUUID = listID;
+    }
+    
+    share.access = shareAccess;
+    share.acceptURL = acceptURL;
+    share.state = ETA_DBSyncState_ToBeSynced;
+    share.syncUserID = syncUserID;
+    
+    BOOL success = [self updateDBObjects:@[share] error:error];
+    
+    return success;
+}
 
 #pragma mark List Items
 
@@ -827,6 +921,11 @@ NSInteger const kETA_ListManager_LatestDBVersion = 2;
 {
     return @"lists";
 }
+- (NSString*) localSharesTableName
+{
+    return @"shares";
+}
+
 
 - (NSArray*) activeSyncStates
 {
@@ -868,13 +967,23 @@ NSInteger const kETA_ListManager_LatestDBVersion = 2;
         
         success = [ETA_ShoppingListItem createTable:[self localListItemsTableName]
                                                inDB:db];
-        if (!success)
+        if (!success) {
+            [self log:@"Unable to create tables: %@", db.lastError];
             return;
+        }
+        
         success = [ETA_ShoppingList createTable:[self localListsTableName]
                                            inDB:db];
-        if (!success)
+        if (!success){
+            [self log:@"Unable to create tables: %@", db.lastError];
             return;
-        
+        }
+        success = [ETA_ListShare createTable:[self localSharesTableName]
+                                        inDB:db];
+        if (!success) {
+            [self log:@"Unable to create tables: %@", db.lastError];
+            return;
+        }
         // Note, can't be called in transaction
         [db executeUpdate:[NSString stringWithFormat:@"PRAGMA user_version = %d", kETA_ListManager_LatestDBVersion]];
     }];
@@ -907,6 +1016,13 @@ NSInteger const kETA_ListManager_LatestDBVersion = 2;
                                                            inDB:db
                                                           error:error];
             }
+            else if ([object isKindOfClass:ETA_ListShare.class])
+            {
+                success = [ETA_ListShare insertOrReplaceShare:object
+                                                    intoTable:[self localSharesTableName]
+                                                         inDB:db
+                                                        error:error];
+            }
             if (!success) {
                 *rollback = YES;
                 return;
@@ -938,6 +1054,18 @@ NSInteger const kETA_ListManager_LatestDBVersion = 2;
                                              fromTable:[self localListsTableName]
                                                   inDB:db
                                                  error:error];
+                if (success)
+                {
+                    success = [self deleteDBObjects:((ETA_ShoppingList*)object).shares
+                                              error:error];
+                }
+            }
+            else if ([object isKindOfClass:ETA_ListShare.class])
+            {
+                success = [ETA_ListShare deleteShare:(ETA_ListShare*)object
+                                           fromTable:[self localSharesTableName]
+                                                inDB:db
+                                               error:error];
             }
             if (!success) {
                 *rollback = YES;
@@ -964,6 +1092,15 @@ NSInteger const kETA_ListManager_LatestDBVersion = 2;
             obj = [ETA_ShoppingList getListWithID:objUUID
                                         fromTable:[self localListsTableName]
                                              inDB:db];
+            
+            // get the shares for the list
+            if (obj)
+            {
+                ((ETA_ShoppingList*)obj).shares = [ETA_ListShare getAllSharesForList:objUUID
+                                                                           fromTable:[self localSharesTableName]
+                                                                                inDB:db];
+            }
+            
         }
     }];
     return obj;
@@ -990,6 +1127,24 @@ NSInteger const kETA_ListManager_LatestDBVersion = 2;
                                                      andUserID:userID
                                                      fromTable:[self localListsTableName]
                                                           inDB:db];
+            
+            // get the shares for the list
+            if (objs.count)
+            {
+                for (ETA_ShoppingList* list in objs)
+                {
+                    list.shares = [ETA_ListShare getAllSharesForList:list.uuid
+                                                           fromTable:[self localSharesTableName]
+                                                                inDB:db];
+                }
+            }
+        }
+        else if (objClass == ETA_ListShare.class)
+        {
+            objs = [ETA_ListShare getAllSharesWithSyncStates:syncStates
+                                                   andUserID:userID
+                                                   fromTable:[self localSharesTableName]
+                                                        inDB:db];
         }
     }];
     return objs;
@@ -1009,6 +1164,15 @@ NSInteger const kETA_ListManager_LatestDBVersion = 2;
         items = [ETA_ShoppingListItem getAllItemsWhere:WHERE fromTable:[self localListItemsTableName] inDB:db];
     }];
     return items;
+}
+
+- (NSArray*) getAllDBSharesInList:(NSString*)listID
+{
+    __block NSArray* shares = nil;
+    [self.dbQ inDatabase:^(FMDatabase *db) {
+        shares =  [ETA_ListShare getAllSharesForList:listID fromTable:[self localSharesTableName] inDB:db];
+    }];
+    return shares;
 }
 
 

@@ -7,6 +7,7 @@
 //
 
 #import "ETA_DBSyncModelObject.h"
+#import "ETA_ListShare.h"
 
 extern NSString* const kETA_ShoppingList_MetaThemeKey;
 
@@ -28,7 +29,7 @@ typedef enum {
 @property (nonatomic, readwrite, assign) ETA_ShoppingList_Access access;
 @property (nonatomic, readwrite, assign) ETA_ShoppingList_Type type;
 @property (nonatomic, readwrite, strong) NSDictionary* meta;
-
+@property (nonatomic, readwrite, strong) NSArray* shares;
 
 
 + (instancetype) listWithUUID:(NSString*)uuid name:(NSString*)name modifiedDate:(NSDate*)modified access:(ETA_ShoppingList_Access)access type:(ETA_ShoppingList_Type)type;
@@ -39,4 +40,7 @@ typedef enum {
 
 - (NSString*)accessString;
 
+
+- (ETA_ListShare_Access) accessForUserEmail:(NSString*)userEmail;
+- (NSArray*)sharesForUserAccessType:(ETA_ListShare_Access)userAccessType;
 @end

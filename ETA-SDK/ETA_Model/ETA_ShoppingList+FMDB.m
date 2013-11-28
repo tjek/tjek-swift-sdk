@@ -8,6 +8,8 @@
 
 #import "ETA_ShoppingList+FMDB.h"
 
+#import "ETA_ListShare+FMDB.h"
+
 #import "FMDatabase.h"
 #import "FMResultSet.h"
 
@@ -17,9 +19,6 @@ NSString* const kSL_MODIFIED    = @"modified";
 NSString* const kSL_NAME        = @"name";
 NSString* const kSL_ACCESS      = @"access";
 NSString* const kSL_STATE       = @"state";
-NSString* const kSL_OWNER_USER  = @"owner_user";
-NSString* const kSL_OWNER_ACCESS = @"owner_access";
-NSString* const kSL_OWNER_ACCEPTED = @"owner_accepted";
 NSString* const kSL_TYPE        = @"type";
 NSString* const kSL_META        = @"meta";
 NSString* const kSL_USERID        = @"userID";
@@ -34,9 +33,6 @@ NSString* const kSL_USERID        = @"userID";
              kSL_NAME,
              kSL_ACCESS,
              kSL_STATE,
-             kSL_OWNER_USER,
-             kSL_OWNER_ACCESS,
-             kSL_OWNER_ACCEPTED,
              kSL_TYPE,
              kSL_META,
              kSL_USERID,
@@ -52,9 +48,6 @@ NSString* const kSL_USERID        = @"userID";
              kSL_NAME: @"name",
              kSL_ACCESS: @"access",
              kSL_STATE: @"state",
-             kSL_OWNER_USER: @"owner.user",
-             kSL_OWNER_ACCESS: @"owner.access",
-             kSL_OWNER_ACCEPTED: @"owner.accepted",
              kSL_TYPE: @"type",
              kSL_META: @"meta",
              kSL_USERID: @"syncUserID",
@@ -78,12 +71,6 @@ NSString* const kSL_USERID        = @"userID";
     [jsonDict setValue:[res stringForColumn:kSL_NAME] forKey:@"name"];
     [jsonDict setValue:[res stringForColumn:kSL_ACCESS] forKey:@"access"];
     
-    NSMutableDictionary* owner = [@{} mutableCopy];
-    [owner setValue:[res stringForColumn:kSL_OWNER_USER] forKey:@"user"];
-    [owner setValue:[res stringForColumn:kSL_OWNER_ACCESS] forKey:@"access"];
-    [owner setValue:@([res intForColumn:kSL_OWNER_ACCEPTED]) forKey:@"accepted"];
-    jsonDict[@"owner"] = owner;
-    
     NSString* metaJSONString = [res stringForColumn:kSL_META];
     if (metaJSONString)
     {
@@ -91,7 +78,6 @@ NSString* const kSL_USERID        = @"userID";
         if (metaDict)
             jsonDict[@"meta"] = metaDict;
     }
-    
     
     ETA_ShoppingList* list = [ETA_ShoppingList objectFromJSONDictionary:jsonDict];
     // state & sync user is not part of the JSON parsing, so set manually
@@ -118,7 +104,6 @@ NSString* const kSL_USERID        = @"userID";
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.meta options:0 error:nil];
         jsonDict[@"meta"] = jsonData ? [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] : nil;
     }
-    
     
     NSDictionary* jsonKeysByFieldNames = [[self class] JSONKeyPathsByDBFieldName];
     
@@ -148,12 +133,9 @@ NSString* const kSL_USERID        = @"userID";
                               kSL_NAME, @"text not null,",
                               kSL_ACCESS, @"text not null,",
                               kSL_STATE, @"integer not null,",
-                              kSL_OWNER_USER, @"text,",
-                              kSL_OWNER_ACCESS, @"text,",
-                              kSL_OWNER_ACCEPTED, @"integer,",
                               kSL_TYPE, @"integer not null DEFAULT 0,",
                               kSL_META, @"text,",
-                              kSL_USERID, @"text"
+                              kSL_USERID, @"text",
                               ] componentsJoinedByString:@" "];
     
     
@@ -216,8 +198,9 @@ NSString* const kSL_USERID        = @"userID";
     while ([s next])
     {
         ETA_ShoppingList* list = [self shoppingListFromResultSet:s];
-        if (list)
+        if (list) {
             [lists addObject:list];
+        }
     }
     [s close];
     return lists;
@@ -238,8 +221,9 @@ NSString* const kSL_USERID        = @"userID";
     while ([s next])
     {
         ETA_ShoppingList* list = [self shoppingListFromResultSet:s];
-        if (list)
+        if (list) {
             [lists addObject:list];
+        }
     }
     [s close];
     return lists;
@@ -308,8 +292,9 @@ NSString* const kSL_USERID        = @"userID";
     while ([s next])
     {
         ETA_ShoppingList* list = [self shoppingListFromResultSet:s];
-        if (list)
+        if (list) {
             [lists addObject:list];
+        }
     }
     [s close];
     return lists;

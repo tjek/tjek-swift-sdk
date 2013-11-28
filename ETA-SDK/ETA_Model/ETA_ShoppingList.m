@@ -7,6 +7,7 @@
 //
 
 #import "ETA_ShoppingList.h"
+#import "ETA_ListShare.h"
 #import "ETA_API.h"
 
 NSString* const kETA_ShoppingList_MetaThemeKey = @"eta_theme";
@@ -44,7 +45,14 @@ NSString* const kETA_ShoppingList_MetaThemeKey = @"eta_theme";
 	return [self modelWithDictionary:dict error:NULL];
 }
 
-
++ (instancetype) objectFromJSONDictionary:(NSDictionary*)JSONDictionary
+{
+    ETA_ShoppingList* list = [super objectFromJSONDictionary:JSONDictionary];
+    for (ETA_ListShare* share in list.shares)
+        share.listUUID = list.uuid;
+    
+    return list;
+}
 
 #pragma mark - JSON transformers
 
@@ -100,6 +108,11 @@ NSString* const kETA_ShoppingList_MetaThemeKey = @"eta_theme";
     }];
 }
 
++ (NSValueTransformer *)sharesJSONTransformer
+{
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ETA_ListShare.class];
+}
+
 + (NSValueTransformer *)modifiedJSONTransformer {
     return [NSValueTransformer valueTransformerForName:ETA_APIDate_ValueTransformerName];
 }
@@ -111,4 +124,35 @@ NSString* const kETA_ShoppingList_MetaThemeKey = @"eta_theme";
 {
     return [[[self class] accessJSONTransformer] reverseTransformedValue:@(self.access)];
 }
+
+
+
+- (ETA_ListShare_Access) accessForUserEmail:(NSString*)userEmail
+{
+    if (userEmail.length)
+    {
+        userEmail = userEmail.lowercaseString;
+        for (ETA_ListShare* share in self.shares)
+        {
+            NSString* shareEmail = share.userEmail;
+            if ([shareEmail.lowercaseString isEqualToString:userEmail])
+            {
+                return share.access;
+            }
+        }
+    }
+    return ETA_ListShare_Access_None;
+}
+- (NSArray*)sharesForUserAccessType:(ETA_ListShare_Access)userAccessType
+{
+    NSMutableArray* shares = [NSMutableArray array];
+    for (ETA_ListShare* share in self.shares)
+    {
+        ETA_ListShare_Access access = share.access;
+        if (access == userAccessType)
+            [shares addObject:share];
+    }
+    return shares;
+}
+
 @end
