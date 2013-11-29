@@ -195,42 +195,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     NSArray* modified = syncrChanges[ETA_ListSyncr_ChangeNotificationInfo_ModifiedKey];
     NSArray* removed = syncrChanges[ETA_ListSyncr_ChangeNotificationInfo_RemovedKey];
     
-    
-//    
-//    // WHY!!!
-//    NSMutableArray* itemsToUpdate = [NSMutableArray array];
-//    NSDate* modifiedDate = [NSDate date];
-//    
-//    NSArray* listsToBeSorted = [added ?: @[] arrayByAddingObjectsFromArray:modified];
-//    // clean up prev item IDs
-//    for (ETA_ShoppingList* list in listsToBeSorted)
-//    {
-//        NSArray* sortedItems = [self getAllListItemsInList:list.uuid sortedByPreviousItemID:YES];
-//        
-//        NSString* nextPrevItemID = kETA_ListManager_FirstPrevItemID;
-//        for (ETA_ShoppingListItem* item in sortedItems)
-//        {
-//            if ([item.prevItemID isEqualToString:nextPrevItemID] == NO)
-//            {
-//                item.prevItemID = nextPrevItemID;
-//                item.modified = modifiedDate;
-//                item.state = ETA_DBSyncState_ToBeSynced;
-//                [itemsToUpdate addObject:item];
-//            }
-//            nextPrevItemID = item.uuid;
-//        }
-//    }
-//    if (itemsToUpdate.count)
-//    {
-//        [self log:@"Lists Modified - resorting items. %d had modified prevItemIDs", itemsToUpdate.count];
-//        
-//        NSError* err = nil;
-//        if (![self updateDBObjects:itemsToUpdate error:&err])
-//        {
-//            [self log:@"Failed to update the prevItemIDs of re-sorted Items %d:%@", err.code, err.localizedDescription];
-//        }
-//    }
-    
     NSDictionary* mappedChanges = [NSMutableDictionary dictionary];
     [mappedChanges setValue:added forKey:ETA_ListManager_ChangeNotificationInfo_AddedKey];
     [mappedChanges setValue:removed forKey:ETA_ListManager_ChangeNotificationInfo_RemovedKey];
@@ -855,60 +819,73 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     }
     else
     {
-        NSMutableDictionary* itemsByPrevItemID = [NSMutableDictionary dictionary];
-        
-        NSMutableArray* firstItems = [NSMutableArray array];
-        NSMutableArray* orderedItems = [NSMutableArray new];
-        
-        for (ETA_ShoppingListItem* item in items)
-        {
-            NSString* prevID = item.prevItemID;
-            if (prevID)
-            {
-                if ([prevID isEqualToString:kETA_ListManager_FirstPrevItemID])
-                    [firstItems addObject:item];
-                else if (!itemsByPrevItemID[prevID])
-                    itemsByPrevItemID[prevID] = item;
-                else
-                    [orderedItems addObject:item];
-            }
-            // it doesnt have a previous item - it isnt in the sorting
-            else
-            {
-                [orderedItems addObject:item];
-            }
-        }
-        NSUInteger unorderedItemCount = orderedItems.count;
-        
-        // go through all the items that have a prev-item-id
-        for (ETA_ShoppingListItem* firstItem in firstItems)
-        {
-            ETA_ShoppingListItem* nextItem = firstItem;
-            
-            while (nextItem)
-            {
-                [orderedItems addObject:nextItem];
-                
-                // clear from item dict
-                [itemsByPrevItemID removeObjectForKey:nextItem.prevItemID];
-                
-                // move on to the next item
-                nextItem = itemsByPrevItemID[nextItem.uuid];
-            }
-        }
-        
-        // mark the remaining unsorted items
-        for (ETA_ShoppingListItem* item in itemsByPrevItemID.allValues)
-        {
-            [orderedItems insertObject:item atIndex:unorderedItemCount];
-            unorderedItemCount++;
-        }
-        
-        return orderedItems;
+        return [self sortListItemsByPrevItemID:items];
     }
 }
 
 
+- (NSArray*) sortListItemsByPrevItemID:(NSArray*)items
+{
+    NSMutableSet* allItemIDs = [NSMutableSet setWithCapacity:items.count];
+    for (ETA_ShoppingListItem* item in items)
+        [allItemIDs addObject:item.uuid];
+    
+    NSMutableDictionary* itemsByPrevItemID = [NSMutableDictionary dictionary];
+    
+    NSMutableArray* realFirstItems = [NSMutableArray array];
+    NSMutableArray* orphanFirstItems = [NSMutableArray array];
+    NSMutableArray* nilFirstItems = [NSMutableArray array];
+    
+    for (ETA_ShoppingListItem* item in items)
+    {
+        NSString* prevID = item.prevItemID;
+        if (!prevID.length)
+        {
+            [nilFirstItems addObject:item];
+        }
+        else if ([prevID isEqualToString:kETA_ListManager_FirstPrevItemID])
+        {
+            [realFirstItems addObject:item];
+        }
+        else if (itemsByPrevItemID[prevID] == nil && [allItemIDs containsObject:prevID])
+        {
+            itemsByPrevItemID[prevID] = item;
+        }
+        else
+        {
+            [orphanFirstItems addObject:item];
+        }
+    }
+    
+    [realFirstItems sortedArrayUsingComparator:^NSComparisonResult(ETA_ShoppingListItem* item1, ETA_ShoppingListItem* item2) { return [item1.name caseInsensitiveCompare:item2.name]; }];
+    [nilFirstItems sortedArrayUsingComparator:^NSComparisonResult(ETA_ShoppingListItem* item1, ETA_ShoppingListItem* item2) { return [item1.name caseInsensitiveCompare:item2.name]; }];
+    [orphanFirstItems sortedArrayUsingComparator:^NSComparisonResult(ETA_ShoppingListItem* item1, ETA_ShoppingListItem* item2) { return [item1.name caseInsensitiveCompare:item2.name]; }];
+    
+    NSMutableArray* allFirstItems = [NSMutableArray arrayWithCapacity:realFirstItems.count + nilFirstItems.count + orphanFirstItems.count];
+    [allFirstItems addObjectsFromArray:nilFirstItems];
+    [allFirstItems addObjectsFromArray:realFirstItems];
+    [allFirstItems addObjectsFromArray:orphanFirstItems];
+    
+    NSMutableArray* orderedItems = [NSMutableArray arrayWithCapacity:items.count];
+    for (ETA_ShoppingListItem* firstItem in allFirstItems)
+    {
+        ETA_ShoppingListItem* nextItem = firstItem;
+        while (nextItem)
+        {
+            [orderedItems addObject:nextItem];
+            
+            NSString* prevItemID = nextItem.uuid;
+            
+            // move on to the next item
+            nextItem = itemsByPrevItemID[prevItemID];
+            
+            // clear from item dict
+            [itemsByPrevItemID removeObjectForKey:prevItemID];
+        }
+    }
+    
+    return orderedItems;
+}
 
 
 #pragma mark - Local DB methods

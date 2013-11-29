@@ -242,8 +242,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
             {
                 operation = [self syncToServerOperationForItem:pendingItem];
                 [self log:@"Add SyncItemOperation(%@) prev:'%@'", pendingItem.name, pendingItem.prevItemID];
-                if (pendingItem.prevItemID == nil)
-                    NSLog(@"Syncing NIL prevID");
             }
             else if (pendingItem.state == ETA_DBSyncState_ToBeDeleted || pendingItem.state == ETA_DBSyncState_Deleting)
             {
@@ -431,21 +429,22 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 if (serverItems)
                 {
+                    NSArray* orderedServerItems = [self localDB_sortListItemsByPrevItemID:serverItems];
+                    NSString* prevItemID = kETA_ShoppingListManager_FirstPrevItemID;
+                    for (ETA_ShoppingListItem* item in orderedServerItems)
+                    {
+                        if ([prevItemID isEqualToString:item.prevItemID] == NO)
+                        {
+                            item.prevItemID = prevItemID;
+                            item.modified = [NSDate date];
+                            item.state = ETA_DBSyncState_ToBeSynced;
+                        }
+                        prevItemID = item.uuid;
+                    }
+                    
                     NSArray* localItems = [self localDB_getAllListItemsInList:listID withSyncStates:@[@(ETA_DBSyncState_Synced), @(ETA_DBSyncState_Syncing), @(ETA_DBSyncState_ToBeSynced)]];
                     
-                    // use the local prevItemID if none given by the server
-                    NSDictionary* diffs = [self getDifferencesBetweenLocalObjects:localItems andServerObjects:serverItems mergeHandler:^ETA_ModelObject *(ETA_ModelObject *serverItem, ETA_ModelObject *localItem) {
-                        NSString* serverPrevID = ((ETA_ShoppingListItem*)serverItem).prevItemID;
-                        NSString* localPrevID = ((ETA_ShoppingListItem*)localItem).prevItemID;
-                        if (serverPrevID == nil) {
-                            NSLog(@"Getting Item from server with NO PREV ID '%@'", ((ETA_ShoppingListItem*)serverItem).name    );
-                            ((ETA_ShoppingListItem*)serverItem).prevItemID = localPrevID;
-                            ((ETA_ShoppingListItem*)serverItem).modified = [NSDate date];
-                            return serverItem;
-                        }
-                        return nil;
-                    }];
-//                    NSDictionary* diffs = [self getDifferencesBetweenLocalObjects:localItems andServerObjects:serverItems mergeHandler:nil];
+                    NSDictionary* diffs = [self getDifferencesBetweenLocalObjects:localItems andServerObjects:serverItems mergeHandler:nil];
                     
                     NSArray* added = diffs[ETA_ListSyncr_ChangeNotificationInfo_AddedKey];
                     NSArray* removed = diffs[ETA_ListSyncr_ChangeNotificationInfo_RemovedKey];
@@ -1035,9 +1034,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                                        
                                        NSDictionary* jsonDict = [item JSONDictionary];
                                        
-                                       if (item.prevItemID == nil)
-                                           NSLog(@"Sending item with NO PREV ID '%@'", item.name);
-
                                        // "/v2/users/{userID}/shoppinglists/{listID}/items/{itemID}"
                                        NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
                                                                                           userID,
@@ -1521,8 +1517,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                        item.syncUserID = userID;
                        item.state = ETA_DBSyncState_Synced;
                        [items addObject:item];
-                       if (item.prevItemID == nil)
-                           NSLog(@"response has no prev item id");
                    }
                }
            }
@@ -1588,7 +1582,12 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
     return [self.dbHandler getAllDBSharesInList:listID];
 }
 
-     
+- (NSArray*) localDB_sortListItemsByPrevItemID:(NSArray*)items
+{
+    return [self.dbHandler sortListItemsByPrevItemID:items];
+}
+
+
      
 #pragma mark - Utilities
 - (BOOL) isModifiedDate:(NSDate*)modifiedDateA newerThanModifiedDate:(NSDate*)modifiedDateB
