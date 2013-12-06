@@ -126,10 +126,12 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     [_eta removeObserver:self forKeyPath:@"geolocation"];
     [_eta removeObserver:self forKeyPath:@"radius"];
     [_eta removeObserver:self forKeyPath:@"isLocationFromSensor"];
+    [_eta removeObserver:self forKeyPath:@"client.session"];
     _eta = eta;
     [_eta addObserver:self forKeyPath:@"geolocation" options:NSKeyValueObservingOptionNew context:NULL];
     [_eta addObserver:self forKeyPath:@"radius" options:NSKeyValueObservingOptionNew context:NULL];
     [_eta addObserver:self forKeyPath:@"isLocationFromSensor" options:NSKeyValueObservingOptionNew context:NULL];
+    [_eta addObserver:self forKeyPath:@"client.session" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -142,6 +144,10 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:selector object:nil];
             [self performSelector:selector withObject:nil afterDelay:0.1];
         }
+    }
+    else if ([keyPath isEqualToString:@"client.session"])
+    {
+        
     }
     else
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -255,7 +261,12 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
 {
     [self performJSProxyMethodWithName:@"catalog-view-thumbnails" data:nil];
 }
+- (void) gotoPage:(NSUInteger)page animated:(BOOL)animated
+{
+    [self performJSProxyMethodWithName:@"catalog-view-go-to-page" data:@{@"page": @(page),
+                                                                         @"animated":animated?@"true":@"false"}];
 
+}
 
 - (void) changeSession:(ETA_Session*)session
 {

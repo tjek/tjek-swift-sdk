@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
+extern NSString* const ETA_APIErrorDomain;
+extern NSString* const ETA_APIError_URLResponseKey;
+extern NSString* const ETA_APIError_ErrorIDKey;
+
 #import "ETA_API.h"
 @class ETA_User;
 
@@ -190,6 +194,8 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  */
 - (void) attachUserEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completionHandler;
 
+- (void) attachUserWithFacebookToken:(NSString*)facebookToken completion:(void (^)(NSError* error))completionHandler;
+
 
 /**
  *	Remove the user from the current session (eg. log out)
@@ -197,7 +203,6 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  *	@param	completionHandler	Called on the main queue when the server responds. If failed to log out `error` will be non-nil.
  */
 - (void) detachUserWithCompletion:(void (^)(NSError* error))completionHandler;
-
 
 /**
  *	The ID of the currently attached user. `nil` if no attached user. See `ETA_AttachedUserChangedNotification` to get NSNotifications when the userID changes.
@@ -209,6 +214,10 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  */
 @property (nonatomic, readonly, copy) ETA_User* attachedUser;
 
+/**
+ * Is the user attached with a facebook token? (not observable)
+ */
+@property (nonatomic, readonly, assign) BOOL attachedUserIsFromFacebook;
 
 /**
  *	Do the current session's permissions allow for the specified action?
@@ -251,7 +260,7 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  */
 @property (nonatomic, readwrite, assign) BOOL isLocationFromSensor;
 
-//
+
 /**
  *	A utility geolocation setter method, for setting `geolocation`, `radius`, and `isLocationFromSensor` at the same time.
  *
@@ -272,6 +281,9 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  */
 + (NSArray*) preferredRadiuses;
 
+
+
+@property (nonatomic, readonly, strong) NSURL* unsubscribeURLForCurrentLocation;
 
 
 #pragma mark - Non-Singleton constructors
@@ -297,8 +309,7 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  */
 + (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret;
 
-/**
- *	Construct a new ETA object
+/** *	Construct a new ETA object
  *
  *  Use this if you want multiple ETA objects, for some reason.
  *

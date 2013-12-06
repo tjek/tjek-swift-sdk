@@ -64,6 +64,7 @@ static NSString * const kETA_CatalogViewBaseURLString = @"https://etilbudsavis.d
 // toggle the display of the thumbnail picker
 - (void) toggleCatalogThumbnails;
 
+- (void) gotoPage:(NSUInteger)page animated:(BOOL)animated;
 
 @property (nonatomic, readonly, assign) NSUInteger currentPage;
 @property (nonatomic, readonly, assign) NSUInteger pageCount;

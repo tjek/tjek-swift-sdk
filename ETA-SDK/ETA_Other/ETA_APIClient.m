@@ -21,11 +21,6 @@
 static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 
 
-NSString* const ETA_APIErrorDomain = @"ETA_APIErrorDomain";
-NSString* const ETA_APIError_URLResponseKey = @"ETA_APIError_URLResponseKey";
-NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
-
-
 @interface ETA_APIClient ()
 
 @property (nonatomic, readwrite, strong) NSString *apiKey;
@@ -139,49 +134,52 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
                 NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
                 
                 NSInteger code = etaError.code;
-                // Errors that require a new session
-                // 1101 & 1108: token expired / invalid token
-                // 1104: Invalid signature
-                // 1300 & 1301: Auth error / Auth action not allowed
-                if (code == 1101 || code == 1104 || code == 1108 || code == 1300 || code == 1301)
+                if (remainingRetries > 0)
                 {
-//                    [self log:@"Error %d while making request '' - Reset Session and retry '%@'", code, etaError.localizedDescription];
-                    // create a new session, and if it was successful, repeat the request we were making
-//                    [self startSessionOnSyncQueue:YES forceReset:YES withCompletion:^(NSError *error) {
-//                        if (!error && remainingRetries > 0)
-//                        {
-//                                [self makeRequest:requestPath type:type parameters:parameters remainingRetries:remainingRetries-1 completion:^(id response, NSError *error) {
-//                                    if (error)
-//                                        NSLog(@"Retry Error!");
-//                                    completionHandler(response, error);
-//                                }];
-//                        }
-//                        else
-//                        {
-//                            if (!error)
-//                                error = etaError;
-//
-//                            completionHandler(nil, error);
-//                        }
-//                    }];
-                    completionHandler(nil, etaError ?: error);
+                    // Errors that require a new session
+                    // 1101 & 1108: token expired / invalid token
+                    if (code == 1101 || code == 1108)
+                    {
+                        [self log:@"Error %d while making request '' - Reset Session and retry '%@'", code, etaError.localizedDescription];
+                        // create a new session, and if it was successful, repeat the request we were making
+                        [self startSessionOnSyncQueue:YES forceReset:YES withCompletion:^(NSError *error) {
+                            if (!error)
+                            {
+                                [self makeRequest:requestPath type:type parameters:parameters remainingRetries:remainingRetries-1 completion:^(id response, NSError *error) {
+                                    if (error)
+                                        NSLog(@"Retry Error!");
+                                    completionHandler(response, error);
+                                }];
+                            }
+                            else
+                            {
+                                if (!error)
+                                    error = etaError;
+                                
+                                completionHandler(nil, error);
+                            }
+                        }];
+                        return;
+                    }
+                    // errors that require a retry
+                    // 2015: non-critical error
+                    else if (code == 2015)
+                    {
+                        // find how long until we retry - if not set then will retry instantly
+                        NSInteger retryAfter = [operation.response.allHeaderFields[@"Retry-After"] integerValue];
+                        
+                        [self log:@"Non-critical error while making request - Retrying after %d secs", code, retryAfter];
+                        
+                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(retryAfter * NSEC_PER_SEC));
+                        dispatch_after(popTime, _syncQueue, ^(void){
+                            [self makeRequest:requestPath type:type parameters:parameters remainingRetries:remainingRetries-1 completion:completionHandler];
+                        });
+                        return;
+                    }
                 }
-                // errors that require a retry
-                // 2015: non-critical error
-                else if (code == 2015)
-                {
-                    // find how long until we retry - if not set then will retry instantly
-                    NSInteger retryAfter = [operation.response.allHeaderFields[@"Retry-After"] integerValue];
-                    
-                    [self log:@"Non-critical error while making request - Retrying after %d secs", code, retryAfter];
-                    
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(retryAfter * NSEC_PER_SEC));
-                    dispatch_after(popTime, _syncQueue, ^(void){                        
-                        [self makeRequest:requestPath type:type parameters:parameters completion:completionHandler];
-                    });
-                }
-                // an unsolveable error - eject!
-                else if (completionHandler)
+                
+                // an unsolveable error, or ran our of retries - eject!
+                if (completionHandler)
                 {
                     completionHandler(nil, etaError ?: error);
                 }
@@ -468,8 +466,15 @@ NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 // create a new session, and assign
 - (void) createSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
+    NSInteger tokenLife = 90*24*60*60;
+//    
+//    "v1_auth_id": 1337,
+//    "v1_auth_time": 1234321234
+//    "v1_auth_hash": "i67tjyaw4tyhri7djtya4wtyr"
+//    
     [self postPath:[ETA_API path:ETA_API.sessions]
-        parameters:@{ @"api_key": (self.apiKey) ?: [NSNull null] }
+        parameters:@{ @"api_key": (self.apiKey) ?: [NSNull null],
+                      @"token_ttl": @(tokenLife) }
            success:^(AFHTTPRequestOperation *operation, id responseObject) {
                NSError* error = nil;
                ETA_Session* session = [ETA_Session objectFromJSONDictionary:responseObject];

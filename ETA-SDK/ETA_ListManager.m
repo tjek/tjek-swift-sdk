@@ -1033,8 +1033,15 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
                                                  error:error];
                 if (success)
                 {
-                    success = [self deleteDBObjects:((ETA_ShoppingList*)object).shares
-                                              error:error];
+                    for (ETA_ListShare* share in ((ETA_ShoppingList*)object).shares)
+                    {
+                        success = [ETA_ListShare deleteShare:share
+                                                   fromTable:[self localSharesTableName]
+                                                        inDB:db
+                                                       error:error];
+                        if (!success)
+                            break;
+                    }
                 }
             }
             else if ([object isKindOfClass:ETA_ListShare.class])

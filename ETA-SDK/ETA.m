@@ -16,6 +16,16 @@ NSString* const ETA_AttachedUserChangedNotification = @"ETA_AttachedUserChangedN
 
 NSString* const ETA_AvoidServerCallKey = @"ETA_AvoidServerCallKey";
 
+
+NSString* const ETA_APIErrorDomain = @"ETA_APIErrorDomain";
+NSString* const ETA_APIError_URLResponseKey = @"ETA_APIError_URLResponseKey";
+NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
+
+
+typedef enum {
+    ETA_APIErrorCode_MissingParameter = 0
+} ETA_APIErrorCode;
+
 @interface ETA ()
 
 @property (nonatomic, readwrite, strong) ETA_APIClient* client;
@@ -27,7 +37,7 @@ NSString* const ETA_AvoidServerCallKey = @"ETA_AvoidServerCallKey";
 @property (nonatomic, readwrite, strong) NSCache* itemCache;
 
 @property (nonatomic, readwrite, assign) BOOL connected;
-@property (nonatomic, readwrite, strong) NSString* attachedUserID;
+@property (nonatomic, readwrite, copy) NSString* attachedUserID;
 
 @end
 
@@ -137,6 +147,7 @@ static ETA* ETA_SingletonSDK = nil;
         BOOL connected = (self.client.session != nil);
         if (connected != self.connected)
             self.connected = connected;
+
         
         // watch for changes to the user
         ETA_Session* oldSession = change[NSKeyValueChangeOldKey];
@@ -177,13 +188,32 @@ static ETA* ETA_SingletonSDK = nil;
 
 - (void) attachUserEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completionHandler
 {
+    if (!email || !password)
+    {
+        if (completionHandler)
+            completionHandler([NSError errorWithDomain:ETA_APIErrorDomain
+                                                  code:ETA_APIErrorCode_MissingParameter
+                                              userInfo:@{NSLocalizedDescriptionKey: @"Email and Password required"}]);
+        return;
+    }
     [self.client attachUser:@{@"email":email, @"password":password} withCompletion:completionHandler];
 }
 - (void) detachUserWithCompletion:(void (^)(NSError* error))completionHandler
 {
     [self.client detachUserWithCompletion:completionHandler];
 }
-
+- (void) attachUserWithFacebookToken:(NSString*)facebookToken completion:(void (^)(NSError* error))completionHandler
+{
+    if (!facebookToken)
+    {
+        if (completionHandler)
+            completionHandler([NSError errorWithDomain:ETA_APIErrorDomain
+                                                  code:ETA_APIErrorCode_MissingParameter
+                                              userInfo:@{NSLocalizedDescriptionKey: @"Facebook token required"}]);
+        return;
+    }
+    [self.client attachUser:@{@"facebook_token":facebookToken} withCompletion:completionHandler];
+}
 - (BOOL) allowsPermission:(NSString*)actionPermission
 {
     return [self.client allowsPermission:actionPermission];
@@ -192,6 +222,11 @@ static ETA* ETA_SingletonSDK = nil;
 - (ETA_User*) attachedUser
 {
     return [self.client.session.user copy];
+}
+
+- (BOOL) attachedUserIsFromFacebook
+{
+    return ([self.client.session.provider caseInsensitiveCompare:@"facebook"] == NSOrderedSame);
 }
 
 
@@ -271,7 +306,6 @@ static ETA* ETA_SingletonSDK = nil;
             completionHandler(response, error, NO);
     }];
 }
-
 
 #pragma mark - Cache
 
@@ -542,7 +576,7 @@ static ETA* ETA_SingletonSDK = nil;
     });
     return errors;
 }
-+ (NSString*) errorForCode:(NSUInteger)errorCode
++ (NSString*) errorForCode:(NSInteger)errorCode
 {
     return [[ETA errors] objectForKey:@(errorCode)];
 }
