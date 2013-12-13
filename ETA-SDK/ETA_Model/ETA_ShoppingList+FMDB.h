@@ -35,6 +35,10 @@
 
 + (NSArray*) getAllListsWithSyncStates:(NSArray*)syncStates andUserID:(id)userID fromTable:(NSString*)tableName inDB:(FMDatabase*)db;
 
+// get the shopping list with the specified ID
++ (ETA_ShoppingList*) getListWithID:(NSString*)listID fromTable:(NSString*)tableName inDB:(FMDatabase*)db;
+
+
 
 #pragma mark - Setters
 
@@ -43,27 +47,6 @@
 
 // remove the list from the table/db.  returns success or failure.
 + (BOOL) deleteList:(NSString*)listID fromTable:(NSString*)tableName inDB:(FMDatabase*)db error:(NSError * __autoreleasing *)error;
-
-
-
-
-// deprecated
-
-// get all the shopping lists
-+ (NSArray*) getAllListsFromTable:(NSString*)tableName inDB:(FMDatabase*)db;
-
-// get the shopping list with the specified ID
-+ (ETA_ShoppingList*) getListWithID:(NSString*)listID fromTable:(NSString*)tableName inDB:(FMDatabase*)db;
-
-// get the shopping list with the specified human-readable name
-+ (ETA_ShoppingList*) getListWithName:(NSString*)listName fromTable:(NSString*)tableName inDB:(FMDatabase*)db;
-
-// get the lists that have the specified sync state
-+ (NSArray*) getAllListsWithSyncState:(ETA_DBSyncState)syncState fromTable:(NSString*)tableName inDB:(FMDatabase*)db;
-
-// does the specified shopping list id exist in the table/db?
-+ (BOOL) listExistsWithID:(NSString*)listID inTable:(NSString*)tableName inDB:(FMDatabase*)db;
-
 
 
 

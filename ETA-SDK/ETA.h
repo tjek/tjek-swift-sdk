@@ -12,6 +12,7 @@
 extern NSString* const ETA_APIErrorDomain;
 extern NSString* const ETA_APIError_URLResponseKey;
 extern NSString* const ETA_APIError_ErrorIDKey;
+extern NSString* const ETA_APIError_ErrorObjectKey;
 
 #import "ETA_API.h"
 @class ETA_User;

@@ -120,8 +120,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                 }
                 [cleanedParameters setValue:obj forKey:key];
             }];
-            
-            
+                        
             void (^successBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, id responseObject)
             {
                 
@@ -381,7 +380,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
             if ([self.session willExpireSoon])
             {
                 [self renewSessionWithCompletion:^(NSError *error) {
-                    if (error)
+                    if (error && error.code != NSURLErrorNotConnectedToInternet)
                     {
                         [self log: @"Unable to renew session - trying to create a new one instead: %@", error];
                         createSessionBlock();
@@ -398,7 +397,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
             else
             {
                 [self updateSessionWithCompletion:^(NSError *error) {
-                    if (error)
+                    if (error && error.code != NSURLErrorNotConnectedToInternet)
                     {
                         [self log: @"Unable to update session - trying to create a new one instead: %@", error.localizedDescription];
                         createSessionBlock();
@@ -634,6 +633,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
     [userInfo setValue:etaErrorDict[@"details"] forKey:NSLocalizedFailureReasonErrorKey];
     [userInfo setValue:etaErrorDict[@"@note.1"] forKey:NSLocalizedRecoverySuggestionErrorKey];
     [userInfo setValue:etaErrorDict[@"id"] forKey:ETA_APIError_ErrorIDKey];
+    [userInfo setValue:etaErrorDict forKey:ETA_APIError_ErrorObjectKey];
     [userInfo setValue:AFNetworkingError.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] forKey:ETA_APIError_URLResponseKey];
     
     return [NSError errorWithDomain:ETA_APIErrorDomain code:errCode.integerValue userInfo:userInfo];

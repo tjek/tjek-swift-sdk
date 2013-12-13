@@ -22,6 +22,7 @@ static NSString * const kETA_CatalogViewBaseURLString = @"https://etilbudsavis.d
 - (void)etaCatalogView:(ETA_CatalogView*)catalogView triggeredEventWithClass:(NSString *)eventClass type:(NSString *)type dataDictionary:(NSDictionary *)dataDictionary;
 
 - (void)etaCatalogView:(ETA_CatalogView*)catalogView readyEvent:(NSDictionary*)data;
+- (void)etaCatalogView:(ETA_CatalogView*)catalogView apiRequest:(NSDictionary*)data;
 - (void)etaCatalogView:(ETA_CatalogView*)catalogView sessionChangeEvent:(ETA_Session*)session;
 - (void)etaCatalogView:(ETA_CatalogView*)catalogView geolocationChangeEvent:(NSDictionary*)data;
 - (void)etaCatalogView:(ETA_CatalogView*)catalogView catalogViewPageChangeEvent:(NSDictionary*)data;
@@ -55,6 +56,9 @@ static NSString * const kETA_CatalogViewBaseURLString = @"https://etilbudsavis.d
 
 // remove the active catalog, and sets catalogID to nil
 - (void) closeCatalog;
+
+// tell the catalog to pause or resume tracking of view duration. set to paused whenever the view will disappear
+@property (nonatomic, assign) BOOL pauseCatalog;
 
 // the id of the catalog currently being shown.
 // if loading a catalog fails, will be set to nil

@@ -13,7 +13,7 @@
 @class ETA;
 @class ETA_ShoppingList;
 @class ETA_ShoppingListItem;
-
+@class ETA_User;
 
 extern NSString* const ETA_ListManager_ChangeNotification_Lists;
 extern NSString* const ETA_ListManager_ChangeNotification_ListItems;
@@ -67,6 +67,9 @@ typedef enum {
 + (instancetype) managerWithETA:(ETA*)eta localDBFilePath:(NSString*)localDBFilePath;
 
 
+@property (nonatomic, readonly, assign) BOOL hasSynced;
+
+
 /**
  *  How regularly we should send and receive changes to/from the ETA sdk.
  *
@@ -87,11 +90,11 @@ typedef enum {
 ///---------------------------------------------
 
 - (ETA_ShoppingList*) createShoppingList:(NSString*)name
-                                 forUser:(NSString*)userID
+                                 forUser:(ETA_User*)user
                                    error:(NSError * __autoreleasing *)error;
 
 - (ETA_ShoppingList*) createWishList:(NSString*)name
-                             forUser:(NSString*)userID
+                             forUser:(ETA_User*)user
                                error:(NSError * __autoreleasing *)error;
 
 

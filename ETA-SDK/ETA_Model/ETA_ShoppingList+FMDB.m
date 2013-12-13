@@ -206,29 +206,6 @@ NSString* const kSL_USERID        = @"userID";
     return lists;
 }
 
-
-// get all the shopping lists
-+ (NSArray*) getAllListsFromTable:(NSString*)tableName inDB:(FMDatabase*)db
-{
-    if (!tableName || !db)
-        return nil;
-    
-    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@ NOT IN (%@)", tableName,
-                       kSL_STATE, [@[@(ETA_DBSyncState_ToBeDeleted), @(ETA_DBSyncState_Deleting), @(ETA_DBSyncState_Deleted)] componentsJoinedByString:@","]];
-    
-    FMResultSet* s = [db executeQuery:query];
-    NSMutableArray* lists = [NSMutableArray array];
-    while ([s next])
-    {
-        ETA_ShoppingList* list = [self shoppingListFromResultSet:s];
-        if (list) {
-            [lists addObject:list];
-        }
-    }
-    [s close];
-    return lists;
-}
-
 // get the shopping list with the specified ID
 + (ETA_ShoppingList*) getListWithID:(NSString*)listID fromTable:(NSString*)tableName inDB:(FMDatabase*)db
 {
@@ -245,61 +222,6 @@ NSString* const kSL_USERID        = @"userID";
     
     return res;
 }
-
-// get the shopping list with the specified human-readable name
-+ (ETA_ShoppingList*) getListWithName:(NSString*)listName fromTable:(NSString*)tableName inDB:(FMDatabase*)db
-{
-    if (!listName || !tableName || !db)
-        return nil;
-    
-    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@=?", tableName, kSL_NAME];
-    
-    FMResultSet* s = [db executeQuery:query, listName];
-    ETA_ShoppingList* res = nil;
-    if ([s next])
-        res = [self shoppingListFromResultSet:s];
-    [s close];
-    
-    return res;
-}
-
-// does the specified shopping list id exist in the table/db?
-+ (BOOL) listExistsWithID:(NSString*)listID inTable:(NSString*)tableName inDB:(FMDatabase*)db
-{
-    if (!listID || !tableName || !db)
-        return NO;
-    
-    NSString* query = [NSString stringWithFormat:@"SELECT COUNT(*) FROM %@ WHERE %@=?", tableName, kSL_ID];
-    
-    FMResultSet* s = [db executeQuery:query, listID];
-    BOOL res = NO;
-    if ([s next])
-        res = ([s intForColumnIndex:0] > 0);
-    [s close];
-    return res;
-}
-
-
-+ (NSArray*) getAllListsWithSyncState:(ETA_DBSyncState)syncState fromTable:(NSString*)tableName inDB:(FMDatabase*)db
-{
-    if (!tableName || !db)
-        return nil;
-    
-    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@=?", tableName, kSL_STATE];
-    
-    FMResultSet* s = [db executeQuery:query, @(syncState)];
-    NSMutableArray* lists = [NSMutableArray array];
-    while ([s next])
-    {
-        ETA_ShoppingList* list = [self shoppingListFromResultSet:s];
-        if (list) {
-            [lists addObject:list];
-        }
-    }
-    [s close];
-    return lists;
-}
-
 
 
 #pragma mark - Setters

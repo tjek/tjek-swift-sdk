@@ -42,6 +42,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 @property (nonatomic, strong) ETA* eta;
 
 @property (nonatomic, strong) ETA_ListSyncr* syncr;
+@property (nonatomic, readwrite, assign) BOOL hasSynced;
 
 @property (nonatomic, strong) FMDatabaseQueue *dbQ;
 
@@ -88,6 +89,8 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     {
         self.eta = eta;
         
+        self.hasSynced = NO;
+        
         if (eta)
             self.syncr = [ETA_ListSyncr syncrWithETA:eta localDBQueryHandler:self];
         
@@ -107,7 +110,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     self.syncr = nil;
     self.dbQ = nil;
 }
-
 
 - (void) sendNotificationOfLocalModified:(NSArray*)modified added:(NSArray*)added removed:(NSArray*)removed objClass:(Class)objClass
 {
@@ -170,6 +172,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:ETA_ListSyncr_ChangeNotification_ListItems
                                                       object:_syncr];
+        [_syncr removeObserver:self forKeyPath:@"pullSyncCount"];
     }
     _syncr = syncr;
     
@@ -183,9 +186,22 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
                                                  selector:@selector(syncr_listItemsChangedNotification:)
                                                      name:ETA_ListSyncr_ChangeNotification_ListItems
                                                    object:_syncr];
+        
+        [_syncr addObserver:self forKeyPath:@"pullSyncCount" options:0 context:NULL];
     }
 }
 
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"pullSyncCount"])
+    {
+        BOOL hasSynced = (self.syncr.pullSyncCount > 0);
+        if (hasSynced != self.hasSynced)
+            self.hasSynced = hasSynced;
+    }
+    else
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
 
 - (void) syncr_listsChangedNotification:(NSNotification*)notification
 {
@@ -310,7 +326,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 
 #pragma mark Lists
 - (ETA_ShoppingList*) createShoppingList:(NSString*)name
-                                 forUser:(NSString*)userID
+                                 forUser:(ETA_User*)user
                                    error:(NSError * __autoreleasing *)error
 {
     NSString* uuid = [[self class] generateUUID];
@@ -319,7 +335,23 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
                                                                name:name
                                                        modifiedDate:nil
                                                              access:ETA_ShoppingList_Access_Private];
-    list.syncUserID = userID;
+    if (user)
+    {
+        list.syncUserID = user.uuid;
+        
+        ETA_ListShare* share = [[ETA_ListShare alloc] init];
+        share.listUUID = list.uuid;
+        share.userEmail = user.email;
+        share.userName = user.name;
+        share.syncUserID = user.uuid;
+        share.access = ETA_ListShare_Access_Owner;
+        share.accepted = YES;
+        
+        if (![self updateDBObjects:@[share] error:error])
+            return NO;
+        
+        list.shares = @[share];
+    }
     
     BOOL success = [self addList:list error:error];
     
@@ -327,7 +359,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 }
 
 - (ETA_ShoppingList*) createWishList:(NSString*)name
-                             forUser:(NSString*)userID
+                             forUser:(ETA_User*)user
                                error:(NSError * __autoreleasing *)error
 {
     
@@ -337,8 +369,24 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
                                                            name:name
                                                    modifiedDate:nil
                                                          access:ETA_ShoppingList_Access_Private];
-    list.syncUserID = userID;
     
+    if (user)
+    {
+        list.syncUserID = user.uuid;
+        
+        ETA_ListShare* share = [[ETA_ListShare alloc] init];
+        share.listUUID = list.uuid;
+        share.userEmail = user.email;
+        share.userName = user.name;
+        share.syncUserID = user.uuid;
+        share.access = ETA_ListShare_Access_Owner;
+        share.accepted = YES;
+        
+        if (![self updateDBObjects:@[share] error:error])
+            return NO;
+        
+        list.shares = @[share];
+    }
     
     BOOL success = [self addList:list error:error];
     

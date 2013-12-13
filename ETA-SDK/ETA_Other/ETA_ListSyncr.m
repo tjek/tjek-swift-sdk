@@ -20,6 +20,8 @@
 #import "ETA_ListShare.h"
 #import "ETA_ListShare+FMDB.h"
 
+#import "ETA_ListManager.h"
+
 NSString* const ETA_ListSyncr_ChangeNotification_Lists = @"ETA_ListSyncr_ChangeNotification_Lists";
 NSString* const ETA_ListSyncr_ChangeNotification_ListItems = @"ETA_ListSyncr_ChangeNotification_ListItems";
 NSString* const ETA_ListSyncr_ChangeNotificationInfo_ModifiedKey = @"modified";
@@ -43,6 +45,8 @@ NSString* const ETA_ListSyncr_ChangeNotificationInfo_RemovedKey = @"removed";
 @property (nonatomic, strong) NSMutableArray* modifiedLists;
 @property (nonatomic, strong) NSMutableArray* removedLists;
 @property (nonatomic, strong) NSMutableArray* addedLists;
+
+@property (nonatomic, readwrite, assign) NSUInteger pullSyncCount;
 
 @end
 
@@ -101,9 +105,9 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
     _eta = eta;
     
     [self observeTarget:_eta keyPath:userKeyPath options:NSKeyValueObservingOptionInitial block:^(MAKVONotification *notification) {
-        
+        self.pullSyncCount = 0;
         //TODO: do something with the user id... maybe stop polling if it's null?
-        [self log:@"Attached User changed! %@ ", _eta.attachedUserID];
+//        [self log:@"Attached User changed! %@ ", _eta.attachedUserID];
     }];
 }
 
@@ -308,10 +312,10 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
             [self.serverQ addOperation:[self getServerChangesOperation_ModifiedLists]];
         }
         
-        
         [self log:@"Waiting for all operations to complete..."];
         [self.serverQ waitUntilAllOperationsAreFinished];
         
+        self.pullSyncCount ++;
         
         NSMutableDictionary* itemsNotification = [NSMutableDictionary new];
         NSMutableDictionary* listsNotification = [NSMutableDictionary new];
@@ -430,7 +434,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                 if (serverItems)
                 {
                     NSArray* orderedServerItems = [self localDB_sortListItemsByPrevItemID:serverItems];
-                    NSString* prevItemID = kETA_ShoppingListManager_FirstPrevItemID;
+                    NSString* prevItemID = kETA_ListManager_FirstPrevItemID;
                     for (ETA_ShoppingListItem* item in orderedServerItems)
                     {
                         if ([prevItemID isEqualToString:item.prevItemID] == NO)

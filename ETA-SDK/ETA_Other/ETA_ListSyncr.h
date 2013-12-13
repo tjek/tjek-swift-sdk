@@ -54,4 +54,6 @@ typedef enum{
 
 @property (atomic, readonly, assign) BOOL syncingInProgress;
 
+@property (atomic, readonly, assign) NSUInteger pullSyncCount;
+
 @end

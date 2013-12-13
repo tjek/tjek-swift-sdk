@@ -141,6 +141,10 @@ NSString* const kETA_ShoppingList_MetaThemeKey = @"eta_theme";
             }
         }
     }
+    else if (!self.syncUserID.length)
+    {
+        return ETA_ListShare_Access_Owner;
+    }
     return ETA_ListShare_Access_None;
 }
 - (NSArray*)sharesForUserAccessType:(ETA_ListShare_Access)userAccessType

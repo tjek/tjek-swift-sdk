@@ -170,6 +170,8 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
         return;
     
     self.catalogID = catalogID;
+    _pauseCatalog = NO;
+    
     
     // closing the catalog
     if (catalogID == nil)
@@ -257,6 +259,19 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     self.initState = ETA_CatalogView_InitState_NotInitialized;
 }
 
+- (void) setPauseCatalog:(BOOL)pauseCatalog
+{
+    if (_pauseCatalog == pauseCatalog)
+        return;
+    
+    _pauseCatalog = pauseCatalog;
+    
+    if (self.pauseCatalog)
+        [self performJSProxyMethodWithName:@"pause" data:nil];
+    else
+        [self performJSProxyMethodWithName:@"resume" data:nil];
+}
+
 - (void) toggleCatalogThumbnails
 {
     [self performJSProxyMethodWithName:@"catalog-view-thumbnails" data:nil];
@@ -308,8 +323,8 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     BOOL handled = NO;
     if ([eventName isEqualToString:@"eta-proxy-ready"])
     {
-        if ((handled = [self.delegate respondsToSelector:@selector(etaCatalogView:readyEvent:)]))
-            [self.delegate etaCatalogView:self readyEvent:specificEventData];
+        [self proxyReadyEvent:specificEventData];
+        handled = YES;
     }
     else if ([eventName isEqualToString:@"eta-session-change"])
     {
@@ -364,23 +379,23 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
         if ((handled = [self.delegate respondsToSelector:@selector(etaCatalogView:catalogViewDragStartEvent:)]))
             [self.delegate etaCatalogView:self catalogViewDragStartEvent:specificEventData];
     }
+    else if ([eventName isEqualToString:@"eta-api-request"])
+    {
+        [self proxyAPIRequestEvent:specificEventData];
+        handled = YES;
+    }
     
     if (!handled && [self.delegate respondsToSelector:@selector(etaCatalogView:triggeredEventWithClass:type:dataDictionary:)])
         [self.delegate etaCatalogView:self triggeredEventWithClass:eventClass type:eventType dataDictionary:eventData];
     
 }
 
-#pragma mark - Webview Delegate methods
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+- (void) proxyReadyEvent:(NSDictionary*)eventData
 {
-    if (webView != self.webview)
-        return;
-    
     // init the view
     NSMutableDictionary* data = [@{@"apiKey":self.eta.apiKey,
                                    @"apiSecret":self.eta.apiSecret} mutableCopy];
-        
+    
     // setup optional location data
     NSDictionary* geoDict = [self geolocationDictionaryWithLocation:self.eta.geolocation radius:self.eta.radius fromSensor:self.eta.isLocationFromSensor];
     if (geoDict)
@@ -397,6 +412,7 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     if (data)
     {
         self.initState = ETA_CatalogView_InitState_Initialized;
+        [self performJSProxyMethodWithName:@"configure" data:@{ @"overrideAPI": @(YES) }];
         
         [self performJSProxyMethodWithName:@"initialize" data:data];
         
@@ -405,17 +421,120 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
             //TODO: Maybe handle responses, if we know how
             [self performJSRequest:pendingRequest];
         }
+        
+        if ([self.delegate respondsToSelector:@selector(etaCatalogView:readyEvent:)])
+            [self.delegate etaCatalogView:self readyEvent:eventData];
     }
-    else
-    {
-        NSError* error = [NSError errorWithDomain:ETA_CatalogViewErrorDomain
-                                             code:ETA_CatalogViewErrorCode_InitFailed
-                                         userInfo:@{ NSLocalizedDescriptionKey: @"Failed to initialize CatalogView",
-                                                     NSLocalizedFailureReasonErrorKey: @"CatalogView initialize call was missing required data - maybe ETA object's API key/secret?"
-                                                     }];
+}
 
-        [self webView:webView didFailLoadWithError:error];
+- (void)proxyAPIRequestEvent:(NSDictionary*)eventData
+{
+    NSString* requestID = eventData[@"id"];
+    NSDictionary* data = eventData[@"data"];
+    
+    NSString* urlString = data[@"url"];
+    NSDictionary* headersDict = data[@"headers"];
+    
+    NSString* typeString = data[@"type"];
+    ETARequestType type = -1;
+    if ([typeString caseInsensitiveCompare:@"put"] == NSOrderedSame)
+        type = ETARequestTypePUT;
+    else if ([typeString caseInsensitiveCompare:@"post"] == NSOrderedSame)
+        type = ETARequestTypePOST;
+    else if ([typeString caseInsensitiveCompare:@"get"] == NSOrderedSame)
+        type = ETARequestTypeGET;
+    else if ([typeString caseInsensitiveCompare:@"delete"] == NSOrderedSame)
+        type = ETARequestTypeDELETE;
+    
+    if (!requestID || (NSInteger)type == -1 || !urlString)
+        return;
+    
+    NSMutableDictionary* params = [NSMutableDictionary dictionary];
+    if (data[@"data"])
+        [params addEntriesFromDictionary:data[@"data"]];
+    
+    
+    
+    NSString* token = headersDict[@"X-Token"];
+    NSString* signature = headersDict[@"X-Signature"];
+    
+    if (token && signature)
+    {
+        [self.eta.client setDefaultHeader:@"X-Token" value:token];
+        [self.eta.client setDefaultHeader:@"X-Signature" value:signature];
     }
+    
+//    if (headersDict)
+//        params[@"sessionHeaders"] = headersDict;
+    
+    [self.eta api:urlString
+             type:type
+       parameters:params
+       completion:^(id response, NSError * err, BOOL fromCache) {
+           NSMutableDictionary* res = [@{ @"id": requestID } mutableCopy];
+           
+           if (response)
+               res[@"success"] = response;
+           NSDictionary* errJSON = err.userInfo[ETA_APIError_ErrorObjectKey];
+           if (errJSON)
+               res[@"error"] = errJSON;
+           
+//           NSLog(@"Send proxy request(%@) '%@' %@ --> %@", typeString, urlString, params, res);
+           
+           [self performJSProxyMethodWithName:@"api-request-complete" data:res];
+       }];
+    
+    if ([self.delegate respondsToSelector:@selector(etaCatalogView:apiRequest:)])
+        [self.delegate etaCatalogView:self apiRequest:eventData];
+}
+
+#pragma mark - Webview Delegate methods
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+//    if (webView != self.webview)
+//        return;
+//    
+//    // init the view
+//    NSMutableDictionary* data = [@{@"apiKey":self.eta.apiKey,
+//                                   @"apiSecret":self.eta.apiSecret} mutableCopy];
+//        
+//    // setup optional location data
+//    NSDictionary* geoDict = [self geolocationDictionaryWithLocation:self.eta.geolocation radius:self.eta.radius fromSensor:self.eta.isLocationFromSensor];
+//    if (geoDict)
+//        data[@"geolocation"] = geoDict;
+//    
+//    // setup optional session data
+//    NSDictionary* sessionDict = [self sessionDictionaryFromSession:self.eta.client.session];
+//    if (sessionDict)
+//        data[@"session"] = sessionDict;
+//    
+//    
+//    NSString* pendingRequest = self.pendingShowCatalogRequest;
+//    self.pendingShowCatalogRequest = nil;
+//    if (data)
+//    {
+//        self.initState = ETA_CatalogView_InitState_Initialized;
+//        [self performJSProxyMethodWithName:@"configure" data:@{ @"overrideAPI": @(YES) }];
+//        
+//        [self performJSProxyMethodWithName:@"initialize" data:data];
+//        
+//        if (pendingRequest)
+//        {
+//            //TODO: Maybe handle responses, if we know how
+//            [self performJSRequest:pendingRequest];
+//        }
+//    }
+//    else
+//    {
+//        NSError* error = [NSError errorWithDomain:ETA_CatalogViewErrorDomain
+//                                             code:ETA_CatalogViewErrorCode_InitFailed
+//                                         userInfo:@{ NSLocalizedDescriptionKey: @"Failed to initialize CatalogView",
+//                                                     NSLocalizedFailureReasonErrorKey: @"CatalogView initialize call was missing required data - maybe ETA object's API key/secret?"
+//                                                     }];
+//
+//        [self webView:webView didFailLoadWithError:error];
+//    }
 }
 
 
@@ -437,7 +556,7 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
         return NO;
     
     // the webview tried to load a url that isnt within the baseURL of the SDK
-    if ([request.URL.description rangeOfString:[self.baseURL absoluteString]].location == NSNotFound)
+    if ([request.URL.absoluteString rangeOfString:[self.baseURL absoluteString]].location == NSNotFound)
     {
         // forward the message to the delegate
         NSString *event = [request.URL.description stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -453,6 +572,11 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
         [self eventTriggered:eventClass type:eventType data:eventDataDictionary];
 
         return NO;
+    }
+    else
+    {
+//        if (self.verbose)
+//            NSLog(@"ETA_CatalogView(%@) Request URL is invalid: %@", self.uuid, request.URL);
     }
     return YES;
 }
@@ -474,6 +598,12 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
             NSString* dataStr = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:data options:0 error:nil]
                                                       encoding: NSUTF8StringEncoding];
             
+            dataStr = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
+                                                                                            (CFStringRef)dataStr,
+                                                                                            NULL,
+                                                                                            (CFStringRef)@"!*'();:@&=+$,/?%#[]",
+                                                                                            kCFStringEncodingUTF8 ));
+            
             if (dataStr)
                 jsRequest = [NSString stringWithFormat:@"window.etaProxy.push(['%@', '%@']);", name, dataStr];
         }
@@ -488,10 +618,11 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     if (!jsRequest || !self.isInitialized)
         return nil;
     
+//    NSLog(@"Request length: %d", jsRequest.length);
     NSString* jsResponse = [self.webview stringByEvaluatingJavaScriptFromString:jsRequest];
     
-    if (self.verbose)
-        NSLog(@"ETA_CatalogView(%@) Request: %@\nResponse: '%@'", self.uuid, jsRequest, jsResponse);
+//    if (self.verbose)
+//        NSLog(@"ETA_CatalogView(%@) Request: %@\nResponse: '%@'", self.uuid, jsRequest, jsResponse);
     
     return jsResponse;
 }

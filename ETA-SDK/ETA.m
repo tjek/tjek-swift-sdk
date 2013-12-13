@@ -16,11 +16,10 @@ NSString* const ETA_AttachedUserChangedNotification = @"ETA_AttachedUserChangedN
 
 NSString* const ETA_AvoidServerCallKey = @"ETA_AvoidServerCallKey";
 
-
 NSString* const ETA_APIErrorDomain = @"ETA_APIErrorDomain";
 NSString* const ETA_APIError_URLResponseKey = @"ETA_APIError_URLResponseKey";
 NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
-
+NSString* const ETA_APIError_ErrorObjectKey = @"ETA_APIError_ErrorObjectKey";
 
 typedef enum {
     ETA_APIErrorCode_MissingParameter = 0
@@ -253,6 +252,11 @@ static ETA* ETA_SingletonSDK = nil;
     useCache:(BOOL)useCache
   completion:(ETA_RequestCompletionBlock)completionHandler
 {
+    NSRange replaceRange = [requestPath rangeOfString:self.baseURL.absoluteString];
+    if (replaceRange.location != NSNotFound)
+        requestPath = [requestPath stringByReplacingCharactersInRange:replaceRange withString:@""];
+
+    
     // get the base parameters, and override them with those passed in
     NSMutableDictionary* mergedParameters = [[self baseRequestParameters] mutableCopy];
     
