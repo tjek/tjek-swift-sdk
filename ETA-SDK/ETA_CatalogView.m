@@ -147,7 +147,7 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     }
     else if ([keyPath isEqualToString:@"client.session"])
     {
-        
+//        [self changeSession:_eta.client.session];
     }
     else
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -385,8 +385,14 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
         handled = YES;
     }
     
-    if (!handled && [self.delegate respondsToSelector:@selector(etaCatalogView:triggeredEventWithClass:type:dataDictionary:)])
-        [self.delegate etaCatalogView:self triggeredEventWithClass:eventClass type:eventType dataDictionary:eventData];
+    if (!handled)
+    {
+        if (self.verbose)
+            NSLog(@"ETA_CatalogView(%@) Unhandled event: %@", self, eventName);
+        
+        if ([self.delegate respondsToSelector:@selector(etaCatalogView:triggeredEventWithClass:type:dataDictionary:)])
+            [self.delegate etaCatalogView:self triggeredEventWithClass:eventClass type:eventType dataDictionary:eventData];
+    }
     
 }
 

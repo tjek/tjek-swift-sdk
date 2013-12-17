@@ -25,6 +25,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 
 @property (nonatomic, readwrite, strong) NSString *apiKey;
 @property (nonatomic, readwrite, strong) NSString *apiSecret;
+@property (nonatomic, readwrite, strong) NSString *appVersion;
 
 @end
 
@@ -38,18 +39,20 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 
 #pragma mark - Constructors
 
-+ (instancetype)clientWithApiKey:(NSString*)apiKey apiSecret:(NSString*)apiSecret
++ (instancetype)clientWithApiKey:(NSString*)apiKey apiSecret:(NSString*)apiSecret appVersion:(NSString*)appVersion
 {
     return [self clientWithBaseURL:[NSURL URLWithString:kETA_APIBaseURLString]
                             apiKey:apiKey
-                         apiSecret:apiSecret];
+                         apiSecret:apiSecret
+                        appVersion:appVersion];
 }
 
-+ (instancetype)clientWithBaseURL:(NSURL *)url apiKey:(NSString*)apiKey apiSecret:(NSString*)apiSecret
++ (instancetype)clientWithBaseURL:(NSURL *)url apiKey:(NSString*)apiKey apiSecret:(NSString*)apiSecret appVersion:(NSString*)appVersion
 {
     ETA_APIClient* client = [[ETA_APIClient alloc] initWithBaseURL:url];
     client.apiKey = apiKey;
     client.apiSecret = apiSecret;
+    client.appVersion = appVersion;
     return client;
 }
 
@@ -91,7 +94,10 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 // the parameters that are derived from the client, that may be overridded by the request
 - (NSDictionary*) baseRequestParameters
 {
-    return @{};
+    NSMutableDictionary* params = [NSMutableDictionary dictionary];
+    if (self.appVersion)
+        params[@"api_av"] = self.appVersion;
+    return params;
 }
 // send a request, and on sucessful response update the session token, if newer
 - (void) makeRequest:(NSString*)requestPath type:(ETARequestType)type parameters:(NSDictionary*)parameters completion:(void (^)(id JSONResponse, NSError* error))completionHandler
@@ -139,7 +145,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                     // 1101 & 1108: token expired / invalid token
                     if (code == 1101 || code == 1108)
                     {
-                        [self log:@"Error %d while making request '' - Reset Session and retry '%@'", code, etaError.localizedDescription];
+                        [self log:@"Error %d while making request '%@' - Reset Session and retry '%@'", code, requestPath, etaError.localizedDescription];
                         // create a new session, and if it was successful, repeat the request we were making
                         [self startSessionOnSyncQueue:YES forceReset:YES withCompletion:^(NSError *error) {
                             if (!error)
@@ -465,15 +471,40 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 // create a new session, and assign
 - (void) createSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    NSInteger tokenLife = 90*24*60*60;
-//    
-//    "v1_auth_id": 1337,
-//    "v1_auth_time": 1234321234
-//    "v1_auth_hash": "i67tjyaw4tyhri7djtya4wtyr"
-//    
+//    NSInteger tokenLife = 90*24*60*60;
+    NSInteger tokenLife = 15;
+    
+    NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    
+    NSHTTPCookie* hashCookie = nil; // nomnomnom
+    NSHTTPCookie* idCookie = nil;
+    NSHTTPCookie* timeCookie = nil;
+    
+    for (NSHTTPCookie *cookie in [cookieJar cookies]) {
+        NSString* name = cookie.name;
+        if ([name caseInsensitiveCompare:@"auth[hash]"] == NSOrderedSame)
+            hashCookie = cookie;
+        else if ([name caseInsensitiveCompare:@"auth[id]"] == NSOrderedSame)
+            idCookie = cookie;
+        else if ([name caseInsensitiveCompare:@"auth[time]"] == NSOrderedSame)
+            timeCookie = cookie;
+    }
+
+    NSMutableDictionary* params = [[self baseRequestParameters] mutableCopy];
+    
+    [params setValuesForKeysWithDictionary:@{ @"api_key": (self.apiKey) ?: [NSNull null],
+                                              @"token_ttl": @(tokenLife) }];
+    
+    if (hashCookie && idCookie && timeCookie)
+    {
+        params[@"v1_auth_hash"] = hashCookie.value;
+        params[@"v1_auth_id"] = idCookie.value;
+        params[@"v1_auth_time"] = timeCookie.value;
+    }
+
+    
     [self postPath:[ETA_API path:ETA_API.sessions]
-        parameters:@{ @"api_key": (self.apiKey) ?: [NSNull null],
-                      @"token_ttl": @(tokenLife) }
+        parameters:params
            success:^(AFHTTPRequestOperation *operation, id responseObject) {
                NSError* error = nil;
                ETA_Session* session = [ETA_Session objectFromJSONDictionary:responseObject];
@@ -484,6 +515,13 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                    [self log: @"Creating Session - '%@' => '%@'", self.session.token, session.token];
                    
                    [self setIfSameOrNewerSession:session];
+                   
+                   if (hashCookie && idCookie && timeCookie)
+                   {
+                       [cookieJar deleteCookie:hashCookie];
+                       [cookieJar deleteCookie:idCookie];
+                       [cookieJar deleteCookie:timeCookie];
+                   }
                }
                //TODO: create error if nil session
                
@@ -502,7 +540,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 - (void) updateSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
     [self getPath:[ETA_API path:ETA_API.sessions]
-       parameters:nil
+       parameters:[self baseRequestParameters]
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSError* error = nil;
               ETA_Session* session = [ETA_Session objectFromJSONDictionary:responseObject];
@@ -530,7 +568,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 - (void) renewSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
     [self putPath:[ETA_API path:ETA_API.sessions]
-       parameters:nil
+       parameters:[self baseRequestParameters]
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSError* error = nil;
               ETA_Session* session = [ETA_Session objectFromJSONDictionary:responseObject];

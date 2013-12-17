@@ -31,6 +31,7 @@ typedef enum {
 
 @property (nonatomic, readwrite, strong) NSString *apiKey;
 @property (nonatomic, readwrite, strong) NSString *apiSecret;
+@property (nonatomic, readwrite, strong) NSString *appVersion;
 @property (nonatomic, readwrite, strong) NSURL *baseURL;
 
 @property (nonatomic, readwrite, strong) NSCache* itemCache;
@@ -45,18 +46,18 @@ static ETA* ETA_SingletonSDK = nil;
 @implementation ETA
 @synthesize client = _client;
 
-+ (void)initializeSDKWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret
++ (void)initializeSDKWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret appVersion:(NSString*)appVersion
 {
-    [self initializeSDKWithAPIKey:apiKey apiSecret:apiSecret baseURL:nil];
+    [self initializeSDKWithAPIKey:apiKey apiSecret:apiSecret appVersion:appVersion baseURL:nil];
 }
-+ (void)initializeSDKWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret baseURL:(NSURL*)baseURL
++ (void)initializeSDKWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret appVersion:(NSString*)appVersion baseURL:(NSURL*)baseURL
 {
-    if (!apiKey || !apiSecret)
+    if (!apiKey || !apiSecret || !appVersion)
         return;
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        ETA_SingletonSDK = [ETA etaWithAPIKey:apiKey apiSecret:apiSecret baseURL:baseURL];
+        ETA_SingletonSDK = [ETA etaWithAPIKey:apiKey apiSecret:apiSecret appVersion:(NSString*)appVersion baseURL:baseURL];
     });
 }
 
@@ -65,24 +66,21 @@ static ETA* ETA_SingletonSDK = nil;
     return ETA_SingletonSDK;
 }
 
-+ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret
++ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret appVersion:(NSString*)appVersion
 {
-    ETA* eta = [[ETA alloc] init];
-    
-    eta.apiKey = apiKey;
-    eta.apiSecret = apiSecret;
-    
     return [self etaWithAPIKey:apiKey
                      apiSecret:apiSecret
+                    appVersion:appVersion
                        baseURL:nil];
 }
 
-+ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret baseURL:(NSURL *)baseURL
++ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret appVersion:(NSString*)appVersion baseURL:(NSURL *)baseURL
 {
     ETA* eta = [[ETA alloc] init];
     
     eta.apiKey = apiKey;
     eta.apiSecret = apiSecret;
+    eta.appVersion = appVersion;
     if (baseURL)
         eta.baseURL = baseURL;
     return eta;
@@ -118,7 +116,7 @@ static ETA* ETA_SingletonSDK = nil;
     {
         if (!_client)
         {
-            self.client = [ETA_APIClient clientWithBaseURL:self.baseURL apiKey:self.apiKey apiSecret:self.apiSecret];
+            self.client = [ETA_APIClient clientWithBaseURL:self.baseURL apiKey:self.apiKey apiSecret:self.apiSecret appVersion:self.appVersion];
             self.client.verbose = self.verbose;
         }
     }

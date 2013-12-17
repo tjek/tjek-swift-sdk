@@ -87,7 +87,7 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  *  @see +SDK
  *  @see +initializeSDKWithAPIKey:apiSecret:baseURL:
  */
-+ (void) initializeSDKWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret;
++ (void) initializeSDKWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret appVersion:(NSString*)appVersion;
 
 
 /**
@@ -103,7 +103,7 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  *  @see +SDK
  *  @see +initializeSDKWithAPIKey:apiSecret:
  */
-+ (void) initializeSDKWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret baseURL:(NSURL*)baseURL;
++ (void) initializeSDKWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret appVersion:(NSString*)appVersion baseURL:(NSURL*)baseURL;
 
 
 
@@ -308,7 +308,7 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  *  @see +etaWithAPIKey:apiSecret:baseURL:
  *  @see +initializeSDKWithAPIKey:apiSecret:
  */
-+ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret;
++ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret appVersion:(NSString*)appVersion;
 
 /** *	Construct a new ETA object
  *
@@ -325,7 +325,7 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  *  @see +etaWithAPIKey:apiSecret:
  *  @see +initializeSDKWithAPIKey:apiSecret:baseURL:
  */
-+ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret baseURL:(NSURL*)baseURL;
++ (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret appVersion:(NSString*)appVersion baseURL:(NSURL*)baseURL;
 
 
 
@@ -383,6 +383,11 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  *	The API Secret used to talk to the server. Set when initializing.
  */
 @property (nonatomic, readonly, strong) NSString* apiSecret;
+
+/**
+ * The version of the app that is using the SDK. Set when initializing.
+ */
+@property (nonatomic, readonly, strong) NSString* appVersion;
 
 /**
  *	Whether the SDK logs errors and events. Defaults to *NO*.

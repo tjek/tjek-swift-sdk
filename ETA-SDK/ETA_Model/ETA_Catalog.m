@@ -59,8 +59,8 @@
                 NSNumber* width = dimDict[@"width"];
                 NSNumber* height = dimDict[@"height"];
                 
-                size.width = width.floatValue;
-                size.height = height.floatValue;
+                size.width = ([width isEqual:NSNull.null]) ? 0 : width.floatValue;
+                size.height = ([height isEqual:NSNull.null]) ? 0 : height.floatValue;
                 
                 return [NSValue valueWithCGSize:size];
             } reverseBlock:^NSDictionary*(NSValue* sizeVal)

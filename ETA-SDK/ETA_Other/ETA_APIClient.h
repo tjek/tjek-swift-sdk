@@ -14,8 +14,8 @@
 @interface ETA_APIClient : AFHTTPClient
 
 // Create the ETA_APIClient with these methods. Do not use init as apiKey/Secret must be set before further session can be started.
-+ (instancetype)clientWithApiKey:(NSString*)apiKey apiSecret:(NSString*)apiSecret; // using the production base URL
-+ (instancetype)clientWithBaseURL:(NSURL *)url apiKey:(NSString*)apiKey apiSecret:(NSString*)apiSecret;
++ (instancetype)clientWithApiKey:(NSString*)apiKey apiSecret:(NSString*)apiSecret appVersion:(NSString*)appVersion; // using the production base URL
++ (instancetype)clientWithBaseURL:(NSURL *)url apiKey:(NSString*)apiKey apiSecret:(NSString*)apiSecret appVersion:(NSString*)appVersion;
 
 
 #pragma mark - API Requests
