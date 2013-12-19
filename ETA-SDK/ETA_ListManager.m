@@ -948,6 +948,12 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         }
     }
     
+    // weird circular loop - sort this list
+    if (itemsByPrevItemID.count)
+    {
+        [orderedItems addObjectsFromArray:itemsByPrevItemID.allValues];
+    }
+    
     return orderedItems;
 }
 
