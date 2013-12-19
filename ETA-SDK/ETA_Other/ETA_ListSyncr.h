@@ -49,6 +49,7 @@ typedef enum{
  */
 @property (nonatomic, readwrite, assign) ETA_ListSyncr_PollRate pollRate;
 
+- (void) performSync:(BOOL)checkAllLists completionHandler:(void(^)(BOOL success))completionHandler;
 
 @property (nonatomic, readwrite, assign) BOOL verbose;
 

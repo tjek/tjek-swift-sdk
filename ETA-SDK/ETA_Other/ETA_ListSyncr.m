@@ -599,72 +599,74 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
         __block NSUInteger modifiedListCount = 0;
         __block NSUInteger deletedListCount = 0;
         
-        for (ETA_ShoppingList* localList in localLists)
+        if (localLists.count)
         {
-            NSDate* localModifiedDate = localList.modified;
-            NSString* listID = localList.uuid;
-
-            // completion called on main thread
-            [self server_getModifiedDateForList:listID forUser:userID completion:^(NSDate *serverModifiedDate) {
-                // the server's modified date is newer than the local list's modified date
-                if ([self isModifiedDate:serverModifiedDate newerThanModifiedDate:localModifiedDate])
-                {
-                    // get the modified server list
-                    [self server_getList:listID forUser:userID completion:^(ETA_ShoppingList *serverList, NSError* serverError) {
-                        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                           
-                            // couldnt find the list on the server
-                            // check the error - it may be that it was deleted
-                            if (!serverList && serverError.code == 1501)
-                            {
-                                deletedListCount++;
-                                [self.removedLists addObject:localList];
+            for (ETA_ShoppingList* localList in localLists)
+            {
+                NSDate* localModifiedDate = localList.modified;
+                NSString* listID = localList.uuid;
+                
+                // completion called on main thread
+                [self server_getModifiedDateForList:listID forUser:userID completion:^(NSDate *serverModifiedDate) {
+                    // the server's modified date is newer than the local list's modified date
+                    if ([self isModifiedDate:serverModifiedDate newerThanModifiedDate:localModifiedDate])
+                    {
+                        // get the modified server list
+                        [self server_getList:listID forUser:userID completion:^(ETA_ShoppingList *serverList, NSError* serverError) {
+                            dispatch_async(dispatch_get_global_queue(0, 0), ^{
                                 
-                                // remove all the items for this list
-                                NSArray* itemsToRemove = [self localDB_getAllListItemsInList:listID withSyncStates:nil];
-                                [self.removedItems addObjectsFromArray:itemsToRemove];
-                                
-                                NSArray* localSharesForList = [self localDB_getAllSharesInList:listID];
-                                NSError* err = nil;
-                                [self localDB_deleteObjects:localSharesForList error:&err];
-                            }
-                            else if (serverList)
-                            {
-                                if ([self localDB_hasObjectChangedSince:serverList] == NO)
+                                // couldnt find the list on the server
+                                // check the error - it may be that it was deleted
+                                if (!serverList && serverError.code == 1501)
                                 {
-                                    modifiedListCount++;
-                                    [self.modifiedLists addObject:serverList];
+                                    deletedListCount++;
+                                    [self.removedLists addObject:localList];
                                     
-                                    // tell the Q to get item changes from this modified list
-                                    [self.serverQ addOperation:[self getServerChangesOperation_AllListItemsInList:serverList.uuid]];
+                                    // remove all the items for this list
+                                    NSArray* itemsToRemove = [self localDB_getAllListItemsInList:listID withSyncStates:nil];
+                                    [self.removedItems addObjectsFromArray:itemsToRemove];
+                                    
+                                    NSArray* localSharesForList = [self localDB_getAllSharesInList:listID];
+                                    NSError* err = nil;
+                                    [self localDB_deleteObjects:localSharesForList error:&err];
+                                }
+                                else if (serverList)
+                                {
+                                    if ([self localDB_hasObjectChangedSince:serverList] == NO)
+                                    {
+                                        modifiedListCount++;
+                                        [self.modifiedLists addObject:serverList];
+                                        
+                                        // tell the Q to get item changes from this modified list
+                                        [self.serverQ addOperation:[self getServerChangesOperation_AllListItemsInList:serverList.uuid]];
+                                    }
+                                    
+                                    
+                                    NSArray* localSharesForList = [self localDB_getAllSharesInList:listID];
+                                    NSError* err = nil;
+                                    [self localDB_deleteObjects:localSharesForList error:&err];
+                                    
+                                    [self localDB_updateObjects:serverList.shares error:&err];
                                 }
                                 
-                                
-                                NSArray* localSharesForList = [self localDB_getAllSharesInList:listID];
-                                NSError* err = nil;
-                                [self localDB_deleteObjects:localSharesForList error:&err];
-                                
-                                [self localDB_updateObjects:serverList.shares error:&err];
-                            }
-                            
-                            remainingLists--;
-                            if (remainingLists == 0)
-                                dispatch_semaphore_signal(sema);
-                        });
-                    }];
-                }
-                else
-                {
-                    remainingLists--;
-                    if (remainingLists == 0)
-                        dispatch_semaphore_signal(sema);
-                }
-            }];
+                                remainingLists--;
+                                if (remainingLists == 0)
+                                    dispatch_semaphore_signal(sema);
+                            });
+                        }];
+                    }
+                    else
+                    {
+                        remainingLists--;
+                        if (remainingLists == 0)
+                            dispatch_semaphore_signal(sema);
+                    }
+                }];
+            }
+            // block until server request is completed
+            dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+            dispatch_release(sema);
         }
-
-        // block until server request is completed
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-        dispatch_release(sema);
         
          
         NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate] - start;
@@ -1572,7 +1574,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
     return [self.dbHandler getDBObjectWithUUID:objUUID objClass:objClass];
 }
 
-- (NSArray*) localDB_getAllObjectsWithSyncStates:(NSArray*)syncStates forUser:(NSString*)userID class:(Class)objClass
+- (NSArray*) localDB_getAllObjectsWithSyncStates:(NSArray*)syncStates forUser:(id)userID class:(Class)objClass
 {
     return [self.dbHandler getAllDBObjectsWithSyncStates:syncStates forUser:userID objClass:objClass];
 }

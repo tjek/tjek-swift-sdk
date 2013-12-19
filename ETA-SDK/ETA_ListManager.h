@@ -147,5 +147,9 @@ typedef enum {
 - (NSArray*) getAllListItemsInList:(NSString*)listID sortedByPreviousItemID:(BOOL)sortedByPrev;
 
 // pass NULL userID to delete the non-logged in user data, and nil to delete all data
-- (BOOL) dropAllDataForUserID:(NSString*)userID error:(NSError * __autoreleasing *)error;
+- (BOOL) dropAllDataForUserID:(id)userID error:(NSError * __autoreleasing *)error;
+- (BOOL) moveListsFromUser:(ETA_User*)fromUser toUser:(ETA_User*)toUser error:(NSError * __autoreleasing *)error;
+
+
+- (void) forceSyncToServer:(void(^)())completionHandler;
 @end
