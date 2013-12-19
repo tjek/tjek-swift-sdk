@@ -111,6 +111,16 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     self.dbQ = nil;
 }
 
+- (BOOL) dropAllDataForUserID:(NSString*)userID error:(NSError * __autoreleasing *)error
+{
+    NSMutableArray* allObjs = [NSMutableArray array];
+    [allObjs addObjectsFromArray:[self getAllDBObjectsWithSyncStates:nil forUser:userID objClass:ETA_ShoppingListItem.class]];
+    [allObjs addObjectsFromArray:[self getAllDBObjectsWithSyncStates:nil forUser:userID objClass:ETA_ShoppingList.class]];
+    [allObjs addObjectsFromArray:[self getAllDBObjectsWithSyncStates:nil forUser:userID objClass:ETA_ListShare.class]];
+    
+    return [self deleteDBObjects:allObjs error:error];
+}
+
 - (void) sendNotificationOfLocalModified:(NSArray*)modified added:(NSArray*)added removed:(NSArray*)removed objClass:(Class)objClass
 {
     NSMutableDictionary* diffs = [NSMutableDictionary dictionaryWithCapacity:3];
@@ -666,6 +676,12 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 
 - (BOOL) removeListItem:(ETA_ShoppingListItem *)item error:(NSError * __autoreleasing *)error
 {
+    if (!item.uuid) {
+        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                     code:ETA_ListManager_ErrorCode_MissingParameter
+                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove non-existing list item",@"")}];
+        return NO;
+    }
     NSDate* modified = [NSDate date];
     NSString* listID = item.shoppingListID;
     

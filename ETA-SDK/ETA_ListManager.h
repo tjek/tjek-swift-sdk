@@ -146,5 +146,6 @@ typedef enum {
 - (NSArray*) getAllListItemsForUser:(NSString*)userID;
 - (NSArray*) getAllListItemsInList:(NSString*)listID sortedByPreviousItemID:(BOOL)sortedByPrev;
 
-
+// pass NULL userID to delete the non-logged in user data, and nil to delete all data
+- (BOOL) dropAllDataForUserID:(NSString*)userID error:(NSError * __autoreleasing *)error;
 @end

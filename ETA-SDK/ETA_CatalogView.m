@@ -131,7 +131,7 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     [_eta addObserver:self forKeyPath:@"geolocation" options:NSKeyValueObservingOptionNew context:NULL];
     [_eta addObserver:self forKeyPath:@"radius" options:NSKeyValueObservingOptionNew context:NULL];
     [_eta addObserver:self forKeyPath:@"isLocationFromSensor" options:NSKeyValueObservingOptionNew context:NULL];
-    [_eta addObserver:self forKeyPath:@"client.session" options:NSKeyValueObservingOptionNew context:NULL];
+    [_eta addObserver:self forKeyPath:@"client.session" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -147,7 +147,10 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     }
     else if ([keyPath isEqualToString:@"client.session"])
     {
-//        [self changeSession:_eta.client.session];
+        if (_eta.client.session != nil)
+        {
+            [self changeSession:_eta.client.session];
+        }
     }
     else
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

@@ -471,8 +471,8 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 // create a new session, and assign
 - (void) createSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-//    NSInteger tokenLife = 90*24*60*60;
-    NSInteger tokenLife = 15;
+    NSInteger tokenLife = 90*24*60*60;
+//    NSInteger tokenLife = 5;
     
     NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     
