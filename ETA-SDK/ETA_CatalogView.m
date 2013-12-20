@@ -488,7 +488,8 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
            if (errJSON)
                res[@"error"] = errJSON;
            
-//           NSLog(@"Send proxy request(%@) '%@' %@ --> %@", typeString, urlString, params, res);
+           if (self.verbose)
+               NSLog(@"Send proxy request(%@) '%@' %@ --> %@", typeString, urlString, params, res);
            
            [self performJSProxyMethodWithName:@"api-request-complete" data:res];
        }];
@@ -584,8 +585,8 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     }
     else
     {
-//        if (self.verbose)
-//            NSLog(@"ETA_CatalogView(%@) Request URL is invalid: %@", self.uuid, request.URL);
+        if (self.verbose)
+            NSLog(@"ETA_CatalogView(%@) Request URL is invalid: %@", self.uuid, request.URL);
     }
     return YES;
 }
