@@ -466,6 +466,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
     }
     [[NSUserDefaults standardUserDefaults] setObject: sessionJSON
                                               forKey:kETA_SessionUserDefaultsKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
     
 // create a new session, and assign
@@ -506,6 +507,14 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
     [self postPath:[ETA_API path:ETA_API.sessions]
         parameters:params
            success:^(AFHTTPRequestOperation *operation, id responseObject) {
+               
+               if (hashCookie && idCookie && timeCookie)
+               {
+                   [cookieJar deleteCookie:hashCookie];
+                   [cookieJar deleteCookie:idCookie];
+                   [cookieJar deleteCookie:timeCookie];
+               }
+               
                NSError* error = nil;
                ETA_Session* session = [ETA_Session objectFromJSONDictionary:responseObject];
                
@@ -515,20 +524,21 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                    [self log: @"Creating Session - '%@' => '%@'", self.session.token, session.token];
                    
                    [self setIfSameOrNewerSession:session];
-                   
-                   if (hashCookie && idCookie && timeCookie)
-                   {
-                       [cookieJar deleteCookie:hashCookie];
-                       [cookieJar deleteCookie:idCookie];
-                       [cookieJar deleteCookie:timeCookie];
-                   }
                }
                //TODO: create error if nil session
+               
                
                if (completionHandler)
                    completionHandler(error);
            }
            failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+               if (hashCookie && idCookie && timeCookie)
+               {
+                   [cookieJar deleteCookie:hashCookie];
+                   [cookieJar deleteCookie:idCookie];
+                   [cookieJar deleteCookie:timeCookie];
+               }
+               
                NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
                
                if (completionHandler)
