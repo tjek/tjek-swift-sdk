@@ -684,6 +684,14 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 
 - (BOOL) updateListItem:(ETA_ShoppingListItem *)item error:(NSError * __autoreleasing *)error
 {
+    if (!item.uuid.length || !item.shoppingListID.length)
+    {
+        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                     code:ETA_ListManager_ErrorCode_MissingParameter
+                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't update ListItem - invalid uuid or listID",@"")}];
+        return NO;
+    }
+    
     NSDate* modified = [NSDate date];
     NSString* listID = item.shoppingListID;
     
