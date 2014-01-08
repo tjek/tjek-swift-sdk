@@ -382,9 +382,9 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
         // session loaded from local store - check its state
         if (self.session)
         {
-            // if the session is out of date, renew it
-            if ([self.session willExpireSoon])
-            {
+//            // if the session is out of date, renew it
+//            if ([self.session willExpireSoon])
+//            {
                 [self renewSessionWithCompletion:^(NSError *error) {
                     if (error && error.code != NSURLErrorNotConnectedToInternet)
                     {
@@ -398,24 +398,24 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                             completionHandler(error);
                     }
                 }];
-            }
-            // if not out of date, update it
-            else
-            {
-                [self updateSessionWithCompletion:^(NSError *error) {
-                    if (error && error.code != NSURLErrorNotConnectedToInternet)
-                    {
-                        [self log: @"Unable to update session - trying to create a new one instead: %@", error.localizedDescription];
-                        createSessionBlock();
-                    }
-                    else
-                    {
-                        dispatch_semaphore_signal(sema); // tell the syncQueue block to finish
-                        if (completionHandler)
-                            completionHandler(error);
-                    }
-                }];
-            }
+//            }
+//            // if not out of date, update it
+//            else
+//            {
+//                [self updateSessionWithCompletion:^(NSError *error) {
+//                    if (error && error.code != NSURLErrorNotConnectedToInternet)
+//                    {
+//                        [self log: @"Unable to update session - trying to create a new one instead: %@", error.localizedDescription];
+//                        createSessionBlock();
+//                    }
+//                    else
+//                    {
+//                        dispatch_semaphore_signal(sema); // tell the syncQueue block to finish
+//                        if (completionHandler)
+//                            completionHandler(error);
+//                    }
+//                }];
+//            }
         }
         // no previous session exists - create a new one
         else
