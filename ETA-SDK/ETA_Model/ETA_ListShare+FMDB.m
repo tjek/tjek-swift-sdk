@@ -144,7 +144,8 @@ NSString* const kLS_USERID        = @"userID";
         return nil;
     
     
-    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@=? AND %@=?", tableName, kLS_USEREMAIL, kLS_LIST_ID];
+    NSString* query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@=? AND %@=? AND %@ NOT IN (%@)", tableName, kLS_USEREMAIL, kLS_LIST_ID,
+                       kLS_STATE, [@[@(ETA_DBSyncState_ToBeDeleted), @(ETA_DBSyncState_Deleting), @(ETA_DBSyncState_Deleted)] componentsJoinedByString:@","]];
     
     FMResultSet* s = [db executeQuery:query, userEmail, listID];
     ETA_ListShare* res = nil;
