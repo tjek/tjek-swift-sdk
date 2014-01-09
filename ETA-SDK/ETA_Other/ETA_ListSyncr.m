@@ -472,6 +472,47 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
     }];
 }
 
+// find the local shares for the list that are pending and merge into the list's shares
+// update the local DB to match the state of the lists new share state.
+- (void) localDB_mergePendingAndUpdateNonPendingSharesInList:(ETA_ShoppingList*)list
+{
+    // does not include the deleting/deleted shares
+    NSArray* localSharesForList = [self localDB_getAllSharesInList:list.uuid];
+    
+    NSMutableArray* nonPendingLocalShares = [NSMutableArray array];
+    NSMutableArray* serverSharesForList = [list.shares mutableCopy];
+    NSMutableArray* pendingLocalShares = [NSMutableArray array];
+    for (ETA_ListShare* localShare in localSharesForList)
+    {
+        if (localShare.state == ETA_DBSyncState_Synced)
+            [nonPendingLocalShares addObject:localShare];
+        else
+        {
+            // it is a pending local share. Remove from the server's list of shares to be updated
+            NSInteger pendingShareIndexInServerShares = [serverSharesForList indexOfObjectPassingTest:^BOOL(ETA_ListShare* serverShare, NSUInteger idx, BOOL *stop) {
+                return ([serverShare.listUUID isEqualToString:localShare.listUUID] &&
+                        [serverShare.userEmail caseInsensitiveCompare:localShare.userEmail]==NSOrderedSame &&
+                        [serverShare.syncUserID isEqualToString:localShare.syncUserID]);
+            }];
+            if (pendingShareIndexInServerShares != NSNotFound)
+                [serverSharesForList removeObjectAtIndex:pendingShareIndexInServerShares];
+            
+            [pendingLocalShares addObject:localShare];
+        }
+    }
+    
+    NSError* err = nil;
+    // delete non-pending from the DB
+    [self localDB_deleteObjects:nonPendingLocalShares error:&err];
+    
+    // update the shares that are from the server and not pending locally
+    [self localDB_updateObjects:serverSharesForList error:&err];
+    
+    // add the shares that are pending back into the server shares, and assign back to the list
+    [serverSharesForList addObjectsFromArray:pendingLocalShares];
+    
+    list.shares = serverSharesForList;
+}
 
 // Ask the server for all the list
 // if there is a valid response, get all the local lists
@@ -506,11 +547,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                     
                     for (ETA_ShoppingList* list in serverLists)
                     {
-                        NSArray* localSharesForList = [self localDB_getAllSharesInList:list.uuid];
-                        NSError* err = nil;
-                        [self localDB_deleteObjects:localSharesForList error:&err];
-                        
-                        [self localDB_updateObjects:list.shares error:&err];
+                        [self localDB_mergePendingAndUpdateNonPendingSharesInList:list];
                     }
                     
                     // remove locally, and remove all the items locally
@@ -642,11 +679,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                                     }
                                     
                                     
-                                    NSArray* localSharesForList = [self localDB_getAllSharesInList:listID];
-                                    NSError* err = nil;
-                                    [self localDB_deleteObjects:localSharesForList error:&err];
-                                    
-                                    [self localDB_updateObjects:serverList.shares error:&err];
+                                    [self localDB_mergePendingAndUpdateNonPendingSharesInList:serverList];
                                 }
                                 
                                 remainingLists--;
