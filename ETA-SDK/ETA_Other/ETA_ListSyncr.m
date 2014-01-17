@@ -151,7 +151,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
         self.pollingTimer = [NSTimer timerWithTimeInterval:[self pollIntervalForPollRate:self.pollRate]
                                                     target:self
                                                   selector:@selector(pollingTimerEvent:)
-                                                  userInfo:[@{@"pollCount": @(-1)} mutableCopy]
+                                                  userInfo:nil
                                                    repeats:YES];
         
         // explicitly add to main run loop, in case start is being called from a bg thread
@@ -182,14 +182,8 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
 // poll event tick
 - (void) pollingTimerEvent:(NSTimer*)timer
 {
-    NSMutableDictionary* userInfo = timer.userInfo;
-    NSInteger pollCount = [userInfo[@"pollCount"] integerValue] + 1;
-
-    BOOL checkAllLists = (pollCount % 3 == 0);
-    [self performSync:checkAllLists completionHandler:^(BOOL success) {
-        if (success)
-            userInfo[@"pollCount"] = @(pollCount);
-    }];
+    BOOL checkAllLists = (self.pullSyncCount % 3 == 0);
+    [self performSync:checkAllLists completionHandler:nil];
     
 }
 
@@ -1414,6 +1408,8 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                for (ETA_ListShare* share in list.shares) {
                    share.syncUserID = userID;
                    share.state = ETA_DBSyncState_Synced;
+                   if (!share.userName)
+                       share.userName = @"";
                }
            }
            else
@@ -1464,6 +1460,8 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                        for (ETA_ListShare* share in list.shares) {
                            share.syncUserID = userID;
                            share.state = ETA_DBSyncState_Synced;
+                           if (!share.userName)
+                               share.userName = @"";
                        }
                        [lists addObject:list];
                    }

@@ -648,6 +648,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 - (ETA_ShoppingListItem*) createListItem:(NSString *)name
                                  offerID:(NSString*)offerID
                             creatorEmail:(NSString*)creatorEmail
+                                   count:(NSUInteger)count
                                   inList:(NSString*)listID
                                    error:(NSError * __autoreleasing *)error
 {
@@ -664,7 +665,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     item.uuid = [[self class] generateUUID];
     item.name = name;
     item.shoppingListID = listID;
-    item.count = 1;
+    item.count = MAX(1, count);
     item.offerID = offerID;
     item.creator = creatorEmail;
     item.prevItemID = kETA_ListManager_FirstPrevItemID;
