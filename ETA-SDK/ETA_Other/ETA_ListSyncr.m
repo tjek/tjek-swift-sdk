@@ -184,7 +184,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
 {
     BOOL checkAllLists = (self.pullSyncCount % 3 == 0);
     [self performSync:checkAllLists completionHandler:nil];
-    
 }
 
 - (void) performSync:(BOOL)checkAllLists completionHandler:(void(^)(BOOL success))completionHandler
@@ -192,7 +191,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         
         [self log:@"\n------------- Sync %@ Started! ---------------------", (checkAllLists) ? @"All" : @"Modified"];
-        
         
         // if there are still items in the server Q, skip this poll cycle
         if (self.syncingInProgress)
