@@ -130,6 +130,7 @@ typedef enum {
 - (ETA_ShoppingListItem*) createListItem:(NSString *)name
                                  offerID:(NSString*)offerID
                             creatorEmail:(NSString*)creatorEmail
+                                   count:(NSUInteger)count
                                   inList:(NSString*)listID
                                    error:(NSError * __autoreleasing *)error;
 
