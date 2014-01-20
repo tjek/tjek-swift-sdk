@@ -14,7 +14,6 @@
 
 #import "NSValueTransformer+ETAPredefinedValueTransformers.h"
 
-#import "AFJSONRequestOperation.h"
 
 #import <CommonCrypto/CommonDigest.h>
 
@@ -64,9 +63,8 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
         
         _startingSessionLock = dispatch_semaphore_create(1);
         
-        [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
-        
-        [self setDefaultHeader:@"Accept" value:@"application/json"];
+        self.responseSerializer = [AFJSONResponseSerializer serializer];
+        self.requestSerializer = [AFJSONRequestSerializer serializer];
         
         self.storageEnabled = YES;
         self.verbose = NO;
@@ -193,16 +191,16 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
             switch (type)
             {
                 case ETARequestTypeGET:
-                    [self getPath:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
+                    [self GET:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
                     break;
                 case ETARequestTypePOST:
-                    [self postPath:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
+                    [self POST:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
                     break;
                 case ETARequestTypePUT:
-                    [self putPath:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
+                    [self PUT:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
                     break;
                 case ETARequestTypeDELETE:
-                    [self deletePath:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
+                    [self DELETE:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
                     break;
                 default:
                     break;
@@ -263,10 +261,14 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
             hash = [NSString stringWithString: res];
         }
     }
-    [self log: @"Updating Headers - Token:'%@'->'%@' Sig:'%@'->'%@'", [self defaultValueForHeader:@"X-Token"], self.session.token, [self defaultValueForHeader:@"X-Signature"], hash];
     
-    [self setDefaultHeader:@"X-Token"       value:self.session.token];
-    [self setDefaultHeader:@"X-Signature"   value:hash];
+    
+    NSDictionary* httpheaders = self.requestSerializer.HTTPRequestHeaders;
+    
+    [self log: @"Updating Headers - Token:'%@'->'%@' Sig:'%@'->'%@'", httpheaders[@"X-Token"], self.session.token, httpheaders[@"X-Signature"], hash];
+    
+    [self.requestSerializer setValue:self.session.token forHTTPHeaderField:@"X-Token"];
+    [self.requestSerializer setValue:hash               forHTTPHeaderField:@"X-Signature"];
 }
 
 
@@ -503,8 +505,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
         params[@"v1_auth_time"] = timeCookie.value;
     }
 
-    
-    [self postPath:[ETA_API path:ETA_API.sessions]
+    [self POST:[ETA_API path:ETA_API.sessions]
         parameters:params
            success:^(AFHTTPRequestOperation *operation, id responseObject) {
                
@@ -549,7 +550,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 // get the latest state of the session
 - (void) updateSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self getPath:[ETA_API path:ETA_API.sessions]
+    [self GET:[ETA_API path:ETA_API.sessions]
        parameters:[self baseRequestParameters]
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSError* error = nil;
@@ -577,7 +578,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 // Ask for a new expiration date / token
 - (void) renewSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self putPath:[ETA_API path:ETA_API.sessions]
+    [self PUT:[ETA_API path:ETA_API.sessions]
        parameters:[self baseRequestParameters]
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               NSError* error = nil;

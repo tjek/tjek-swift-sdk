@@ -462,7 +462,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
         
         // block until server request is completed
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-        dispatch_release(sema);
     }];
 }
 
@@ -601,8 +600,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
         
         // block until server request is completed
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-        dispatch_release(sema);
-        
     }];
 }
 
@@ -692,7 +689,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
             }
             // block until server request is completed
             dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-            dispatch_release(sema);
         }
         
          
@@ -949,7 +945,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
             
             // block until server request is completed
             dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-            dispatch_release(sema);
         }
         else
         {
@@ -1040,7 +1035,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
         
         // block until server request is completed
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-        dispatch_release(sema);
         
         NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate]-start;
         
@@ -1204,7 +1198,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
         
         // block until server request is completed
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-        dispatch_release(sema);
         
         NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate]-start;
         
@@ -1298,7 +1291,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
             
             // block until server request is completed
             dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-            dispatch_release(sema);
         }
         else
         {
