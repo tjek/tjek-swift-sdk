@@ -469,8 +469,8 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     
     if (token && signature)
     {
-        [self.eta.client setDefaultHeader:@"X-Token" value:token];
-        [self.eta.client setDefaultHeader:@"X-Signature" value:signature];
+        [self.eta.client setValue:token forKey:@"X-Token"];
+        [self.eta.client setValue:signature forKey:@"X-Signature"];
     }
     
 //    if (headersDict)
