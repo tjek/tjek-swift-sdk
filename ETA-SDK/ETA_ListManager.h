@@ -108,8 +108,6 @@ typedef enum {
 
 #pragma mark - Shares
 
-- (ETA_ListShare*) getListShareForUserEmail:(NSString*)userEmail inList:(NSString*)listID;
-
 - (BOOL) setShareAccess:(ETA_ListShare_Access)shareAccess
            forUserEmail:(NSString*)userEmail
                  inList:(NSString*)listID
