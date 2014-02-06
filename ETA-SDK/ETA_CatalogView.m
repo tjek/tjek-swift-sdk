@@ -206,6 +206,7 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     // create a new webview, destroying the old
     [self.webview removeFromSuperview];
     self.webview = [[UIWebView alloc] initWithFrame:self.bounds];
+    self.webview.scrollView.scrollEnabled = NO;
     self.webview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.webview.delegate = self;
     
