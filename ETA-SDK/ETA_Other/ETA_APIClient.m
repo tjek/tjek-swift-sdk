@@ -669,7 +669,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
     if (errorDesc)
         etaErrorDict = [NSJSONSerialization JSONObjectWithData:[errorDesc dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     
-    if (!etaErrorDict)
+    if (![etaErrorDict isKindOfClass:NSDictionary.class])
         return nil;
     
     NSString* errCode = etaErrorDict[@"code"];
