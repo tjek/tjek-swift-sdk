@@ -309,8 +309,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
         [self log:@"Waiting for all operations to complete..."];
         [self.serverQ waitUntilAllOperationsAreFinished];
         
-        self.pullSyncCount ++;
-        
         NSMutableDictionary* itemsNotification = [NSMutableDictionary new];
         NSMutableDictionary* listsNotification = [NSMutableDictionary new];
         
@@ -356,6 +354,8 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
         self.addedLists = nil;
         self.removedLists = nil;
         self.modifiedLists = nil;
+        
+        self.pullSyncCount ++;
         
         if (completionHandler)
         {
