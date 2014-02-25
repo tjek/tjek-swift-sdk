@@ -206,6 +206,7 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     // create a new webview, destroying the old
     [self.webview removeFromSuperview];
     self.webview = [[UIWebView alloc] initWithFrame:self.bounds];
+    self.webview.scrollView.scrollEnabled = NO;
     self.webview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.webview.delegate = self;
     
@@ -469,8 +470,8 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     
     if (token && signature)
     {
-        [self.eta.client setDefaultHeader:@"X-Token" value:token];
-        [self.eta.client setDefaultHeader:@"X-Signature" value:signature];
+        [self.eta.client.requestSerializer setValue:token forHTTPHeaderField:@"X-Token"];
+        [self.eta.client.requestSerializer setValue:signature forHTTPHeaderField:@"X-Signature"];
     }
     
 //    if (headersDict)
