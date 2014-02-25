@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "ETA-SDK"
-  s.version      = "2.1.0"
+  s.version      = "2.2.0"
   s.summary      = "eTilbudsavis iOS SDK."
   s.description  = <<-DESC
                      An SDK that makes it easy to talk to the eTilbudsavis API.
@@ -18,9 +18,9 @@ Pod::Spec.new do |s|
   s.source_files = 'ETA-SDK/**/*.{h,m}'
   s.frameworks   = 'CoreLocation', 'Foundation', 'UIKit'
 
-  s.dependency 'AFNetworking', '~> 2.1'
-  s.dependency 'Mantle', '~> 1.3'
-  s.dependency 'FMDB', '~> 2.2'
+  s.dependency 'AFNetworking', '~> 2.1.0'
+  s.dependency 'Mantle', '~> 1.3.1'
+  s.dependency 'FMDB', '~> 2.2.0'
   s.dependency 'MAKVONotificationCenter', '~> 0.0.2'
 
 end
