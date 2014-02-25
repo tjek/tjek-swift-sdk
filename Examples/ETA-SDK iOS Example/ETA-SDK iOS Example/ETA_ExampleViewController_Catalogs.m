@@ -8,12 +8,12 @@
 
 #import "ETA_ExampleViewController_Catalogs.h"
 
-#import <SDWebImage/UIImageView+WebCache.h>
-
 #import "ETA.h"
 #import "ETA_Catalog.h"
 
 #import "ETA_ExampleViewController_CatalogView.h"
+
+#import "UIImageView+AFNetworking.h"
 
 @interface ETA_ExampleViewController_Catalogs () <UITableViewDataSource, UITableViewDelegate>
 
@@ -178,9 +178,8 @@
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@", [df stringFromDate:catalog.runFromDate],[df stringFromDate:catalog.runTillDate]];
     
     // we are using the catalog's thumbnail image url as the imageView
-    // here we are using SDWebImage to handle network image loading
-    // this is a handy 3rd-party library that will dynamically update the imageView when it is loaded from the internet.
-    // until then, it will use the placeholderImage
+    // here we are using an AFNetworking (included) UIImageView category
+    // until it loads, it will use the placeholderImage
     [cell.imageView setImageWithURL:[catalog imageURLForSize:ETA_Catalog_ImageSize_Thumb]
                    placeholderImage:[UIImage imageNamed:@"catalogThumbPlaceholder.png"]];
     

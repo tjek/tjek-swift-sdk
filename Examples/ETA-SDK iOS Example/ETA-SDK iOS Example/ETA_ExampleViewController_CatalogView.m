@@ -8,8 +8,8 @@
 
 #import "ETA_ExampleViewController_CatalogView.h"
 
-#import "ETA_CatalogView.h"
 #import "ETA.h"
+#import "ETA_CatalogView.h"
 #import "ETA_Catalog.h"
 
 @interface ETA_ExampleViewController_CatalogView ()<ETACatalogViewDelegate>
@@ -20,8 +20,10 @@
 
 // a spinner that shows the catalogView is loading
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activitySpinner;
+
 // is the catalogView in the process of loading?
 @property (nonatomic, readwrite, assign) BOOL isReady;
+
 @end
 
 @implementation ETA_ExampleViewController_CatalogView
@@ -29,6 +31,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.edgesForExtendedLayout = UIRectEdgeLeft | UIRectEdgeBottom | UIRectEdgeRight;
     
     // first you must initialize the CatalogView with the ETA object that is being used by your app
     self.catalogView = [[ETA_CatalogView alloc] initWithETA:ETA.SDK];
@@ -38,7 +41,6 @@
     
     // you can get a lot of info if you turn on verbose mode
 //    self.catalogView.verbose = YES;
-    
     // place the catalogView on the screen, and make it resize automatically.
     self.catalogView.frame = self.view.bounds;
     self.catalogView.alpha = 0;
@@ -48,9 +50,27 @@
 
 - (void) viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     // whenever the view appears, make sure that we are updated to show the catalog that was specified
     [self updateViewForCatalog];
 }
+
+- (void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    // when the view is
+    self.catalogView.pauseCatalog = NO;
+}
+
+- (void) viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    self.catalogView.pauseCatalog = YES;
+}
+
 
 // When you set the catalog object on this ViewController it will update the catalog view
 // This may be called before viewDidLoad, so we can't be sure that updateViewForCatalog will actually update as expected
