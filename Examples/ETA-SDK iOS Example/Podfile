@@ -1,7 +1,9 @@
-platform :ios, '5.0'
+platform :ios, '6.0'
 
 link_with ['ETA-SDK iOS Example', 'ETA-SDK Tests']
 
+# We are specifying the parent path to make sure we are using the cutting edge version.
 pod 'ETA-SDK', :path => '../../'
-# pod 'ETA-SDK', '~>2'
-pod 'SDWebImage', '~> 3.3'
+
+# In your code you should specify the release version you wish to target:
+# pod 'ETA-SDK'
