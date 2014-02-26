@@ -2,9 +2,4 @@ platform :ios, '6.0'
 
 link_with ['ETA-SDK iOS Example', 'ETA-SDK Tests']
 
-# We are specifying the git repo here to make sure that we are using the cutting edge version.
-# In your code you should specify the release version you wish to target.
-pod 'ETA-SDK', :git => 'https://github.com/eTilbudsavis/native-ios-eta-sdk.git'
-
-
-
+pod 'ETA-SDK', :path => "../../ETA-SDK.podspec"
