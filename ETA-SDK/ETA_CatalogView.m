@@ -47,6 +47,7 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
 @property (nonatomic, readwrite, assign) NSUInteger pageCount;
 @property (nonatomic, readwrite, assign) CGFloat pageProgress;
 
+@property (nonatomic, strong) dispatch_queue_t requestQ;
 
 @end
 
@@ -103,6 +104,8 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
         self.initState = ETA_CatalogView_InitState_NotInitialized;
         
         self.baseURL = (baseURL) ?: [NSURL URLWithString:kETA_CatalogViewBaseURLString];
+        
+        self.requestQ = dispatch_queue_create("com.eTilbudsavis.CatalogViewRequestQ", NULL);
         
         return YES;
     }
@@ -392,7 +395,7 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     if (!handled)
     {
         if (self.verbose)
-            NSLog(@"ETA_CatalogView(%@) Unhandled event: %@", self, eventName);
+            NSLog(@"ETA_CatalogView(%@) Unhandled event: %@", self.uuid, eventName);
         
         if ([self.delegate respondsToSelector:@selector(etaCatalogView:triggeredEventWithClass:type:dataDictionary:)])
             [self.delegate etaCatalogView:self triggeredEventWithClass:eventClass type:eventType dataDictionary:eventData];
@@ -476,10 +479,12 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     
 //    if (headersDict)
 //        params[@"sessionHeaders"] = headersDict;
+    NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
     
     [self.eta api:urlString
              type:type
        parameters:params
+         useCache:YES
        completion:^(id response, NSError * err, BOOL fromCache) {
            NSMutableDictionary* res = [@{ @"id": requestID } mutableCopy];
            
@@ -490,9 +495,9 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
                res[@"error"] = errJSON;
            
            if (self.verbose)
-               NSLog(@"Send proxy request(%@) '%@' %@ --> %@", typeString, urlString, params, res);
+               NSLog(@"Send proxy request(%@) '%@' %@ took %fsec", typeString, urlString, params, [NSDate timeIntervalSinceReferenceDate] - start);
            
-           [self performJSProxyMethodWithName:@"api-request-complete" data:res];
+           [self performJSProxyMethodWithName:@"api-request-complete" data:res async:YES];
        }];
     
     if ([self.delegate respondsToSelector:@selector(etaCatalogView:apiRequest:)])
@@ -578,7 +583,7 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
         NSDictionary *eventDataDictionary = [NSJSONSerialization JSONObjectWithData:[eventDataJSON dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingAllowFragments error:nil];
         
         if (self.verbose)
-            NSLog(@"ETA_CatalogView(%@) Event: %@", self.uuid, eventDataDictionary);
+            NSLog(@"ETA_CatalogView(%@) Event: %@", self.uuid, eventDataDictionary[@"eventName"]);
         
         [self eventTriggered:eventClass type:eventType data:eventDataDictionary];
 
@@ -628,18 +633,55 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
 {
     if (!jsRequest || !self.isInitialized)
         return nil;
-    
-//    NSLog(@"Request length: %d", jsRequest.length);
     NSString* jsResponse = [self.webview stringByEvaluatingJavaScriptFromString:jsRequest];
-    
-//    if (self.verbose)
-//        NSLog(@"ETA_CatalogView(%@) Request: %@\nResponse: '%@'", self.uuid, jsRequest, jsResponse);
     
     return jsResponse;
 }
-- (NSString*) performJSProxyMethodWithName:(NSString*)name data:(NSDictionary*)data
+- (void) performJSProxyMethodWithName:(NSString*)name data:(NSDictionary*)data
 {
-    return [self performJSRequest:[self jsRequestWithProxyMethodName:name data:data]];
+    [self performJSProxyMethodWithName:name data:data async:NO];
+}
+- (void) performJSProxyMethodWithName:(NSString*)name data:(NSDictionary*)data async:(BOOL)async
+{
+    __block NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+    if (async)
+    {
+        dispatch_async(self.requestQ, ^{
+
+            NSString* requestStr = [self jsRequestWithProxyMethodName:name data:data];
+
+            if (self.verbose)
+                NSLog(@"ETA_CatalogView(%@) Method '%@' parsing took %fsecs", self.uuid, name, [NSDate timeIntervalSinceReferenceDate] - start);
+            
+            start = [NSDate timeIntervalSinceReferenceDate];
+            
+            __weak typeof(self) weakSelf = self;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                __strong typeof(self) strongSelf = weakSelf;
+                if (!strongSelf)
+                    return;
+                
+                [strongSelf performJSRequest:requestStr];
+                
+                if (self.verbose)
+                    NSLog(@"ETA_CatalogView(%@) Method '%@' performing took %fsecs", self.uuid, name, [NSDate timeIntervalSinceReferenceDate] - start);
+            });
+        });
+    }
+    else
+    {
+        NSString* requestStr = [self jsRequestWithProxyMethodName:name data:data];
+        
+        if (self.verbose)
+            NSLog(@"ETA_CatalogView(%@) Method '%@' parsing took %fsecs", self.uuid, name, [NSDate timeIntervalSinceReferenceDate] - start);
+
+        start = [NSDate timeIntervalSinceReferenceDate];
+        [self performJSRequest:requestStr];
+        
+        if (self.verbose)
+            NSLog(@"ETA_CatalogView(%@) Method '%@' performing took %fsecs", self.uuid, name, [NSDate timeIntervalSinceReferenceDate] - start);
+
+    }
 }
 
 
