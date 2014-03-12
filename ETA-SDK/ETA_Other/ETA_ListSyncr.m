@@ -440,7 +440,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                         prevItemID = item.uuid;
                     }
                     
-                    NSArray* localItems = [self localDB_getAllListItemsInList:listID withSyncStates:@[@(ETA_DBSyncState_Synced), @(ETA_DBSyncState_Syncing), @(ETA_DBSyncState_ToBeSynced)]];
+                    NSArray* localItems = [self localDB_getAllListItemsInList:listID withSyncStates:nil];
                     
                     NSDictionary* diffs = [self getDifferencesBetweenLocalObjects:localItems andServerObjects:serverItems mergeHandler:nil];
                     
@@ -531,7 +531,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 if (serverLists)
                 {
-                    NSArray* localLists = [self localDB_getAllObjectsWithSyncStates:@[@(ETA_DBSyncState_Synced), @(ETA_DBSyncState_Syncing), @(ETA_DBSyncState_ToBeSynced)]
+                    NSArray* localLists = [self localDB_getAllObjectsWithSyncStates:nil
                                                                             forUser:userID
                                                                               class:ETA_ShoppingList.class];
                     
