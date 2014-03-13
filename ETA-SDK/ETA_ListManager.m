@@ -334,7 +334,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 
 - (void) setSyncRate:(ETA_ListManager_SyncRate)syncRate
 {
-    self.syncr.pollRate = syncRate;
+    self.syncr.pollRate = (ETA_ListSyncr_PollRate)syncRate;
 }
 - (ETA_ListManager_SyncRate) syncRate
 {
@@ -495,7 +495,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 - (BOOL) moveListsFromUser:(ETA_User*)fromUser toUser:(ETA_User*)toUser error:(NSError * __autoreleasing *)error
 {
     NSArray* listsToMigrate = [self getAllListsForUser:fromUser.uuid];
-    BOOL shouldDrop = YES;
     for (ETA_ShoppingList* listToMigrate in listsToMigrate)
     {
         NSArray* itemsToMigrate = [self getAllListItemsInList:listToMigrate.uuid sortedByPreviousItemID:YES];
@@ -517,7 +516,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
                 
                 if (![self updateDBObjects:@[share] error:error])
                 {
-                    shouldDrop = NO;
                     continue;
                 }
                 
@@ -530,7 +528,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
             
             if (![self addList:list error:error])
             {
-                shouldDrop = NO;
                 continue;
             }
             
@@ -548,7 +545,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
                 
                 if (![self addListItem:item error:error])
                 {
-                    shouldDrop = NO;
                     continue;
                 }
             }
