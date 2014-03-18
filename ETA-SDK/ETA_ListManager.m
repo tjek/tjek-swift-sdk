@@ -596,6 +596,17 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         }
     }
     
+    if (success)
+    {
+        ETA_ShoppingList* list = [self getList:listID];
+        if (list)
+        {
+            [self sendNotificationOfLocalModified:@[list]
+                                            added:nil
+                                          removed:nil
+                                         objClass:ETA_ShoppingList.class];
+        }
+    }
     return success;
 }
 
@@ -635,7 +646,18 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     share.syncUserID = syncUserID;
     
     BOOL success = [self updateDBObjects:@[share] error:error];
-    
+        
+    if (success)
+    {
+        ETA_ShoppingList* list = [self getList:listID];
+        if (list)
+        {
+            [self sendNotificationOfLocalModified:@[list]
+                                            added:nil
+                                          removed:nil
+                                         objClass:ETA_ShoppingList.class];
+        }
+    }
     return success;
 }
 
