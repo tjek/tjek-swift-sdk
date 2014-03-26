@@ -134,9 +134,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
             };
             void (^failureBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, NSError *error)
             {
-                NSError* etaError = [[self class] etaErrorFromETAErrorDict:operation.responseObject andURLResponse:operation.response];
-                if (!etaError)
-                    etaError = [[self class] etaErrorFromAFNetworkingError:error];
+                NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error];
                 
                 NSInteger code = etaError.code;
                 if (remainingRetries > 0)
@@ -542,7 +540,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                    [cookieJar deleteCookie:timeCookie];
                }
                
-               NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
+               NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error];
                
                if (completionHandler)
                    completionHandler((etaError) ?: error);
@@ -570,7 +568,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                   completionHandler(error);
            }
            failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-               NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
+               NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error];
                
                if (completionHandler)
                    completionHandler((etaError) ?: error);
@@ -598,7 +596,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                   completionHandler(error);
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
+              NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error];
               
               if (completionHandler)
                   completionHandler((etaError) ?: error);
@@ -663,6 +661,16 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 }
 
 
+
++ (NSError*) etaErrorFromRequestOperation:(AFHTTPRequestOperation*)operation andAFNetworkingError:(NSError*)error
+{
+    NSError* etaError = [self etaErrorFromETAErrorDict:operation.responseObject andURLResponse:operation.response];
+    if (!etaError)
+        etaError = [self etaErrorFromAFNetworkingError:error];
+
+    return etaError;
+}
+
 + (NSError*) etaErrorFromETAErrorDict:(NSDictionary*)etaErrorDict andURLResponse:(NSURLResponse*)urlResponse
 {
     if (![etaErrorDict isKindOfClass:NSDictionary.class])
@@ -688,7 +696,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 {
     NSDictionary* etaErrorDict = nil;
     NSString* errorDesc = AFNetworkingError.userInfo[NSLocalizedRecoverySuggestionErrorKey];
-    if (errorDesc)
+    if ([errorDesc isKindOfClass:NSString.class] && errorDesc.length)
         etaErrorDict = [NSJSONSerialization JSONObjectWithData:[errorDesc dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     
     return [self etaErrorFromETAErrorDict:etaErrorDict andURLResponse:AFNetworkingError.userInfo[AFNetworkingOperationFailingURLResponseErrorKey]];
