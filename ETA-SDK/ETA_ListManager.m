@@ -630,35 +630,39 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         return NO;
     }
     
-    ETA_ListShare* share = [self getShareForUserEmail:userEmail inList:listID];
-    if (!share)
+    ETA_ShoppingList* list = [self getList:listID];
+    if (list)
     {
-        share = [ETA_ListShare new];
-        share.userEmail = userEmail;
-        share.userName = userEmail;
-        share.accepted = NO;
-        share.listUUID = listID;
-    }
-    
-    share.access = shareAccess;
-    share.acceptURL = acceptURL;
-    share.state = ETA_DBSyncState_ToBeSynced;
-    share.syncUserID = syncUserID;
-    
-    BOOL success = [self updateDBObjects:@[share] error:error];
+        if ([list accessForUserEmail:userEmail] == ETA_ListShare_Access_Owner)
+            return NO;
         
-    if (success)
-    {
-        ETA_ShoppingList* list = [self getList:listID];
-        if (list)
+        ETA_ListShare* share = [self getShareForUserEmail:userEmail inList:listID];
+        if (!share)
+        {
+            share = [ETA_ListShare new];
+            share.userEmail = userEmail;
+            share.userName = userEmail;
+            share.accepted = NO;
+            share.listUUID = listID;
+        }
+        
+        share.access = shareAccess;
+        share.acceptURL = acceptURL;
+        share.state = ETA_DBSyncState_ToBeSynced;
+        share.syncUserID = syncUserID;
+        
+        BOOL success = [self updateDBObjects:@[share] error:error];
+        
+        if (success)
         {
             [self sendNotificationOfLocalModified:@[list]
                                             added:nil
                                           removed:nil
                                          objClass:ETA_ShoppingList.class];
         }
+        return success;
     }
-    return success;
+    return NO;
 }
 
 #pragma mark List Items
@@ -1137,7 +1141,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
             return;
         }
         // Note, can't be called in transaction
-        [db executeUpdate:[NSString stringWithFormat:@"PRAGMA user_version = %d", kETA_ListManager_LatestDBVersion]];
+        [db executeUpdate:[NSString stringWithFormat:@"PRAGMA user_version = %ld", (long)kETA_ListManager_LatestDBVersion]];
     }];
 }
 
