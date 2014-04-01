@@ -571,9 +571,10 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     
     if (!listID || !userEmail)
     {
-        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
-                                     code:ETA_ListManager_ErrorCode_MissingParameter
-                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove access - invalid listID or userEmail",@"")}];
+        if (error != NULL)
+            *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                         code:ETA_ListManager_ErrorCode_MissingParameter
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove access - invalid listID or userEmail",@"")}];
         return NO;
     }
     
@@ -624,9 +625,10 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 
     if (!listID || !userEmail)
     {
-        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
-                                     code:ETA_ListManager_ErrorCode_MissingParameter
-                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove access - invalid listID or userEmail",@"")}];
+        if (error != NULL)
+            *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                         code:ETA_ListManager_ErrorCode_MissingParameter
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove access - invalid listID or userEmail",@"")}];
         return NO;
     }
     
@@ -676,9 +678,10 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 {
     if (!listID.length || !name.length)
     {
-        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
-                                     code:ETA_ListManager_ErrorCode_MissingParameter
-                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't create ListItem - invalid name or listID",@"")}];
+        if (error != NULL)
+            *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                         code:ETA_ListManager_ErrorCode_MissingParameter
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't create ListItem - invalid name or listID",@"")}];
         return NO;
     }
     
@@ -709,9 +712,10 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 {
     if (!item.uuid.length || !item.shoppingListID.length)
     {
-        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
-                                     code:ETA_ListManager_ErrorCode_MissingParameter
-                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't update ListItem - invalid uuid or listID",@"")}];
+        if (error != NULL)
+            *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                         code:ETA_ListManager_ErrorCode_MissingParameter
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't update ListItem - invalid uuid or listID",@"")}];
         return NO;
     }
     
@@ -786,9 +790,10 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 - (BOOL) removeListItem:(ETA_ShoppingListItem *)item error:(NSError * __autoreleasing *)error
 {
     if (!item.uuid) {
-        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
-                                     code:ETA_ListManager_ErrorCode_MissingParameter
-                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove non-existing list item",@"")}];
+        if (error != NULL)
+            *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                         code:ETA_ListManager_ErrorCode_MissingParameter
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove non-existing list item",@"")}];
         return NO;
     }
     NSDate* modified = [NSDate date];
