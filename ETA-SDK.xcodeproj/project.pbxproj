@@ -65,16 +65,6 @@
 		173A3AEE18ED9EEC00765373 /* ETA_PermissionCategories.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_PermissionCategories.m; sourceTree = "<group>"; };
 		173A3AEF18ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSValueTransformer+ETAPredefinedValueTransformers.h"; sourceTree = "<group>"; };
 		173A3AF018ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSValueTransformer+ETAPredefinedValueTransformers.m"; sourceTree = "<group>"; };
-		173A3AF118ED9EEC00765373 /* ETA_Request.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Request.h; sourceTree = "<group>"; };
-		173A3AF218ED9EEC00765373 /* ETA_Request.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Request.m; sourceTree = "<group>"; };
-		173A3AF318ED9EEC00765373 /* ETA_RequestAFNetworkHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_RequestAFNetworkHandler.h; sourceTree = "<group>"; };
-		173A3AF418ED9EEC00765373 /* ETA_RequestAFNetworkHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_RequestAFNetworkHandler.m; sourceTree = "<group>"; };
-		173A3AF518ED9EEC00765373 /* ETA_RequestDummyNetworkHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_RequestDummyNetworkHandler.h; sourceTree = "<group>"; };
-		173A3AF618ED9EEC00765373 /* ETA_RequestDummyNetworkHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_RequestDummyNetworkHandler.m; sourceTree = "<group>"; };
-		173A3AF718ED9EEC00765373 /* ETA_RequestQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_RequestQueue.h; sourceTree = "<group>"; };
-		173A3AF818ED9EEC00765373 /* ETA_RequestQueue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_RequestQueue.m; sourceTree = "<group>"; };
-		173A3AF918ED9EEC00765373 /* NSError+ETA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSError+ETA.h"; sourceTree = "<group>"; };
-		173A3AFA18ED9EEC00765373 /* NSError+ETA.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSError+ETA.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -89,16 +79,6 @@
 				173A3AC818ED9EEC00765373 /* ETA_ListManager.m */,
 				173A3AC918ED9EEC00765373 /* ETA_Model */,
 				173A3AE618ED9EEC00765373 /* ETA_Other */,
-				173A3AF118ED9EEC00765373 /* ETA_Request.h */,
-				173A3AF218ED9EEC00765373 /* ETA_Request.m */,
-				173A3AF318ED9EEC00765373 /* ETA_RequestAFNetworkHandler.h */,
-				173A3AF418ED9EEC00765373 /* ETA_RequestAFNetworkHandler.m */,
-				173A3AF518ED9EEC00765373 /* ETA_RequestDummyNetworkHandler.h */,
-				173A3AF618ED9EEC00765373 /* ETA_RequestDummyNetworkHandler.m */,
-				173A3AF718ED9EEC00765373 /* ETA_RequestQueue.h */,
-				173A3AF818ED9EEC00765373 /* ETA_RequestQueue.m */,
-				173A3AF918ED9EEC00765373 /* NSError+ETA.h */,
-				173A3AFA18ED9EEC00765373 /* NSError+ETA.m */,
 			);
 			path = "ETA-SDK";
 			sourceTree = "<group>";
