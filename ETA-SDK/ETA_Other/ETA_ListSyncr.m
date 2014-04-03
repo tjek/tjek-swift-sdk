@@ -440,7 +440,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                         prevItemID = item.uuid;
                     }
                     
-                    NSArray* localItems = [self localDB_getAllListItemsInList:listID withSyncStates:@[@(ETA_DBSyncState_Synced), @(ETA_DBSyncState_Syncing), @(ETA_DBSyncState_ToBeSynced)]];
+                    NSArray* localItems = [self localDB_getAllListItemsInList:listID withSyncStates:nil];
                     
                     NSDictionary* diffs = [self getDifferencesBetweenLocalObjects:localItems andServerObjects:serverItems mergeHandler:nil];
                     
@@ -531,7 +531,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 if (serverLists)
                 {
-                    NSArray* localLists = [self localDB_getAllObjectsWithSyncStates:@[@(ETA_DBSyncState_Synced), @(ETA_DBSyncState_Syncing), @(ETA_DBSyncState_ToBeSynced)]
+                    NSArray* localLists = [self localDB_getAllObjectsWithSyncStates:nil
                                                                             forUser:userID
                                                                               class:ETA_ShoppingList.class];
                     
@@ -1130,6 +1130,24 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
             return;
         }
         
+        // reset the item's 'ToBeSynced' state if we are trying to send the owner to the server
+        if (share.access == ETA_ListShare_Access_Owner)
+        {
+            [self log:@"[SyncShareOperation(%@-%@)] Trying to sync owner... skip it", share.userEmail, share.listUUID];
+            share.state = ETA_DBSyncState_Synced;
+            
+            NSError* updateErr = nil;
+            if (![self localDB_updateObjects:@[share] error:&updateErr])
+            {
+                [self log:@"[SyncShareOperation(%@-%@)] Revert - Failed to mark as 'Synced' %d:'%@'", share.userEmail, share.listUUID, updateErr.code, updateErr.localizedDescription];
+            }
+            else
+            {
+                [self log:@"[SyncShareOperation(%@-%@)] Revert - Marked as 'Synced'", share.userEmail, share.listUUID];
+            }
+
+            return;
+        }
         
         // mark the item as being synced
         share.state = ETA_DBSyncState_Syncing;
@@ -1165,8 +1183,9 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                         }
              useCache:NO
            completion:^(id response, NSError *requestError, BOOL fromCache) {
-               
-               if (requestError)
+               // if validation error - there is no way to recover from this, so mark as synced
+               BOOL isNonRepeatableError = requestError && [requestError.domain isEqualToString:ETA_APIErrorDomain] && (requestError.code==1500 || requestError.code==400);
+               if (requestError && !isNonRepeatableError)
                {
                    //TODO: if serious error mark item as Failed so we dont try it again?
                    share.state = ETA_DBSyncState_ToBeSynced;

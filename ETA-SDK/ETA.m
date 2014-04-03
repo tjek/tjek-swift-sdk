@@ -497,7 +497,7 @@ static ETA* ETA_SingletonSDK = nil;
             CGFloat minRadius = [radiuses[0] floatValue];
             CGFloat maxRadius = [[radiuses lastObject] floatValue];
             
-            CGFloat clampedRadius = MIN(MAX(self.radius.floatValue, minRadius), maxRadius);
+            NSUInteger clampedRadius = (NSUInteger)MIN(MAX(self.radius.floatValue, minRadius), maxRadius);
             params[@"r_radius"] = @(clampedRadius);
         }
         

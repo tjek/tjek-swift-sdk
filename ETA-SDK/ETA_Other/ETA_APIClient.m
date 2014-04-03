@@ -134,7 +134,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
             };
             void (^failureBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, NSError *error)
             {
-                NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
+                NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error];
                 
                 NSInteger code = etaError.code;
                 if (remainingRetries > 0)
@@ -540,7 +540,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                    [cookieJar deleteCookie:timeCookie];
                }
                
-               NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
+               NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error];
                
                if (completionHandler)
                    completionHandler((etaError) ?: error);
@@ -568,7 +568,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                   completionHandler(error);
            }
            failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-               NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
+               NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error];
                
                if (completionHandler)
                    completionHandler((etaError) ?: error);
@@ -596,7 +596,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                   completionHandler(error);
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
+              NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error];
               
               if (completionHandler)
                   completionHandler((etaError) ?: error);
@@ -662,13 +662,17 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 
 
 
-+ (NSError*) etaErrorFromAFNetworkingError:(NSError*)AFNetworkingError
++ (NSError*) etaErrorFromRequestOperation:(AFHTTPRequestOperation*)operation andAFNetworkingError:(NSError*)error
 {
-    NSDictionary* etaErrorDict = nil;
-    NSString* errorDesc = AFNetworkingError.userInfo[NSLocalizedRecoverySuggestionErrorKey];
-    if (errorDesc)
-        etaErrorDict = [NSJSONSerialization JSONObjectWithData:[errorDesc dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-    
+    NSError* etaError = [self etaErrorFromETAErrorDict:operation.responseObject andURLResponse:operation.response];
+    if (!etaError)
+        etaError = [self etaErrorFromAFNetworkingError:error];
+
+    return etaError;
+}
+
++ (NSError*) etaErrorFromETAErrorDict:(NSDictionary*)etaErrorDict andURLResponse:(NSURLResponse*)urlResponse
+{
     if (![etaErrorDict isKindOfClass:NSDictionary.class])
         return nil;
     
@@ -683,9 +687,19 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
     [userInfo setValue:etaErrorDict[@"@note.1"] forKey:NSLocalizedRecoverySuggestionErrorKey];
     [userInfo setValue:etaErrorDict[@"id"] forKey:ETA_APIError_ErrorIDKey];
     [userInfo setValue:etaErrorDict forKey:ETA_APIError_ErrorObjectKey];
-    [userInfo setValue:AFNetworkingError.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] forKey:ETA_APIError_URLResponseKey];
+    [userInfo setValue:urlResponse forKey:ETA_APIError_URLResponseKey];
     
     return [NSError errorWithDomain:ETA_APIErrorDomain code:errCode.integerValue userInfo:userInfo];
+
+}
++ (NSError*) etaErrorFromAFNetworkingError:(NSError*)AFNetworkingError
+{
+    NSDictionary* etaErrorDict = nil;
+    NSString* errorDesc = AFNetworkingError.userInfo[NSLocalizedRecoverySuggestionErrorKey];
+    if ([errorDesc isKindOfClass:NSString.class] && errorDesc.length)
+        etaErrorDict = [NSJSONSerialization JSONObjectWithData:[errorDesc dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+    
+    return [self etaErrorFromETAErrorDict:etaErrorDict andURLResponse:AFNetworkingError.userInfo[AFNetworkingOperationFailingURLResponseErrorKey]];
 }
 
 

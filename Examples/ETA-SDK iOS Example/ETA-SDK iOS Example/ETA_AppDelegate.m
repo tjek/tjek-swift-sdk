@@ -16,14 +16,20 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // First thing you must do is initialize the SDK with your API key and secret (see ETA_APIKeyAndSecret.h)
+    // You must also include the app version, as specified by your bundle
     // Once you call this initialize method, ETA.SDK will return a valid object.
-    [ETA initializeSDKWithAPIKey:ETA_APIKey apiSecret:ETA_APISecret];
+    
+    NSString* appVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+    [ETA initializeSDKWithAPIKey:ETA_APIKey
+                       apiSecret:ETA_APISecret
+                      appVersion:appVersion];
     
     // Always keep the location of the SDK up to date.
     // In this case we are hard-coding it, but in your app you should use the CLLocationManager
     [ETA.SDK setLatitude:55.40227410 longitude:12.1873010 radius:50000 isFromSensor:NO];
     
-    [ETA.SDK attachUserEmail:@"lh@etilbudsavis.dk" password:@"lhlhlh" completion:^(NSError *error) {
+    // this will try to log in with the Dummy user email and password. You should ask your user for these values.
+    [ETA.SDK attachUserEmail:ETA_DummyUserEmail password:ETA_DummyUserPassword completion:^(NSError *error) {
         if (error)
             NSLog(@"Couldn't log user in: %@", error);
         else

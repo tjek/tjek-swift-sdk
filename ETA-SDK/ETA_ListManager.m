@@ -334,7 +334,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 
 - (void) setSyncRate:(ETA_ListManager_SyncRate)syncRate
 {
-    self.syncr.pollRate = syncRate;
+    self.syncr.pollRate = (ETA_ListSyncr_PollRate)syncRate;
 }
 - (ETA_ListManager_SyncRate) syncRate
 {
@@ -495,7 +495,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 - (BOOL) moveListsFromUser:(ETA_User*)fromUser toUser:(ETA_User*)toUser error:(NSError * __autoreleasing *)error
 {
     NSArray* listsToMigrate = [self getAllListsForUser:fromUser.uuid];
-    BOOL shouldDrop = YES;
     for (ETA_ShoppingList* listToMigrate in listsToMigrate)
     {
         NSArray* itemsToMigrate = [self getAllListItemsInList:listToMigrate.uuid sortedByPreviousItemID:YES];
@@ -517,7 +516,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
                 
                 if (![self updateDBObjects:@[share] error:error])
                 {
-                    shouldDrop = NO;
                     continue;
                 }
                 
@@ -530,7 +528,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
             
             if (![self addList:list error:error])
             {
-                shouldDrop = NO;
                 continue;
             }
             
@@ -548,7 +545,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
                 
                 if (![self addListItem:item error:error])
                 {
-                    shouldDrop = NO;
                     continue;
                 }
             }
@@ -575,9 +571,10 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     
     if (!listID || !userEmail)
     {
-        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
-                                     code:ETA_ListManager_ErrorCode_MissingParameter
-                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove access - invalid listID or userEmail",@"")}];
+        if (error != NULL)
+            *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                         code:ETA_ListManager_ErrorCode_MissingParameter
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove access - invalid listID or userEmail",@"")}];
         return NO;
     }
     
@@ -600,6 +597,17 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         }
     }
     
+    if (success)
+    {
+        ETA_ShoppingList* list = [self getList:listID];
+        if (list)
+        {
+            [self sendNotificationOfLocalModified:@[list]
+                                            added:nil
+                                          removed:nil
+                                         objClass:ETA_ShoppingList.class];
+        }
+    }
     return success;
 }
 
@@ -617,30 +625,46 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 
     if (!listID || !userEmail)
     {
-        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
-                                     code:ETA_ListManager_ErrorCode_MissingParameter
-                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove access - invalid listID or userEmail",@"")}];
+        if (error != NULL)
+            *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                         code:ETA_ListManager_ErrorCode_MissingParameter
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove access - invalid listID or userEmail",@"")}];
         return NO;
     }
     
-    ETA_ListShare* share = [self getShareForUserEmail:userEmail inList:listID];
-    if (!share)
+    ETA_ShoppingList* list = [self getList:listID];
+    if (list)
     {
-        share = [ETA_ListShare new];
-        share.userEmail = userEmail;
-        share.userName = userEmail;
-        share.accepted = NO;
-        share.listUUID = listID;
+        if ([list accessForUserEmail:userEmail] == ETA_ListShare_Access_Owner)
+            return NO;
+        
+        ETA_ListShare* share = [self getShareForUserEmail:userEmail inList:listID];
+        if (!share)
+        {
+            share = [ETA_ListShare new];
+            share.userEmail = userEmail;
+            share.userName = userEmail;
+            share.accepted = NO;
+            share.listUUID = listID;
+        }
+        
+        share.access = shareAccess;
+        share.acceptURL = acceptURL;
+        share.state = ETA_DBSyncState_ToBeSynced;
+        share.syncUserID = syncUserID;
+        
+        BOOL success = [self updateDBObjects:@[share] error:error];
+        
+        if (success)
+        {
+            [self sendNotificationOfLocalModified:@[list]
+                                            added:nil
+                                          removed:nil
+                                         objClass:ETA_ShoppingList.class];
+        }
+        return success;
     }
-    
-    share.access = shareAccess;
-    share.acceptURL = acceptURL;
-    share.state = ETA_DBSyncState_ToBeSynced;
-    share.syncUserID = syncUserID;
-    
-    BOOL success = [self updateDBObjects:@[share] error:error];
-    
-    return success;
+    return NO;
 }
 
 #pragma mark List Items
@@ -654,9 +678,10 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 {
     if (!listID.length || !name.length)
     {
-        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
-                                     code:ETA_ListManager_ErrorCode_MissingParameter
-                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't create ListItem - invalid name or listID",@"")}];
+        if (error != NULL)
+            *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                         code:ETA_ListManager_ErrorCode_MissingParameter
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't create ListItem - invalid name or listID",@"")}];
         return NO;
     }
     
@@ -687,9 +712,10 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 {
     if (!item.uuid.length || !item.shoppingListID.length)
     {
-        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
-                                     code:ETA_ListManager_ErrorCode_MissingParameter
-                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't update ListItem - invalid uuid or listID",@"")}];
+        if (error != NULL)
+            *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                         code:ETA_ListManager_ErrorCode_MissingParameter
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't update ListItem - invalid uuid or listID",@"")}];
         return NO;
     }
     
@@ -764,9 +790,10 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 - (BOOL) removeListItem:(ETA_ShoppingListItem *)item error:(NSError * __autoreleasing *)error
 {
     if (!item.uuid) {
-        *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
-                                     code:ETA_ListManager_ErrorCode_MissingParameter
-                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove non-existing list item",@"")}];
+        if (error != NULL)
+            *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
+                                         code:ETA_ListManager_ErrorCode_MissingParameter
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove non-existing list item",@"")}];
         return NO;
     }
     NSDate* modified = [NSDate date];
@@ -1119,7 +1146,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
             return;
         }
         // Note, can't be called in transaction
-        [db executeUpdate:[NSString stringWithFormat:@"PRAGMA user_version = %d", kETA_ListManager_LatestDBVersion]];
+        [db executeUpdate:[NSString stringWithFormat:@"PRAGMA user_version = %ld", (long)kETA_ListManager_LatestDBVersion]];
     }];
 }
 

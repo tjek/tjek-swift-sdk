@@ -62,9 +62,9 @@ See the **[Initialization](#initialization)** section below for how to use the k
 ---
 
 # Usage
-There are 3 components to the ETA SDK, `ETA`, `ETA_ShoppingListManager` and `ETA_CatalogView`. 
+There are 3 components to the ETA SDK, `ETA`, `ETA_ListManager` and `ETA_CatalogView`. 
 
-The `ETA_ShoppingListManager` and `ETA_CatalogView` both make use of the `ETA` object, but are independant of each other.
+The `ETA_ListManager` and `ETA_CatalogView` both make use of the `ETA` object, but are independant of each other.
 
 ## ETA SDK
 > \#import "ETA.h"
@@ -77,11 +77,11 @@ The easiest way to use the ETA is with the singleton methods.
 
 First, in your `application:didFinishLaunchingWithOptions:` method add the line:
 
-    [ETA initializeSDKWithAPIKey:@"your-api-key" apiSecret:@"your-api-secret"];
+    [ETA initializeSDKWithAPIKey:@"your-api-key" apiSecret:@"your-api-secret" appVersion:@"your.app.version"];
 
 Then, to get the singleton object, simply call `ETA.SDK`. This will return the object initialized with the key/secret in the above call. You will just get *nil* if you ask for the singleton before initializing it.
 
-If, in the very rare case, you want multiple instances of the ETA class you can use `+etaWithAPIKey:apiSecret:`. But I don't know why you would want to.
+If, in the very rare case, you want multiple instances of the ETA class you can use `+etaWithAPIKey:apiSecret:appVersion:`. But I don't know why you would want to.
 
 ### API Calls
 

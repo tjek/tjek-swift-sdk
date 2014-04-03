@@ -120,7 +120,7 @@ NSString* const kETA_ListItem_DBQuery_OfferID = kSLI_OFFER_ID;
     if (self.meta)
     {
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.meta options:0 error:nil];
-        jsonDict[@"meta"] = jsonData ? [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] : nil;
+        [jsonDict setValue:jsonData ? [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] : nil forKey:@"meta"];
     }
     
     
