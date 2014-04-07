@@ -28,29 +28,30 @@
 
 - (void) testETAInit
 {
-    [ETA initializeSDKWithAPIKey:nil apiSecret:nil baseURL:nil];
+    [ETA initializeSDKWithAPIKey:nil apiSecret:nil appVersion:nil baseURL:nil];
     
     STAssertNil(ETA.SDK, @"Invalid init must lead to nil ETA.SDK");
     
     NSString* key = @"TEST-API-KEY";
     NSString* secret = @"TEST-API-SECRET";
+    NSString* appVersion = @"TEST-APP-VERSION";
     NSURL* baseURL = [NSURL URLWithString:@"http://eta.dk"];
     
-    [ETA initializeSDKWithAPIKey:key apiSecret:secret baseURL:baseURL];
+    [ETA initializeSDKWithAPIKey:key apiSecret:secret appVersion:appVersion baseURL:baseURL];
     
     STAssertEqualObjects(ETA.SDK.apiKey, key, @"ETA.SDK API Key must match that used in initialization");
     STAssertEqualObjects(ETA.SDK.apiSecret, secret, @"ETA.SDK API Secret must match that used in initialization");
     STAssertEqualObjects(ETA.SDK.baseURL, baseURL, @"ETA.SDK baseURL must match that used in initialization");
     
     
-    [ETA initializeSDKWithAPIKey:nil apiSecret:nil baseURL:nil];
+    [ETA initializeSDKWithAPIKey:nil apiSecret:nil appVersion:nil baseURL:nil];
     
     STAssertNotNil(ETA.SDK, @"Invalid init AFTER valid init must not lead to nil ETA.SDK");
 }
 
 - (void) testETAGeolocation
 {
-    ETA* eta = [ETA etaWithAPIKey:@"" apiSecret:@""];
+    ETA* eta = [ETA etaWithAPIKey:@"" apiSecret:@"" appVersion:@""];
     
     STAssertNil(eta.geolocation, @"ETA.location must be nil when first created");
     STAssertNil(eta.radius, @"ETA.radius must be nil when first created");

@@ -10,6 +10,8 @@ build/*
 !default.perspectivev3
 *.xcworkspace
 !default.xcworkspace
+!ETA-SDK.xcworkspace
+*.xccheckout
 xcuserdata
 profile
 *.moved-aside
