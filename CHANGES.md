@@ -1,5 +1,10 @@
 # eTilbudsavis iOS SDK - Change Log
 
+## v2.2.1
+* Performs CatalogView requests in the background
+* Minor bug fixes
+* Better Examples project structure
+
 ## v2.2.0
 * **Now requires >= iOS 6.0** (Update to AFNetworking ~> 2.1)
 * ETA_ListManager `- createListItem:offerID:...` now requires an item count.
