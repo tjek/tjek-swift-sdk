@@ -152,13 +152,13 @@
                              catalogView.alpha = 1.0;
                          }];
     }
-    NSLog(@"Changed to %d / %d (%.2f%%)", catalogView.currentPage, catalogView.pageCount, catalogView.pageProgress*100);
+    DDLogInfo(@"Changed to %d / %d (%.2f%%)", catalogView.currentPage, catalogView.pageCount, catalogView.pageProgress*100);
 }
 
 // The user touched one of the hotspots in the catalog
 - (void)etaCatalogView:(ETA_CatalogView*)catalogView catalogViewHotspotEvent:(NSDictionary*)data
 {
-    NSLog(@"Clicked Hotspot '%@'", data[@"heading"]);
+    DDLogInfo(@"Clicked Hotspot '%@'", data[@"heading"]);
     UIAlertView* alert = [[UIAlertView alloc] init];
     alert.title = data[@"heading"];
     [alert addButtonWithTitle:NSLocalizedString(@"OK",@"OK")];

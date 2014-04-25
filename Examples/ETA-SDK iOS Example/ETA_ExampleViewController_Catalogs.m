@@ -75,7 +75,7 @@
           // Something went wrong if the `error` object is not nil
           if (error)
           {
-              NSLog(@"Could not refresh: %@ (%d)", error.userInfo[NSLocalizedDescriptionKey], error.code);
+              DDLogError(@"Could not refresh: %@ (%d)", error.userInfo[NSLocalizedDescriptionKey], error.code);
               return;
           }
           

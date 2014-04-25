@@ -11,7 +11,6 @@
 #import "ETA_APIClient.h"
 #import "ETA_Session.h"
 
-
 NSString* const ETA_AttachedUserChangedNotification = @"ETA_AttachedUserChangedNotification";
 
 NSString* const ETA_AvoidServerCallKey = @"ETA_AvoidServerCallKey";
@@ -20,6 +19,8 @@ NSString* const ETA_APIErrorDomain = @"ETA_APIErrorDomain";
 NSString* const ETA_APIError_URLResponseKey = @"ETA_APIError_URLResponseKey";
 NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 NSString* const ETA_APIError_ErrorObjectKey = @"ETA_APIError_ErrorObjectKey";
+
+static int ddLogLevel = LOG_LEVEL_ERROR;
 
 typedef enum {
     ETA_APIErrorCode_MissingParameter = 0
@@ -83,9 +84,11 @@ static ETA* ETA_SingletonSDK = nil;
     eta.appVersion = appVersion;
     if (baseURL)
         eta.baseURL = baseURL;
+    
+    DDLogInfo(@"ETA-SDK Initialized '%@' %@", eta.appVersion, eta.baseURL);
+    
     return eta;
 }
-
 
 - (instancetype) init
 {
@@ -94,20 +97,8 @@ static ETA* ETA_SingletonSDK = nil;
         self.itemCache = [[NSCache alloc] init];
         
         self.baseURL = [NSURL URLWithString: kETA_APIBaseURLString];
-        
-        self.verbose = NO;
     }
     return self;
-}
-
-- (void) setVerbose:(BOOL)verbose
-{
-    if (_verbose == verbose)
-        return;
-    
-    _verbose = verbose;
-    
-    _client.verbose = _verbose;
 }
 
 - (ETA_APIClient*) client
@@ -117,7 +108,6 @@ static ETA* ETA_SingletonSDK = nil;
         if (!_client)
         {
             self.client = [ETA_APIClient clientWithBaseURL:self.baseURL apiKey:self.apiKey apiSecret:self.apiSecret appVersion:self.appVersion];
-            self.client.verbose = self.verbose;
         }
     }
     return _client;
@@ -167,7 +157,7 @@ static ETA* ETA_SingletonSDK = nil;
     {
         if ((self.attachedUserID == self.client.session.user.uuid || [self.attachedUserID isEqualToString:self.client.session.user.uuid]) == NO)
         {
-            NSLog(@"User %@ => %@", self.attachedUserID, self.client.session.user.uuid);
+            DDLogInfo(@"User %@ => %@", self.attachedUserID, self.client.session.user.uuid);
             self.attachedUserID = self.client.session.user.uuid;
         }
     }
@@ -581,6 +571,41 @@ static ETA* ETA_SingletonSDK = nil;
 + (NSString*) errorForCode:(NSInteger)errorCode
 {
     return [[ETA errors] objectForKey:@(errorCode)];
+}
+
+
+
+#pragma mark - Logging
+
+// Use `ddLogLevel` as CocoaLumberjack searches for these method names
++ (int)ddLogLevel
+{
+    return ddLogLevel;
+}
++ (void)ddSetLogLevel:(int)logLevel
+{
+    ddLogLevel = logLevel;
+}
+
++ (int)logLevel
+{
+    return [self ddLogLevel];
+}
++ (void)setLogLevel:(int)logLevel
+{
+    [self ddSetLogLevel:logLevel];
+    [ETA_APIClient setLogLevel:logLevel];
+}
+
+
+// Deprecated
+- (BOOL) verbose
+{
+    return ([self.class logLevel] & LOG_FLAG_VERBOSE);
+}
+- (void) setVerbose:(BOOL)verbose
+{
+    [self.class setLogLevel:verbose ? LOG_LEVEL_VERBOSE : LOG_LEVEL_WARN];
 }
 
 @end

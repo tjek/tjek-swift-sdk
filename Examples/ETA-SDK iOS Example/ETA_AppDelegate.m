@@ -11,14 +11,38 @@
 #import "ETA.h"
 #import "ETA_APIKeyAndSecret.h"
 
+// CocoaLumberjack Loggers
+#import "DDASLLogger.h"
+#import "DDTTYLogger.h"
+
 @implementation ETA_AppDelegate
+
+- (void) _initializeLogging
+{
+    // We are using the great CocoaLumberjack for logging: https://github.com/CocoaLumberjack/CocoaLumberjack
+    // You need to add Loggers that will receive the logs from ETA-SDK (and your own app if you want to use CocoaLumberjack)
+    
+    
+    // Set the logging level for the SDK - it defaults to LOG_LEVEL_ERROR (which is reserved for serious issues).
+    // This is independant from the logging level you set in your app - this is defined in the .pch file
+//    [ETA setLogLevel:LOG_LEVEL_VERBOSE];
+    
+    // Choose where you wish to send your logs.
+    // Here we are sending to Apple System log and Xcode console
+    [DDLog addLogger:[DDASLLogger sharedInstance]];
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
+    
+    // see https://github.com/CocoaLumberjack/CocoaLumberjack/wiki/XcodeColors
+    [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [self _initializeLogging];
+    
     // First thing you must do is initialize the SDK with your API key and secret (see ETA_APIKeyAndSecret.h)
     // You must also include the app version, as specified by your bundle
     // Once you call this initialize method, ETA.SDK will return a valid object.
-    
     NSString* appVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
     [ETA initializeSDKWithAPIKey:ETA_APIKey
                        apiSecret:ETA_APISecret
@@ -31,9 +55,9 @@
     // this will try to log in with the Dummy user email and password. You should ask your user for these values.
     [ETA.SDK attachUserEmail:ETA_DummyUserEmail password:ETA_DummyUserPassword completion:^(NSError *error) {
         if (error)
-            NSLog(@"Couldn't log user in: %@", error);
+            DDLogError(@"Couldn't log user in: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
         else
-            NSLog(@"User Logged In: %@", ETA.SDK.attachedUser);
+            DDLogInfo(@"User Logged In: %@", ETA.SDK.attachedUser);
     }];
     
     return YES;
