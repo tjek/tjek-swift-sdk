@@ -14,7 +14,10 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '6.0'
   s.requires_arc = true
 
-  s.source       = { :git => "https://github.com/eTilbudsavis/native-ios-eta-sdk.git", :tag => "v2.2.1" }
+  s.source       = { 
+    :git => "https://github.com/eTilbudsavis/native-ios-eta-sdk.git", 
+    :tag => "v" + s.version.to_s
+  }
   s.source_files = 'ETA-SDK/**/*.{h,m}'
   s.frameworks   = 'CoreLocation', 'Foundation', 'UIKit'
 
@@ -22,5 +25,6 @@ Pod::Spec.new do |s|
   s.dependency 'Mantle', '~> 1.3.1'
   s.dependency 'FMDB', '~> 2.2.0'
   s.dependency 'MAKVONotificationCenter', '~> 0.0.2'
+  s.dependency 'CocoaLumberjack', '~> 1.8.1'
 
 end
