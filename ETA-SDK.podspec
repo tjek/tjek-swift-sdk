@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "ETA-SDK"
-  s.version      = "2.2.0"
+  s.version      = "2.2.1"
   s.summary      = "eTilbudsavis iOS SDK."
   s.description  = <<-DESC
                      An SDK that makes it easy to talk to the eTilbudsavis API.
@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '6.0'
   s.requires_arc = true
 
-  s.source       = { :git => "https://github.com/eTilbudsavis/native-ios-eta-sdk.git", :tag => "v2.2.0" }
+  s.source       = { :git => "https://github.com/eTilbudsavis/native-ios-eta-sdk.git", :tag => "v2.2.1" }
   s.source_files = 'ETA-SDK/**/*.{h,m}'
   s.frameworks   = 'CoreLocation', 'Foundation', 'UIKit'
 
