@@ -65,6 +65,11 @@
 		173A3AEE18ED9EEC00765373 /* ETA_PermissionCategories.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_PermissionCategories.m; sourceTree = "<group>"; };
 		173A3AEF18ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSValueTransformer+ETAPredefinedValueTransformers.h"; sourceTree = "<group>"; };
 		173A3AF018ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSValueTransformer+ETAPredefinedValueTransformers.m"; sourceTree = "<group>"; };
+		17A884D3190E79B2009B3E6E /* ETA_Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Log.h; sourceTree = "<group>"; };
+		17A884D4190E936B009B3E6E /* ETA_Log.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Log.m; sourceTree = "<group>"; };
+		17A884D5190FC837009B3E6E /* CHANGES.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = CHANGES.md; sourceTree = "<group>"; };
+		17A884D6190FC837009B3E6E /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.md; sourceTree = "<group>"; };
+		17A884D7190FC837009B3E6E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -131,6 +136,8 @@
 				173A3AEE18ED9EEC00765373 /* ETA_PermissionCategories.m */,
 				173A3AEF18ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.h */,
 				173A3AF018ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.m */,
+				17A884D3190E79B2009B3E6E /* ETA_Log.h */,
+				17A884D4190E936B009B3E6E /* ETA_Log.m */,
 			);
 			path = ETA_Other;
 			sourceTree = "<group>";
@@ -138,6 +145,9 @@
 		17DBD17717A7DF5F008EFAEF = {
 			isa = PBXGroup;
 			children = (
+				17A884D5190FC837009B3E6E /* CHANGES.md */,
+				17A884D7190FC837009B3E6E /* README.md */,
+				17A884D6190FC837009B3E6E /* LICENSE.md */,
 				173A3AC218ED9EEC00765373 /* ETA-SDK */,
 			);
 			sourceTree = "<group>";

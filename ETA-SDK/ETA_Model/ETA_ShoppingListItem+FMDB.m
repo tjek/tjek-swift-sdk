@@ -7,6 +7,7 @@
 //
 
 #import "ETA_ShoppingListItem+FMDB.h"
+#import "ETA_Log.h"
 
 #import "FMDatabase.h"
 #import "FMResultSet.h"
@@ -164,7 +165,7 @@ NSString* const kETA_ListItem_DBQuery_OfferID = kSLI_OFFER_ID;
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
     {
-        NSLog(@"[ETA_ShoppingListItem+FMDB] Unable to create table '%@': %@", tableName, db.lastError);
+        ETASDKLogError(@"[ETA_ShoppingListItem+FMDB] Unable to create table '%@': %@", tableName, db.lastError);
     }
     return success;
 }
@@ -174,7 +175,7 @@ NSString* const kETA_ListItem_DBQuery_OfferID = kSLI_OFFER_ID;
     NSString* queryStr = [NSString stringWithFormat:@"DELETE FROM %@;", tableName];
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
-        NSLog(@"[ETA_ShoppingListItem+FMDB] Unable to empty table '%@': %@", tableName, db.lastError);
+        ETASDKLogError(@"[ETA_ShoppingListItem+FMDB] Unable to empty table '%@': %@", tableName, db.lastError);
     
     return success;
 }
@@ -265,7 +266,7 @@ NSString* const kETA_ListItem_DBQuery_OfferID = kSLI_OFFER_ID;
     if (!success) {
         if (error)
             *error = db.lastError;
-        NSLog(@"[ETA_ShoppingListItem+FMDB] Unable to Insert/Replace Item %@: %@", params, db.lastError);
+        ETASDKLogError(@"[ETA_ShoppingListItem+FMDB] Unable to Insert/Replace Item %@: %@", params, db.lastError);
     }
     return success;
 }
@@ -278,7 +279,7 @@ NSString* const kETA_ListItem_DBQuery_OfferID = kSLI_OFFER_ID;
     if (!success) {
         if (error)
             *error = db.lastError;
-        NSLog(@"[ETA_ShoppingListItem+FMDB] Unable to Delete Item %@: %@", itemID, db.lastError);
+        ETASDKLogError(@"[ETA_ShoppingListItem+FMDB] Unable to Delete Item %@: %@", itemID, db.lastError);
     }
     
     return success;

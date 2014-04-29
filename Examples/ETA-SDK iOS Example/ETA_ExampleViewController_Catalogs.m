@@ -54,6 +54,8 @@
 // Note that before any API requests you must have first called +initializeSDKWithAPIKey:apiSecret: (see AppDelegate)
 - (void) refreshCatalogs
 {
+    DDLogInfo(@"Refreshing Catalogs list...");
+    
     // We are using the ETA_API object to get the api path for a specific endpoint -
     //   this makes handling the URLs a lot easier and future proof
     // We are also sending 2 order-by parameters: distance and name -
@@ -82,7 +84,11 @@
           // As we are asking for a list of catalogs we can assume the result is an array.
           // If not then something went wrong.
           if (![jsonCatalogs isKindOfClass:[NSArray class]])
+          {
+              DDLogError(@"Could not refresh: Invalid response format");
               return;
+          }
+
           
           
           // loop through all the json dictionaries that the SDK sent us
@@ -102,6 +108,8 @@
           // update the tableview and spinner
           [self.activitySpinner stopAnimating];
           [self.tableView reloadData];
+          
+          DDLogInfo(@"...Catalogs list refreshed");
       }];
 }
 

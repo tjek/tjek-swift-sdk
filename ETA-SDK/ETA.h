@@ -9,8 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
-#import "DDLog.h"
-
+#import "ETA_Log.h"
 
 extern NSString* const ETA_APIErrorDomain;
 extern NSString* const ETA_APIError_URLResponseKey;
@@ -18,6 +17,7 @@ extern NSString* const ETA_APIError_ErrorIDKey;
 extern NSString* const ETA_APIError_ErrorObjectKey;
 
 #import "ETA_API.h"
+
 @class ETA_User;
 
 
@@ -110,8 +110,8 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
 
 
 
-+ (int) logLevel;
-+ (void) setLogLevel:(int)logLevel;
++ (ETASDK_LogLevel) logLevel;
++ (void) setLogLevel:(ETASDK_LogLevel)logLevel;
 
 
 
@@ -397,13 +397,6 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  */
 @property (nonatomic, readonly, strong) NSString* appVersion;
 
-
-
-/**
- *	Whether the SDK logs errors and events. Defaults to *NO*.
- *  * Deprecated - Use +logLevel *
- */
-@property (nonatomic, readwrite, assign) BOOL verbose;
 
 @end
 

@@ -28,6 +28,12 @@
 
 @implementation ETA_ExampleViewController_CatalogView
 
+- (void) dealloc
+{
+    self.catalogView.delegate = nil;
+    self.catalogView = nil;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -39,8 +45,6 @@
     // in order to handle messages from the view we must be the delegate (ETACatalogViewDelegate)
     self.catalogView.delegate = self;
     
-    // you can get a lot of info if you turn on verbose mode
-//    self.catalogView.verbose = YES;
     // place the catalogView on the screen, and make it resize automatically.
     self.catalogView.frame = self.view.bounds;
     self.catalogView.alpha = 0;
@@ -152,7 +156,7 @@
                              catalogView.alpha = 1.0;
                          }];
     }
-    DDLogInfo(@"Changed to %d / %d (%.2f%%)", catalogView.currentPage, catalogView.pageCount, catalogView.pageProgress*100);
+    DDLogInfo(@"Changed to page %d / %d (%.2f%%)", catalogView.currentPage, catalogView.pageCount, catalogView.pageProgress*100);
 }
 
 // The user touched one of the hotspots in the catalog

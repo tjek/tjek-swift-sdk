@@ -9,6 +9,7 @@
 #import "ETA_ListManager.h"
 
 #import "ETA.h"
+#import "ETA_Log.h"
 #import "ETA_ListSyncr.h"
 
 #import "FMDatabaseQueue.h"
@@ -96,11 +97,9 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         
         if (!dbFilePath)
             dbFilePath = [[self class] defaultLocalDBFilePath];
-        NSLog (@"[ETA_ListManager] LocalDB: '%@'", dbFilePath);
+        ETASDKLogInfo (@"[ETA_ListManager] LocalDB: '%@'", dbFilePath);
         
         [self localDBCreateTablesAt:dbFilePath];
-        
-        self.verbose = NO;
     }
     return self;
 }
@@ -159,13 +158,13 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     {
         notificationName = ETA_ListManager_ChangeNotification_Lists;
         
-        [self log:@"[List Notification] %d added / %d removed / %d modified", addedCount, removedCount, modifiedCount];
+        ETASDKLogInfo(@"[List Notification] %d added / %d removed / %d modified", addedCount, removedCount, modifiedCount);
     }
     else if ( objClass == ETA_ShoppingListItem.class )
     {
         notificationName = ETA_ListManager_ChangeNotification_ListItems;
         
-        [self log:@"[Item Notification] %d added / %d removed / %d modified", addedCount, removedCount, modifiedCount];
+        ETASDKLogInfo(@"[Item Notification] %d added / %d removed / %d modified", addedCount, removedCount, modifiedCount);
     }
     
     if (!notificationName)
@@ -308,7 +307,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         NSError* err = nil;
         if (![self updateDBObjects:itemsToUpdate error:&err])
         {
-            NSLog(@"unable to update items without prevID");
+            ETASDKLogError(@"Unable to update items without prevID: (%d) %@ %@", err.code, err.localizedDescription, err.localizedFailureReason);
         }
     }
 //    if (listsToUpdate.count)
@@ -316,7 +315,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 //        NSError* err = nil;
 //        if (![self updateDBObjects:listsToUpdate error:&err])
 //        {
-//            NSLog(@"unable to update lists for items without prevID");
+//            ETASDKLogError(@"unable to update lists for items without prevID");
 //        }
 //    }
     
@@ -1129,20 +1128,20 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         success = [ETA_ShoppingListItem createTable:[self localListItemsTableName]
                                                inDB:db];
         if (!success) {
-            [self log:@"Unable to create tables: %@", db.lastError];
+            ETASDKLogError(@"Unable to create tables: %@", db.lastError);
             return;
         }
         
         success = [ETA_ShoppingList createTable:[self localListsTableName]
                                            inDB:db];
         if (!success){
-            [self log:@"Unable to create tables: %@", db.lastError];
+            ETASDKLogError(@"Unable to create tables: %@", db.lastError);
             return;
         }
         success = [ETA_ListShare createTable:[self localSharesTableName]
                                         inDB:db];
         if (!success) {
-            [self log:@"Unable to create tables: %@", db.lastError];
+            ETASDKLogError(@"Unable to create tables: %@", db.lastError);
             return;
         }
         // Note, can't be called in transaction
@@ -1341,29 +1340,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         shares =  [ETA_ListShare getAllSharesForList:listID fromTable:[self localSharesTableName] inDB:db];
     }];
     return shares;
-}
-
-
-#pragma mark - Utilities
-
-- (void) setVerbose:(BOOL)verbose
-{
-    _verbose = verbose;
-    
-    self.syncr.verbose = verbose;
-}
-
-- (void) log:(NSString*)format, ...
-{
-    if (!self.verbose)
-        return;
-    
-    va_list args;
-    va_start(args, format);
-    NSString* msg = [[NSString alloc] initWithFormat:format arguments:args];
-    va_end(args);
-    
-    NSLog(@"[ETA_ListManager] %@", msg);
 }
 
 

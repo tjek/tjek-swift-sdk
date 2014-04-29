@@ -11,15 +11,13 @@
 #import "ETA.h"
 #import "ETA_Session.h"
 #import "ETA_API.h"
-
 #import "NSValueTransformer+ETAPredefinedValueTransformers.h"
 
+#import "ETA_Log.h"
 
 #import <CommonCrypto/CommonDigest.h>
 
 static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
-
-static int ddLogLevel = LOG_LEVEL_ERROR;
 
 
 @interface ETA_APIClient ()
@@ -130,14 +128,14 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
                     // 1101 & 1108: token expired / invalid token
                     if (code == 1101 || code == 1108)
                     {
-                        DDLogWarn(@"Error (%d) while making request '%@' - Reset Session and retry '%@' - %@", code, requestPath, etaError.localizedDescription, etaError.localizedFailureReason);
+                        ETASDKLogWarn(@"Error (%d) while making request '%@' - Reset Session and retry '%@' - %@", code, requestPath, etaError.localizedDescription, etaError.localizedFailureReason);
                         // create a new session, and if it was successful, repeat the request we were making
                         [self startSessionOnSyncQueue:YES forceReset:YES withCompletion:^(NSError *startSessionError) {
                             if (!startSessionError)
                             {
                                 [self makeRequest:requestPath type:type parameters:parameters remainingRetries:remainingRetries-1 completion:^(id response, NSError *retryError) {
                                     if (retryError)
-                                        DDLogError(@"Error (%d) Retrying Request: '%@'... %@ - %@", code, requestPath, retryError.localizedDescription, retryError.localizedFailureReason);
+                                        ETASDKLogError(@"Error (%d) Retrying Request: '%@'... %@ - %@", code, requestPath, retryError.localizedDescription, retryError.localizedFailureReason);
                                     completionHandler(response, retryError);
                                 }];
                             }
@@ -155,7 +153,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
                         // find how long until we retry - if not set then will retry instantly
                         NSInteger retryAfter = [operation.response.allHeaderFields[@"Retry-After"] integerValue];
                         
-                        DDLogWarn(@"Non-critical error(%d) while making request (retrying after %d secs): %@ - %@", code, retryAfter, error.localizedDescription, error.localizedFailureReason);
+                        ETASDKLogWarn(@"Non-critical error(%d) while making request (retrying after %d secs): %@ - %@", code, retryAfter, error.localizedDescription, error.localizedFailureReason);
                         
                         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(retryAfter * NSEC_PER_SEC));
                         dispatch_after(popTime, _syncQueue, ^(void){
@@ -249,7 +247,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
     
     NSDictionary* httpheaders = self.requestSerializer.HTTPRequestHeaders;
     
-    DDLogInfo(@"Updating Headers - Token:'%@'->'%@' Sig:'%@'->'%@'", httpheaders[@"X-Token"], self.session.token, httpheaders[@"X-Signature"], hash);
+    ETASDKLogInfo(@"Updating Headers - Token:'%@'->'%@' Sig:'%@'->'%@'", httpheaders[@"X-Token"], self.session.token, httpheaders[@"X-Signature"], hash);
     
     [self.requestSerializer setValue:self.session.token forHTTPHeaderField:@"X-Token"];
     [self.requestSerializer setValue:hash               forHTTPHeaderField:@"X-Signature"];
@@ -280,7 +278,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
 // Setting the session causes the change to be persisted to User Defaults
 - (void) setSession:(ETA_Session *)session
 {
-    DDLogInfo(@"Setting Session '%@' (%@) => '%@' (%@)", _session.token, _session.expires, session.token, session.expires);
+    ETASDKLogInfo(@"Setting Session '%@' (%@) => '%@' (%@)", _session.token, _session.expires, session.token, session.expires);
     
     _session = session;
     [self updateHeaders];
@@ -309,7 +307,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
     [newSession setValuesForKeysWithDictionary:@{@"token":newToken,
                                                  @"expires":newExpiryDate}];
     
-    DDLogInfo(@"Updating Session Tokens - '%@' (%@) => '%@' (%@)", self.session.token, self.session.expires, newSession.token, newSession.expires);
+    ETASDKLogInfo(@"Updating Session Tokens - '%@' (%@) => '%@' (%@)", self.session.token, self.session.expires, newSession.token, newSession.expires);
     self.session = newSession;
 }
 
@@ -352,12 +350,12 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
         
         // if there is no session, or either renew or update fail, call this block, which tries to create a new session
         void (^createSessionBlock)() = ^{
-            DDLogInfo(@"Resetting session before creating - '%@' => '%@'", self.session.token, nil);
+            ETASDKLogInfo(@"Resetting session before creating - '%@' => '%@'", self.session.token, nil);
             self.session = nil;
             [self createSessionWithCompletion:^(NSError *error) {
 //                if (error)
 //                {
-//                    DDLogWarn(@"Unable to create session: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
+//                    ETASDKLogWarn(@"Unable to create session: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
 //                }
                 dispatch_semaphore_signal(sema); // tell the syncQueue block to finish
                 if (completionHandler)
@@ -374,7 +372,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
                 [self renewSessionWithCompletion:^(NSError *error) {
                     if (error && error.code != NSURLErrorNotConnectedToInternet)
                     {
-                        DDLogWarn(@"Unable to renew session - trying to create a new one instead: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
+                        ETASDKLogWarn(@"Unable to renew session - trying to create a new one instead: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
                         createSessionBlock();
                     }
                     else
@@ -432,7 +430,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
     {
         session = [ETA_Session objectFromJSONDictionary:sessionDict];
     }
-    DDLogInfo(@"Loading Session - '%@' => '%@'", self.session.token, session.token);
+    ETASDKLogInfo(@"Loading Session - '%@' => '%@'", self.session.token, session.token);
     self.session = session;
 }
 
@@ -489,7 +487,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
         params[@"v1_auth_time"] = timeCookie.value;
     }
     
-    DDLogInfo(@"Creating Session...");
+    ETASDKLogInfo(@"Creating Session...");
     
     [self POST:[ETA_API path:ETA_API.sessions]
         parameters:params
@@ -508,14 +506,14 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
                // save the session that was created, only if we have created it after any previous requests
                if (session)
                {
-                   DDLogInfo(@"... Creating Session successful - '%@' => '%@'", self.session.token, session.token);
+                   ETASDKLogInfo(@"... Creating Session successful - '%@' => '%@'", self.session.token, session.token);
                    
                    [self setIfSameOrNewerSession:session];
                }
                else
                {
                    //TODO: create error if nil session
-                   DDLogWarn(@"... Unable to create session");
+                   ETASDKLogWarn(@"... Unable to create session");
                }
                
                
@@ -532,7 +530,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
                
                NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error] ?: error;
                
-               DDLogWarn(@"... Unable to create session: (%d) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
+               ETASDKLogWarn(@"... Unable to create session: (%d) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
                
                
                if (completionHandler)
@@ -543,7 +541,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
 // get the latest state of the session
 - (void) updateSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    DDLogInfo(@"Updating Session...");
+    ETASDKLogInfo(@"Updating Session...");
     [self GET:[ETA_API path:ETA_API.sessions]
        parameters:[self baseRequestParameters]
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -553,13 +551,13 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
               // save the session that was update, only if we have updated it after any previous requests
               if (session)
               {
-                  DDLogInfo(@"... Updating Session successful - '%@' => '%@'", self.session.token, session.token);
+                  ETASDKLogInfo(@"... Updating Session successful - '%@' => '%@'", self.session.token, session.token);
                   [self setIfSameOrNewerSession:session];
               }
               else
               {
                   //TODO: create error if nil session
-                  DDLogWarn(@"... Unable to update session");
+                  ETASDKLogWarn(@"... Unable to update session");
               }
               
               
@@ -569,7 +567,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
            failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error] ?: error;
                
-               DDLogWarn(@"... Unable to update session: (%d) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
+               ETASDKLogWarn(@"... Unable to update session: (%d) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
                
                if (completionHandler)
                    completionHandler(error);
@@ -579,7 +577,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
 // Ask for a new expiration date / token
 - (void) renewSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    DDLogInfo(@"Renewing Session...");
+    ETASDKLogInfo(@"Renewing Session...");
     [self PUT:[ETA_API path:ETA_API.sessions]
        parameters:[self baseRequestParameters]
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -589,13 +587,13 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
               // save the session that was renewed, only if we have renewed it after any previous requests
               if (session)
               {
-                  DDLogInfo(@"... Renewing Session successful - '%@' => '%@'", self.session.token, session.token);
+                  ETASDKLogInfo(@"... Renewing Session successful - '%@' => '%@'", self.session.token, session.token);
                   [self setIfSameOrNewerSession:session];
               }
               else
               {
                   //TODO: create error if nil session
-                  DDLogWarn(@"... Unable to renew session");
+                  ETASDKLogWarn(@"... Unable to renew session");
               }
               
               if (completionHandler)
@@ -604,7 +602,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
               NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error] ?: error;
               
-              DDLogWarn(@"... Unable to renew session: (%d) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
+              ETASDKLogWarn(@"... Unable to renew session: (%d) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
               
               if (completionHandler)
                   completionHandler(etaError);
@@ -617,7 +615,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
 
 - (void) attachUser:(NSDictionary*)userCredentials withCompletion:(void (^)(NSError* error))completionHandler
 {
-    DDLogInfo(@"Attaching User to Session...");
+    ETASDKLogInfo(@"Attaching User to Session...");
     [self makeRequest:[ETA_API path:ETA_API.sessions]
                  type:ETARequestTypePUT
            parameters:userCredentials
@@ -630,13 +628,13 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
                // save the session, only if after any previous requests
                if (session)
                {
-                   DDLogInfo(@"... Attaching User to Session successful - '%@' => '%@'", self.session.token, session.token);
+                   ETASDKLogInfo(@"... Attaching User to Session successful - '%@' => '%@'", self.session.token, session.token);
                    [self setIfSameOrNewerSession:session];
                }
                else
                {
                    //TODO: create error if nil session
-                   DDLogWarn(@"... Unable to attach user: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
+                   ETASDKLogWarn(@"... Unable to attach user: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
                }
                
                if (completionHandler)
@@ -645,7 +643,7 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
 }
 - (void) detachUserWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    DDLogInfo(@"Detaching User from Session...");
+    ETASDKLogInfo(@"Detaching User from Session...");
     [self makeRequest:[ETA_API path:ETA_API.sessions]
                  type:ETARequestTypePUT
            parameters:@{ @"email":@"" }
@@ -658,13 +656,13 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
                // save the session, only if after any previous requests
                if (session)
                {
-                   DDLogInfo(@"... Detaching User from Session successful - '%@' => '%@'", self.session.token, session.token);
+                   ETASDKLogInfo(@"... Detaching User from Session successful - '%@' => '%@'", self.session.token, session.token);
                    [self setIfSameOrNewerSession:session];
                }
                else
                {
                    //TODO: create error if nil session
-                   DDLogWarn(@"... Unable to deattach user: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
+                   ETASDKLogWarn(@"... Unable to deattach user: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
                }
                
                if (completionHandler)
@@ -718,29 +716,6 @@ static int ddLogLevel = LOG_LEVEL_ERROR;
         etaErrorDict = [NSJSONSerialization JSONObjectWithData:[errorDesc dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     
     return [self etaErrorFromETAErrorDict:etaErrorDict andURLResponse:AFNetworkingError.userInfo[AFNetworkingOperationFailingURLResponseErrorKey]];
-}
-
-
-
-#pragma mark - Logging
-
-// Use `ddLogLevel` as CocoaLumberjack searches for these method names
-+ (int)ddLogLevel
-{
-    return ddLogLevel;
-}
-+ (void)ddSetLogLevel:(int)logLevel
-{
-    ddLogLevel = logLevel;
-}
-
-+ (int)logLevel
-{
-    return [self ddLogLevel];
-}
-+ (void)setLogLevel:(int)logLevel
-{
-    [self ddSetLogLevel:logLevel];
 }
 
 @end

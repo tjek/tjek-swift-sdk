@@ -8,6 +8,8 @@
 
 #import "ETA.h"
 
+#import "ETA_Log.h"
+
 #import "ETA_APIClient.h"
 #import "ETA_Session.h"
 
@@ -19,8 +21,6 @@ NSString* const ETA_APIErrorDomain = @"ETA_APIErrorDomain";
 NSString* const ETA_APIError_URLResponseKey = @"ETA_APIError_URLResponseKey";
 NSString* const ETA_APIError_ErrorIDKey = @"ETA_APIError_IDKey";
 NSString* const ETA_APIError_ErrorObjectKey = @"ETA_APIError_ErrorObjectKey";
-
-static int ddLogLevel = LOG_LEVEL_ERROR;
 
 typedef enum {
     ETA_APIErrorCode_MissingParameter = 0
@@ -85,8 +85,7 @@ static ETA* ETA_SingletonSDK = nil;
     if (baseURL)
         eta.baseURL = baseURL;
     
-    DDLogInfo(@"ETA-SDK Initialized '%@' %@", eta.appVersion, eta.baseURL);
-    
+    ETASDKLogInfo(@"ETA-SDK Initialized '%@' %@", eta.appVersion, eta.baseURL);
     return eta;
 }
 
@@ -157,7 +156,7 @@ static ETA* ETA_SingletonSDK = nil;
     {
         if ((self.attachedUserID == self.client.session.user.uuid || [self.attachedUserID isEqualToString:self.client.session.user.uuid]) == NO)
         {
-            DDLogInfo(@"User %@ => %@", self.attachedUserID, self.client.session.user.uuid);
+            ETASDKLogInfo(@"User %@ => %@", self.attachedUserID, self.client.session.user.uuid);
             self.attachedUserID = self.client.session.user.uuid;
         }
     }
@@ -577,35 +576,13 @@ static ETA* ETA_SingletonSDK = nil;
 
 #pragma mark - Logging
 
-// Use `ddLogLevel` as CocoaLumberjack searches for these method names
-+ (int)ddLogLevel
++ (ETASDK_LogLevel)logLevel
 {
-    return ddLogLevel;
+    return ETASDK_GetLogLevel();
 }
-+ (void)ddSetLogLevel:(int)logLevel
++ (void)setLogLevel:(ETASDK_LogLevel)logLevel
 {
-    ddLogLevel = logLevel;
-}
-
-+ (int)logLevel
-{
-    return [self ddLogLevel];
-}
-+ (void)setLogLevel:(int)logLevel
-{
-    [self ddSetLogLevel:logLevel];
-    [ETA_APIClient setLogLevel:logLevel];
-}
-
-
-// Deprecated
-- (BOOL) verbose
-{
-    return ([self.class logLevel] & LOG_FLAG_VERBOSE);
-}
-- (void) setVerbose:(BOOL)verbose
-{
-    [self.class setLogLevel:verbose ? LOG_LEVEL_VERBOSE : LOG_LEVEL_WARN];
+    ETASDK_SetLogLevel(logLevel);
 }
 
 @end

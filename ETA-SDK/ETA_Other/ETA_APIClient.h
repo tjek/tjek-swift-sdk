@@ -8,8 +8,6 @@
 
 #import "ETA.h"
 
-#import "DDLog.h"
-
 #import "AFHTTPRequestOperationManager.h"
 
 @class ETA_Session;
@@ -52,13 +50,6 @@
 
 // does the current session allow the specified action
 - (BOOL) allowsPermission:(NSString*)actionPermission;
-
-
-
-#pragma mark - Logging
-
-+ (int)logLevel;
-+ (void)setLogLevel:(int)logLevel;
 
 
 @end
