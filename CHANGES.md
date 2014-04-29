@@ -1,5 +1,9 @@
 # eTilbudsavis iOS SDK - Change Log
 
+## v2.2.2
+* Replace logging system with CocoaLumberjack
+* Removed `verbose` properties
+
 ## v2.2.1
 * Performs CatalogView requests in the background
 * Minor bug fixes

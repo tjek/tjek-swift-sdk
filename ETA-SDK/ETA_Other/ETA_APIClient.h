@@ -51,7 +51,5 @@
 // does the current session allow the specified action
 - (BOOL) allowsPermission:(NSString*)actionPermission;
 
-// whether the client logs errors and events. Defaults to NO.
-@property (nonatomic, readwrite, assign) BOOL verbose;
 
 @end
