@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "ETA-SDK"
-  s.version      = "2.2.1"
+  s.version      = "2.2.2"
   s.summary      = "eTilbudsavis iOS SDK."
   s.description  = <<-DESC
                      An SDK that makes it easy to talk to the eTilbudsavis API.
