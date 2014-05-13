@@ -55,7 +55,7 @@ NSString* const ETA_ListSyncr_ChangeNotificationInfo_RemovedKey = @"removed";
 @implementation ETA_ListSyncr
 
 static NSTimeInterval kETA_ListSyncr_DefaultPollInterval   = 6.0; // secs
-static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
+static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
 
 
 
@@ -917,8 +917,18 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
             requestBlock(^void(id response, NSError *requestError, BOOL fromCache) {
                 
                 // if the requestError is that the item doesnt exist on the server then consider that a success!
-                if (requestError && requestError.code != 1501)
+                if (!requestError || requestError.code == 1501 || requestError.code == 1441)
                 {
+                    // try to remove from the local DB
+                    NSError* deleteErr;
+                    if (![self localDB_deleteObjects:@[obj] error:&deleteErr])
+                    {
+                        ETASDKLogError(@"[DeleteObjOperation(%@)] Completed - Unable to remove from localDB %d:'%@'", opName, deleteErr.code, deleteErr.localizedDescription);
+                    }
+                }
+                else
+                {
+                    // Otherwise, mark as still needing to delete
                     //TODO: if serious error mark item as Failed so we dont try it again?
                     obj.state = ETA_DBSyncState_ToBeDeleted;
                     
@@ -928,15 +938,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 10.0; // secs
                     if (![self localDB_updateObjects:@[obj] error:&updateErr])
                     {
                         ETASDKLogError(@"[DeleteObjOperation(%@)] ALSO Failed to mark as 'ToBeDeleted' %d:'%@'", opName, updateErr.code, updateErr.localizedDescription);
-                    }
-                }
-                else
-                {
-                    // try to remove from the local DB
-                    NSError* deleteErr;
-                    if (![self localDB_deleteObjects:@[obj] error:&deleteErr])
-                    {
-                        ETASDKLogError(@"[DeleteObjOperation(%@)] Completed - Unable to remove from localDB %d:'%@'", opName, deleteErr.code, deleteErr.localizedDescription);
                     }
                 }
                 dispatch_semaphore_signal(sema);
