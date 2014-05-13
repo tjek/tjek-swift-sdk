@@ -47,7 +47,7 @@
 
 + (ETA_ListShare_Access) accessForString:(NSString*)shareAccessString
 {
-    return [[self shareAccessCodesByString][shareAccessString] integerValue];
+    return (ETA_ListShare_Access)[[self shareAccessCodesByString][shareAccessString] integerValue];
 }
 + (NSString*) stringForAccess:(ETA_ListShare_Access)shareAccess
 {

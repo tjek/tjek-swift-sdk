@@ -71,7 +71,7 @@ NSString* const kLS_USERID        = @"userID";
     ETA_ListShare* share = [ETA_ListShare objectFromJSONDictionary:jsonDict];
 
     // state & sync user is not part of the JSON parsing, so set manually
-    share.state = [res longForColumn:kLS_STATE];
+    share.state = (ETA_DBSyncState)[res longForColumn:kLS_STATE];
     share.syncUserID = [res stringForColumn:kLS_USERID];
     
     return share;

@@ -82,11 +82,11 @@ NSString* const kSL_USERID        = @"userID";
     
     ETA_ShoppingList* list = [ETA_ShoppingList objectFromJSONDictionary:jsonDict];
     // state & sync user is not part of the JSON parsing, so set manually
-    list.state = [res longForColumn:kSL_STATE];
+    list.state = (ETA_DBSyncState)[res longForColumn:kSL_STATE];
     list.syncUserID = [res stringForColumn:kSL_USERID];
     
     // type is saved as enum, not JSON string
-    list.type = [res longForColumn:kSL_TYPE];
+    list.type = (ETA_ShoppingList_Type)[res longForColumn:kSL_TYPE];
     
     return list;
 }

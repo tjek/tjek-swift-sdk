@@ -158,13 +158,13 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     {
         notificationName = ETA_ListManager_ChangeNotification_Lists;
         
-        ETASDKLogInfo(@"[List Notification] %d added / %d removed / %d modified", addedCount, removedCount, modifiedCount);
+        ETASDKLogInfo(@"[List Notification] %tu added / %tu removed / %tu modified", addedCount, removedCount, modifiedCount);
     }
     else if ( objClass == ETA_ShoppingListItem.class )
     {
         notificationName = ETA_ListManager_ChangeNotification_ListItems;
         
-        ETASDKLogInfo(@"[Item Notification] %d added / %d removed / %d modified", addedCount, removedCount, modifiedCount);
+        ETASDKLogInfo(@"[Item Notification] %tu added / %tu removed / %tu modified", addedCount, removedCount, modifiedCount);
     }
     
     if (!notificationName)
@@ -307,7 +307,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         NSError* err = nil;
         if (![self updateDBObjects:itemsToUpdate error:&err])
         {
-            ETASDKLogError(@"Unable to update items without prevID: (%d) %@ %@", err.code, err.localizedDescription, err.localizedFailureReason);
+            ETASDKLogError(@"Unable to update items without prevID: (%zd) %@ %@", err.code, err.localizedDescription, err.localizedFailureReason);
         }
     }
 //    if (listsToUpdate.count)

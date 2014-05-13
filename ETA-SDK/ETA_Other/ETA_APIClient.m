@@ -128,14 +128,14 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                     // 1101 & 1108: token expired / invalid token
                     if (code == 1101 || code == 1108)
                     {
-                        ETASDKLogWarn(@"Error (%d) while making request '%@' - Reset Session and retry '%@' - %@", code, requestPath, etaError.localizedDescription, etaError.localizedFailureReason);
+                        ETASDKLogWarn(@"Error (%zd) while making request '%@' - Reset Session and retry '%@' - %@", code, requestPath, etaError.localizedDescription, etaError.localizedFailureReason);
                         // create a new session, and if it was successful, repeat the request we were making
                         [self startSessionOnSyncQueue:YES forceReset:YES withCompletion:^(NSError *startSessionError) {
                             if (!startSessionError)
                             {
                                 [self makeRequest:requestPath type:type parameters:parameters remainingRetries:remainingRetries-1 completion:^(id response, NSError *retryError) {
                                     if (retryError)
-                                        ETASDKLogError(@"Error (%d) Retrying Request: '%@'... %@ - %@", code, requestPath, retryError.localizedDescription, retryError.localizedFailureReason);
+                                        ETASDKLogError(@"Error (%zd) Retrying Request: '%@'... %@ - %@", code, requestPath, retryError.localizedDescription, retryError.localizedFailureReason);
                                     completionHandler(response, retryError);
                                 }];
                             }
@@ -153,7 +153,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                         // find how long until we retry - if not set then will retry instantly
                         NSInteger retryAfter = [operation.response.allHeaderFields[@"Retry-After"] integerValue];
                         
-                        ETASDKLogWarn(@"Non-critical error(%d) while making request (retrying after %d secs): %@ - %@", code, retryAfter, error.localizedDescription, error.localizedFailureReason);
+                        ETASDKLogWarn(@"Non-critical error(%zd) while making request (retrying after %tu secs): %@ - %@", code, retryAfter, error.localizedDescription, error.localizedFailureReason);
                         
                         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(retryAfter * NSEC_PER_SEC));
                         dispatch_after(popTime, _syncQueue, ^(void){
@@ -235,7 +235,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
         NSData* hashData = [[NSString stringWithFormat:@"%@%@", self.apiSecret, self.session.token] dataUsingEncoding:NSUTF8StringEncoding];
         
         unsigned char result[CC_SHA256_DIGEST_LENGTH];
-        if (CC_SHA256(hashData.bytes, hashData.length, result)) {
+        if (CC_SHA256(hashData.bytes, (CC_LONG)hashData.length, result)) {
             NSMutableString *res = [NSMutableString stringWithCapacity:CC_SHA256_DIGEST_LENGTH*2];
             for (int i = 0; i<CC_SHA256_DIGEST_LENGTH; i++) {
                 [res appendFormat:@"%02x",result[i]];
@@ -372,7 +372,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                 [self renewSessionWithCompletion:^(NSError *error) {
                     if (error && error.code != NSURLErrorNotConnectedToInternet)
                     {
-                        ETASDKLogWarn(@"Unable to renew session - trying to create a new one instead: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
+                        ETASDKLogWarn(@"Unable to renew session - trying to create a new one instead: (%zd) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
                         createSessionBlock();
                     }
                     else
@@ -530,7 +530,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                
                NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error] ?: error;
                
-               ETASDKLogWarn(@"... Unable to create session: (%d) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
+               ETASDKLogWarn(@"... Unable to create session: (%zd) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
                
                
                if (completionHandler)
@@ -567,7 +567,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
            failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error] ?: error;
                
-               ETASDKLogWarn(@"... Unable to update session: (%d) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
+               ETASDKLogWarn(@"... Unable to update session: (%zd) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
                
                if (completionHandler)
                    completionHandler(error);
@@ -602,7 +602,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
               NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error] ?: error;
               
-              ETASDKLogWarn(@"... Unable to renew session: (%d) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
+              ETASDKLogWarn(@"... Unable to renew session: (%zd) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
               
               if (completionHandler)
                   completionHandler(etaError);
@@ -634,7 +634,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                else
                {
                    //TODO: create error if nil session
-                   ETASDKLogWarn(@"... Unable to attach user: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
+                   ETASDKLogWarn(@"... Unable to attach user: (%zd) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
                }
                
                if (completionHandler)
@@ -662,7 +662,7 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
                else
                {
                    //TODO: create error if nil session
-                   ETASDKLogWarn(@"... Unable to deattach user: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
+                   ETASDKLogWarn(@"... Unable to deattach user: (%zd) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
                }
                
                if (completionHandler)

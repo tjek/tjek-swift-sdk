@@ -57,7 +57,7 @@ NSString * const ETA_APIDate_ValueTransformerName = @"ETA_APIDate_ValueTransform
                                                         else
                                                             return nil;
                                                         
-                                                        return [NSString stringWithFormat:@"%0.6lX", rgbHex];
+                                                        return [NSString stringWithFormat:@"%0.6X", (unsigned int)rgbHex];
                                                     }];
 		
 		[NSValueTransformer setValueTransformer:hexColorTransformer forName:ETA_HexColor_ValueTransformerName];

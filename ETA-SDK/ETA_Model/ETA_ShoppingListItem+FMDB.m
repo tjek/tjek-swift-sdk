@@ -103,7 +103,7 @@ NSString* const kETA_ListItem_DBQuery_OfferID = kSLI_OFFER_ID;
     
     ETA_ShoppingListItem* item = [ETA_ShoppingListItem objectFromJSONDictionary:jsonDict];
     // state & sync is not part of the JSON parsing, so set manually
-    item.state = [res longForColumn:kSLI_STATE];
+    item.state = (ETA_DBSyncState)[res longForColumn:kSLI_STATE];
     item.syncUserID = [res stringForColumn:kSLI_USERID];
     return item;
 }
