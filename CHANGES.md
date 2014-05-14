@@ -3,6 +3,8 @@
 ## v2.2.2
 * Replace logging system with CocoaLumberjack
 * Removed `verbose` properties
+* Update to AFNetworking ~> 2.2.4
+* Update to Mantle ~> 1.4.1
 
 ## v2.2.1
 * Performs CatalogView requests in the background
