@@ -209,7 +209,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
         NSString* userID = self.eta.attachedUserID;
         if (!userID)
         {
-            ETASDKLogWarn(@"No attached user to sync");
+            ETASDKLogInfo(@"No attached user to sync");
             if (completionHandler) {
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     completionHandler(NO);
