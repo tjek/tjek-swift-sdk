@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+#import "ETA_ModelObject.h"
 
 /**
  *  A Dealer object
