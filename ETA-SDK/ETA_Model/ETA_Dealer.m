@@ -7,10 +7,14 @@
 //
 
 #import "ETA_Dealer.h"
+#import "ETA_API.h"
 
 #import "NSValueTransformer+ETAPredefinedValueTransformers.h"
 
 @implementation ETA_Dealer
+
++ (NSString*) APIEndpoint { return ETA_API.dealers; }
+
 
 #pragma mark - JSON transformers
 
