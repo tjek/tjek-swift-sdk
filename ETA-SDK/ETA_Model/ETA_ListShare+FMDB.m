@@ -7,7 +7,7 @@
 //
 
 #import "ETA_ListShare+FMDB.h"
-
+#import "ETA_Log.h"
 #import "FMDatabase.h"
 #import "FMResultSet.h"
 
@@ -71,7 +71,7 @@ NSString* const kLS_USERID        = @"userID";
     ETA_ListShare* share = [ETA_ListShare objectFromJSONDictionary:jsonDict];
 
     // state & sync user is not part of the JSON parsing, so set manually
-    share.state = [res longForColumn:kLS_STATE];
+    share.state = (ETA_DBSyncState)[res longForColumn:kLS_STATE];
     share.syncUserID = [res stringForColumn:kLS_USERID];
     
     return share;
@@ -121,7 +121,7 @@ NSString* const kLS_USERID        = @"userID";
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
     {
-        NSLog(@"[ETA_ListShare+FMDB] Unable to create table '%@': %@", tableName, db.lastError);
+        ETASDKLogError(@"[ETA_ListShare+FMDB] Unable to create table '%@': %@", tableName, db.lastError);
     }
     return success;
 }
@@ -131,7 +131,7 @@ NSString* const kLS_USERID        = @"userID";
     NSString* queryStr = [NSString stringWithFormat:@"DELETE FROM %@;", tableName];
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
-        NSLog(@"[ETA_ListShare+FMDB] Unable to empty table '%@': %@", tableName, db.lastError);
+        ETASDKLogError(@"[ETA_ListShare+FMDB] Unable to empty table '%@': %@", tableName, db.lastError);
     
     return success;
 }
@@ -260,7 +260,7 @@ NSString* const kLS_USERID        = @"userID";
     if (!success) {
         if (error)
             *error = db.lastError;
-        NSLog(@"[ETA_ListShare+FMDB] Unable to Insert/Replace Share %@: %@", params, db.lastError);
+        ETASDKLogError(@"[ETA_ListShare+FMDB] Unable to Insert/Replace Share %@: %@", params, db.lastError);
     }
     return success;
 }
@@ -274,7 +274,7 @@ NSString* const kLS_USERID        = @"userID";
     if (!success) {
         if (error)
             *error = db.lastError;
-        NSLog(@"[ETA_ListShare+FMDB] Unable to Delete Share %@-%@: %@", share.listUUID, share.userEmail, db.lastError);
+        ETASDKLogError(@"[ETA_ListShare+FMDB] Unable to Delete Share %@-%@: %@", share.listUUID, share.userEmail, db.lastError);
     }
     return success;
 }

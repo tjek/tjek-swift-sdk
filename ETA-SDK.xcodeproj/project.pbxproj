@@ -65,6 +65,13 @@
 		173A3AEE18ED9EEC00765373 /* ETA_PermissionCategories.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_PermissionCategories.m; sourceTree = "<group>"; };
 		173A3AEF18ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSValueTransformer+ETAPredefinedValueTransformers.h"; sourceTree = "<group>"; };
 		173A3AF018ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSValueTransformer+ETAPredefinedValueTransformers.m"; sourceTree = "<group>"; };
+		1749A4BB1966AC510061F0A9 /* ETA_Dealer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Dealer.h; sourceTree = "<group>"; };
+		1749A4BC1966AC510061F0A9 /* ETA_Dealer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Dealer.m; sourceTree = "<group>"; };
+		17A884D3190E79B2009B3E6E /* ETA_Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Log.h; sourceTree = "<group>"; };
+		17A884D4190E936B009B3E6E /* ETA_Log.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Log.m; sourceTree = "<group>"; };
+		17A884D5190FC837009B3E6E /* CHANGES.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = CHANGES.md; sourceTree = "<group>"; };
+		17A884D6190FC837009B3E6E /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.md; sourceTree = "<group>"; };
+		17A884D7190FC837009B3E6E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -90,6 +97,8 @@
 				173A3ACB18ED9EEC00765373 /* ETA_Branding.m */,
 				173A3ACC18ED9EEC00765373 /* ETA_Catalog.h */,
 				173A3ACD18ED9EEC00765373 /* ETA_Catalog.m */,
+				1749A4BB1966AC510061F0A9 /* ETA_Dealer.h */,
+				1749A4BC1966AC510061F0A9 /* ETA_Dealer.m */,
 				173A3ACE18ED9EEC00765373 /* ETA_DBSyncModelObject.h */,
 				173A3ACF18ED9EEC00765373 /* ETA_DBSyncModelObject.m */,
 				173A3AD018ED9EEC00765373 /* ETA_ListShare+FMDB.h */,
@@ -131,6 +140,8 @@
 				173A3AEE18ED9EEC00765373 /* ETA_PermissionCategories.m */,
 				173A3AEF18ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.h */,
 				173A3AF018ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.m */,
+				17A884D3190E79B2009B3E6E /* ETA_Log.h */,
+				17A884D4190E936B009B3E6E /* ETA_Log.m */,
 			);
 			path = ETA_Other;
 			sourceTree = "<group>";
@@ -138,6 +149,9 @@
 		17DBD17717A7DF5F008EFAEF = {
 			isa = PBXGroup;
 			children = (
+				17A884D5190FC837009B3E6E /* CHANGES.md */,
+				17A884D7190FC837009B3E6E /* README.md */,
+				17A884D6190FC837009B3E6E /* LICENSE.md */,
 				173A3AC218ED9EEC00765373 /* ETA-SDK */,
 			);
 			sourceTree = "<group>";

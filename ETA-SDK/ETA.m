@@ -8,9 +8,10 @@
 
 #import "ETA.h"
 
+#import "ETA_Log.h"
+
 #import "ETA_APIClient.h"
 #import "ETA_Session.h"
-
 
 NSString* const ETA_AttachedUserChangedNotification = @"ETA_AttachedUserChangedNotification";
 
@@ -83,9 +84,10 @@ static ETA* ETA_SingletonSDK = nil;
     eta.appVersion = appVersion;
     if (baseURL)
         eta.baseURL = baseURL;
+    
+    ETASDKLogInfo(@"ETA-SDK Initialized '%@' %@", eta.appVersion, eta.baseURL);
     return eta;
 }
-
 
 - (instancetype) init
 {
@@ -94,20 +96,8 @@ static ETA* ETA_SingletonSDK = nil;
         self.itemCache = [[NSCache alloc] init];
         
         self.baseURL = [NSURL URLWithString: kETA_APIBaseURLString];
-        
-        self.verbose = NO;
     }
     return self;
-}
-
-- (void) setVerbose:(BOOL)verbose
-{
-    if (_verbose == verbose)
-        return;
-    
-    _verbose = verbose;
-    
-    _client.verbose = _verbose;
 }
 
 - (ETA_APIClient*) client
@@ -117,7 +107,6 @@ static ETA* ETA_SingletonSDK = nil;
         if (!_client)
         {
             self.client = [ETA_APIClient clientWithBaseURL:self.baseURL apiKey:self.apiKey apiSecret:self.apiSecret appVersion:self.appVersion];
-            self.client.verbose = self.verbose;
         }
     }
     return _client;
@@ -167,7 +156,7 @@ static ETA* ETA_SingletonSDK = nil;
     {
         if ((self.attachedUserID == self.client.session.user.uuid || [self.attachedUserID isEqualToString:self.client.session.user.uuid]) == NO)
         {
-            NSLog(@"User %@ => %@", self.attachedUserID, self.client.session.user.uuid);
+            ETASDKLogInfo(@"User %@ => %@", self.attachedUserID, self.client.session.user.uuid);
             self.attachedUserID = self.client.session.user.uuid;
         }
     }
@@ -581,6 +570,19 @@ static ETA* ETA_SingletonSDK = nil;
 + (NSString*) errorForCode:(NSInteger)errorCode
 {
     return [[ETA errors] objectForKey:@(errorCode)];
+}
+
+
+
+#pragma mark - Logging
+
++ (ETASDK_LogLevel)logLevel
+{
+    return ETASDK_GetLogLevel();
+}
++ (void)setLogLevel:(ETASDK_LogLevel)logLevel
+{
+    ETASDK_SetLogLevel(logLevel);
 }
 
 @end

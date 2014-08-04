@@ -51,8 +51,6 @@ typedef enum{
 
 - (void) performSync:(BOOL)checkAllLists completionHandler:(void(^)(BOOL success))completionHandler;
 
-@property (nonatomic, readwrite, assign) BOOL verbose;
-
 @property (atomic, readonly, assign) BOOL syncingInProgress;
 
 @property (atomic, readonly, assign) NSUInteger pullSyncCount;

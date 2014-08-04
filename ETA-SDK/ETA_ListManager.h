@@ -77,12 +77,6 @@ typedef enum {
  */
 @property (nonatomic, readwrite, assign) ETA_ListManager_SyncRate syncRate;
 
-/**
- * Whether the List manager logs errors and events. Defaults to NO.
- */
-@property (nonatomic, readwrite, assign) BOOL verbose;
-
-
 
 #pragma mark - Lists
 ///---------------------------------------------

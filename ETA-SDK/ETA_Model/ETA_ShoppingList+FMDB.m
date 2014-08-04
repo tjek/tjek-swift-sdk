@@ -7,6 +7,7 @@
 //
 
 #import "ETA_ShoppingList+FMDB.h"
+#import "ETA_Log.h"
 
 #import "ETA_ListShare+FMDB.h"
 
@@ -81,11 +82,11 @@ NSString* const kSL_USERID        = @"userID";
     
     ETA_ShoppingList* list = [ETA_ShoppingList objectFromJSONDictionary:jsonDict];
     // state & sync user is not part of the JSON parsing, so set manually
-    list.state = [res longForColumn:kSL_STATE];
+    list.state = (ETA_DBSyncState)[res longForColumn:kSL_STATE];
     list.syncUserID = [res stringForColumn:kSL_USERID];
     
     // type is saved as enum, not JSON string
-    list.type = [res longForColumn:kSL_TYPE];
+    list.type = (ETA_ShoppingList_Type)[res longForColumn:kSL_TYPE];
     
     return list;
 }
@@ -143,7 +144,7 @@ NSString* const kSL_USERID        = @"userID";
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
     {
-        NSLog(@"[ETA_ShoppingList+FMDB] Unable to create table '%@': %@", tableName, db.lastError);
+        ETASDKLogError(@"[ETA_ShoppingList+FMDB] Unable to create table '%@': %@", tableName, db.lastError);
     }
     return success;
 }
@@ -153,7 +154,7 @@ NSString* const kSL_USERID        = @"userID";
     NSString* queryStr = [NSString stringWithFormat:@"DELETE FROM %@;", tableName];
     BOOL success = [db executeUpdate:queryStr];
     if (!success)
-        NSLog(@"[ETA_ShoppingList+FMDB] Unable to empty table '%@': %@", tableName, db.lastError);
+        ETASDKLogError(@"[ETA_ShoppingList+FMDB] Unable to empty table '%@': %@", tableName, db.lastError);
     
     return success;
 }
@@ -237,7 +238,7 @@ NSString* const kSL_USERID        = @"userID";
     if (!success) {
         if (error)
             *error = db.lastError;
-        NSLog(@"[ETA_ShoppingList+FMDB] Unable to Insert/Replace List %@: %@", params, db.lastError);
+        ETASDKLogError(@"[ETA_ShoppingList+FMDB] Unable to Insert/Replace List %@: %@", params, db.lastError);
     }
     return success;
 }
@@ -251,7 +252,7 @@ NSString* const kSL_USERID        = @"userID";
     if (!success) {
         if (error)
             *error = db.lastError;
-        NSLog(@"[ETA_ShoppingList+FMDB] Unable to Delete List %@: %@", listID, db.lastError);
+        ETASDKLogError(@"[ETA_ShoppingList+FMDB] Unable to Delete List %@: %@", listID, db.lastError);
     }
     return success;
 }

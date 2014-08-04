@@ -57,7 +57,7 @@ NSString * const ETA_APIDate_ValueTransformerName = @"ETA_APIDate_ValueTransform
                                                         else
                                                             return nil;
                                                         
-                                                        return [NSString stringWithFormat:@"%0.6lX", rgbHex];
+                                                        return [NSString stringWithFormat:@"%0.6X", (unsigned int)rgbHex];
                                                     }];
 		
 		[NSValueTransformer setValueTransformer:hexColorTransformer forName:ETA_HexColor_ValueTransformerName];
@@ -70,11 +70,21 @@ NSString * const ETA_APIDate_ValueTransformerName = @"ETA_APIDate_ValueTransform
 		MTLValueTransformer *apiDateValueTransformer = [MTLValueTransformer
                                                         reversibleTransformerWithForwardBlock:^NSDate*(NSString *str)
                                                         {
-                                                            return [df dateFromString:str];
+                                                            NSDate* date;
+                                                            @synchronized(df)
+                                                            {
+                                                                date = [df dateFromString:str];
+                                                            }
+                                                            return date;
                                                         }
                                                         reverseBlock:^NSString*(NSDate *date)
                                                         {
-                                                            return [df stringFromDate:date];
+                                                            NSString* string;
+                                                            @synchronized(df)
+                                                            {
+                                                                string = [df stringFromDate:date];
+                                                            }
+                                                            return string;
                                                         }];
         
 		[NSValueTransformer setValueTransformer:apiDateValueTransformer forName:ETA_APIDate_ValueTransformerName];

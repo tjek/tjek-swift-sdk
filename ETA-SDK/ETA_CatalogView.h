@@ -74,8 +74,4 @@ static NSString * const kETA_CatalogViewBaseURLString = @"https://etilbudsavis.d
 @property (nonatomic, readonly, assign) NSUInteger pageCount;
 @property (nonatomic, readonly, assign) CGFloat pageProgress;
 
-
-// print out all requests and events. Defaults to NO.
-@property (nonatomic, readwrite, assign) BOOL verbose;
-
 @end
