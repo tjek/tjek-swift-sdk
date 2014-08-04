@@ -18,6 +18,7 @@
 #import <CommonCrypto/CommonDigest.h>
 
 static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
+static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
 
 
 @interface ETA_APIClient ()
@@ -71,6 +72,17 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
     return self;
 }
 
+
++ (NSString*) clientID
+{
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kETA_ClientIDUserDefaultsKey];
+}
+
++ (void) setClientID:(NSString*)clientID
+{
+    [[NSUserDefaults standardUserDefaults] setObject:clientID forKey:kETA_ClientIDUserDefaultsKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 #pragma mark - API Requests
 
@@ -459,6 +471,17 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
     NSInteger tokenLife = 90*24*60*60;
 //    NSInteger tokenLife = 5;
     
+    NSMutableDictionary* params = [[self baseRequestParameters] mutableCopy];
+    
+    [params setValuesForKeysWithDictionary:@{ @"api_key": (self.apiKey) ?: [NSNull null],
+                                              @"token_ttl": @(tokenLife) }];
+    
+    // if we have a client ID send it as a parameter
+    NSString* clientID = [self.class clientID];
+    if (clientID)
+        params[@"client_id"] = clientID;
+    
+    // legacy upgrade params
     NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     
     NSHTTPCookie* hashCookie = nil; // nomnomnom
@@ -474,11 +497,6 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
         else if ([name caseInsensitiveCompare:@"auth[time]"] == NSOrderedSame)
             timeCookie = cookie;
     }
-
-    NSMutableDictionary* params = [[self baseRequestParameters] mutableCopy];
-    
-    [params setValuesForKeysWithDictionary:@{ @"api_key": (self.apiKey) ?: [NSNull null],
-                                              @"token_ttl": @(tokenLife) }];
     
     if (hashCookie && idCookie && timeCookie)
     {
@@ -487,11 +505,21 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
         params[@"v1_auth_time"] = timeCookie.value;
     }
     
+    
     ETASDKLogInfo(@"Creating Session...");
     
     [self POST:[ETA_API path:ETA_API.sessions]
         parameters:params
            success:^(AFHTTPRequestOperation *operation, id responseObject) {
+               
+               // save the sent client ID if we havnt already
+               if ([responseObject isKindOfClass:NSDictionary.class])
+               {
+                   NSString* newClientID = ((NSDictionary*)responseObject)[@"client_id"];
+                   if (newClientID && ![self.class clientID])
+                       [self.class setClientID:newClientID];
+               }
+               
                
                if (hashCookie && idCookie && timeCookie)
                {
@@ -545,6 +573,16 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
     [self GET:[ETA_API path:ETA_API.sessions]
        parameters:[self baseRequestParameters]
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              
+              // save the sent client ID if we havnt already
+              if ([responseObject isKindOfClass:NSDictionary.class])
+              {
+                  NSString* newClientID = ((NSDictionary*)responseObject)[@"client_id"];
+                  if (newClientID && ![self.class clientID])
+                      [self.class setClientID:newClientID];
+              }
+              
+              
               NSError* error = nil;
               ETA_Session* session = [ETA_Session objectFromJSONDictionary:responseObject];
 
@@ -577,10 +615,28 @@ static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
 // Ask for a new expiration date / token
 - (void) renewSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
+    NSMutableDictionary* params = [[self baseRequestParameters] mutableCopy];
+    
+    // if we have a client ID send it as a parameter
+    NSString* clientID = [self.class clientID];
+    if (clientID)
+        params[@"client_id"] = clientID;
+    
+    
     ETASDKLogInfo(@"Renewing Session...");
     [self PUT:[ETA_API path:ETA_API.sessions]
-       parameters:[self baseRequestParameters]
+       parameters:params
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              
+              // save the sent client ID if we havnt already
+              if ([responseObject isKindOfClass:NSDictionary.class])
+              {
+                  NSString* newClientID = ((NSDictionary*)responseObject)[@"client_id"];
+                  if (newClientID && ![self.class clientID])
+                      [self.class setClientID:newClientID];
+              }
+              
+              
               NSError* error = nil;
               ETA_Session* session = [ETA_Session objectFromJSONDictionary:responseObject];
 
