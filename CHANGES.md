@@ -1,10 +1,11 @@
 # eTilbudsavis iOS SDK - Change Log
 
 ## v2.2.2
-* Replace logging system with CocoaLumberjack
+* Replace logging system with CocoaLumberjack, and update examples
 * Removed `verbose` properties
-* Update to AFNetworking ~> 2.2.4
-* Update to Mantle ~> 1.4.1
+* Update to *AFNetworking ~> 2.2.4*
+* Update to *Mantle ~> 1.4.1*
+* Added Dealer model object
 
 ## v2.2.1
 * Performs CatalogView requests in the background
