@@ -208,7 +208,10 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     self.initState = ETA_CatalogView_InitState_Initializing;
     
     // create a new webview, destroying the old
+    self.webview.delegate = nil;
+    [self.webview stopLoading];
     [self.webview removeFromSuperview];
+    
     self.webview = [[UIWebView alloc] initWithFrame:self.bounds];
     self.webview.scrollView.scrollEnabled = NO;
     self.webview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -261,6 +264,8 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
     self.catalogID = nil;
     self.pendingShowCatalogRequest = nil;
     
+    self.webview.delegate = nil;
+    [self.webview stopLoading];
     [self.webview removeFromSuperview];
     self.webview = nil;
     
