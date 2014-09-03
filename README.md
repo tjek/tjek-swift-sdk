@@ -10,7 +10,7 @@ In this README:
   - [API Key and Secret](#api-key-and-secret)
 - Usage
   - [ETA SDK](#eta-sdk)
-  - [Shopping List Manager](#shopping-list-manager)
+  - [List Manager](#list-manager)
   - [Catalog View](#catalog-view)
 
 
@@ -48,6 +48,8 @@ ETA-SDK has a number of dependencies with third-party libraries (all use the MIT
 - [AFNetworking](https://github.com/AFNetworking/AFNetworking) - Handles all the networking requests.
 - [Mantle](https://github.com/github/Mantle) - Super-class to all the model objects. Allows for easy conversion to/from a JSON dictionary.
 - [FMDB](https://github.com/ccgus/fmdb) - Handles all the SQLite database communication.
+- [CocoaLumberjack](https://github.com/CocoaLumberjack/CocoaLumberjack) - For better handling of logging.
+- [MAKVONotificationCenter](https://github.com/mikeash/MAKVONotificationCenter) - For better KVO.
 
 
 ## API Key and Secret
@@ -82,6 +84,7 @@ First, in your `application:didFinishLaunchingWithOptions:` method add the line:
 Then, to get the singleton object, simply call `ETA.SDK`. This will return the object initialized with the key/secret in the above call. You will just get *nil* if you ask for the singleton before initializing it.
 
 If, in the very rare case, you want multiple instances of the ETA class you can use `+etaWithAPIKey:apiSecret:appVersion:`. But I don't know why you would want to.
+
 
 ### API Calls
 
@@ -197,12 +200,14 @@ If you wish to change each part separately, use these properties:
 
 
 &nbsp;
-## Shopping List Manager
-> \#import "ETA_ShoppingListManager.h"
+## List Manager
+> \#import "ETA_ListManager.h"
 
-The world of Shopping Lists is a lot more complex than any of the other parts of the new API, so we provide the `ETA_ShoppingListManager` through which all ShoppingList related communication should happen.
+The world of Shopping Lists is a lot more complex than any of the other parts of the new API, so we provide the `ETA_ListManager` through which all ShoppingList related communication should happen.
 
-You create an instance of the manager with `+managerWithETA:`, passing in the `ETA` SDK object. You will only really need to create one, and although multiple instances _should_ work, it is untested (they would be using the same local database).
+To access the list manager it is best to simply use the ListManager singleton `[ETA_ListManager sharedManager]`. This will create a local sqlite database file called '*local_lists.db*'.
+
+If you wish to use a different database file, or instance of ETA, you can create a ListManager with `+managerWithETA:localDBFilePath:`, passing in the `ETA` SDK object and the full path the database file. Although multiple instances of the ListManager _should_ work, it is untested.
 
 ### Polling & Syncing
 
@@ -210,14 +215,25 @@ The main job of the manager is keeping a local store of `ETA_ShoppingList` and `
 
 When something changes a notification will be triggered (see **[Notifications](#notifications)** section below).
 
-You can change the rate of this polling using the `pollRate` property (for example, perhaps you want to slow down or stop the polling when not looking at the shopping lists).
+You can change the rate of this polling using the `syncRate` property (for example, perhaps you want to slow down or stop the polling when not looking at the shopping lists).
 
 ##### Attached User
-One major thing to note is that the behaviour of the `ETA_ShoppingListManager` is closely tied to the `ETA` object's `attachedUser` property (so if you pass nil when creating the manager you will only work locally). 
+One major thing to note is that the behaviour of the `ETA_ListManager` is closely tied to the `ETA` object's `attachedUser` property (so if you create the manager manually and pass nil for the SDK you will only work locally). 
 
 If there is no attached user, the manager will not be able to sync changes to the server, and so will not poll, and all changes you make will be saved to a 'userless' local store. As soon as a user is attached (by logging in) the changes that are now made will be saved to a 'user' local store, and also sent to the server. 
 
-It is your responsibility to merge any changes from the 'userless' local store to server (perhaps asking the user which of their online lists they want to move the userless items to). To help with this migration there is a flag on the manager called `ignoreAttachedUser`. When set to YES the `ETA`'s user will not be taken into account, polling will be ignored, and any queries or actions will be applied to the 'userless' local store, and not passed to the server.
+It is your responsibility to merge any changes from the 'userless' local store to server (perhaps asking the user which of their online lists they want to move the userless items to). You should also remove old user data when the user changes. To help with this migration there are a couple of methods change the ownership of lists and their items:
+
+
+	// use `nil` to refer to the user-less user
+	- (BOOL) moveListsFromUser:(ETA_User*)fromUser 
+						toUser:(ETA_User*)toUser 
+						 error:(NSError * __autoreleasing *)error;
+
+	// use NSNull.null to refer to the user-less user, and `nil` to refer to _all_ users
+	// (I know, I know, this needs to be cleaned up!)
+	- (BOOL) dropAllDataForUserID:(id)userID 
+							error:(NSError * __autoreleasing *)error;
 
 ##### Failure handling
 The server is always considered the truth when it comes to syncing. However, if there are changes on the client side we will not poll and ask the server for it's state until all those changes are successfully sent. 
@@ -267,14 +283,12 @@ Everytime something is changed, either by the server or locally, a notification 
 
 There are two notifications you can listen for:
 
-- `ETA_ShoppingListManager_ListsChangedNotification` when lists changed
-- `ETA_ShoppingListManager_ItemsChangedNotification` when items changed
+- `ETA_ListManager_ChangeNotification_Lists` when lists changed
+- `ETA_ListManager_ChangeNotification_ListItems` when items changed
 
-The userInfo dictionary supplied with both notification types is of the same form - three lists of objects under the keys `added`, `removed` and `modified`. 
+The userInfo dictionary supplied with both notification types is of the same form - three lists of objects under the keys `ETA_ListManager_ChangeNotificationInfo_AddedKey`, `ETA_ListManager_ChangeNotificationInfo_RemovedKey` and `ETA_ListManager_ChangeNotificationInfo_ModifiedKey`. 
 
-For example, if you got a `ETA_ShoppingListManager_ListsChangedNotification` notification, and want to get the objects that have just been added, `notification.userInfo[@"added"]` will give you an `NSArray` of `ETA_ShoppingList` objects (or `nil` if no lists were added).
-
-The `modified` notification will be called for shopping lists whenever anything changes with any of the items contained within that list.
+The `ETA_ListManager_ChangeNotificationInfo_ModifiedKey` notification will be called for shopping lists whenever anything changes with any of the items contained within that list.
 
 
 &nbsp;
