@@ -992,13 +992,19 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
         
         
+        NSString* urlEncodedEmail = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
+                                                                                                          (CFStringRef)userEmail,
+                                                                                                          NULL,
+                                                                                                          (CFStringRef)@"!*'();:@&=+$,/?%#[]",
+                                                                                                          kCFStringEncodingUTF8 ));
+        
         // "/v2/users/{userID}/shoppinglists/{listID}/shares/{userEmail}"
         NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
                                                            userID,
                                                            ETA_API.shoppingLists,
                                                            listID,
                                                            @"shares",
-                                                           userEmail]];
+                                                           urlEncodedEmail]];
         
         ETASDKLogInfo(@"[DeleteShareOperation(%@-%@)] - Sending Request '%@'", share.userEmail, share.listUUID, request);
         
@@ -1165,13 +1171,19 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
         
         NSDictionary* jsonDict = [share JSONDictionary];
         
+        NSString* urlEncodedEmail = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
+                                                                                                          (CFStringRef)share.userEmail,
+                                                                                                          NULL,
+                                                                                                          (CFStringRef)@"!*'();:@&=+$,/?%#[]",
+                                                                                                          kCFStringEncodingUTF8 ));
+        
         // "/v2/users/{userID}/shoppinglists/{listID}/shares/{email}"
         NSString* request = [ETA_API pathWithComponents:@[ ETA_API.users,
                                                            userID,
                                                            ETA_API.shoppingLists,
                                                            listID,
                                                            @"shares",
-                                                           share.userEmail]];
+                                                           urlEncodedEmail]];
         
         ETASDKLogInfo(@"[SyncShareOperation(%@-%@)] - Sending Request '%@'", share.userEmail, share.listUUID, request);
             
