@@ -185,6 +185,8 @@
     NSDateFormatter* df = [self tableViewDateFormatter];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@", [df stringFromDate:catalog.runFromDate],[df stringFromDate:catalog.runTillDate]];
     
+    cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    
     // we are using the catalog's thumbnail image url as the imageView
     // here we are using an AFNetworking (included) UIImageView category
     // until it loads, it will use the placeholderImage

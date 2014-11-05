@@ -18,13 +18,33 @@ Pod::Spec.new do |s|
     :git => "https://github.com/eTilbudsavis/native-ios-eta-sdk.git", 
     :tag => "v" + s.version.to_s
   }
-  s.source_files = 'ETA-SDK/**/*.{h,m}'
-  s.frameworks   = 'CoreLocation', 'Foundation', 'UIKit'
 
-  s.dependency 'AFNetworking', '~> 2.2.0'
-  s.dependency 'Mantle', '~> 1.4.1'
-  s.dependency 'FMDB', '~> 2.2.0'
-  s.dependency 'MAKVONotificationCenter', '~> 0.0.2'
-  s.dependency 'CocoaLumberjack', '~> 1.8.1'
+
+  # Everything related to making ETA API requests
+  s.subspec 'API' do |ss|
+    ss.source_files = 'ETA-SDK/ETA.{h,m}', 'ETA-SDK/ETA_Model/*.{h,m}', 'ETA-SDK/ETA_Other/*.{h,m}'
+      
+    ss.dependency 'AFNetworking', '~> 2.2.0'
+    ss.dependency 'Mantle', '~> 1.4.1'
+    ss.dependency 'FMDB', '~> 2.2.0'
+    ss.dependency 'MAKVONotificationCenter', '~> 0.0.2'
+    ss.dependency 'CocoaLumberjack', '~> 1.8.1'
+    
+    ss.frameworks   = 'CoreLocation', 'Foundation', 'UIKit'
+  end
+  
+  # Shopping Lists and related model objects
+  s.subspec 'ListManager' do |ss|
+    ss.source_files = 'ETA-SDK/ListManager/*.{h,m}'
+    
+    ss.dependency 'ETA-SDK/API'
+  end
+
+  # The original, web-based, catalog reader experience
+  s.subspec 'WebCatalogView' do |ss|
+    ss.source_files = 'ETA-SDK/WebCatalogView/*.{h,m}'
+    
+    ss.dependency 'ETA-SDK/API'
+  end
 
 end

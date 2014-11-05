@@ -22,7 +22,6 @@
 
 /* Begin PBXFileReference section */
 		1717FC1018ED814300A92AEA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "ETA-SDK iOS Example/Images.xcassets"; sourceTree = "<group>"; };
-		1765A285699844A58C60A3DE /* Pods-ETA-SDK iOS Example.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ETA-SDK iOS Example.xcconfig"; path = "../Pods/Pods-ETA-SDK iOS Example.xcconfig"; sourceTree = "<group>"; };
 		17DBD18017A7DF5F008EFAEF /* ETA-SDK iOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ETA-SDK iOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		17DBD18317A7DF5F008EFAEF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		17DBD18517A7DF5F008EFAEF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -40,6 +39,8 @@
 		17DBD1A917A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = ETA_ExampleViewController_CatalogView.h; path = "ETA-SDK iOS Example/ETA_ExampleViewController_CatalogView.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		17DBD1AA17A7E073008EFAEF /* ETA_ExampleViewController_CatalogView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = ETA_ExampleViewController_CatalogView.m; path = "ETA-SDK iOS Example/ETA_ExampleViewController_CatalogView.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		413506CC2CA9452C9180A0FA /* libPods-ETA-SDK iOS Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ETA-SDK iOS Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		41C0E69ABCD8317CF02294F5 /* Pods-ETA-SDK iOS Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ETA-SDK iOS Example.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-ETA-SDK iOS Example/Pods-ETA-SDK iOS Example.debug.xcconfig"; sourceTree = "<group>"; };
+		FF95E8B2DB52D55CEDFE2C28 /* Pods-ETA-SDK iOS Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ETA-SDK iOS Example.release.xcconfig"; path = "../Pods/Target Support Files/Pods-ETA-SDK iOS Example/Pods-ETA-SDK iOS Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,7 +73,7 @@
 				17DBD18A17A7DF5F008EFAEF /* Supporting Files */,
 				17DBD18217A7DF5F008EFAEF /* Frameworks */,
 				17DBD18117A7DF5F008EFAEF /* Products */,
-				1765A285699844A58C60A3DE /* Pods-ETA-SDK iOS Example.xcconfig */,
+				387047B513CE931E98EC6B61 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -105,6 +106,15 @@
 			);
 			name = "Supporting Files";
 			path = "ETA-SDK iOS Example";
+			sourceTree = "<group>";
+		};
+		387047B513CE931E98EC6B61 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				41C0E69ABCD8317CF02294F5 /* Pods-ETA-SDK iOS Example.debug.xcconfig */,
+				FF95E8B2DB52D55CEDFE2C28 /* Pods-ETA-SDK iOS Example.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,7 +206,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Pods-ETA-SDK iOS Example-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-ETA-SDK iOS Example/Pods-ETA-SDK iOS Example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -294,30 +304,32 @@
 		};
 		17DBD1A417A7DF5F008EFAEF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1765A285699844A58C60A3DE /* Pods-ETA-SDK iOS Example.xcconfig */;
+			baseConfigurationReference = 41C0E69ABCD8317CF02294F5 /* Pods-ETA-SDK iOS Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ETA-SDK iOS Example/ETA-SDK iOS Example-Prefix.pch";
 				INFOPLIST_FILE = "ETA-SDK iOS Example/ETA-SDK iOS Example-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
 		};
 		17DBD1A517A7DF5F008EFAEF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1765A285699844A58C60A3DE /* Pods-ETA-SDK iOS Example.xcconfig */;
+			baseConfigurationReference = FF95E8B2DB52D55CEDFE2C28 /* Pods-ETA-SDK iOS Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ETA-SDK iOS Example/ETA-SDK iOS Example-Prefix.pch";
 				INFOPLIST_FILE = "ETA-SDK iOS Example/ETA-SDK iOS Example-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

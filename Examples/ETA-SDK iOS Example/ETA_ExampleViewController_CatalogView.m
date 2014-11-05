@@ -9,8 +9,8 @@
 #import "ETA_ExampleViewController_CatalogView.h"
 
 #import "ETA.h"
-#import "ETA_CatalogView.h"
-#import "ETA_Catalog.h"
+#import <ETA-SDK/ETA_CatalogView.h>
+#import <ETA-SDK/ETA_Catalog.h>
 
 @interface ETA_ExampleViewController_CatalogView ()<ETACatalogViewDelegate>
 

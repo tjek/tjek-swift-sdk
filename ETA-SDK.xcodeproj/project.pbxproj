@@ -21,139 +21,155 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXFileReference section */
-		173A3AC318ED9EEC00765373 /* ETA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA.h; sourceTree = "<group>"; };
-		173A3AC418ED9EEC00765373 /* ETA.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA.m; sourceTree = "<group>"; };
-		173A3AC518ED9EEC00765373 /* ETA_CatalogView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_CatalogView.h; sourceTree = "<group>"; };
-		173A3AC618ED9EEC00765373 /* ETA_CatalogView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_CatalogView.m; sourceTree = "<group>"; };
-		173A3AC718ED9EEC00765373 /* ETA_ListManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ListManager.h; sourceTree = "<group>"; };
-		173A3AC818ED9EEC00765373 /* ETA_ListManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ListManager.m; sourceTree = "<group>"; };
-		173A3ACA18ED9EEC00765373 /* ETA_Branding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Branding.h; sourceTree = "<group>"; };
-		173A3ACB18ED9EEC00765373 /* ETA_Branding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Branding.m; sourceTree = "<group>"; };
-		173A3ACC18ED9EEC00765373 /* ETA_Catalog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Catalog.h; sourceTree = "<group>"; };
-		173A3ACD18ED9EEC00765373 /* ETA_Catalog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Catalog.m; sourceTree = "<group>"; };
-		173A3ACE18ED9EEC00765373 /* ETA_DBSyncModelObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_DBSyncModelObject.h; sourceTree = "<group>"; };
-		173A3ACF18ED9EEC00765373 /* ETA_DBSyncModelObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_DBSyncModelObject.m; sourceTree = "<group>"; };
-		173A3AD018ED9EEC00765373 /* ETA_ListShare+FMDB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ETA_ListShare+FMDB.h"; sourceTree = "<group>"; };
-		173A3AD118ED9EEC00765373 /* ETA_ListShare+FMDB.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ETA_ListShare+FMDB.m"; sourceTree = "<group>"; };
-		173A3AD218ED9EEC00765373 /* ETA_ListShare.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ListShare.h; sourceTree = "<group>"; };
-		173A3AD318ED9EEC00765373 /* ETA_ListShare.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ListShare.m; sourceTree = "<group>"; };
-		173A3AD418ED9EEC00765373 /* ETA_ModelObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ModelObject.h; sourceTree = "<group>"; };
-		173A3AD518ED9EEC00765373 /* ETA_ModelObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ModelObject.m; sourceTree = "<group>"; };
-		173A3AD618ED9EEC00765373 /* ETA_Offer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Offer.h; sourceTree = "<group>"; };
-		173A3AD718ED9EEC00765373 /* ETA_Offer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Offer.m; sourceTree = "<group>"; };
-		173A3AD818ED9EEC00765373 /* ETA_Session.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Session.h; sourceTree = "<group>"; };
-		173A3AD918ED9EEC00765373 /* ETA_Session.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Session.m; sourceTree = "<group>"; };
-		173A3ADA18ED9EEC00765373 /* ETA_ShoppingList+FMDB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ETA_ShoppingList+FMDB.h"; sourceTree = "<group>"; };
-		173A3ADB18ED9EEC00765373 /* ETA_ShoppingList+FMDB.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ETA_ShoppingList+FMDB.m"; sourceTree = "<group>"; };
-		173A3ADC18ED9EEC00765373 /* ETA_ShoppingList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ShoppingList.h; sourceTree = "<group>"; };
-		173A3ADD18ED9EEC00765373 /* ETA_ShoppingList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ShoppingList.m; sourceTree = "<group>"; };
-		173A3ADE18ED9EEC00765373 /* ETA_ShoppingListItem+FMDB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ETA_ShoppingListItem+FMDB.h"; sourceTree = "<group>"; };
-		173A3ADF18ED9EEC00765373 /* ETA_ShoppingListItem+FMDB.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ETA_ShoppingListItem+FMDB.m"; sourceTree = "<group>"; };
-		173A3AE018ED9EEC00765373 /* ETA_ShoppingListItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ShoppingListItem.h; sourceTree = "<group>"; };
-		173A3AE118ED9EEC00765373 /* ETA_ShoppingListItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ShoppingListItem.m; sourceTree = "<group>"; };
-		173A3AE218ED9EEC00765373 /* ETA_Store.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Store.h; sourceTree = "<group>"; };
-		173A3AE318ED9EEC00765373 /* ETA_Store.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Store.m; sourceTree = "<group>"; };
-		173A3AE418ED9EEC00765373 /* ETA_User.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_User.h; sourceTree = "<group>"; };
-		173A3AE518ED9EEC00765373 /* ETA_User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_User.m; sourceTree = "<group>"; };
-		173A3AE718ED9EEC00765373 /* ETA_API.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_API.h; sourceTree = "<group>"; };
-		173A3AE818ED9EEC00765373 /* ETA_API.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_API.m; sourceTree = "<group>"; };
-		173A3AE918ED9EEC00765373 /* ETA_APIClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_APIClient.h; sourceTree = "<group>"; };
-		173A3AEA18ED9EEC00765373 /* ETA_APIClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_APIClient.m; sourceTree = "<group>"; };
-		173A3AEB18ED9EEC00765373 /* ETA_ListSyncr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ListSyncr.h; sourceTree = "<group>"; };
-		173A3AEC18ED9EEC00765373 /* ETA_ListSyncr.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ListSyncr.m; sourceTree = "<group>"; };
-		173A3AED18ED9EEC00765373 /* ETA_PermissionCategories.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_PermissionCategories.h; sourceTree = "<group>"; };
-		173A3AEE18ED9EEC00765373 /* ETA_PermissionCategories.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_PermissionCategories.m; sourceTree = "<group>"; };
-		173A3AEF18ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSValueTransformer+ETAPredefinedValueTransformers.h"; sourceTree = "<group>"; };
-		173A3AF018ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSValueTransformer+ETAPredefinedValueTransformers.m"; sourceTree = "<group>"; };
-		1749A4BB1966AC510061F0A9 /* ETA_Dealer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Dealer.h; sourceTree = "<group>"; };
-		1749A4BC1966AC510061F0A9 /* ETA_Dealer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Dealer.m; sourceTree = "<group>"; };
-		17A884D3190E79B2009B3E6E /* ETA_Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Log.h; sourceTree = "<group>"; };
-		17A884D4190E936B009B3E6E /* ETA_Log.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Log.m; sourceTree = "<group>"; };
 		17A884D5190FC837009B3E6E /* CHANGES.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = CHANGES.md; sourceTree = "<group>"; };
 		17A884D6190FC837009B3E6E /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.md; sourceTree = "<group>"; };
 		17A884D7190FC837009B3E6E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		AE3CF9551A0A621E006C631A /* ETA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA.h; sourceTree = "<group>"; };
+		AE3CF9561A0A621E006C631A /* ETA.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA.m; sourceTree = "<group>"; };
+		AE3CF9581A0A621E006C631A /* ETA_Branding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Branding.h; sourceTree = "<group>"; };
+		AE3CF9591A0A621E006C631A /* ETA_Branding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Branding.m; sourceTree = "<group>"; };
+		AE3CF95A1A0A621E006C631A /* ETA_Catalog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Catalog.h; sourceTree = "<group>"; };
+		AE3CF95B1A0A621E006C631A /* ETA_Catalog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Catalog.m; sourceTree = "<group>"; };
+		AE3CF95C1A0A621E006C631A /* ETA_Dealer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Dealer.h; sourceTree = "<group>"; };
+		AE3CF95D1A0A621E006C631A /* ETA_Dealer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Dealer.m; sourceTree = "<group>"; };
+		AE3CF95E1A0A621E006C631A /* ETA_ModelObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ModelObject.h; sourceTree = "<group>"; };
+		AE3CF95F1A0A621E006C631A /* ETA_ModelObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ModelObject.m; sourceTree = "<group>"; };
+		AE3CF9601A0A621E006C631A /* ETA_Offer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Offer.h; sourceTree = "<group>"; };
+		AE3CF9611A0A621E006C631A /* ETA_Offer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Offer.m; sourceTree = "<group>"; };
+		AE3CF9621A0A621E006C631A /* ETA_Session.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Session.h; sourceTree = "<group>"; };
+		AE3CF9631A0A621E006C631A /* ETA_Session.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Session.m; sourceTree = "<group>"; };
+		AE3CF9641A0A621E006C631A /* ETA_Store.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Store.h; sourceTree = "<group>"; };
+		AE3CF9651A0A621E006C631A /* ETA_Store.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Store.m; sourceTree = "<group>"; };
+		AE3CF9661A0A621E006C631A /* ETA_User.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_User.h; sourceTree = "<group>"; };
+		AE3CF9671A0A621E006C631A /* ETA_User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_User.m; sourceTree = "<group>"; };
+		AE3CF9691A0A621E006C631A /* ETA_API.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_API.h; sourceTree = "<group>"; };
+		AE3CF96A1A0A621E006C631A /* ETA_API.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_API.m; sourceTree = "<group>"; };
+		AE3CF96B1A0A621E006C631A /* ETA_APIClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_APIClient.h; sourceTree = "<group>"; };
+		AE3CF96C1A0A621E006C631A /* ETA_APIClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_APIClient.m; sourceTree = "<group>"; };
+		AE3CF96D1A0A621E006C631A /* ETA_ListSyncr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ListSyncr.h; sourceTree = "<group>"; };
+		AE3CF96E1A0A621E006C631A /* ETA_ListSyncr.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ListSyncr.m; sourceTree = "<group>"; };
+		AE3CF96F1A0A621E006C631A /* ETA_Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_Log.h; sourceTree = "<group>"; };
+		AE3CF9701A0A621E006C631A /* ETA_Log.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_Log.m; sourceTree = "<group>"; };
+		AE3CF9711A0A621E006C631A /* ETA_PermissionCategories.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_PermissionCategories.h; sourceTree = "<group>"; };
+		AE3CF9721A0A621E006C631A /* ETA_PermissionCategories.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_PermissionCategories.m; sourceTree = "<group>"; };
+		AE3CF9731A0A621E006C631A /* NSValueTransformer+ETAPredefinedValueTransformers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSValueTransformer+ETAPredefinedValueTransformers.h"; sourceTree = "<group>"; };
+		AE3CF9741A0A621E006C631A /* NSValueTransformer+ETAPredefinedValueTransformers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSValueTransformer+ETAPredefinedValueTransformers.m"; sourceTree = "<group>"; };
+		AE3CF9761A0A621E006C631A /* ETA_DBSyncModelObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_DBSyncModelObject.h; sourceTree = "<group>"; };
+		AE3CF9771A0A621E006C631A /* ETA_DBSyncModelObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_DBSyncModelObject.m; sourceTree = "<group>"; };
+		AE3CF9781A0A621E006C631A /* ETA_ListManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ListManager.h; sourceTree = "<group>"; };
+		AE3CF9791A0A621E006C631A /* ETA_ListManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ListManager.m; sourceTree = "<group>"; };
+		AE3CF97A1A0A621E006C631A /* ETA_ListShare+FMDB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ETA_ListShare+FMDB.h"; sourceTree = "<group>"; };
+		AE3CF97B1A0A621E006C631A /* ETA_ListShare+FMDB.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ETA_ListShare+FMDB.m"; sourceTree = "<group>"; };
+		AE3CF97C1A0A621E006C631A /* ETA_ListShare.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ListShare.h; sourceTree = "<group>"; };
+		AE3CF97D1A0A621E006C631A /* ETA_ListShare.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ListShare.m; sourceTree = "<group>"; };
+		AE3CF97E1A0A621E006C631A /* ETA_ShoppingList+FMDB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ETA_ShoppingList+FMDB.h"; sourceTree = "<group>"; };
+		AE3CF97F1A0A621E006C631A /* ETA_ShoppingList+FMDB.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ETA_ShoppingList+FMDB.m"; sourceTree = "<group>"; };
+		AE3CF9801A0A621E006C631A /* ETA_ShoppingList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ShoppingList.h; sourceTree = "<group>"; };
+		AE3CF9811A0A621E006C631A /* ETA_ShoppingList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ShoppingList.m; sourceTree = "<group>"; };
+		AE3CF9821A0A621E006C631A /* ETA_ShoppingListItem+FMDB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ETA_ShoppingListItem+FMDB.h"; sourceTree = "<group>"; };
+		AE3CF9831A0A621E006C631A /* ETA_ShoppingListItem+FMDB.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ETA_ShoppingListItem+FMDB.m"; sourceTree = "<group>"; };
+		AE3CF9841A0A621E006C631A /* ETA_ShoppingListItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_ShoppingListItem.h; sourceTree = "<group>"; };
+		AE3CF9851A0A621E006C631A /* ETA_ShoppingListItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_ShoppingListItem.m; sourceTree = "<group>"; };
+		AE3CF9871A0A621E006C631A /* ETA_CatalogView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETA_CatalogView.h; sourceTree = "<group>"; };
+		AE3CF9881A0A621E006C631A /* ETA_CatalogView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ETA_CatalogView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		173A3AC218ED9EEC00765373 /* ETA-SDK */ = {
-			isa = PBXGroup;
-			children = (
-				173A3AC318ED9EEC00765373 /* ETA.h */,
-				173A3AC418ED9EEC00765373 /* ETA.m */,
-				173A3AC518ED9EEC00765373 /* ETA_CatalogView.h */,
-				173A3AC618ED9EEC00765373 /* ETA_CatalogView.m */,
-				173A3AC718ED9EEC00765373 /* ETA_ListManager.h */,
-				173A3AC818ED9EEC00765373 /* ETA_ListManager.m */,
-				173A3AC918ED9EEC00765373 /* ETA_Model */,
-				173A3AE618ED9EEC00765373 /* ETA_Other */,
-			);
-			path = "ETA-SDK";
-			sourceTree = "<group>";
-		};
-		173A3AC918ED9EEC00765373 /* ETA_Model */ = {
-			isa = PBXGroup;
-			children = (
-				173A3ACA18ED9EEC00765373 /* ETA_Branding.h */,
-				173A3ACB18ED9EEC00765373 /* ETA_Branding.m */,
-				173A3ACC18ED9EEC00765373 /* ETA_Catalog.h */,
-				173A3ACD18ED9EEC00765373 /* ETA_Catalog.m */,
-				1749A4BB1966AC510061F0A9 /* ETA_Dealer.h */,
-				1749A4BC1966AC510061F0A9 /* ETA_Dealer.m */,
-				173A3ACE18ED9EEC00765373 /* ETA_DBSyncModelObject.h */,
-				173A3ACF18ED9EEC00765373 /* ETA_DBSyncModelObject.m */,
-				173A3AD018ED9EEC00765373 /* ETA_ListShare+FMDB.h */,
-				173A3AD118ED9EEC00765373 /* ETA_ListShare+FMDB.m */,
-				173A3AD218ED9EEC00765373 /* ETA_ListShare.h */,
-				173A3AD318ED9EEC00765373 /* ETA_ListShare.m */,
-				173A3AD418ED9EEC00765373 /* ETA_ModelObject.h */,
-				173A3AD518ED9EEC00765373 /* ETA_ModelObject.m */,
-				173A3AD618ED9EEC00765373 /* ETA_Offer.h */,
-				173A3AD718ED9EEC00765373 /* ETA_Offer.m */,
-				173A3AD818ED9EEC00765373 /* ETA_Session.h */,
-				173A3AD918ED9EEC00765373 /* ETA_Session.m */,
-				173A3ADA18ED9EEC00765373 /* ETA_ShoppingList+FMDB.h */,
-				173A3ADB18ED9EEC00765373 /* ETA_ShoppingList+FMDB.m */,
-				173A3ADC18ED9EEC00765373 /* ETA_ShoppingList.h */,
-				173A3ADD18ED9EEC00765373 /* ETA_ShoppingList.m */,
-				173A3ADE18ED9EEC00765373 /* ETA_ShoppingListItem+FMDB.h */,
-				173A3ADF18ED9EEC00765373 /* ETA_ShoppingListItem+FMDB.m */,
-				173A3AE018ED9EEC00765373 /* ETA_ShoppingListItem.h */,
-				173A3AE118ED9EEC00765373 /* ETA_ShoppingListItem.m */,
-				173A3AE218ED9EEC00765373 /* ETA_Store.h */,
-				173A3AE318ED9EEC00765373 /* ETA_Store.m */,
-				173A3AE418ED9EEC00765373 /* ETA_User.h */,
-				173A3AE518ED9EEC00765373 /* ETA_User.m */,
-			);
-			path = ETA_Model;
-			sourceTree = "<group>";
-		};
-		173A3AE618ED9EEC00765373 /* ETA_Other */ = {
-			isa = PBXGroup;
-			children = (
-				173A3AE718ED9EEC00765373 /* ETA_API.h */,
-				173A3AE818ED9EEC00765373 /* ETA_API.m */,
-				173A3AE918ED9EEC00765373 /* ETA_APIClient.h */,
-				173A3AEA18ED9EEC00765373 /* ETA_APIClient.m */,
-				173A3AEB18ED9EEC00765373 /* ETA_ListSyncr.h */,
-				173A3AEC18ED9EEC00765373 /* ETA_ListSyncr.m */,
-				173A3AED18ED9EEC00765373 /* ETA_PermissionCategories.h */,
-				173A3AEE18ED9EEC00765373 /* ETA_PermissionCategories.m */,
-				173A3AEF18ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.h */,
-				173A3AF018ED9EEC00765373 /* NSValueTransformer+ETAPredefinedValueTransformers.m */,
-				17A884D3190E79B2009B3E6E /* ETA_Log.h */,
-				17A884D4190E936B009B3E6E /* ETA_Log.m */,
-			);
-			path = ETA_Other;
-			sourceTree = "<group>";
-		};
 		17DBD17717A7DF5F008EFAEF = {
 			isa = PBXGroup;
 			children = (
 				17A884D5190FC837009B3E6E /* CHANGES.md */,
 				17A884D7190FC837009B3E6E /* README.md */,
 				17A884D6190FC837009B3E6E /* LICENSE.md */,
-				173A3AC218ED9EEC00765373 /* ETA-SDK */,
+				AE3CF94D1A0A621E006C631A /* ETA-SDK */,
 			);
+			sourceTree = "<group>";
+		};
+		AE3CF94D1A0A621E006C631A /* ETA-SDK */ = {
+			isa = PBXGroup;
+			children = (
+				AE3CF9551A0A621E006C631A /* ETA.h */,
+				AE3CF9561A0A621E006C631A /* ETA.m */,
+				AE3CF9571A0A621E006C631A /* ETA_Model */,
+				AE3CF9681A0A621E006C631A /* ETA_Other */,
+				AE3CF9751A0A621E006C631A /* ListManager */,
+				AE3CF9861A0A621E006C631A /* WebCatalogView */,
+			);
+			path = "ETA-SDK";
+			sourceTree = "<group>";
+		};
+		AE3CF9571A0A621E006C631A /* ETA_Model */ = {
+			isa = PBXGroup;
+			children = (
+				AE3CF9581A0A621E006C631A /* ETA_Branding.h */,
+				AE3CF9591A0A621E006C631A /* ETA_Branding.m */,
+				AE3CF95A1A0A621E006C631A /* ETA_Catalog.h */,
+				AE3CF95B1A0A621E006C631A /* ETA_Catalog.m */,
+				AE3CF95C1A0A621E006C631A /* ETA_Dealer.h */,
+				AE3CF95D1A0A621E006C631A /* ETA_Dealer.m */,
+				AE3CF95E1A0A621E006C631A /* ETA_ModelObject.h */,
+				AE3CF95F1A0A621E006C631A /* ETA_ModelObject.m */,
+				AE3CF9601A0A621E006C631A /* ETA_Offer.h */,
+				AE3CF9611A0A621E006C631A /* ETA_Offer.m */,
+				AE3CF9621A0A621E006C631A /* ETA_Session.h */,
+				AE3CF9631A0A621E006C631A /* ETA_Session.m */,
+				AE3CF9641A0A621E006C631A /* ETA_Store.h */,
+				AE3CF9651A0A621E006C631A /* ETA_Store.m */,
+				AE3CF9661A0A621E006C631A /* ETA_User.h */,
+				AE3CF9671A0A621E006C631A /* ETA_User.m */,
+			);
+			path = ETA_Model;
+			sourceTree = "<group>";
+		};
+		AE3CF9681A0A621E006C631A /* ETA_Other */ = {
+			isa = PBXGroup;
+			children = (
+				AE3CF9691A0A621E006C631A /* ETA_API.h */,
+				AE3CF96A1A0A621E006C631A /* ETA_API.m */,
+				AE3CF96B1A0A621E006C631A /* ETA_APIClient.h */,
+				AE3CF96C1A0A621E006C631A /* ETA_APIClient.m */,
+				AE3CF96F1A0A621E006C631A /* ETA_Log.h */,
+				AE3CF9701A0A621E006C631A /* ETA_Log.m */,
+				AE3CF9711A0A621E006C631A /* ETA_PermissionCategories.h */,
+				AE3CF9721A0A621E006C631A /* ETA_PermissionCategories.m */,
+				AE3CF9731A0A621E006C631A /* NSValueTransformer+ETAPredefinedValueTransformers.h */,
+				AE3CF9741A0A621E006C631A /* NSValueTransformer+ETAPredefinedValueTransformers.m */,
+			);
+			path = ETA_Other;
+			sourceTree = "<group>";
+		};
+		AE3CF9751A0A621E006C631A /* ListManager */ = {
+			isa = PBXGroup;
+			children = (
+				AE3CF96D1A0A621E006C631A /* ETA_ListSyncr.h */,
+				AE3CF96E1A0A621E006C631A /* ETA_ListSyncr.m */,
+				AE3CF9761A0A621E006C631A /* ETA_DBSyncModelObject.h */,
+				AE3CF9771A0A621E006C631A /* ETA_DBSyncModelObject.m */,
+				AE3CF9781A0A621E006C631A /* ETA_ListManager.h */,
+				AE3CF9791A0A621E006C631A /* ETA_ListManager.m */,
+				AE3CF97A1A0A621E006C631A /* ETA_ListShare+FMDB.h */,
+				AE3CF97B1A0A621E006C631A /* ETA_ListShare+FMDB.m */,
+				AE3CF97C1A0A621E006C631A /* ETA_ListShare.h */,
+				AE3CF97D1A0A621E006C631A /* ETA_ListShare.m */,
+				AE3CF97E1A0A621E006C631A /* ETA_ShoppingList+FMDB.h */,
+				AE3CF97F1A0A621E006C631A /* ETA_ShoppingList+FMDB.m */,
+				AE3CF9801A0A621E006C631A /* ETA_ShoppingList.h */,
+				AE3CF9811A0A621E006C631A /* ETA_ShoppingList.m */,
+				AE3CF9821A0A621E006C631A /* ETA_ShoppingListItem+FMDB.h */,
+				AE3CF9831A0A621E006C631A /* ETA_ShoppingListItem+FMDB.m */,
+				AE3CF9841A0A621E006C631A /* ETA_ShoppingListItem.h */,
+				AE3CF9851A0A621E006C631A /* ETA_ShoppingListItem.m */,
+			);
+			path = ListManager;
+			sourceTree = "<group>";
+		};
+		AE3CF9861A0A621E006C631A /* WebCatalogView */ = {
+			isa = PBXGroup;
+			children = (
+				AE3CF9871A0A621E006C631A /* ETA_CatalogView.h */,
+				AE3CF9881A0A621E006C631A /* ETA_CatalogView.m */,
+			);
+			path = WebCatalogView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
