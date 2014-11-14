@@ -132,12 +132,16 @@ NSString* const kETA_ShoppingList_MetaThemeKey = @"eta_theme";
     if (userEmail.length)
     {
         userEmail = userEmail.lowercaseString;
-        for (ETA_ListShare* share in self.shares)
+        NSArray* shares = self.shares;
+        if (shares.count)
         {
-            NSString* shareEmail = share.userEmail;
-            if ([shareEmail.lowercaseString isEqualToString:userEmail])
+            for (ETA_ListShare* share in shares)
             {
-                return share.access;
+                NSString* shareEmail = share.userEmail;
+                if ([shareEmail.lowercaseString isEqualToString:userEmail])
+                {
+                    return share.access;
+                }
             }
         }
     }
@@ -149,14 +153,18 @@ NSString* const kETA_ShoppingList_MetaThemeKey = @"eta_theme";
 }
 - (NSArray*)sharesForUserAccessType:(ETA_ListShare_Access)userAccessType
 {
-    NSMutableArray* shares = [NSMutableArray array];
-    for (ETA_ListShare* share in self.shares)
+    NSMutableArray* matchingShares = [NSMutableArray array];
+    NSArray* shares = self.shares;
+    if (shares.count)
     {
-        ETA_ListShare_Access access = share.access;
-        if (access == userAccessType)
-            [shares addObject:share];
+        for (ETA_ListShare* share in shares)
+        {
+            ETA_ListShare_Access access = share.access;
+            if (access == userAccessType)
+                [matchingShares addObject:share];
+        }
     }
-    return shares;
+    return matchingShares;
 }
 
 @end
