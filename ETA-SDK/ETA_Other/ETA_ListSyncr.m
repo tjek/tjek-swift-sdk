@@ -540,6 +540,9 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                     for (ETA_ShoppingList* list in serverLists)
                     {
                         [self localDB_mergePendingAndUpdateNonPendingSharesInList:list];
+                        
+                        // tell the Q to get item changes from all the list
+                        [self.serverQ addOperation:[self getServerChangesOperation_AllListItemsInList:list.uuid]];
                     }
                     
                     // remove locally, and remove all the items locally
@@ -566,11 +569,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                     if (added.count)
                     {
                         [self.addedLists addObjectsFromArray:added];
-                        for (ETA_ShoppingList* addedList in added)
-                        {
-                            // tell the Q to get item changes from this modified list
-                            [self.serverQ addOperation:[self getServerChangesOperation_AllListItemsInList:addedList.uuid]];
-                        }
                     }
                     
                     
@@ -580,11 +578,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                     if (modified.count)
                     {
                         [self.modifiedLists addObjectsFromArray:modified];
-                        for (ETA_ShoppingList* modifiedList in modified)
-                        {
-                            // tell the Q to get item changes from this modified list
-                            [self.serverQ addOperation:[self getServerChangesOperation_AllListItemsInList:modifiedList.uuid]];
-                        }
                     }
                     
                     NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate] - start;
@@ -916,19 +909,11 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
             // do the talking to the server, which will call the completion handler when done
             requestBlock(^void(id response, NSError *requestError, BOOL fromCache) {
                 
-                // if the requestError is that the item doesnt exist on the server then consider that a success!
-                if (!requestError || requestError.code == 1501 || requestError.code == 1441)
+                BOOL canRetryRequest = [self canWeRetryAfterRequestError:requestError];
+                
+                if (requestError && canRetryRequest)
                 {
-                    // try to remove from the local DB
-                    NSError* deleteErr;
-                    if (![self localDB_deleteObjects:@[obj] error:&deleteErr])
-                    {
-                        ETASDKLogError(@"[DeleteObjOperation(%@)] Completed - Unable to remove from localDB %zd:'%@'", opName, deleteErr.code, deleteErr.localizedDescription);
-                    }
-                }
-                else
-                {
-                    // Otherwise, mark as still needing to delete
+                    // An error that can be retried - mark as still needing to delete
                     //TODO: if serious error mark item as Failed so we dont try it again?
                     obj.state = ETA_DBSyncState_ToBeDeleted;
                     
@@ -938,6 +923,15 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                     if (![self localDB_updateObjects:@[obj] error:&updateErr])
                     {
                         ETASDKLogError(@"[DeleteObjOperation(%@)] ALSO Failed to mark as 'ToBeDeleted' %zd:'%@'", opName, updateErr.code, updateErr.localizedDescription);
+                    }
+                }
+                else
+                {
+                    // try to remove from the local DB
+                    NSError* deleteErr;
+                    if (![self localDB_deleteObjects:@[obj] error:&deleteErr])
+                    {
+                        ETASDKLogError(@"[DeleteObjOperation(%@)] Completed - Unable to remove from localDB %zd:'%@'", opName, deleteErr.code, deleteErr.localizedDescription);
                     }
                 }
                 dispatch_semaphore_signal(sema);
@@ -1014,7 +1008,9 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
              useCache:NO
            completion:^(id response, NSError *requestError, BOOL fromCache) {
                
-               if (requestError)
+               BOOL canRetryRequest = [self canWeRetryAfterRequestError:requestError];
+               
+               if (requestError && canRetryRequest)
                {
                    //TODO: if serious error mark item as Failed so we dont try it again?
                    share.state = ETA_DBSyncState_ToBeDeleted;
@@ -1195,9 +1191,10 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                         }
              useCache:NO
            completion:^(id response, NSError *requestError, BOOL fromCache) {
-               // if validation error - there is no way to recover from this, so mark as synced
-               BOOL isNonRepeatableError = requestError && [requestError.domain isEqualToString:ETA_APIErrorDomain] && (requestError.code==1500 || requestError.code==400);
-               if (requestError && !isNonRepeatableError)
+               
+               BOOL canRetryRequest = [self canWeRetryAfterRequestError:requestError];
+               
+               if (requestError && canRetryRequest)
                {
                    //TODO: if serious error mark item as Failed so we dont try it again?
                    share.state = ETA_DBSyncState_ToBeSynced;
@@ -1237,7 +1234,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
     return op;
 
 }
-
 
 - (NSOperation*) syncToServerOperationForObject:(ETA_DBSyncModelObject*)obj operationName:(NSString*)opName requestBlock:(void (^)(ETA_RequestCompletionBlock))requestBlock
 {
@@ -1284,8 +1280,9 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                 // check if item was modified while we were sending the request, so its state may have changed... if so dont mark as synced
                 if ([self localDB_hasObjectChangedSince:obj] == NO)
                 {
+                    BOOL canRetryRequest = [self canWeRetryAfterRequestError:requestError];
                     
-                    if (requestError)
+                    if (requestError && canRetryRequest)
                     {
                         //TODO: if serious error mark item as Failed so we dont try it again?
                         obj.state = ETA_DBSyncState_ToBeSynced;
@@ -1675,6 +1672,41 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
 - (BOOL) isObject:(id)objA newerThanObject:(id)objB
 {
     return [self isModifiedDate:[objA valueForKey:@"modified"] newerThanModifiedDate:[objB valueForKey:@"modified"]];
+}
+
+
+- (BOOL) canWeRetryAfterRequestError:(NSError*)error
+{
+    if (!error)
+        return YES;
+    
+    // share sync
+    //    BOOL isNonRepeatableError = requestError && [requestError.domain isEqualToString:ETA_APIErrorDomain] && (requestError.code==1500 || requestError.code==400);
+    
+    // if the requestError is that the item doesnt exist on the server then consider that a success!
+    //    if (!requestError || requestError.code == 1501 || requestError.code == 1441)
+    
+    
+    NSNumber* networkErrorCode = nil;
+    NSNumber* etaErrorCode = nil;
+    if ([error.domain isEqualToString:ETA_APIErrorDomain])
+    {
+        NSHTTPURLResponse* urlResponse = error.userInfo[ETA_APIError_URLResponseKey];
+        if ([urlResponse respondsToSelector:@selector(statusCode)])
+            networkErrorCode = @(urlResponse.statusCode);
+        
+        etaErrorCode = @(error.code);
+    }
+    
+    
+    // client side error - can't retry
+    if (networkErrorCode && networkErrorCode.integerValue == 400)
+    {
+        return NO;
+    }
+    
+    
+    return YES;
 }
 
 
