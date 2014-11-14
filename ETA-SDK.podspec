@@ -25,6 +25,6 @@ Pod::Spec.new do |s|
   s.dependency 'Mantle', '~> 1.4.1'
   s.dependency 'FMDB', '~> 2.2.0'
   s.dependency 'MAKVONotificationCenter', '~> 0.0.2'
-  s.dependency 'CocoaLumberjack', '~> 1.8.1'
+  s.dependency 'CocoaLumberjack', '~> 1.9.0'
 
 end
