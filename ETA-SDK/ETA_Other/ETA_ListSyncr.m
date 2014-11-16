@@ -540,9 +540,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                     for (ETA_ShoppingList* list in serverLists)
                     {
                         [self localDB_mergePendingAndUpdateNonPendingSharesInList:list];
-                        
-                        // tell the Q to get item changes from all the list
-                        [self.serverQ addOperation:[self getServerChangesOperation_AllListItemsInList:list.uuid]];
                     }
                     
                     // remove locally, and remove all the items locally
@@ -569,6 +566,11 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                     if (added.count)
                     {
                         [self.addedLists addObjectsFromArray:added];
+                        for (ETA_ShoppingList* addedList in added)
+                        {
+                            // tell the Q to get item changes from this modified list
+                            [self.serverQ addOperation:[self getServerChangesOperation_AllListItemsInList:addedList.uuid]];
+                        }
                     }
                     
                     
@@ -578,6 +580,11 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                     if (modified.count)
                     {
                         [self.modifiedLists addObjectsFromArray:modified];
+                        for (ETA_ShoppingList* modifiedList in modified)
+                        {
+                            // tell the Q to get item changes from this modified list
+                            [self.serverQ addOperation:[self getServerChangesOperation_AllListItemsInList:modifiedList.uuid]];
+                        }
                     }
                     
                     NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate] - start;
