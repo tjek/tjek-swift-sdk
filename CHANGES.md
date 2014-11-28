@@ -1,5 +1,16 @@
 # eTilbudsavis iOS SDK - Change Log
 
+## v2.3.0
+* SDK split into multiple subpecs, for when you only need some of the components
+* New Native Catalog Reader with new example project. The old web-based CatalogView is deprecated.
+* Update to *CocoaLumberjack ~> 1.9.0*
+* Request timeout reduced to 20 secs (was 60 secs previously)
+* Better handling of errors when syncing shopping lists
+
+## v2.2.3
+* Documentation update
+* Fixed CatalogView delegate removal issue
+
 ## v2.2.2
 * Removed `verbose` properties
 * Replace logging system with CocoaLumberjack, and update examples
