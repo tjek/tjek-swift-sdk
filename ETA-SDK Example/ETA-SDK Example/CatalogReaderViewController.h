@@ -8,15 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@class ETA_CatalogReaderView;
 
-@class ETA_Catalog;
 @interface CatalogReaderViewController : UIViewController
 
-- (void) setCatalog:(ETA_Catalog*)catalog;
 - (void) setCatalogID:(NSString*)catalogID title:(NSString*)catalogTitle brandColor:(UIColor*)brandColor;
 
-
-@property (weak, nonatomic) IBOutlet UIView *catalogContainerView;
+@property (weak, nonatomic) IBOutlet ETA_CatalogReaderView *catalogReaderView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activitySpinner;
+
+- (IBAction)showHotspotsSwitched:(id)sender;
 
 @end
