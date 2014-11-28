@@ -1,0 +1,7 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+# use the local submodule of Verso
+pod "Verso", :path => "./Verso/"
+
+pod "ETA-SDK/CatalogReader", :path => "../"
+pod "ETA-SDK/WebCatalogView", :path => "../"
