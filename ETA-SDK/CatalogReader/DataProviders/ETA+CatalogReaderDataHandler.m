@@ -1,39 +1,26 @@
 //
-//  ETA_CatalogReaderDataFetcher.m
+//  ETA+CatalogReaderDataHandler.m
 //  ETA-SDK
 //
-//  Created by Laurie Hufford on 25/11/2014.
-//  Copyright (c) 2014 Laurie Hufford. All rights reserved.
+//  Created by Laurie Hufford on 01/12/2014.
+//  Copyright (c) 2014 eTilbudsavis. All rights reserved.
 //
 
-#import "ETA_CatalogReaderDataFetcher.h"
+#import "ETA+CatalogReaderDataHandler.h"
 
-// Model
+#import "ETA_CatalogReaderPageStatisticEvent.h"
+
 #import "ETA_CatalogHotspotModel.h"
 #import "ETA_CatalogPageModel.h"
 
-NSString * const kETA_CatalogReaderFetchedDataSource_ErrorDomain = @"kETA_CatalogReaderFetchedDataSource_ErrorDomain";
-
-@interface ETA_CatalogReaderDataFetcher()
-
-@property (nonatomic, strong) id<ETA_CatalogReaderFetchedDataSource> dataSource;
-
-@end
+NSString * const kETA_ETA_CatalogReaderDataHandler_ErrorDomain = @"kETA_ETA_CatalogReaderDataHandler_ErrorDomain";
 
 
-@implementation ETA_CatalogReaderDataFetcher
 
-- (instancetype) initWithFetchedDataSource:(id<ETA_CatalogReaderFetchedDataSource>)dataSource
-{
-    NSParameterAssert(dataSource);
-    if (self = [super init])
-    {
-        _dataSource = dataSource;
-    }
-    return self;
-}
+@implementation ETA (CatalogReaderDataHandler)
 
 
+#pragma mark - Data Fetching
 
 - (void) fetchPagesForCatalogID:(NSString*)catalogID completion:(void (^)(NSArray* pages, NSError* error))completion
 {
@@ -64,7 +51,7 @@ NSString * const kETA_CatalogReaderFetchedDataSource_ErrorDomain = @"kETA_Catalo
         // there was an error while fetching - eject
         if (error)
         {
-//            NSLog(@"Error Fetching Page data! %@", error);
+            ETASDKLogError(@"Error Fetching Page data! %@", error);
             completion(nil, error);
             return;
         }
@@ -94,7 +81,7 @@ NSString * const kETA_CatalogReaderFetchedDataSource_ErrorDomain = @"kETA_Catalo
             
             if (!page)
             {
-                error = [NSError errorWithDomain:kETA_CatalogReaderFetchedDataSource_ErrorDomain code:ETA_CatalogReaderFetchedDataSource_ErrorInvalidResponseData userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Page Data is invalid", nil)}];
+                error = [NSError errorWithDomain:kETA_ETA_CatalogReaderDataHandler_ErrorDomain code:ETA_CatalogReaderDataHandler_ErrorInvalidResponseData userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Page Data is invalid", nil)}];
                 *stop = YES;
                 return;
             }
@@ -105,7 +92,7 @@ NSString * const kETA_CatalogReaderFetchedDataSource_ErrorDomain = @"kETA_Catalo
         
         if (error)
         {
-//            NSLog(@"An error occurred while parsing one of the pages - can't proceed");
+            ETASDKLogError(@"An error occurred while parsing one of the pages - can't proceed");
             completion(nil, error);
             return;
         }
@@ -127,7 +114,7 @@ NSString * const kETA_CatalogReaderFetchedDataSource_ErrorDomain = @"kETA_Catalo
             
             if (!hotspot)
             {
-                error = [NSError errorWithDomain:kETA_CatalogReaderFetchedDataSource_ErrorDomain code:ETA_CatalogReaderFetchedDataSource_ErrorInvalidResponseData userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Hotspot Data is invalid", nil)}];
+                error = [NSError errorWithDomain:kETA_ETA_CatalogReaderDataHandler_ErrorDomain code:ETA_CatalogReaderDataHandler_ErrorInvalidResponseData userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Hotspot Data is invalid", nil)}];
                 *stop = YES;
                 return;
             }
@@ -148,7 +135,7 @@ NSString * const kETA_CatalogReaderFetchedDataSource_ErrorDomain = @"kETA_Catalo
         
         if (error)
         {
-//            NSLog(@"An error occurred while parsing one of the hotspots - can't proceed");
+            ETASDKLogError(@"An error occurred while parsing one of the hotspots - can't proceed");
             completion(nil, error);
             return;
         }
@@ -156,7 +143,7 @@ NSString * const kETA_CatalogReaderFetchedDataSource_ErrorDomain = @"kETA_Catalo
         
         
         NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate] - start;
-        NSLog(@"Both Fetches Completed (%.4f secs) - %tu pages", duration, pages.count);
+        ETASDKLogInfo(@"Both Fetches Completed (%.4f secs) - %tu pages", duration, pages.count);
         
         completion(pages, error);
     };
@@ -166,7 +153,7 @@ NSString * const kETA_CatalogReaderFetchedDataSource_ErrorDomain = @"kETA_Catalo
     
     dispatch_queue_t fetchCompletionQ = dispatch_get_global_queue(0, 0);
     
-    [self.dataSource fetchPageImageDataForCatalogID:catalogID completion:^(NSArray *pageImageData, NSError *error) {
+    [self _fetchPageImageDataForCatalogID:catalogID completion:^(NSArray *pageImageData, NSError *error) {
         dispatch_async(fetchCompletionQ, ^{
             fetchedPageImageData = pageImageData;
             pageImageDataFetchError = error;
@@ -176,7 +163,7 @@ NSString * const kETA_CatalogReaderFetchedDataSource_ErrorDomain = @"kETA_Catalo
         });
     }];
     
-    [self.dataSource fetchHotspotDataForCatalogID:catalogID completion:^(NSArray *hotspotData, NSError *error) {
+    [self _fetchHotspotDataForCatalogID:catalogID completion:^(NSArray *hotspotData, NSError *error) {
         dispatch_async(fetchCompletionQ, ^{
             fetchedHotspotData = hotspotData;
             hotspotDataFetchError = error;
@@ -187,6 +174,62 @@ NSString * const kETA_CatalogReaderFetchedDataSource_ErrorDomain = @"kETA_Catalo
     }];
 }
 
+- (void) _fetchPageImageDataForCatalogID:(NSString*)catalogID completion:(void (^)(NSArray* pageImageData, NSError* error))completion
+{
+    NSParameterAssert(completion);
+    NSParameterAssert(catalogID);
+    
+    [self api:[ETA_API pathWithComponents:@[ETA_API.catalogs, catalogID, @"pages"]]
+         type:ETARequestTypeGET
+   parameters:nil
+     useCache:YES
+   completion:^(NSArray* jsonPageImageResponse, NSError *error, BOOL fromCache) {
+       completion(jsonPageImageResponse, error);
+   }];
+}
 
+- (void) _fetchHotspotDataForCatalogID:(NSString*)catalogID completion:(void (^)(NSArray* hotspotData, NSError* error))completion
+{
+    NSParameterAssert(completion);
+    NSParameterAssert(catalogID);
+    
+    
+    [self api:[ETA_API pathWithComponents:@[ETA_API.catalogs, catalogID, @"hotspots"]]
+         type:ETARequestTypeGET
+   parameters:nil
+     useCache:YES
+   completion:^(NSArray* jsonPagesResponse, NSError *error, BOOL fromCache) {
+       completion(jsonPagesResponse, error);
+   }];
+}
+
+
+
+
+
+
+
+#pragma mark - Data Collection
+
+- (void) collectPageStatisticsEvent:(ETA_CatalogReaderPageStatisticEvent *)statsEvent forCatalogID:(NSString*)catalogID
+{
+    NSDictionary* params = [statsEvent toDictionary];
+    
+    NSParameterAssert(params);
+    
+    
+    ETASDKLogInfo(@"COLLECTING %@ %@", catalogID, statsEvent);
+    
+    [self api:[ETA_API pathWithComponents:@[ETA_API.catalogs, catalogID, @"collect"]]
+         type:ETARequestTypePOST
+   parameters:params
+     useCache:NO
+   completion:^(NSArray* jsonCollectResponse, NSError *error, BOOL fromCache) {
+       if (error)
+       {
+           ETASDKLogError(@"Unable to collect %@ %@", statsEvent, error);
+       }
+   }];
+}
 
 @end

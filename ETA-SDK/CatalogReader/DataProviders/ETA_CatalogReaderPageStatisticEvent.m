@@ -1,21 +1,23 @@
 //
-//  CatalogReaderDataCollector.m
-//  NativeCatalogReader
+//  ETA_CatalogReaderPageStatisticEvent.m
+//  ETA-SDK
 //
 //  Created by Laurie Hufford on 25/11/2014.
 //  Copyright (c) 2014 Laurie Hufford. All rights reserved.
 //
 
-#import "CatalogReaderPageStatisticEvent.h"
+#import "ETA_CatalogReaderPageStatisticEvent.h"
 
-@interface CatalogReaderPageStatisticEvent ()
+#import "ETA_Log.h"
+
+@interface ETA_CatalogReaderPageStatisticEvent ()
 
 @property (nonatomic, assign) NSTimeInterval currentRunStartTimestamp;
 @property (nonatomic, assign) NSTimeInterval previousRunsDuration; // updated when paused
 
 @end
 
-@implementation CatalogReaderPageStatisticEvent : NSObject
+@implementation ETA_CatalogReaderPageStatisticEvent : NSObject
 
 - (instancetype) init
 {
@@ -23,7 +25,7 @@
     return nil;
 }
 
-- (instancetype) initWithType:(CatalogReaderPageStatisticEventType)type orientation:(CatalogReaderPageStatisticEventOrientation)orientation pageRange:(NSRange)pageRange viewSessionID:(NSString*)viewSessionID
+- (instancetype) initWithType:(ETA_CatalogReaderPageStatisticEventType)type orientation:(ETA_CatalogReaderPageStatisticEventOrientation)orientation pageRange:(NSRange)pageRange viewSessionID:(NSString*)viewSessionID
 {
     NSParameterAssert(viewSessionID);
     
@@ -50,7 +52,7 @@
         _currentRunStartTimestamp = [NSDate timeIntervalSinceReferenceDate];
         _paused = NO;
         
-        NSLog(@"STARTING: %@", self.debugDescription);
+        ETASDKLogInfo(@"STARTING: %@", self.debugDescription);
     }
 }
 - (void) pause
@@ -98,22 +100,22 @@
 }
 
 
-- (NSString*) _stringForType:(CatalogReaderPageStatisticEventType)type
+- (NSString*) _stringForType:(ETA_CatalogReaderPageStatisticEventType)type
 {
     switch (type) {
-        case CatalogReaderPageStatisticEventType_View:
+        case ETA_CatalogReaderPageStatisticEventType_View:
             return @"view";
-        case CatalogReaderPageStatisticEventType_Zoom:
+        case ETA_CatalogReaderPageStatisticEventType_Zoom:
             return @"zoom";
     }
 }
 
-- (NSString*) _stringForOrientation:(CatalogReaderPageStatisticEventOrientation)orientation
+- (NSString*) _stringForOrientation:(ETA_CatalogReaderPageStatisticEventOrientation)orientation
 {
     switch (orientation) {
-        case CatalogReaderPageStatisticEventOrientation_Portrait:
+        case ETA_CatalogReaderPageStatisticEventOrientation_Portrait:
             return @"portrait";
-        case CatalogReaderPageStatisticEventOrientation_Landscape:
+        case ETA_CatalogReaderPageStatisticEventOrientation_Landscape:
             return @"landscape";
     }
 }

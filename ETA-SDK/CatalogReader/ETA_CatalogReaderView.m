@@ -8,11 +8,7 @@
 
 #import "ETA_CatalogReaderView.h"
 
-#import "ETA+CatalogReaderStatsCollector.h"
-
-#import "ETA+CatalogReaderFetchedDataSource.h"
-#import "CatalogReaderDummyFetchedDataSource.h"
-
+#import "ETA+CatalogReaderDataHandler.h"
 
 
 // Model
@@ -43,13 +39,12 @@
 
 @interface ETA_CatalogReaderView () <ETA_VersoPagedViewDataSource>
 
-@property (nonatomic, strong) ETA_CatalogReaderDataFetcher* dataFetcher;
-@property (nonatomic, strong) id<CatalogReaderPageStatisticCollectorProtocol> statsCollector;
+@property (nonatomic, strong) id<ETA_CatalogReaderDataHandlerProtocol> dataHandler;
 
 
 // stats collecting
-@property (nonatomic, strong) CatalogReaderPageStatisticEvent* currentViewStatsEvent;
-@property (nonatomic, strong) CatalogReaderPageStatisticEvent* currentZoomStatsEvent;
+@property (nonatomic, strong) ETA_CatalogReaderPageStatisticEvent* currentViewStatsEvent;
+@property (nonatomic, strong) ETA_CatalogReaderPageStatisticEvent* currentZoomStatsEvent;
 @property (nonatomic, strong) NSString* statsSessionID; // the UUID of the current viewing session. generated on first request
 
 // the user must open a catalog for the data to fetched. -startReading and -stopReading will change this value
@@ -116,11 +111,7 @@
     if (!SDK)
         SDK = ETA.SDK;
     
-    // build the datasource & collector
-    //        id<CatalogReaderFetchedDataSource> fetchedDataSource = [[CatalogReaderDummyFetchedDataSource alloc] initWithDelay:1.5];
-    id<ETA_CatalogReaderFetchedDataSource> fetchedDataSource = SDK;
-    self.dataFetcher = [[ETA_CatalogReaderDataFetcher alloc] initWithFetchedDataSource:fetchedDataSource];
-    self.statsCollector = SDK;
+    self.dataHandler = SDK;
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
@@ -188,7 +179,7 @@
     if (self.isCatalogOpen)
         return;
     
-    NSLog(@"Start Reading");
+    ETASDKLogInfo(@"Start Reading");
     
     self.catalogOpen = YES;
     
@@ -206,7 +197,7 @@
 
 - (void) stopReading
 {
-    NSLog(@"Stop Reading");
+    ETASDKLogInfo(@"Stop Reading");
     
     // just collect any pending events
     [self _collectAllCurrentPageStatsEvents];
@@ -238,7 +229,7 @@
     }
     
     __weak __typeof(self) weakSelf = self;
-    [self.dataFetcher fetchPagesForCatalogID:fetchingCatalogID completion:^(NSArray *pages, NSError *error) {
+    [self.dataHandler fetchPagesForCatalogID:fetchingCatalogID completion:^(NSArray *pages, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             
             NSError* fetchError = error;
@@ -314,11 +305,11 @@
         return;
     }
     
-    CatalogReaderPageStatisticEventOrientation orientation = self.bounds.size.width > self.bounds.size.height ? CatalogReaderPageStatisticEventOrientation_Landscape : CatalogReaderPageStatisticEventOrientation_Portrait;
+    ETA_CatalogReaderPageStatisticEventOrientation orientation = self.bounds.size.width > self.bounds.size.height ? ETA_CatalogReaderPageStatisticEventOrientation_Landscape : ETA_CatalogReaderPageStatisticEventOrientation_Portrait;
     NSRange pageRange = self.visiblePageIndexRange;
     pageRange.location ++; // as we use index, and the stats system uses page number
     
-    self.currentViewStatsEvent = [[CatalogReaderPageStatisticEvent alloc] initWithType:CatalogReaderPageStatisticEventType_View
+    self.currentViewStatsEvent = [[ETA_CatalogReaderPageStatisticEvent alloc] initWithType:ETA_CatalogReaderPageStatisticEventType_View
                                                                            orientation:orientation
                                                                              pageRange:pageRange
                                                                          viewSessionID:self.statsSessionID];
@@ -337,11 +328,11 @@
     [self.currentViewStatsEvent pause];
 
     
-    CatalogReaderPageStatisticEventOrientation orientation = self.bounds.size.width > self.bounds.size.height ? CatalogReaderPageStatisticEventOrientation_Landscape : CatalogReaderPageStatisticEventOrientation_Portrait;
+    ETA_CatalogReaderPageStatisticEventOrientation orientation = self.bounds.size.width > self.bounds.size.height ? ETA_CatalogReaderPageStatisticEventOrientation_Landscape : ETA_CatalogReaderPageStatisticEventOrientation_Portrait;
     NSRange pageRange = self.visiblePageIndexRange;
     pageRange.location ++; // as we use index, and the stats system uses page number
     
-    self.currentZoomStatsEvent = [[CatalogReaderPageStatisticEvent alloc] initWithType:CatalogReaderPageStatisticEventType_Zoom
+    self.currentZoomStatsEvent = [[ETA_CatalogReaderPageStatisticEvent alloc] initWithType:ETA_CatalogReaderPageStatisticEventType_Zoom
                                                                            orientation:orientation
                                                                              pageRange:pageRange
                                                                          viewSessionID:self.statsSessionID];
@@ -351,7 +342,7 @@
 {
     if (self.currentZoomStatsEvent)
     {
-        [self.statsCollector collectPageStatisticsEvent:self.currentZoomStatsEvent forCatalogID:self.catalogID];
+        [self.dataHandler collectPageStatisticsEvent:self.currentZoomStatsEvent forCatalogID:self.catalogID];
         self.currentZoomStatsEvent = nil;
     }
     
@@ -364,14 +355,14 @@
     //first finish the zoom event, if we have one
     if (self.currentZoomStatsEvent)
     {
-        [self.statsCollector collectPageStatisticsEvent:self.currentZoomStatsEvent forCatalogID:self.catalogID];
+        [self.dataHandler collectPageStatisticsEvent:self.currentZoomStatsEvent forCatalogID:self.catalogID];
         self.currentZoomStatsEvent = nil;
     }
     
     //first finish the zoom event, if we have one
     if (self.currentViewStatsEvent)
     {
-        [self.statsCollector collectPageStatisticsEvent:self.currentViewStatsEvent forCatalogID:self.catalogID];
+        [self.dataHandler collectPageStatisticsEvent:self.currentViewStatsEvent forCatalogID:self.catalogID];
         self.currentViewStatsEvent = nil;
     }
 }
