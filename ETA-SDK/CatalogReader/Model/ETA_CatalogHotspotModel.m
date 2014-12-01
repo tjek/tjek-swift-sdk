@@ -8,6 +8,9 @@
 
 #import "ETA_CatalogHotspotModel.h"
 
+#import "ETA_Offer.h"
+
+
 @interface ETA_CatalogHotspotModel ()
 
 @property (nonatomic, strong) NSDictionary* locationsByPageIndex;
@@ -157,6 +160,11 @@
     return [[super JSONKeyPathsByPropertyKey] mtl_dictionaryByAddingEntriesFromDictionary:@{
                                                                                             @"offer": @"offer",
                                                                                             }];
+}
+
++ (NSValueTransformer*) offerJSONTransformer
+{
+    return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ETA_Offer.class];
 }
 
 @end

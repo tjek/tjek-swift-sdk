@@ -14,6 +14,8 @@
 // Model
 #import "ETA_CatalogPageModel.h"
 #import "ETA_CatalogHotspotModel.h"
+#import "ETA_Offer.h"
+
 
 // Views
 #import "ETA_VersoPageSpreadCell.h"
@@ -25,8 +27,8 @@
 @property (nonatomic, strong) NSIndexPath* currentIndexPath;
 
 - (void) didChangeVisiblePageIndexRangeFrom:(NSRange)prevRange;
-- (void) didTapLocation:(CGPoint)tapLocation normalizedPoint:(CGPoint)normalizedPoint onPageIndex:(NSUInteger)pageIndex;
-- (void) didLongPressLocation:(CGPoint)longPressLocation normalizedPoint:(CGPoint)normalizedPoint onPageIndex:(NSUInteger)pageIndex;
+- (void) didTapLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys;
+- (void) didLongPressLocation:(CGPoint)longPressLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys;
 - (void) didSetImage:(UIImage*)image isZoomImage:(BOOL)isZoomImage onPageIndex:(NSUInteger)pageIndex;
 - (UIColor*) backgroundColorAtPageIndex:(NSUInteger)pageIndex;
 
@@ -272,10 +274,6 @@
 
 
 
-
-
-
-
 #pragma mark - Stats
 
 
@@ -432,10 +430,28 @@
 }
 
 
+- (void) didTapLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys
+{
+    if ([self.delegate respondsToSelector:@selector(catalogReaderView:didTapLocation:onPageIndex:hittingHotspots:)])
+    {
+        NSArray* hotspots = [self _hotspotsOnPageIndex:pageIndex matchingKeys:hotspotKeys];
+        
+        [self.delegate catalogReaderView:self didTapLocation:tapLocation onPageIndex:pageIndex hittingHotspots:hotspots];
+    }
+    
+    [super didTapLocation:tapLocation onPageIndex:pageIndex hittingHotspotsWithKeys:hotspotKeys];
+}
 
-
-
-
+- (void) didLongPressLocation:(CGPoint)longPressLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray *)hotspotKeys
+{
+    if ([self.delegate respondsToSelector:@selector(catalogReaderView:didLongPressLocation:onPageIndex:hittingHotspots:)])
+    {
+        NSArray* hotspots = [self _hotspotsOnPageIndex:pageIndex matchingKeys:hotspotKeys];
+        
+        [self.delegate catalogReaderView:self didLongPressLocation:longPressLocation onPageIndex:pageIndex hittingHotspots:hotspots];
+    }
+    [super didLongPressLocation:longPressLocation onPageIndex:pageIndex hittingHotspotsWithKeys:hotspotKeys];
+}
 
 #pragma mark - DataSource
 
@@ -508,27 +524,32 @@
     NSMutableDictionary* hotspotRects = [NSMutableDictionary dictionary];
     for (ETA_CatalogHotspotModel* hotspot in hotspots)
     {
-        NSString* offerID = nil;
+        NSString* hotspotKey = nil;
         
         if ([hotspot isKindOfClass:ETA_CatalogOfferHotspotModel.class])
         {
-            offerID = ((ETA_CatalogOfferHotspotModel*)hotspot).offer;
+            ETA_Offer* offer = ((ETA_CatalogOfferHotspotModel*)hotspot).offer;
+            hotspotKey = offer.uuid;
         }
         
-        if (!offerID)
+        if (!hotspotKey)
             continue;
 
+        
         //TODO: convert to standard normalized coords
         CGRect boundingRect = [hotspot boundingRectForPageIndex:pageIndex];
         if (CGRectIsNull(boundingRect) == NO)
         {
-            hotspotRects[offerID] = [NSValue valueWithCGRect:boundingRect];
+            hotspotRects[hotspotKey] = [NSValue valueWithCGRect:boundingRect];
         }
     }
     return hotspotRects;
 }
 
-
+- (BOOL) versoPagedView:(ETA_VersoPagedView*)versoPagedView hotspotRectsNormalizedByWidthForPageIndex:(NSUInteger)pageIndex
+{
+    return YES;
+}
 
 
 
@@ -543,26 +564,42 @@
     return self.pageObjects[pageIndex];
 }
 
-- (NSArray*) _hotspotsAtNormalizedPoint:(CGPoint)normalizedPoint onPageIndex:(NSUInteger)pageIndex
+
+- (NSArray*) _hotspotsOnPageIndex:(NSUInteger)pageIndex matchingKeys:(NSArray*)matchingKeys
 {
+    ETA_CatalogPageModel* page = [self _pageAtIndex:pageIndex];
+    if (!page)
+    {
+        return nil;
+    }
+    
+    if (!matchingKeys.count)
+        return @[];
+    
+    NSArray* hotspots = [page allHotspots];
+    if (!matchingKeys)
+        return hotspots;
+    
     NSMutableArray* matchingHotspots = [NSMutableArray array];
     
-    NSArray* hotspots = [[self _pageAtIndex:pageIndex] allHotspots];
-    [hotspots enumerateObjectsUsingBlock:^(ETA_CatalogOfferHotspotModel* hotspot, NSUInteger idx, BOOL *stop) {
-        CGRect hotspotRect = [hotspot boundingRectForPageIndex:pageIndex];
+    for (ETA_CatalogHotspotModel* hotspot in hotspots)
+    {
+        NSString* hotspotKey = nil;
         
-        if (CGRectContainsPoint(hotspotRect, normalizedPoint))
+        if ([hotspot isKindOfClass:ETA_CatalogOfferHotspotModel.class])
         {
-            [matchingHotspots addObject:hotspot];
+            ETA_Offer* offer = ((ETA_CatalogOfferHotspotModel*)hotspot).offer;
+            hotspotKey = offer.uuid;
         }
-    }];
-    
+        
+        if (!hotspotKey)
+            continue;
+        
+        if ([matchingKeys containsObject:hotspotKey])
+            [matchingHotspots addObject:hotspot];
+    }
     return matchingHotspots;
 }
-
-
-
-
 
 
 @end

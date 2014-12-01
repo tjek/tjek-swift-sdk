@@ -10,7 +10,6 @@
 
 #import <Mantle/Mantle.h>
 
-
 @interface ETA_CatalogHotspotModel : MTLModel <MTLJSONSerializing>
 
 - (NSIndexSet*) activePageIndexes;
@@ -20,9 +19,9 @@
 @end
 
 
-
+@class ETA_Offer;
 @interface ETA_CatalogOfferHotspotModel : ETA_CatalogHotspotModel
 
-@property (nonatomic, strong, readonly) id offer;
+@property (nonatomic, strong, readonly) ETA_Offer* offer;
 
 @end

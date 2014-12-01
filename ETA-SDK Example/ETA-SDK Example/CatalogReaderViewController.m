@@ -145,4 +145,17 @@
     }];
 }
 
+
+
+- (void) catalogReaderView:(ETA_CatalogReaderView *)catalogReaderView didTapLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspots:(NSArray*)hotspots
+{
+    DDLogInfo(@"tap hotspots: %@", [hotspots valueForKeyPath:@"offer.heading"]);
+    
+}
+- (void) catalogReaderView:(ETA_CatalogReaderView *)catalogReaderView didLongPressLocation:(CGPoint)longPressLocation onPageIndex:(NSUInteger)pageIndex hittingHotspots:(NSArray*)hotspots
+{
+    DDLogInfo(@"long press hotspots: %@", [hotspots valueForKeyPath:@"offer.heading"]);
+}
+
+
 @end

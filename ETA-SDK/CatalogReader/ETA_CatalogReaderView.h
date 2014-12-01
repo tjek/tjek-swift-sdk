@@ -18,6 +18,10 @@
 - (void) catalogReaderViewDidStartFetchingData:(ETA_CatalogReaderView *)catalogReaderView;
 - (void) catalogReaderViewDidFinishFetchingData:(ETA_CatalogReaderView *)catalogReaderView error:(NSError*)error;
 
+
+- (void) catalogReaderView:(ETA_CatalogReaderView *)catalogReaderView didTapLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspots:(NSArray*)hotspots;
+- (void) catalogReaderView:(ETA_CatalogReaderView *)catalogReaderView didLongPressLocation:(CGPoint)longPressLocation onPageIndex:(NSUInteger)pageIndex hittingHotspots:(NSArray*)hotspots;
+
 @end
 
 
@@ -54,17 +58,6 @@
 @property (nonatomic, weak) id<ETA_VersoPagedViewDataSource> dataSource;
 
 
-
-
-
-//- (instancetype) initWithCatalog:(ETA_Catalog*)catalog pageNumber:(NSUInteger)pageNumber;
-//- (instancetype) initWithCatalogID:(NSString*)catalogID sdk:(ETA*)sdk;
-//- (instancetype) initWithETA:(ETA*)sdk baseURL:(NSURL*)baseURL;
-
-
-//@property (nonatomic, readonly, assign) NSUInteger currentPage;
-//@property (nonatomic, readonly, assign) NSUInteger pageCount;
-//@property (nonatomic, readonly, assign) CGFloat pageProgress;
 
 @end
 
