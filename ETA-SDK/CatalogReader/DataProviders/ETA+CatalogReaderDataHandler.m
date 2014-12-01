@@ -13,7 +13,7 @@
 #import "ETA_CatalogHotspotModel.h"
 #import "ETA_CatalogPageModel.h"
 
-NSString * const kETA_ETA_CatalogReaderDataHandler_ErrorDomain = @"kETA_ETA_CatalogReaderDataHandler_ErrorDomain";
+NSString * const kETA_CatalogReaderDataHandler_ErrorDomain = @"kETA_ETA_CatalogReaderDataHandler_ErrorDomain";
 
 
 
@@ -81,7 +81,7 @@ NSString * const kETA_ETA_CatalogReaderDataHandler_ErrorDomain = @"kETA_ETA_Cata
             
             if (!page)
             {
-                error = [NSError errorWithDomain:kETA_ETA_CatalogReaderDataHandler_ErrorDomain code:ETA_CatalogReaderDataHandler_ErrorInvalidResponseData userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Page Data is invalid", nil)}];
+                error = [NSError errorWithDomain:kETA_CatalogReaderDataHandler_ErrorDomain code:ETA_CatalogReaderDataHandler_ErrorInvalidResponseData userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Page Data is invalid", nil)}];
                 *stop = YES;
                 return;
             }
@@ -114,7 +114,7 @@ NSString * const kETA_ETA_CatalogReaderDataHandler_ErrorDomain = @"kETA_ETA_Cata
             
             if (!hotspot)
             {
-                error = [NSError errorWithDomain:kETA_ETA_CatalogReaderDataHandler_ErrorDomain code:ETA_CatalogReaderDataHandler_ErrorInvalidResponseData userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Hotspot Data is invalid", nil)}];
+                error = [NSError errorWithDomain:kETA_CatalogReaderDataHandler_ErrorDomain code:ETA_CatalogReaderDataHandler_ErrorInvalidResponseData userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Hotspot Data is invalid", nil)}];
                 *stop = YES;
                 return;
             }

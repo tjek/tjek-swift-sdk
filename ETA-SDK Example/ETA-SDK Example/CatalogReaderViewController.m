@@ -138,7 +138,8 @@
     {
         DDLogError(@"Error Fetching Catalog Data: %@", error);
     }
-    //TODO: if error show a message
+    
+    //TODO: if error show a message (unless it's the 'outdated' error)
     [UIView animateWithDuration:0.4 animations:^{
         [self updateViewForFetchingState];
     }];

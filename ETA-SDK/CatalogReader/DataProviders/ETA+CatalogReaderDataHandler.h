@@ -13,10 +13,11 @@
 
 
 // Error handling
-extern NSString * const kETA_ETA_CatalogReaderDataHandler_ErrorDomain;
+extern NSString * const kETA_CatalogReaderDataHandler_ErrorDomain;
 
 typedef NS_ENUM(NSInteger, ETA_CatalogReaderDataHandler_ErrorCode) {
     ETA_CatalogReaderDataHandler_ErrorInvalidResponseData,
+    ETA_CatalogReaderDataHandler_ErrorOutdatedResponse,
 };
 
 

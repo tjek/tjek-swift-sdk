@@ -253,8 +253,7 @@
             }
             else
             {
-                //TODO: make an out-of-date fetch error, to send to the delegate callback
-                fetchError = [NSError errorWithDomain:@"" code:0 userInfo:@{}];
+                fetchError = [NSError errorWithDomain:kETA_CatalogReaderDataHandler_ErrorDomain code:ETA_CatalogReaderDataHandler_ErrorOutdatedResponse userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"The fetched data is out of data - the catalog ID has changed since the fetch started", nil)}];
             }
             
             // trigger fetched event delegate callback
