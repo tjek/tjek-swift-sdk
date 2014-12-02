@@ -16,7 +16,8 @@
 @interface CatalogReaderViewController () <ETA_CatalogReaderViewDelegate>
 
 @property (nonatomic, copy) NSString* catalogID;
-
+@property (nonatomic, strong) UIColor* brandColor;
+@property (nonatomic, strong) UIColor* alternateColor;
 @end
 
 @implementation CatalogReaderViewController
@@ -24,13 +25,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     // In this example version the CatalogReaderView is created in the .storyboard
     // Doing so will use the default SDK singleton as the datasource.
     // If you want to use a different SDK instance there are alternative
     //   constructor methods you can use
     self.catalogReaderView.delegate = self;
     self.catalogReaderView.catalogID = self.catalogID;
+    
+    [self updateViewForBrandColor];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -86,18 +88,35 @@
     self.catalogReaderView.catalogID = catalogID;
 
     
+    self.brandColor = brandColor;
     
-    // if the brand color is white, make it grey (so we can see it)
-    UIColor* brandTextColor = ([brandColor isEqual:[UIColor colorWithRed:1 green:1 blue:1 alpha:1]]) ? [UIColor grayColor] : brandColor;
     
-    self.navigationController.navigationBar.tintColor = brandTextColor;
-    self.view.backgroundColor = brandColor;
+    [self updateViewForBrandColor];
     
     
     self.title = catalogTitle;
-    
 }
 
+- (void) updateViewForBrandColor
+{
+    CGFloat whiteComponent = 1.0;
+    [self.brandColor getWhite:&whiteComponent alpha:NULL];
+    if (whiteComponent > 0.5)
+        self.alternateColor = [UIColor blackColor];
+    else
+        self.alternateColor = [UIColor whiteColor];
+    
+    
+    // if the brand color is (almost) white, make it grey (so we can see it)
+    UIColor* brandTextColor = (whiteComponent > 0.8) ? [UIColor grayColor] : self.brandColor;
+    
+    
+    
+    self.navigationController.navigationBar.tintColor = brandTextColor;
+    self.view.backgroundColor = self.brandColor;
+    
+    self.activitySpinner.color = self.alternateColor;
+}
 
 
 - (void) updateViewForFetchingState
@@ -157,5 +176,9 @@
     DDLogInfo(@"long press hotspots: %@", [hotspots valueForKeyPath:@"offer.heading"]);
 }
 
+- (UIColor*) versoPagedView:(ETA_VersoPagedView *)versoPagedView pageNumberLabelColorForPageIndex:(NSUInteger)pageIndex
+{
+    return self.alternateColor;
+}
 
 @end
