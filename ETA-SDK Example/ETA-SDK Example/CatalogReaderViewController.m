@@ -31,8 +31,6 @@
     //   constructor methods you can use
     self.catalogReaderView.delegate = self;
     self.catalogReaderView.catalogID = self.catalogID;
-    
-    [self updateViewForBrandColor];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -41,6 +39,8 @@
     
     // whenever the view appears, make sure that we are updated to show the catalog that was specified
     [self updateViewForFetchingState];
+    
+    [self updateViewForBrandColor];
 }
 
 - (void) viewDidAppear:(BOOL)animated

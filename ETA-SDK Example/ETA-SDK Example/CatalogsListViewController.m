@@ -229,7 +229,7 @@
     {
         // get the destination view controller from the storyboard
         CatalogReaderViewController* catalogReaderVC = (CatalogReaderViewController*)segue.destinationViewController;
-        [catalogReaderVC setCatalog:catalog];
+        [catalogReaderVC setCatalogID:catalog.uuid title:catalog.branding.name brandColor:(catalog.branding.pageflipColor) ?: catalog.branding.color];
     }
 }
 

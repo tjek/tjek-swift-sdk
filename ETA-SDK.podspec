@@ -35,7 +35,7 @@ Pod::Spec.new do |s|
 
   # The native catalog reader experience
   s.subspec 'CatalogReader' do |ss|
-      ss.source_files = 'ETA-SDK/CatalogReader/*.{h,m}'
+      ss.source_files = 'ETA-SDK/CatalogReader/**/*.{h,m}'
       
       ss.dependency 'ETA-SDK/API'
       ss.dependency 'Verso', '~> 0.0.1'

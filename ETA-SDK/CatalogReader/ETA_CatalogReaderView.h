@@ -54,7 +54,7 @@
 @property (nonatomic, weak) id<ETA_CatalogReaderViewDelegate> delegate;
 
 
-// Note - DO NOT set this property. It will assert, as the SDKCatalogReaderView is its own datasource
+// Note - DO NOT try to set this property. It is a no-op
 @property (nonatomic, weak) id<ETA_VersoPagedViewDataSource> dataSource;
 
 

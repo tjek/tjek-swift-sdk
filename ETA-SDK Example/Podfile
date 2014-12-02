@@ -1,6 +1,6 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
-pod "Verso", :git => 'https://github.com/eTilbudsavis/ios-verso.git'
+pod "Verso", :git => 'https://github.com/eTilbudsavis/ios-verso.git', :branch => 'develop'
 
 pod "ETA-SDK/CatalogReader", :path => "../"
 pod "ETA-SDK/WebCatalogView", :path => "../"

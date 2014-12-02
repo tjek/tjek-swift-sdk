@@ -461,7 +461,7 @@
 }
 - (void) setDataSource:(id<ETA_VersoPagedViewDataSource>)dataSource
 {
-    NSAssert(NO, NSLocalizedString(@"Datasource may not be overridden in SDK version", nil));
+    ETASDKLogWarn(@"ETA_CatalogReaderView DataSource may not be set");
 }
 
 
