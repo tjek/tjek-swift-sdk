@@ -121,7 +121,11 @@
 }
 
 
-
+- (void) dealloc
+{
+    _dataHandler = nil;
+    _catalogID = nil;
+}
 
 
 
@@ -259,9 +263,9 @@
             }
             
             // trigger fetched event delegate callback
-            if ([self.delegate respondsToSelector:@selector(catalogReaderViewDidFinishFetchingData:error:)])
+            if ([weakSelf.delegate respondsToSelector:@selector(catalogReaderViewDidFinishFetchingData:error:)])
             {
-                [self.delegate catalogReaderViewDidFinishFetchingData:self error:error];
+                [weakSelf.delegate catalogReaderViewDidFinishFetchingData:weakSelf error:error];
             }
         });
     }];

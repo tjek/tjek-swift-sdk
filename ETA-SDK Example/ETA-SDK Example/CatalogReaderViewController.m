@@ -181,4 +181,13 @@
     return self.alternateColor;
 }
 
+- (void) versoPagedView:(ETA_VersoPagedView *)versoPagedView didChangeVisiblePageIndexRangeFrom:(NSRange)previousVisiblePageIndexRange
+{
+    NSString* pageNumberString = [NSString stringWithFormat:@"%@", @(versoPagedView.visiblePageIndexRange.location + 1)];
+    if (versoPagedView.visiblePageIndexRange.length > 1)
+        pageNumberString = [pageNumberString stringByAppendingFormat:@"-%@", @(versoPagedView.visiblePageIndexRange.location + versoPagedView.visiblePageIndexRange.length)];
+    
+    NSLog(@"Page changed: page %@/%@ (%.1f%%)", pageNumberString, @(versoPagedView.numberOfPages), versoPagedView.pageProgress*100.0);
+}
+
 @end
