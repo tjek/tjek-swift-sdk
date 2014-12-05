@@ -22,6 +22,10 @@
 - (void) catalogReaderView:(ETA_CatalogReaderView *)catalogReaderView didTapLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspots:(NSArray*)hotspots;
 - (void) catalogReaderView:(ETA_CatalogReaderView *)catalogReaderView didLongPressLocation:(CGPoint)longPressLocation onPageIndex:(NSUInteger)pageIndex hittingHotspots:(NSArray*)hotspots;
 
+- (void) catalogReaderView:(ETA_CatalogReaderView *)catalogReaderView didFinishZooming:(CGFloat)zoomScale;
+- (void) catalogReaderView:(ETA_CatalogReaderView *)catalogReaderView didZoom:(CGFloat)zoomScale;
+
+
 @end
 
 

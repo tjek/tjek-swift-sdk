@@ -414,6 +414,15 @@
     [super didSetImage:image isZoomImage:isZoomImage onPageIndex:pageIndex];
 }
 
+- (void)didZoom:(CGFloat)zoomScale
+{
+    [super didZoom:zoomScale];
+    
+    if ([self.delegate respondsToSelector:@selector(catalogReaderView:didZoom:)])
+    {
+        [self.delegate catalogReaderView:self didZoom:zoomScale];
+    }
+}
 
 - (void) didEndZooming:(CGFloat)zoomScale
 {
@@ -431,6 +440,11 @@
     }
     
     [super didEndZooming:zoomScale];
+    
+    if ([self.delegate respondsToSelector:@selector(catalogReaderView:didFinishZooming:)])
+    {
+        [self.delegate catalogReaderView:self didFinishZooming:zoomScale];
+    }    
 }
 
 
