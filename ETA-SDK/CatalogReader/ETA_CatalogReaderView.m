@@ -123,6 +123,8 @@
 
 - (void) dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
     _dataHandler = nil;
     _catalogID = nil;
 }
