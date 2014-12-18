@@ -24,7 +24,7 @@
 @interface ETA_VersoPagedView (Subclass)
 
 @property (nonatomic, strong) UICollectionView* collectionView;
-@property (nonatomic, strong) NSIndexPath* currentIndexPath;
+- (ETA_VersoPageSpreadCell*) _currentPageSpreadCell;
 
 - (void) didChangeVisiblePageIndexRangeFrom:(NSRange)prevRange;
 - (void) didTapLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys;
@@ -292,7 +292,8 @@
 {
     if ([self _shouldStartStatsEvent])
     {
-        ETA_VersoPageSpreadCell* pageView = (ETA_VersoPageSpreadCell*)[self.collectionView cellForItemAtIndexPath:self.currentIndexPath];
+        
+        ETA_VersoPageSpreadCell* pageView = [self _currentPageSpreadCell];
         if ([pageView anyImagesLoaded])
         {
             [self _startPageViewStatsEvent]; // start the page if it already has an image loaded

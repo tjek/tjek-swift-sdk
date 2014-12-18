@@ -59,13 +59,13 @@
 }
 
 
-- (void) viewWillLayoutSubviews
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    [super viewWillLayoutSubviews];
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     
-    // Show two images if the view is going landscape
-    BOOL isLandscape = self.view.bounds.size.width > self.view.bounds.size.height;
-    [self.catalogReaderView setSinglePageMode:!isLandscape];
+    // Show two images if the view is in landscape
+    BOOL isLandscape = self.interfaceOrientation == UIDeviceOrientationLandscapeRight || self.interfaceOrientation == UIDeviceOrientationLandscapeLeft;
+    [self.catalogReaderView setSinglePageMode:!isLandscape animated:YES];
 }
 
 
