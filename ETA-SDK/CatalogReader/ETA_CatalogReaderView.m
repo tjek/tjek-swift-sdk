@@ -26,7 +26,10 @@
 @property (nonatomic, strong) UICollectionView* collectionView;
 - (ETA_VersoPageSpreadCell*) _currentPageSpreadCell;
 
-- (void) didChangeVisiblePageIndexRangeFrom:(NSRange)prevRange;
+- (void) beganScrollingFrom:(NSRange)currentPageIndexRange;
+- (void) beganScrollingIntoNewPageIndexRange:(NSRange)newPageIndexRange from:(NSRange)previousPageIndexRange;
+- (void) finishedScrollingIntoNewPageIndexRange:(NSRange)newPageIndexRange from:(NSRange)previousPageIndexRange;
+
 - (void) didTapLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys;
 - (void) didLongPressLocation:(CGPoint)longPressLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys;
 - (void) didSetImage:(UIImage*)image isZoomImage:(BOOL)isZoomImage onPageIndex:(NSUInteger)pageIndex;
@@ -391,17 +394,26 @@
 
 
 #pragma mark - Subclassed Methods
-
-- (void) didChangeVisiblePageIndexRangeFrom:(NSRange)prevRange
+- (void) beganScrollingFrom:(NSRange)currentPageIndexRange
+{
+    [super beganScrollingFrom:currentPageIndexRange];
+}
+- (void) beganScrollingIntoNewPageIndexRange:(NSRange)newPageIndexRange from:(NSRange)previousPageIndexRange
+{
+    [super beganScrollingIntoNewPageIndexRange:newPageIndexRange from:previousPageIndexRange];
+}
+- (void) finishedScrollingIntoNewPageIndexRange:(NSRange)newPageIndexRange from:(NSRange)previousPageIndexRange
 {
     // finish any existing page view/zoom stats
     [self _collectAllCurrentPageStatsEvents];
     
-    
+    // start a new page stats event, if it is ready
     [self _startPageViewStatsEventIfImageLoaded];
-
-    [super didChangeVisiblePageIndexRangeFrom:prevRange];
+    
+    
+    [super finishedScrollingIntoNewPageIndexRange:newPageIndexRange from:previousPageIndexRange];
 }
+
 
 - (void) didSetImage:(UIImage*)image isZoomImage:(BOOL)isZoomImage onPageIndex:(NSUInteger)pageIndex
 {
