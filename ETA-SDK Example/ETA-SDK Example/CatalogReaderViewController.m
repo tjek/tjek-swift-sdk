@@ -181,11 +181,21 @@
     return self.alternateColor;
 }
 
-- (void) versoPagedView:(ETA_VersoPagedView *)versoPagedView didChangeVisiblePageIndexRangeFrom:(NSRange)previousVisiblePageIndexRange
+
+- (void) versoPagedView:(ETA_VersoPagedView *)versoPagedView beganScrollingFrom:(NSRange)currentPageIndexRange
 {
-    NSString* pageNumberString = [NSString stringWithFormat:@"%@", @(versoPagedView.visiblePageIndexRange.location + 1)];
+    NSLog(@"began scrolling %@", NSStringFromRange(currentPageIndexRange));
+}
+
+- (void) versoPagedView:(ETA_VersoPagedView *)versoPagedView beganScrollingIntoNewPageIndexRange:(NSRange)newPageIndexRange from:(NSRange)previousPageIndexRange
+{
+    NSLog(@"began scrolling into %@ -> %@", NSStringFromRange(previousPageIndexRange), NSStringFromRange(newPageIndexRange));
+}
+- (void) versoPagedView:(ETA_VersoPagedView *)versoPagedView finishedScrollingIntoNewPageIndexRange:(NSRange)newPageIndexRange from:(NSRange)previousPageIndexRange
+{
+    NSString* pageNumberString = [NSString stringWithFormat:@"%@", @(newPageIndexRange.location + 1)];
     if (versoPagedView.visiblePageIndexRange.length > 1)
-        pageNumberString = [pageNumberString stringByAppendingFormat:@"-%@", @(versoPagedView.visiblePageIndexRange.location + versoPagedView.visiblePageIndexRange.length)];
+        pageNumberString = [pageNumberString stringByAppendingFormat:@"-%@", @(newPageIndexRange.location + newPageIndexRange.length)];
     
     NSLog(@"Page changed: page %@/%@ (%.1f%%)", pageNumberString, @(versoPagedView.numberOfPages), versoPagedView.pageProgress*100.0);
 }
