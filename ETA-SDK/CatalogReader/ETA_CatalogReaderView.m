@@ -39,6 +39,9 @@
 - (void) didZoom:(CGFloat)zoomScale;
 - (void) didEndZooming:(CGFloat)zoomScale;
 
+- (void) willBeginDisplayingOutro;
+- (void) didEndDisplayingOutro;
+
 @end
 
 
@@ -233,6 +236,9 @@
     
     self.isFetchingData = YES;
     
+    
+    [self.dataHandler collectCatalogOpeningStatisticForCatalogID:self.catalogID];
+    
     // send started fetching delegate callback
     if ([self.delegate respondsToSelector:@selector(catalogReaderViewDidStartFetchingData:)])
     {
@@ -312,8 +318,14 @@
         return;
     }
     
-    ETA_CatalogReaderPageStatisticEventOrientation orientation = self.bounds.size.width > self.bounds.size.height ? ETA_CatalogReaderPageStatisticEventOrientation_Landscape : ETA_CatalogReaderPageStatisticEventOrientation_Portrait;
     NSRange pageRange = self.visiblePageIndexRange;
+    if (pageRange.location == NSNotFound || pageRange.length == 0)
+    {
+        return;
+    }
+    
+    ETA_CatalogReaderPageStatisticEventOrientation orientation = self.bounds.size.width > self.bounds.size.height ? ETA_CatalogReaderPageStatisticEventOrientation_Landscape : ETA_CatalogReaderPageStatisticEventOrientation_Portrait;
+    
     pageRange.location ++; // as we use index, and the stats system uses page number
     
     self.currentViewStatsEvent = [[ETA_CatalogReaderPageStatisticEvent alloc] initWithType:ETA_CatalogReaderPageStatisticEventType_View
@@ -404,16 +416,39 @@
 }
 - (void) finishedScrollingIntoNewPageIndexRange:(NSRange)newPageIndexRange from:(NSRange)previousPageIndexRange
 {
-    // finish any existing page view/zoom stats
-    [self _collectAllCurrentPageStatsEvents];
+    // has the range changed
+    BOOL doCollect = (newPageIndexRange.location != previousPageIndexRange.location || newPageIndexRange.length != previousPageIndexRange.length);
     
-    // start a new page stats event, if it is ready
-    [self _startPageViewStatsEventIfImageLoaded];
+    // even if the page range didnt change, check if the orientation changed
+    if (!doCollect)
+    {
+        ETA_CatalogReaderPageStatisticEventOrientation orientation = self.bounds.size.width > self.bounds.size.height ? ETA_CatalogReaderPageStatisticEventOrientation_Landscape : ETA_CatalogReaderPageStatisticEventOrientation_Portrait;
+     
+        doCollect = (self.currentViewStatsEvent.orientation != orientation);
+    }
+
     
+    if (doCollect)
+    {
+        // finish any existing page view/zoom stats
+        [self _collectAllCurrentPageStatsEvents];
+        
+        // start a new page stats event, if it is ready
+        [self _startPageViewStatsEventIfImageLoaded];
+    }
     
     [super finishedScrollingIntoNewPageIndexRange:newPageIndexRange from:previousPageIndexRange];
 }
 
+- (void) willBeginDisplayingOutro
+{
+    [super willBeginDisplayingOutro];
+}
+
+- (void) didEndDisplayingOutro
+{
+    [super didEndDisplayingOutro];
+}
 
 - (void) didSetImage:(UIImage*)image isZoomImage:(BOOL)isZoomImage onPageIndex:(NSUInteger)pageIndex
 {

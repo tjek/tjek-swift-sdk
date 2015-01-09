@@ -63,6 +63,9 @@
             return;
         
         _previousRunsDuration += ([NSDate timeIntervalSinceReferenceDate]-_currentRunStartTimestamp);
+        
+        ETASDKLogInfo(@"PAUSE: %@", self.debugDescription);
+        
         _paused = YES;
     }
 }
