@@ -239,9 +239,6 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
     
     self.isFetchingData = YES;
     
-    
-    [self.dataHandler collectCatalogOpeningStatisticForCatalogID:self.catalogID];
-    
     // send started fetching delegate callback
     if ([self.delegate respondsToSelector:@selector(catalogReaderViewDidStartFetchingData:)])
     {

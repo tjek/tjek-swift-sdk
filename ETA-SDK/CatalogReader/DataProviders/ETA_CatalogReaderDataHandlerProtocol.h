@@ -20,6 +20,5 @@
 
 #pragma mark - Data Collection
 - (void) collectPageStatisticsEvent:(ETA_CatalogReaderPageStatisticEvent *)statsEvent forCatalogID:(NSString*)catalogID;
-- (void) collectCatalogOpeningStatisticForCatalogID:(NSString*)catalogID;
 
 @end

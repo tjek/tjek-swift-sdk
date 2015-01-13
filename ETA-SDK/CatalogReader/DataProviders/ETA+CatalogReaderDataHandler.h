@@ -18,6 +18,5 @@
 - (void) fetchPagesForCatalogID:(NSString*)catalogID completion:(void (^)(NSArray* pages, NSError* error))completion;
 
 - (void) collectPageStatisticsEvent:(ETA_CatalogReaderPageStatisticEvent *)statsEvent forCatalogID:(NSString*)catalogID;
-- (void) collectCatalogOpeningStatisticForCatalogID:(NSString*)catalogID;
 
 @end

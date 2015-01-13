@@ -230,23 +230,4 @@
    }];
 }
 
-- (void) collectCatalogOpeningStatisticForCatalogID:(NSString*)catalogID
-{
-    if (!catalogID)
-        return;
-    
-    ETASDKLogInfo(@"COLLECTING Catalog Opening %@", catalogID);
-    
-    [self api:[ETA_API pathWithComponents:@[ETA_API.catalogs, catalogID]]
-         type:ETARequestTypeGET
-   parameters:nil
-     useCache:NO
-   completion:^(id catalogJSONData, NSError *error, BOOL fromCache) {
-       if (error)
-       {
-           ETASDKLogError(@"Unable to collect Catalog [%@] Opening Stat: %@", catalogID, error);
-       }
-   }];
-}
-
 @end
