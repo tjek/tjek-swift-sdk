@@ -10,11 +10,9 @@
 
 #import "ETA_CatalogReaderPageStatisticEvent.h"
 
+#import "ETA_CatalogReaderView.h"
 #import "ETA_CatalogHotspotModel.h"
 #import "ETA_CatalogPageModel.h"
-
-NSString * const kETA_CatalogReaderDataHandler_ErrorDomain = @"kETA_ETA_CatalogReaderDataHandler_ErrorDomain";
-
 
 
 @implementation ETA (CatalogReaderDataHandler)
@@ -51,7 +49,7 @@ NSString * const kETA_CatalogReaderDataHandler_ErrorDomain = @"kETA_ETA_CatalogR
         // there was an error while fetching - eject
         if (error)
         {
-            ETASDKLogError(@"Error Fetching Page data! %@", error);
+            ETASDKLogError(@"Error Fetching Page Data: %@", error);
             completion(nil, error);
             return;
         }
@@ -81,7 +79,7 @@ NSString * const kETA_CatalogReaderDataHandler_ErrorDomain = @"kETA_ETA_CatalogR
             
             if (!page)
             {
-                error = [NSError errorWithDomain:kETA_CatalogReaderDataHandler_ErrorDomain code:ETA_CatalogReaderDataHandler_ErrorInvalidResponseData userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Page Data is invalid", nil)}];
+                error = [NSError errorWithDomain:kETA_CatalogReader_ErrorDomain code:ETA_CatalogReader_ErrorInvalidResponseData userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Page Data is invalid", nil)}];
                 *stop = YES;
                 return;
             }
@@ -114,7 +112,7 @@ NSString * const kETA_CatalogReaderDataHandler_ErrorDomain = @"kETA_ETA_CatalogR
             
             if (!hotspot)
             {
-                error = [NSError errorWithDomain:kETA_CatalogReaderDataHandler_ErrorDomain code:ETA_CatalogReaderDataHandler_ErrorInvalidResponseData userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Hotspot Data is invalid", nil)}];
+                error = [NSError errorWithDomain:kETA_CatalogReader_ErrorDomain code:ETA_CatalogReader_ErrorInvalidResponseData userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Hotspot Data is invalid", nil)}];
                 *stop = YES;
                 return;
             }

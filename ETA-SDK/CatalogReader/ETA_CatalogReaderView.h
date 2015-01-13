@@ -8,6 +8,17 @@
 
 #import "ETA_VersoPagedView.h"
 
+
+// Error handling
+extern NSString * const kETA_CatalogReader_ErrorDomain;
+
+typedef NS_ENUM(NSInteger, ETA_CatalogReader_ErrorCode) {
+    ETA_CatalogReader_ErrorInvalidResponseData,
+    ETA_CatalogReader_ErrorOutdatedResponse,
+};
+
+
+
 @class ETA;
 @class ETA_CatalogReaderView;
 

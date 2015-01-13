@@ -21,6 +21,9 @@
 #import "ETA_VersoPageSpreadCell.h"
 
 
+NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDomain";
+
+
 @interface ETA_VersoPagedView (Subclass)
 
 @property (nonatomic, strong) UICollectionView* collectionView;
@@ -259,6 +262,7 @@
                 if (error)
                 {
                     weakSelf.pageObjects = nil;
+                    [weakSelf stopReading];
                 }
                 else
                 {
@@ -270,7 +274,7 @@
             }
             else
             {
-                fetchError = [NSError errorWithDomain:kETA_CatalogReaderDataHandler_ErrorDomain code:ETA_CatalogReaderDataHandler_ErrorOutdatedResponse userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"The fetched data is out of data - the catalog ID has changed since the fetch started", nil)}];
+                fetchError = [NSError errorWithDomain:kETA_CatalogReader_ErrorDomain code:ETA_CatalogReader_ErrorOutdatedResponse userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"The fetched data is out of data - the catalog ID has changed since the fetch started", nil)}];
             }
             
             // trigger fetched event delegate callback
