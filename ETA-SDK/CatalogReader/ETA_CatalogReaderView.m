@@ -421,7 +421,7 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
     BOOL doCollect = (newPageIndexRange.location != previousPageIndexRange.location || newPageIndexRange.length != previousPageIndexRange.length);
     
     // even if the page range didnt change, check if the orientation changed
-    if (!doCollect)
+    if (!doCollect && self.currentViewStatsEvent)
     {
         ETA_CatalogReaderPageStatisticEventOrientation orientation = self.bounds.size.width > self.bounds.size.height ? ETA_CatalogReaderPageStatisticEventOrientation_Landscape : ETA_CatalogReaderPageStatisticEventOrientation_Portrait;
      
