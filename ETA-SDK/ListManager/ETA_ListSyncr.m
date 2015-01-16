@@ -190,13 +190,13 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
 {
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         
-        ETASDKLogInfo(@"\n------------- Sync %@ Started! ---------------------", (checkAllLists) ? @"All" : @"Modified");
+        ETASDKLogDebug(@"\n------------- Sync %@ Started! ---------------------", (checkAllLists) ? @"All" : @"Modified");
         
         
         // if there are still items in the server Q, skip this poll cycle
         if (self.syncingInProgress)
         {
-            ETASDKLogInfo(@"Sync still in progress (%tu operations in Q)", self.serverQ.operationCount);
+            ETASDKLogDebug(@"Sync still in progress (%tu operations in Q)", self.serverQ.operationCount);
             if (completionHandler) {
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     completionHandler(NO);
@@ -209,7 +209,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
         NSString* userID = self.eta.attachedUserID;
         if (!userID)
         {
-            ETASDKLogInfo(@"No attached user to sync");
+            ETASDKLogDebug(@"No attached user to sync");
             if (completionHandler) {
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     completionHandler(NO);
@@ -238,12 +238,12 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
             if (pendingItem.state == ETA_DBSyncState_ToBeSynced || pendingItem.state == ETA_DBSyncState_Syncing)
             {
                 operation = [self syncToServerOperationForItem:pendingItem];
-                ETASDKLogInfo(@"Add SyncItemOperation(%@) prev:'%@'", pendingItem.name, pendingItem.prevItemID);
+                ETASDKLogDebug(@"Add SyncItemOperation(%@) prev:'%@'", pendingItem.name, pendingItem.prevItemID);
             }
             else if (pendingItem.state == ETA_DBSyncState_ToBeDeleted || pendingItem.state == ETA_DBSyncState_Deleting)
             {
                 operation = [self deleteFromServerOperationForItem:pendingItem];
-                ETASDKLogInfo(@"Add DeleteItemOperation(%@)", pendingItem.name);
+                ETASDKLogDebug(@"Add DeleteItemOperation(%@)", pendingItem.name);
             }
             
             if (operation)
@@ -305,7 +305,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
             [self.serverQ addOperation:[self getServerChangesOperation_ModifiedLists]];
         }
         
-        ETASDKLogInfo(@"Waiting for all operations to complete...");
+        ETASDKLogDebug(@"Waiting for all operations to complete...");
         [self.serverQ waitUntilAllOperationsAreFinished];
         
         NSMutableDictionary* itemsNotification = [NSMutableDictionary new];
@@ -340,7 +340,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
         
         
         // save any added/removed/modified objects and send notification
-        ETASDKLogInfo(@"Sync Complete (%.4fs). Items: %tu added / %tu removed / %tu modified ... Lists: %tu added / %tu removed / %tu modified", [NSDate timeIntervalSinceReferenceDate]-start, self.addedItems.count, self.removedItems.count, self.modifiedItems.count, self.addedLists.count, self.removedLists.count, self.modifiedLists.count);
+        ETASDKLogDebug(@"Sync Complete (%.4fs). Items: %tu added / %tu removed / %tu modified ... Lists: %tu added / %tu removed / %tu modified", [NSDate timeIntervalSinceReferenceDate]-start, self.addedItems.count, self.removedItems.count, self.modifiedItems.count, self.addedLists.count, self.removedLists.count, self.modifiedLists.count);
         
         
         [self sendNotificationOfDifferences:listsNotification objClass:ETA_ShoppingList.class];
@@ -452,7 +452,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                     [self.modifiedItems addObjectsFromArray:modified];
                     
                     NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate] - start;
-                    ETASDKLogInfo(@"[GetServerChanges] Getting All Items (%.4fs): %tu added / %tu removed / %tu modified", duration, added.count, removed.count, modified.count);
+                    ETASDKLogDebug(@"[GetServerChanges] Getting All Items (%.4fs): %tu added / %tu removed / %tu modified", duration, added.count, removed.count, modified.count);
                 }
                 dispatch_semaphore_signal(sema);
             });
@@ -588,7 +588,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                     }
                     
                     NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate] - start;
-                    ETASDKLogInfo(@"[GetServerChanges] Getting All Lists (%.4fs): %tu added / %tu removed / %tu modified", duration, added.count, removed.count, modified.count);
+                    ETASDKLogDebug(@"[GetServerChanges] Getting All Lists (%.4fs): %tu added / %tu removed / %tu modified", duration, added.count, removed.count, modified.count);
                     
                 }
                 
@@ -692,7 +692,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
         
          
         NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate] - start;
-        ETASDKLogInfo(@"[GetServerChanges] Getting Modified Lists (%.4fs): %tu modified / %tu removed", duration, modifiedListCount, deletedListCount);
+        ETASDKLogDebug(@"[GetServerChanges] Getting Modified Lists (%.4fs): %tu modified / %tu removed", duration, modifiedListCount, deletedListCount);
         
         
         
@@ -727,13 +727,13 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
     {
         notificationName = ETA_ListSyncr_ChangeNotification_Lists;
         
-        ETASDKLogInfo(@"[List Notification] %tu added / %tu removed / %tu modified", addedCount, removedCount, modifiedCount);
+        ETASDKLogDebug(@"[List Notification] %tu added / %tu removed / %tu modified", addedCount, removedCount, modifiedCount);
     }
     else if ( objClass == ETA_ShoppingListItem.class )
     {
         notificationName = ETA_ListSyncr_ChangeNotification_ListItems;
         
-        ETASDKLogInfo(@"[Item Notification] %tu added / %tu removed / %tu modified", addedCount, removedCount, modifiedCount);
+        ETASDKLogDebug(@"[Item Notification] %tu added / %tu removed / %tu modified", addedCount, removedCount, modifiedCount);
     }
     
     if (!notificationName)
@@ -838,7 +838,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                                                                                               ETA_API.shoppingListItems,
                                                                                               itemID ]];
                                            
-                                           ETASDKLogInfo(@"[DeleteItemOperation(%@)] - Sending Request '%@'", item.name, request);
+                                           ETASDKLogDebug(@"[DeleteItemOperation(%@)] - Sending Request '%@'", item.name, request);
                                            
                                            [self.eta api:request
                                                     type:ETARequestTypeDELETE
@@ -863,7 +863,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                                                                                               ETA_API.shoppingLists,
                                                                                               listID]];
                                            
-                                           ETASDKLogInfo(@"[DeleteListOperation(%@)] - Sending Request '%@'", list.name, request);
+                                           ETASDKLogDebug(@"[DeleteListOperation(%@)] - Sending Request '%@'", list.name, request);
                                            
                                            [self.eta api:request
                                                     type:ETARequestTypeDELETE
@@ -879,7 +879,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
     NSBlockOperation* op = [NSBlockOperation blockOperationWithBlock:^{
         @strongify(self);
         
-        ETASDKLogInfo(@"[DeleteObjOperation(%@)] started", opName);
+        ETASDKLogDebug(@"[DeleteObjOperation(%@)] started", opName);
         NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
         
         NSString* userID = obj.syncUserID;
@@ -954,7 +954,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
         
         NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate]-start;
         
-        ETASDKLogInfo(@"[DeleteObjOperation(%@)] finished (%.4fs)", opName, duration);
+        ETASDKLogDebug(@"[DeleteObjOperation(%@)] finished (%.4fs)", opName, duration);
     }];
     return op;
 }
@@ -966,7 +966,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
     NSBlockOperation* op = [NSBlockOperation blockOperationWithBlock:^{
         @strongify(self);
         
-        ETASDKLogInfo(@"[DeleteShareOperation(%@-%@)] started", share.userEmail, share.listUUID);
+        ETASDKLogDebug(@"[DeleteShareOperation(%@-%@)] started", share.userEmail, share.listUUID);
         NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
         
         NSString* userID = share.syncUserID;
@@ -1007,7 +1007,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                                                            @"shares",
                                                            urlEncodedEmail]];
         
-        ETASDKLogInfo(@"[DeleteShareOperation(%@-%@)] - Sending Request '%@'", share.userEmail, share.listUUID, request);
+        ETASDKLogDebug(@"[DeleteShareOperation(%@-%@)] - Sending Request '%@'", share.userEmail, share.listUUID, request);
         
         [self.eta api:request
                  type:ETARequestTypeDELETE
@@ -1047,7 +1047,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
         
         NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate]-start;
         
-        ETASDKLogInfo(@"[DeleteShareOperation(%@-%@)] finished (%.4fs)", share.userEmail, share.listUUID, duration);
+        ETASDKLogDebug(@"[DeleteShareOperation(%@-%@)] finished (%.4fs)", share.userEmail, share.listUUID, duration);
     }];
     return op;
 }
@@ -1079,7 +1079,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                                                                                           itemID
                                                                                           ]];
                                        
-                                       ETASDKLogInfo(@"[SyncItemOperation(%@)] - Sending Request '%@'", item.name, request);
+                                       ETASDKLogDebug(@"[SyncItemOperation(%@)] - Sending Request '%@'", item.name, request);
                                        
                                        // send request to server. Will not block operation
                                        [self.eta api:request
@@ -1109,7 +1109,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                                                                                           ETA_API.shoppingLists,
                                                                                           listID]];
                                        
-                                       ETASDKLogInfo(@"[SyncListOperation(%@)] - Sending Request '%@'", list.name, request);
+                                       ETASDKLogDebug(@"[SyncListOperation(%@)] - Sending Request '%@'", list.name, request);
                                        
                                        // send request to server. Will not block operation
                                        [self.eta api:request
@@ -1126,7 +1126,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
     @weakify(self);
     NSBlockOperation* op = [NSBlockOperation blockOperationWithBlock:^{
         @strongify(self);
-        ETASDKLogInfo(@"[SyncShareOperation(%@-%@)] started", share.userEmail, share.listUUID);
+        ETASDKLogDebug(@"[SyncShareOperation(%@-%@)] started", share.userEmail, share.listUUID);
         NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
         
         NSString* userID = share.syncUserID;
@@ -1188,7 +1188,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                                                            @"shares",
                                                            urlEncodedEmail]];
         
-        ETASDKLogInfo(@"[SyncShareOperation(%@-%@)] - Sending Request '%@'", share.userEmail, share.listUUID, request);
+        ETASDKLogDebug(@"[SyncShareOperation(%@-%@)] - Sending Request '%@'", share.userEmail, share.listUUID, request);
             
         // send request to server. Will not block operation
         [self.eta api:request
@@ -1224,7 +1224,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                    }
                    else
                    {
-                       ETASDKLogInfo(@"[SyncShareOperation(%@-%@)] Completed - Marked as 'Synced'", share.userEmail, share.listUUID);
+                       ETASDKLogDebug(@"[SyncShareOperation(%@-%@)] Completed - Marked as 'Synced'", share.userEmail, share.listUUID);
                    }
                }
                
@@ -1236,7 +1236,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
         
         NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate]-start;
         
-        ETASDKLogInfo(@"[SyncShareOperation(%@-%@)] finished (%.4fs)", share.userEmail, share.listUUID, duration);
+        ETASDKLogDebug(@"[SyncShareOperation(%@-%@)] finished (%.4fs)", share.userEmail, share.listUUID, duration);
     }];
     return op;
 
@@ -1248,7 +1248,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
     NSBlockOperation* op = [NSBlockOperation blockOperationWithBlock:^{
         @strongify(self);
         
-        ETASDKLogInfo(@"[SyncObjOperation(%@)] started", opName);
+        ETASDKLogDebug(@"[SyncObjOperation(%@)] started", opName);
         NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
         
         NSString* userID = obj.syncUserID;
@@ -1312,14 +1312,14 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                         }
                         else
                         {
-                            ETASDKLogInfo(@"[SyncObjOperation(%@)] Completed - Marked as 'Synced'", opName);
+                            ETASDKLogDebug(@"[SyncObjOperation(%@)] Completed - Marked as 'Synced'", opName);
                         }
                     }
                     
                 }
                 else
                 {
-                    ETASDKLogInfo(@"[SyncObjOperation(%@)] Item modified while sync request was being sent - dont mark as 'Synced'", opName);
+                    ETASDKLogDebug(@"[SyncObjOperation(%@)] Item modified while sync request was being sent - dont mark as 'Synced'", opName);
                 }
                 dispatch_semaphore_signal(sema);
             });
@@ -1334,7 +1334,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
         
         NSTimeInterval duration = [NSDate timeIntervalSinceReferenceDate]-start;
         
-        ETASDKLogInfo(@"[SyncObjOperation(%@)] finished (%.4fs)", opName, duration);
+        ETASDKLogDebug(@"[SyncObjOperation(%@)] finished (%.4fs)", opName, duration);
     }];
     return op;
 }
