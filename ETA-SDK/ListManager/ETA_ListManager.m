@@ -675,6 +675,17 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
                                   inList:(NSString*)listID
                                    error:(NSError * __autoreleasing *)error
 {
+    return [self createListItem:name comment:nil offerID:offerID creatorEmail:creatorEmail count:count inList:listID error:error];
+}
+
+- (ETA_ShoppingListItem*) createListItem:(NSString *)name
+                                 comment:(NSString *)comment
+                                 offerID:(NSString*)offerID
+                            creatorEmail:(NSString*)creatorEmail
+                                   count:(NSUInteger)count
+                                  inList:(NSString*)listID
+                                   error:(NSError * __autoreleasing *)error
+{
     if (!listID.length || !name.length)
     {
         if (error != NULL)
@@ -693,6 +704,10 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     item.offerID = offerID;
     item.creator = creatorEmail;
     item.prevItemID = kETA_ListManager_FirstPrevItemID;
+    if (comment)
+    {
+        item.meta = @{kETA_ShoppingListItem_MetaCommentKey : comment};
+    }
     
     // take the sync-user from the list it is in
     ETA_ShoppingList* list = [self getList:listID];

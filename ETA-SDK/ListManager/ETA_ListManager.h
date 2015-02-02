@@ -126,6 +126,14 @@ typedef enum {
                                   inList:(NSString*)listID
                                    error:(NSError * __autoreleasing *)error;
 
+- (ETA_ShoppingListItem*) createListItem:(NSString *)name
+                                 comment:(NSString *)comment
+                                 offerID:(NSString*)offerID
+                            creatorEmail:(NSString*)creatorEmail
+                                   count:(NSUInteger)count
+                                  inList:(NSString*)listID
+                                   error:(NSError * __autoreleasing *)error;
+
 - (BOOL) addListItem:(ETA_ShoppingListItem *)item error:(NSError * __autoreleasing *)error;
 - (BOOL) updateListItem:(ETA_ShoppingListItem *)item error:(NSError * __autoreleasing *)error;
 - (BOOL) removeListItem:(ETA_ShoppingListItem *)item error:(NSError * __autoreleasing *)error;
