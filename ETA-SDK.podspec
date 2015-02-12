@@ -38,7 +38,7 @@ Pod::Spec.new do |s|
       ss.source_files = 'ETA-SDK/CatalogReader/**/*.{h,m}'
       
       ss.dependency 'ETA-SDK/API'
-      ss.dependency 'Verso', '~> 0.0.1'
+      ss.dependency 'Verso', '~> 0.1'
   end
   
   
