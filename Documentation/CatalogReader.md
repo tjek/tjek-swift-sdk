@@ -19,5 +19,5 @@ To include the `CatalogReaderView` in your code you must import the header file:
 
 
 
-See the [ETA-SDK Example project](ETA-SDK Example) for examples of how to use the Catalog Reader View.
+See the [ETA-SDK Example project](../ETA-SDK Example) for examples of how to use the Catalog Reader View.
 

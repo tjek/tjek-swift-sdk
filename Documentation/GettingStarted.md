@@ -69,5 +69,5 @@ In your `AppDelegate.h` file:
 Then, whenever you want to talk to the SDK, use the singleton object `ETA.SDK`. This will return the object initialized with the key/secret in the above call. You will just get `nil` if you ask for the singleton before initializing it.
 
 
-See the [ETA-SDK Example project](ETA-SDK Example) for an example.
+See the [ETA-SDK Example project](../ETA-SDK Example) for an example.
 

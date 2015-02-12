@@ -3,7 +3,7 @@
 > **Note:** You must first [initialise the SDK](GettingStarted.md#configure-the-sdk) before making API requests.
 
 
-Documentation of the possible API calls can be found at [http://engineering.etilbudsavis.dk/eta-api/](http://engineering.etilbudsavis.dk/eta-api/).
+Documentation of the possible API calls can be found at [http://docs.api.etilbudsavis.dk/](http://docs.api.etilbudsavis.dk/).
 
 
 ## Making Requests
@@ -41,7 +41,7 @@ For example, to get an array of catalogs for some specific dealers, sorted by di
 ```
 *Note that this is using a variant of the `-api:…` method where `usesCache` is YES by default.*
 
-See the [ETA-SDK Example project](ETA-SDK Example) for examples.
+See the [ETA-SDK Example project](../ETA-SDK Example) for examples.
 
 ##### Caching
 Every time an API call returns a valid object (when `useCache` is true), the JSON dictionary is saved to the cache, keyed on the object's `ern`. The next time an API call is made that is asking for a specific object or list of objects, the SDK looks in the cache for previous results matching the requested object. 
@@ -68,7 +68,6 @@ You can also chain endpoints as follows:
 ```obj-c
 // @"/v2/offers/123abc/stores"
 NSString* requestPath = [ETA_API pathWithComponents:@[ ETA_API.offers, @"123abc", ETA_API.stores ]];
-
 ```    
 
 
