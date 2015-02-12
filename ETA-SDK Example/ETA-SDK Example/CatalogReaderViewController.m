@@ -8,9 +8,8 @@
 
 #import "CatalogReaderViewController.h"
 
-#import "ETA_Catalog.h"
-
-#import "ETA_CatalogReaderView.h"
+#import <ETA-SDK/ETA_Catalog.h>
+#import <ETA-SDK/ETA_CatalogReaderView.h>
 
 
 @interface CatalogReaderViewController () <ETA_CatalogReaderViewDelegate>
@@ -25,6 +24,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     // In this example version the CatalogReaderView is created in the .storyboard
     // Doing so will use the default SDK singleton as the datasource.
     // If you want to use a different SDK instance there are alternative
@@ -40,13 +40,18 @@
     // whenever the view appears, make sure that we are updated to show the catalog that was specified
     [self updateViewForFetchingState];
     
+    // style the viewController based on the catalog's brand color
     [self updateViewForBrandColor];
+    
+    [self.catalogReaderView setSinglePageMode:[self _shouldBeSinglePageMode]
+                                     animated:YES];
 }
 
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
+    // You must call 'startReading' when the view appears - this triggers fetching of the data if needed
     [self.catalogReaderView startReading];
     
 }
@@ -55,27 +60,34 @@
 {
     [super viewDidDisappear:animated];
     
+    // You must call 'stopReading' when the view disappears - this collects any pending page view information
     [self.catalogReaderView stopReading];
 }
 
 
+- (void) dealloc
+{
+    // destroy the reader when the view controller is deallocated
+    _catalogReaderView = nil;
+}
+
+
+
+#pragma mark Layout
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     
-    // Show two images if the view is in landscape
-    BOOL isLandscape = self.interfaceOrientation == UIDeviceOrientationLandscapeRight || self.interfaceOrientation == UIDeviceOrientationLandscapeLeft;
-    [self.catalogReaderView setSinglePageMode:!isLandscape animated:YES];
+    [self.catalogReaderView setSinglePageMode:[self _shouldBeSinglePageMode]
+                                     animated:YES];
 }
 
 
-
-
-- (void) dealloc
+- (BOOL) _shouldBeSinglePageMode
 {
-    self.catalogReaderView.delegate = nil;
+    BOOL screenIsLandscape = self.interfaceOrientation == UIDeviceOrientationLandscapeRight || self.interfaceOrientation == UIDeviceOrientationLandscapeLeft;
+    return !screenIsLandscape;
 }
-
 
 
 - (void) setCatalogID:(NSString*)catalogID title:(NSString*)catalogTitle brandColor:(UIColor*)brandColor
@@ -121,7 +133,7 @@
 
 - (void) updateViewForFetchingState
 {
-    if (self.catalogReaderView.isFetchingData)
+    if (self.catalogReaderView.isFetchingData || !self.catalogReaderView.pageObjects)
     {
         self.activitySpinner.alpha = 1.0;
         self.catalogReaderView.alpha = 0.0;
@@ -139,6 +151,11 @@
     
     [self.catalogReaderView setShowHotspots:showHotspots animated:YES];
 }
+
+
+
+
+
 
 
 #pragma mark - Catalog Reader Delegate methods
@@ -199,5 +216,6 @@
     
     NSLog(@"Page changed: page %@/%@ (%.1f%%)", pageNumberString, @(versoPagedView.numberOfPages), versoPagedView.pageProgress*100.0);
 }
+
 
 @end
