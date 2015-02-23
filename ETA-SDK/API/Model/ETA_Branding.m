@@ -22,10 +22,13 @@
     return @{ @"name": @"name",
               @"urlName": @"url_name",
               @"websiteURL": @"website",
+              
               @"color": @"color",
               @"logoURL": @"logo",
+              @"logoBackgroundColor": @"logo_background",
+              
               @"pageflipLogoURL": @"pageflip.logo",
-              @"pageflipLogoColor": @"pageflip.color",
+              @"pageflipColor": @"pageflip.color",
               };
 }
 
