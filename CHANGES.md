@@ -1,5 +1,8 @@
 # eTilbudsavis iOS SDK - Change Log
 
+## v2.3.1
+* Update to *AFNetworking ~> 2.5.1*
+
 ## v2.3.0
 * SDK split into multiple subpecs, for when you only need some of the components
 * New Native Catalog Reader with new example project. The old web-based CatalogView is deprecated.
