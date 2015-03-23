@@ -19,11 +19,9 @@
 @interface ETA_Dealer : ETA_ModelObject
 
 @property (nonatomic, readwrite, strong) NSString* name;
-@property (nonatomic, readwrite, strong) NSString* urlName;
 @property (nonatomic, readwrite, strong) NSURL* websiteURL;
 @property (nonatomic, readwrite, strong) UIColor* color;
 @property (nonatomic, readwrite, strong) NSURL* logoURL;
-@property (nonatomic, readwrite, strong) UIColor* logoBackgroundColor;
 @property (nonatomic, readwrite, strong) NSURL* pageflipLogoURL;
 @property (nonatomic, readwrite, strong) UIColor* pageflipColor;
 
