@@ -2,6 +2,7 @@
 
 ## v2.3.1
 * Update to *AFNetworking ~> 2.5.1*
+* Remove deprecated `urlName` & `logoBackgroundColor` properties from `ETA_Dealer` and `ETA_Branding` model objects.
 
 ## v2.3.0
 * SDK split into multiple subpecs, for when you only need some of the components
