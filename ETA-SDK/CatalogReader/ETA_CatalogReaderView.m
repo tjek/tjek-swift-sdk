@@ -77,6 +77,7 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
 
 @implementation ETA_CatalogReaderView
 
+@dynamic delegate;
 
 + (instancetype) catalogReader
 {
