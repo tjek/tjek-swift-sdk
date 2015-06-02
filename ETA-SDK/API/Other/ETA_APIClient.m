@@ -67,6 +67,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
         self.responseSerializer = [AFJSONResponseSerializer serializer];
         self.requestSerializer = [AFJSONRequestSerializer serializer];
         self.requestSerializer.timeoutInterval = 20;
+        [self.requestSerializer setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];
         
         self.storageEnabled = YES;
     }
