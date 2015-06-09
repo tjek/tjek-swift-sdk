@@ -21,6 +21,7 @@
 {
     return @{ @"name": @"name",
               @"websiteURL": @"website",
+              @"brandDescription": @"description",
               
               @"color": @"color",
               @"logoURL": @"logo",

@@ -16,5 +16,5 @@
 @property (nonatomic, readwrite, strong) NSURL* logoURL;
 @property (nonatomic, readwrite, strong) NSURL* pageflipLogoURL;
 @property (nonatomic, readwrite, strong) UIColor* pageflipColor;
-
+@property (nonatomic, readwrite, strong) NSString* brandDescription;
 @end
