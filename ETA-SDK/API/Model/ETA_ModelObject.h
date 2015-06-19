@@ -23,4 +23,6 @@
 + (instancetype) objectFromJSONDictionary:(NSDictionary*)JSONDictionary;
 - (NSDictionary*) JSONDictionary;
 
++ (NSArray*) objectsFromJSONArray:(NSArray*)JSONArray;
+
 @end
