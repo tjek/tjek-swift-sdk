@@ -139,8 +139,11 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
                 if (remainingRetries > 0)
                 {
                     // Errors that require a new session
-                    // 1101 & 1108: token expired / invalid token
-                    if (code == 1101 || code == 1108)
+                    // 1101: token expired
+                    // 1104: invalid signature
+                    // 1107: missing token
+                    // 1108: invalid token
+                    if (code == 1101 || code == 1104 || code == 1107 || code == 1108)
                     {
                         ETASDKLogWarn(@"Error (%zd) while making request '%@' - Reset Session and retry '%@' - %@", code, requestPath, etaError.localizedDescription, etaError.localizedFailureReason);
                         // create a new session, and if it was successful, repeat the request we were making
@@ -384,7 +387,10 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
 //            if ([self.session willExpireSoon])
 //            {
                 [self renewSessionWithCompletion:^(NSError *error) {
-                    if (error && error.code != NSURLErrorNotConnectedToInternet)
+                    NSError* etaError = [[self class] etaErrorFromAFNetworkingError:error];
+
+                    
+                    if (etaError && (etaError.code == 1101 || etaError.code == 1104 || etaError.code == 1107 || etaError.code == 1108))
                     {
                         ETASDKLogWarn(@"Unable to renew session - trying to create a new one instead: (%zd) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
                         createSessionBlock();
@@ -418,7 +424,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
         // no previous session exists - create a new one
         else
         {
-            createSessionBlock(nil);
+            createSessionBlock();
         }
         
         // wait for the semaphore that is going to be called when the getting of the session completes
