@@ -1,5 +1,9 @@
 # eTilbudsavis iOS SDK - Change Log
 
+## v3.0.0
+##### Breaking Changes
+* Use new error system. See `SGN_APIErrors.h` for domains, codes, and utility methods (all error methods on `ETA` class have been removed, and error domain has been renamed).
+
 ## v2.3.1
 * Update to *AFNetworking ~> 2.5.1*
 * Remove deprecated `urlName` & `logoBackgroundColor` properties from `ETA_Dealer` and `ETA_Branding` model objects.

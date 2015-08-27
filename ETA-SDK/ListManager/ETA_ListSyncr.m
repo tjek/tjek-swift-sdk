@@ -9,6 +9,7 @@
 #import "ETA_ListSyncr.h"
 
 #import "ETA.h"
+#import "SGN_APIErrors.h"
 #import "ETA_Log.h"
 
 #import "MAKVONotificationCenter.h"
@@ -644,7 +645,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                                 
                                 // couldnt find the list on the server
                                 // check the error - it may be that it was deleted
-                                if (!serverList && serverError.code == 1501)
+                                if (!serverList && [serverError SGN_isAPIResponseError] && serverError.code == SGN_APIError_InfoInvalidResourceID)
                                 {
                                     deletedListCount++;
                                     [self.removedLists addObject:localList];
@@ -1691,25 +1692,16 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
     //    BOOL isNonRepeatableError = requestError && [requestError.domain isEqualToString:ETA_APIErrorDomain] && (requestError.code==1500 || requestError.code==400);
     
     // if the requestError is that the item doesnt exist on the server then consider that a success!
-    //    if (!requestError || requestError.code == 1501 || requestError.code == 1441)
-    
-    
-    NSNumber* networkErrorCode = nil;
-    NSNumber* etaErrorCode = nil;
-    if ([error.domain isEqualToString:ETA_APIErrorDomain])
-    {
-        NSHTTPURLResponse* urlResponse = error.userInfo[ETA_APIError_URLResponseKey];
-        if ([urlResponse respondsToSelector:@selector(statusCode)])
-            networkErrorCode = @(urlResponse.statusCode);
-        
-        etaErrorCode = @(error.code);
-    }
+    //    if (!requestError || requestError.code == SGN_APIError_InfoInvalidResourceID || requestError.code == SGN_APIError_InfoMissingAuthentication)
     
     
     // client side error - can't retry
-    if (networkErrorCode && networkErrorCode.integerValue == 400)
+    if ([error SGN_isAPIResponseError])
     {
-        return NO;
+        if (error.HTTPStatusCode == 400)
+        {
+            return NO;
+        }
     }
     
     

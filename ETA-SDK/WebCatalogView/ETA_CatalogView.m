@@ -495,7 +495,8 @@ NSInteger const ETA_CatalogViewErrorCode_InitFailed = -1983;
            
            if (response)
                res[@"success"] = response;
-           NSDictionary* errJSON = err.userInfo[ETA_APIError_ErrorObjectKey];
+           
+           NSDictionary* errJSON = err.SGN_apiResponseObject;
            if (errJSON)
                res[@"error"] = errJSON;
            

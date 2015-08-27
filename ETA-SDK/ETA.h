@@ -9,13 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
+#import "SGN_APIErrors.h"
 #import "ETA_Log.h"
-
-extern NSString* const ETA_APIErrorDomain;
-extern NSString* const ETA_APIError_URLResponseKey;
-extern NSString* const ETA_APIError_ErrorIDKey;
-extern NSString* const ETA_APIError_ErrorObjectKey;
-
 #import "ETA_API.h"
 
 @class ETA_User;
@@ -335,40 +330,6 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
  */
 + (instancetype) etaWithAPIKey:(NSString *)apiKey apiSecret:(NSString *)apiSecret appVersion:(NSString*)appVersion baseURL:(NSURL*)baseURL;
 
-
-
-
-#pragma mark - Errors
-///---------------------------------------------
-/// @name Errors
-///---------------------------------------------
-
-/**
- *	A dictionary of all the ETA error names, keyed by their error codes
- *
- *	@return	A dictionary of all the ETA error names, keyed by their error codes
- *
- *  @see +errorForCode:
- */
-+ (NSDictionary*) errors;
-
-//
-// returns nil if not an ETA error code.
-/**
- *	Get the name of an error, based on its error code (taken from `+errors`).
- *
- *  When NSErrors are returned in the completionHandlers, they may have been sent back by the server, in which case you can look up the name here.
- *  If, however, the error was, for example, a networking issue, it would not be an ETA error and this method would return nil. 
- *
- *  You should always look in the NSError's `userInfo` property to get more details about the problem.
- *
- *	@param	errorCode	The error code to search for
- *
- *	@return	The name of the ETA error, or nil if it is an unknown error.
- *
- *  @see +errors
- */
-+ (NSString*) errorForCode:(NSInteger)errorCode;
 
 
 
