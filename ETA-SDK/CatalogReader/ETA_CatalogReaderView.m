@@ -260,7 +260,7 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
             {
                 weakSelf.isFetchingData = NO;
                 
-                if (error)
+                if (fetchError)
                 {
                     weakSelf.pageObjects = nil;
                     [weakSelf stopReading];
@@ -281,7 +281,7 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
             // trigger fetched event delegate callback
             if ([weakSelf.delegate respondsToSelector:@selector(catalogReaderViewDidFinishFetchingData:error:)])
             {
-                [weakSelf.delegate catalogReaderViewDidFinishFetchingData:weakSelf error:error];
+                [weakSelf.delegate catalogReaderViewDidFinishFetchingData:weakSelf error:fetchError];
             }
         });
     }];

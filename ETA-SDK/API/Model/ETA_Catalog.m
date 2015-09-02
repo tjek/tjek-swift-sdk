@@ -56,16 +56,19 @@
             {
                 CGSize size = CGSizeZero;
                 
-                NSNumber* width = dimDict[@"width"];
-                NSNumber* height = dimDict[@"height"];
-                
-                size.width = ([width isEqual:NSNull.null]) ? 0 : width.floatValue;
-                size.height = ([height isEqual:NSNull.null]) ? 0 : height.floatValue;
+                if ([dimDict isKindOfClass:NSDictionary.class])
+                {
+                    NSNumber* width = dimDict[@"width"];
+                    NSNumber* height = dimDict[@"height"];
+                    
+                    size.width = ([width isEqual:NSNull.null]) ? 0 : width.floatValue;
+                    size.height = ([height isEqual:NSNull.null]) ? 0 : height.floatValue;
+                }
                 
                 return [NSValue valueWithCGSize:size];
             } reverseBlock:^NSDictionary*(NSValue* sizeVal)
             {
-                CGSize size = [sizeVal CGSizeValue];
+                CGSize size = [sizeVal isKindOfClass:NSValue.class] ? [sizeVal CGSizeValue] : CGSizeZero;
                 
                 return @{ @"width": @(size.width),
                           @"height": @(size.height),
