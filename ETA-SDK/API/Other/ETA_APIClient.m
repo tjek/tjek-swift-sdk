@@ -96,6 +96,11 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
     NSMutableDictionary* params = [NSMutableDictionary dictionary];
     if (self.appVersion)
         params[@"api_av"] = self.appVersion;
+    
+    NSString* locale = NSLocale.autoupdatingCurrentLocale.localeIdentifier;
+    if (locale)
+        params[@"r_locale"] = locale;
+    
     return params;
 }
 // send a request, and on sucessful response update the session token, if newer
