@@ -11,8 +11,8 @@
 @interface ETA_CatalogPageModel ()
 
 @property (nonatomic, assign) NSUInteger pageIndex;
-@property (nonatomic, strong) NSDictionary* imageURLsBySize;
-@property (nonatomic, strong) NSMutableArray* hotspots;
+@property (nonatomic, copy) NSDictionary* imageURLsBySize;
+@property (nonatomic, copy) NSMutableArray* hotspots;
 
 @end
 
