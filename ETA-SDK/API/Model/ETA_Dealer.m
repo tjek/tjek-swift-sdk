@@ -25,7 +25,7 @@
               @"color": @"color",
               @"logoURL": @"logo",
               @"pageflipLogoURL": @"pageflip.logo",
-              @"pageflipLogoColor": @"pageflip.color",
+              @"pageflipColor": @"pageflip.color",
               };
 }
 

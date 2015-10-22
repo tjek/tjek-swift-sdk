@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
     ss.source_files = 'ETA-SDK/ETA.{h,m}', 'ETA-SDK/API/**/*.{h,m}'
       
     ss.dependency 'AFNetworking', '~> 2.5.1'
-    ss.dependency 'Mantle', '~> 1.4.1'
+    ss.dependency 'Mantle', '~> 1.5.6'
     ss.dependency 'MAKVONotificationCenter', '~> 0.0.2'
     ss.dependency 'CocoaLumberjack', '~> 1.9.0'
     
@@ -47,7 +47,7 @@ Pod::Spec.new do |s|
       ss.source_files = 'ETA-SDK/ListManager/*.{h,m}'
       
       ss.dependency 'ETA-SDK/API'
-      ss.dependency 'FMDB', '~> 2.2.0'
+      ss.dependency 'FMDB', '~> 2.5'
   end
   
 
