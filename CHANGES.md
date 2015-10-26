@@ -1,7 +1,9 @@
 # eTilbudsavis iOS SDK - Change Log
 
 ## v3.0.0
-* Sends system locale ("en_GB") with every request
+* Sends system locale (eg "en_GB") with every request
+* Update to *Mantle ~> 1.5.6*
+* Update to *FMDB ~> 2.5* 
 
 ##### Breaking Changes
 * Use new error system. See `SGN_APIErrors.h` for domains, codes, and utility methods (all error methods on `ETA` class have been removed, and error domain has been renamed).
