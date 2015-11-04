@@ -19,6 +19,7 @@ Pod::Spec.new do |s|
     :tag => "v" + s.version.to_s
   }
 
+  s.default_subspec = 'CatalogReader'
 
   # Everything related to making ETA API requests
   s.subspec 'API' do |ss|
@@ -48,6 +49,7 @@ Pod::Spec.new do |s|
       
       ss.dependency 'ETA-SDK/API'
       ss.dependency 'FMDB', '~> 2.5'
+      ss.dependency 'libextobjc/EXTScope', '~> 0.4.1'
   end
   
 

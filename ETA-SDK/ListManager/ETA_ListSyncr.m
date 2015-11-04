@@ -12,8 +12,8 @@
 #import "SGN_APIErrors.h"
 #import "ETA_Log.h"
 
-#import "MAKVONotificationCenter.h"
-#import "EXTScope.h"
+#import <MAKVONotificationCenter/MAKVONotificationCenter.h>
+#import <libextobjc/EXTScope.h>
 
 #import "ETA_ShoppingList.h"
 #import "ETA_ShoppingList+FMDB.h"
