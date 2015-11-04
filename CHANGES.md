@@ -1,5 +1,17 @@
 # eTilbudsavis iOS SDK - Change Log
 
+## v3.0.0
+* Sends system locale (eg "en_GB") with every request
+* Update to *Mantle ~> 1.5.6*
+* Update to *FMDB ~> 2.5* 
+
+##### Breaking Changes
+* Use new error system. See `SGN_APIErrors.h` for domains, codes, and utility methods (all error methods on `ETA` class have been removed, and error domain has been renamed).
+
+## v2.3.1
+* Update to *AFNetworking ~> 2.5.1*
+* Remove deprecated `urlName` & `logoBackgroundColor` properties from `ETA_Dealer` and `ETA_Branding` model objects.
+
 ## v2.3.0
 * SDK split into multiple subpecs, for when you only need some of the components
 * New Native Catalog Reader with new example project. The old web-based CatalogView is deprecated.

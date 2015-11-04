@@ -21,12 +21,11 @@
 + (NSDictionary *)JSONKeyPathsByPropertyKey
 {
     return @{ @"name": @"name",
-              @"urlName": @"url_name",
               @"websiteURL": @"website",
               @"color": @"color",
               @"logoURL": @"logo",
               @"pageflipLogoURL": @"pageflip.logo",
-              @"pageflipLogoColor": @"pageflip.color",
+              @"pageflipColor": @"pageflip.color",
               };
 }
 
@@ -38,9 +37,6 @@
 }
 + (NSValueTransformer *) logoURLJSONTransformer {
     return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
-}
-+ (NSValueTransformer *) logoBackgroundColorJSONTransformer {
-    return [NSValueTransformer valueTransformerForName:ETA_HexColor_ValueTransformerName];
 }
 + (NSValueTransformer *) pageflipLogoURLJSONTransformer {
     return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];

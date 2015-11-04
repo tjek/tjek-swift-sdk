@@ -9,6 +9,8 @@
 #import "ETA_APIClient.h"
 
 #import "ETA.h"
+#import "SGN_APIErrors.h"
+
 #import "ETA_Session.h"
 #import "ETA_API.h"
 #import "NSValueTransformer+ETAPredefinedValueTransformers.h"
@@ -67,6 +69,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
         self.responseSerializer = [AFJSONResponseSerializer serializer];
         self.requestSerializer = [AFJSONRequestSerializer serializer];
         self.requestSerializer.timeoutInterval = 20;
+        [self.requestSerializer setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];
         
         self.storageEnabled = YES;
     }
@@ -93,6 +96,11 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
     NSMutableDictionary* params = [NSMutableDictionary dictionary];
     if (self.appVersion)
         params[@"api_av"] = self.appVersion;
+    
+    NSString* locale = NSLocale.autoupdatingCurrentLocale.localeIdentifier;
+    if (locale)
+        params[@"r_locale"] = locale;
+    
     return params;
 }
 // send a request, and on sucessful response update the session token, if newer
@@ -125,30 +133,30 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
                         
             void (^successBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, id responseObject)
             {
+                // hopefully nil if not an error-object in the responseObj
+                NSError* apiError = [NSError SGN_errorWithAPIJSONResponse:responseObject urlResponse:operation.response];
                 
                 [self updateSessionTokenFromHeaders:operation.response.allHeaderFields];
                 if (completionHandler)
-                    completionHandler(responseObject, nil);
+                    completionHandler(responseObject, apiError);
             };
-            void (^failureBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, NSError *error)
+            void (^failureBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, NSError *networkError)
             {
-                NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error];
+                // may be nil if not an api error
+                NSError* apiError = [NSError SGN_errorWithAPIJSONResponse:operation.responseObject urlResponse:operation.response];
                 
-                NSInteger code = etaError.code;
                 if (remainingRetries > 0)
                 {
-                    // Errors that require a new session
-                    // 1101 & 1108: token expired / invalid token
-                    if (code == 1101 || code == 1108)
+                    if ([apiError SGN_doesAPIResponseErrorRequireNewSession])
                     {
-                        ETASDKLogWarn(@"Error (%zd) while making request '%@' - Reset Session and retry '%@' - %@", code, requestPath, etaError.localizedDescription, etaError.localizedFailureReason);
+                        ETASDKLogWarn(@"Error (%zd) while making request '%@' - Reset Session and retry '%@' - %@", apiError.code, requestPath, apiError.localizedDescription, apiError.localizedFailureReason);
                         // create a new session, and if it was successful, repeat the request we were making
                         [self startSessionOnSyncQueue:YES forceReset:YES withCompletion:^(NSError *startSessionError) {
                             if (!startSessionError)
                             {
                                 [self makeRequest:requestPath type:type parameters:parameters remainingRetries:remainingRetries-1 completion:^(id response, NSError *retryError) {
                                     if (retryError)
-                                        ETASDKLogError(@"Error (%zd) Retrying Request: '%@'... %@ - %@", code, requestPath, retryError.localizedDescription, retryError.localizedFailureReason);
+                                        ETASDKLogError(@"Error (%zd) Retrying Request: '%@'... %@ - %@", retryError.code, requestPath, retryError.localizedDescription, retryError.localizedFailureReason);
                                     completionHandler(response, retryError);
                                 }];
                             }
@@ -160,13 +168,12 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
                         return;
                     }
                     // errors that require a retry
-                    // 2015: non-critical error
-                    else if (code == 2015)
+                    else if (apiError.code == SGN_APIError_InternalNonCriticalError)
                     {
                         // find how long until we retry - if not set then will retry instantly
-                        NSInteger retryAfter = [operation.response.allHeaderFields[@"Retry-After"] integerValue];
+                        NSInteger retryAfter = apiError.retryAfterSeconds;
                         
-                        ETASDKLogWarn(@"Non-critical error(%zd) while making request (retrying after %tu secs): %@ - %@", code, retryAfter, error.localizedDescription, error.localizedFailureReason);
+                        ETASDKLogWarn(@"Non-critical error(%zd) while making request (retrying after %tu secs): %@ - %@", apiError.code, retryAfter, apiError.localizedDescription, apiError.localizedFailureReason);
                         
                         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(retryAfter * NSEC_PER_SEC));
                         dispatch_after(popTime, _syncQueue, ^(void){
@@ -179,7 +186,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
                 // an unsolveable error, or ran our of retries - eject!
                 if (completionHandler)
                 {
-                    completionHandler(nil, etaError ?: error);
+                    completionHandler(nil, apiError ?: networkError);
                 }
             };
             
@@ -383,7 +390,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
 //            if ([self.session willExpireSoon])
 //            {
                 [self renewSessionWithCompletion:^(NSError *error) {
-                    if (error && error.code != NSURLErrorNotConnectedToInternet)
+                    if ([error SGN_doesAPIResponseErrorRequireNewSession])
                     {
                         ETASDKLogWarn(@"Unable to renew session - trying to create a new one instead: (%zd) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
                         createSessionBlock();
@@ -417,7 +424,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
         // no previous session exists - create a new one
         else
         {
-            createSessionBlock(nil);
+            createSessionBlock();
         }
         
         // wait for the semaphore that is going to be called when the getting of the session completes
@@ -549,7 +556,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
                if (completionHandler)
                    completionHandler(error);
            }
-           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+           failure:^(AFHTTPRequestOperation *operation, NSError *networkError) {
                if (hashCookie && idCookie && timeCookie)
                {
                    [cookieJar deleteCookie:hashCookie];
@@ -557,13 +564,14 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
                    [cookieJar deleteCookie:timeCookie];
                }
                
-               NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error] ?: error;
+               NSError* error = [NSError SGN_errorWithAPIJSONResponse:operation.responseObject urlResponse:operation.response] ?: networkError;
                
-               ETASDKLogWarn(@"... Unable to create session: (%zd) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
+               
+               ETASDKLogWarn(@"... Unable to create session: (%zd) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
                
                
                if (completionHandler)
-                   completionHandler(etaError);
+                   completionHandler(error);
            }];
 }
 
@@ -611,10 +619,10 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
           if (completionHandler)
               completionHandler(error);
       }
-      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-          NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error] ?: error;
+      failure:^(AFHTTPRequestOperation *operation, NSError *networkError) {
+          NSError* error = [NSError SGN_errorWithAPIJSONResponse:operation.responseObject urlResponse:operation.response] ?: networkError;
           
-          ETASDKLogWarn(@"... Unable to update session: (%zd) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
+          ETASDKLogWarn(@"... Unable to update session: (%zd) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
           
           if (completionHandler)
               completionHandler(error);
@@ -664,13 +672,13 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
               if (completionHandler)
                   completionHandler(error);
           }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              NSError* etaError = [[self class] etaErrorFromRequestOperation:operation andAFNetworkingError:error] ?: error;
-              
-              ETASDKLogWarn(@"... Unable to renew session: (%zd) %@ - %@", etaError.code, etaError.localizedDescription, etaError.localizedFailureReason);
+          failure:^(AFHTTPRequestOperation *operation, NSError *networkError) {
+              NSError* error = [NSError SGN_errorWithAPIJSONResponse:operation.responseObject urlResponse:operation.response] ?: networkError;
+
+              ETASDKLogWarn(@"... Unable to renew session: (%zd) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
               
               if (completionHandler)
-                  completionHandler(etaError);
+                  completionHandler(error);
           }];
 }
 
@@ -694,8 +702,6 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
                  type:ETARequestTypePUT
            parameters:params
            completion:^(id response, NSError *error) {
-               
-               error = ([[self class] etaErrorFromAFNetworkingError:error]) ?: error;
                
                ETA_Session* session = error ? nil : [ETA_Session objectFromJSONDictionary:response];
                
@@ -731,8 +737,6 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
            parameters:params
            completion:^(id response, NSError *error) {
                
-               error = ([[self class] etaErrorFromAFNetworkingError:error]) ?: error;
-               
                ETA_Session* session = error ? nil : [ETA_Session objectFromJSONDictionary:response];
                
                // save the session, only if after any previous requests
@@ -756,48 +760,6 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
 - (BOOL) allowsPermission:(NSString*)actionPermission
 {
     return [self.session allowsPermission:actionPermission];
-}
-
-
-
-+ (NSError*) etaErrorFromRequestOperation:(AFHTTPRequestOperation*)operation andAFNetworkingError:(NSError*)error
-{
-    NSError* etaError = [self etaErrorFromETAErrorDict:operation.responseObject andURLResponse:operation.response];
-    if (!etaError)
-        etaError = [self etaErrorFromAFNetworkingError:error];
-
-    return etaError;
-}
-
-+ (NSError*) etaErrorFromETAErrorDict:(NSDictionary*)etaErrorDict andURLResponse:(NSURLResponse*)urlResponse
-{
-    if (![etaErrorDict isKindOfClass:NSDictionary.class])
-        return nil;
-    
-    NSString* errCode = etaErrorDict[@"code"];
-    if (!errCode)
-        return nil;
-    
-    NSMutableDictionary* userInfo = [NSMutableDictionary dictionary];
-    
-    [userInfo setValue:etaErrorDict[@"message"] forKey:NSLocalizedDescriptionKey];
-    [userInfo setValue:etaErrorDict[@"details"] forKey:NSLocalizedFailureReasonErrorKey];
-    [userInfo setValue:etaErrorDict[@"@note.1"] forKey:NSLocalizedRecoverySuggestionErrorKey];
-    [userInfo setValue:etaErrorDict[@"id"] forKey:ETA_APIError_ErrorIDKey];
-    [userInfo setValue:etaErrorDict forKey:ETA_APIError_ErrorObjectKey];
-    [userInfo setValue:urlResponse forKey:ETA_APIError_URLResponseKey];
-    
-    return [NSError errorWithDomain:ETA_APIErrorDomain code:errCode.integerValue userInfo:userInfo];
-
-}
-+ (NSError*) etaErrorFromAFNetworkingError:(NSError*)AFNetworkingError
-{
-    NSDictionary* etaErrorDict = nil;
-    NSString* errorDesc = AFNetworkingError.userInfo[NSLocalizedRecoverySuggestionErrorKey];
-    if ([errorDesc isKindOfClass:NSString.class] && errorDesc.length)
-        etaErrorDict = [NSJSONSerialization JSONObjectWithData:[errorDesc dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-    
-    return [self etaErrorFromETAErrorDict:etaErrorDict andURLResponse:AFNetworkingError.userInfo[AFNetworkingOperationFailingURLResponseErrorKey]];
 }
 
 @end

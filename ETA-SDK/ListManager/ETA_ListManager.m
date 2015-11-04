@@ -369,7 +369,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         share.accepted = YES;
         
         if (![self updateDBObjects:@[share] error:error])
-            return NO;
+            return nil;
         
         list.shares = @[share];
     }
@@ -404,7 +404,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         share.accepted = YES;
         
         if (![self updateDBObjects:@[share] error:error])
-            return NO;
+            return nil;
         
         list.shares = @[share];
     }
@@ -692,7 +692,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
             *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
                                          code:ETA_ListManager_ErrorCode_MissingParameter
                                      userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't create ListItem - invalid name or listID",@"")}];
-        return NO;
+        return nil;
     }
     
     

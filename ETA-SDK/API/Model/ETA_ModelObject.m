@@ -56,6 +56,26 @@
 }
 
 
++ (NSArray*) objectsFromJSONArray:(NSArray*)JSONArray
+{
+    if (!JSONArray)
+        return nil;
+    
+    NSMutableArray* objs = [NSMutableArray arrayWithCapacity:JSONArray.count];
+    for (NSDictionary* jsonDict in JSONArray)
+    {
+        if (![jsonDict isKindOfClass:NSDictionary.class])
+            continue;
+        
+        id obj = [self objectFromJSONDictionary:jsonDict];
+        if (obj)
+        {
+            [objs addObject:obj];
+        }
+    }
+    return objs;
+}
+
 #pragma mark - UUID & ERN
 
 - (void) setUuid:(NSString *)uuid

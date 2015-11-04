@@ -33,6 +33,9 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
 - (void) beganScrollingIntoNewPageIndexRange:(NSRange)newPageIndexRange from:(NSRange)previousPageIndexRange;
 - (void) finishedScrollingIntoNewPageIndexRange:(NSRange)newPageIndexRange from:(NSRange)previousPageIndexRange;
 
+- (void) didBeginTouchingLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys;
+- (void) didFinishTouchingLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys;
+
 - (void) didTapLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys;
 - (void) didLongPressLocation:(CGPoint)longPressLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys;
 - (void) didSetImage:(UIImage*)image isZoomImage:(BOOL)isZoomImage onPageIndex:(NSUInteger)pageIndex;
@@ -74,6 +77,7 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
 
 @implementation ETA_CatalogReaderView
 
+@dynamic delegate;
 
 + (instancetype) catalogReader
 {
@@ -256,7 +260,7 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
             {
                 weakSelf.isFetchingData = NO;
                 
-                if (error)
+                if (fetchError)
                 {
                     weakSelf.pageObjects = nil;
                     [weakSelf stopReading];
@@ -277,7 +281,7 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
             // trigger fetched event delegate callback
             if ([weakSelf.delegate respondsToSelector:@selector(catalogReaderViewDidFinishFetchingData:error:)])
             {
-                [weakSelf.delegate catalogReaderViewDidFinishFetchingData:weakSelf error:error];
+                [weakSelf.delegate catalogReaderViewDidFinishFetchingData:weakSelf error:fetchError];
             }
         });
     }];
@@ -496,6 +500,30 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
     {
         [self.delegate catalogReaderView:self didFinishZooming:zoomScale];
     }    
+}
+
+- (void) didBeginTouchingLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys
+{
+    if ([self.delegate respondsToSelector:@selector(catalogReaderView:didBeginTouchingLocation:onPageIndex:hittingHotspots:)])
+    {
+        NSArray* hotspots = [self _hotspotsOnPageIndex:pageIndex matchingKeys:hotspotKeys];
+        
+        [self.delegate catalogReaderView:self didBeginTouchingLocation:tapLocation onPageIndex:pageIndex hittingHotspots:hotspots];
+    }
+    
+    [super didBeginTouchingLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys];
+}
+
+- (void) didFinishTouchingLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys
+{
+    if ([self.delegate respondsToSelector:@selector(catalogReaderView:didFinishTouchingLocation:onPageIndex:hittingHotspots:)])
+    {
+        NSArray* hotspots = [self _hotspotsOnPageIndex:pageIndex matchingKeys:hotspotKeys];
+        
+        [self.delegate catalogReaderView:self didFinishTouchingLocation:tapLocation onPageIndex:pageIndex hittingHotspots:hotspots];
+    }
+    
+    [super didFinishTouchingLocation:(CGPoint)tapLocation onPageIndex:(NSUInteger)pageIndex hittingHotspotsWithKeys:(NSArray*)hotspotKeys];
 }
 
 
