@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "ETA-SDK"
-  s.version      = "3.0.0"
+  s.version      = "3.1.0"
   s.summary      = "eTilbudsavis iOS SDK."
   s.description  = <<-DESC
                      An SDK that makes it easy to talk to the eTilbudsavis API.
@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.license      = 'MIT'
   s.author       = { "Laurie Hufford" => "lh@etilbudsavis.dk" }
 
-  s.platform     = :ios, '6.0'
+  s.platform     = :ios, '7.0'
   s.requires_arc = true
 
   s.source       = { 
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.subspec 'API' do |ss|
     ss.source_files = 'ETA-SDK/ETA.{h,m}', 'ETA-SDK/API/**/*.{h,m}'
       
-    ss.dependency 'AFNetworking', '~> 2.5.1'
+    ss.dependency 'AFNetworking', '~> 3.0.0'
     ss.dependency 'Mantle', '~> 1.5.6'
     ss.dependency 'MAKVONotificationCenter', '~> 0.0.2'
     ss.dependency 'CocoaLumberjack', '~> 1.9.0'

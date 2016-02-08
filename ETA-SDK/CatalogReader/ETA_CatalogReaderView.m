@@ -238,8 +238,10 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
     
     // dont fetch if we dont have a catalogID
     NSString* fetchingCatalogID = self.catalogID;
-    if (!fetchingCatalogID)
+    if (!fetchingCatalogID) {
+        [self stopReading];
         return;
+    }
     
     self.isFetchingData = YES;
     

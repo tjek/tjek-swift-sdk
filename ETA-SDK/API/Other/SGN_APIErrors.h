@@ -170,6 +170,8 @@ typedef NS_ENUM(NSInteger, SGN_APIResponseErrorCode)
  */
 + (nullable instancetype) SGN_errorWithAPIJSONResponse:(NSDictionary*)responseObject urlResponse:(nullable NSURLResponse*)urlResponse;
 
++ (nullable instancetype) SGN_errorWithAPIJSONData:(NSData*)responseData urlResponse:(nullable NSURLResponse*)urlResponse;
+
 /**
  *  The JSON object that was passed into `SGN_errorWithAPIJSONResponse:urlResponse`, or nil if none available
  */
@@ -191,7 +193,7 @@ typedef NS_ENUM(NSInteger, SGN_APIResponseErrorCode)
  *
  *  @return `YES` if is APIResponse error, and has a matching code.
  */
-- (BOOL) SGN_doesAPIResponseErrorRequireNewSession;
+- (BOOL) SGN_doesAPIResponseErrorRequireNewAuthSession;
 
 
 - (BOOL) SGN_isMaintenanceAPIResponseError;
