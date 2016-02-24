@@ -254,26 +254,27 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
     __weak __typeof(self) weakSelf = self;
     [self.dataHandler fetchPagesForCatalogID:fetchingCatalogID completion:^(NSArray *pages, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            
+            __strong __typeof(weakSelf) strongSelf = weakSelf;
+
             NSError* fetchError = error;
             
             // the catalogID hasnt changed since we started the fetch - success
-            if ([fetchingCatalogID isEqualToString:weakSelf.catalogID])
+            if ([fetchingCatalogID isEqualToString:strongSelf.catalogID])
             {
-                weakSelf.isFetchingData = NO;
+                strongSelf.isFetchingData = NO;
                 
                 if (fetchError)
                 {
-                    weakSelf.pageObjects = nil;
-                    [weakSelf stopReading];
+                    strongSelf.pageObjects = nil;
+                    [strongSelf stopReading];
                 }
                 else
                 {
                     //update the data source info
-                    weakSelf.pageObjects = pages;
+                    strongSelf.pageObjects = pages;
                 }
                 
-                [weakSelf reloadPages];
+                [strongSelf reloadPages];
             }
             else
             {
@@ -281,9 +282,9 @@ NSString * const kETA_CatalogReader_ErrorDomain = @"kETA_CatalogReader_ErrorDoma
             }
             
             // trigger fetched event delegate callback
-            if ([weakSelf.delegate respondsToSelector:@selector(catalogReaderViewDidFinishFetchingData:error:)])
+            if ([strongSelf.delegate respondsToSelector:@selector(catalogReaderViewDidFinishFetchingData:error:)])
             {
-                [weakSelf.delegate catalogReaderViewDidFinishFetchingData:weakSelf error:fetchError];
+                [strongSelf.delegate catalogReaderViewDidFinishFetchingData:strongSelf error:fetchError];
             }
         });
     }];
