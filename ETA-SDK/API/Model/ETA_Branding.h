@@ -8,6 +8,8 @@
 
 #import "Mantle.h"
 
+#import <UIKit/UIKit.h>
+
 @interface ETA_Branding : MTLModel<MTLJSONSerializing>
 
 @property (nonatomic, readwrite, strong) NSString* name;

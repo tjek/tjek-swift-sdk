@@ -47,6 +47,7 @@
                                                           @"webshopURL": @"links.webshop",
                                                           
                                                           @"store": NSNull.null,
+                                                          @"branding": @"branding",
                                                           
                                                           }];
 }
@@ -59,6 +60,11 @@
 }
 + (NSValueTransformer *) publishDateJSONTransformer {
     return [NSValueTransformer valueTransformerForName:ETA_APIDate_ValueTransformerName];
+}
+
++ (NSValueTransformer *)brandingJSONTransformer
+{
+    return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ETA_Branding.class];
 }
 
 + (NSValueTransformer *)dealerURLJSONTransformer
