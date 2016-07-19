@@ -10,6 +10,7 @@
 		AE21A00A1D3D12B6009DD8E7 /* ViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21A0041D3D1253009DD8E7 /* ViewContext.swift */; };
 		AE21A00B1D3D12B6009DD8E7 /* CampaignContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21A0061D3D1281009DD8E7 /* CampaignContext.swift */; };
 		AE21A00C1D3D12B6009DD8E7 /* LocationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21A0081D3D12A0009DD8E7 /* LocationContext.swift */; };
+		AE4FFECB1D3E5F0E0031954C /* ShopGunGraph.h in Headers */ = {isa = PBXBuildFile; fileRef = AE4FFECA1D3E5F0E0031954C /* ShopGunGraph.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AE6B71731D3D1C6F006A8225 /* ShopGunCore.h in Headers */ = {isa = PBXBuildFile; fileRef = AE6B71721D3D1C6F006A8225 /* ShopGunCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AE6B71761D3E1AA7006A8225 /* ShopGunEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = AE6B71751D3E1AA7006A8225 /* ShopGunEvents.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AEA5AA2B1D3CB52500DC5EA3 /* SDKConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA2A1D3CB52500DC5EA3 /* SDKConfig.swift */; };
@@ -21,9 +22,7 @@
 		AEA5AA711D3CC91100DC5EA3 /* ShopGunEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA5A1D3CC5C900DC5EA3 /* ShopGunEventsTests.swift */; };
 		AEA5AA721D3CC91700DC5EA3 /* ShopGunEventsTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA5B1D3CC5C900DC5EA3 /* ShopGunEventsTests_ObjC.m */; };
 		AEA5AA751D3CCB2600DC5EA3 /* ShopGunCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA5A9CE1D3CB11A00DC5EA3 /* ShopGunCore.framework */; };
-		AEA5AA791D3CDA7B00DC5EA3 /* ShopGunCore.framework in Headers */ = {isa = PBXBuildFile; fileRef = AEA5A9CE1D3CB11A00DC5EA3 /* ShopGunCore.framework */; settings = {ATTRIBUTES = (Public, ); }; };
 		AEA5AAAB1D3CE50700DC5EA3 /* ShopGunCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA5A9CE1D3CB11A00DC5EA3 /* ShopGunCore.framework */; };
-		AEA5AAAD1D3CE50700DC5EA3 /* ShopGunCore.framework in Headers */ = {isa = PBXBuildFile; fileRef = AEA5A9CE1D3CB11A00DC5EA3 /* ShopGunCore.framework */; settings = {ATTRIBUTES = (Public, ); }; };
 		AEA5AAC51D3CE60C00DC5EA3 /* ShopGunGraphTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAC31D3CE60C00DC5EA3 /* ShopGunGraphTests.swift */; };
 		AEA5AAC61D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAC41D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m */; };
 		AEA5AAD21D3CE6C800DC5EA3 /* GraphRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAD11D3CE6C800DC5EA3 /* GraphRequest.swift */; };
@@ -72,6 +71,7 @@
 		AE21A0041D3D1253009DD8E7 /* ViewContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewContext.swift; sourceTree = "<group>"; };
 		AE21A0061D3D1281009DD8E7 /* CampaignContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CampaignContext.swift; sourceTree = "<group>"; };
 		AE21A0081D3D12A0009DD8E7 /* LocationContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationContext.swift; sourceTree = "<group>"; };
+		AE4FFECA1D3E5F0E0031954C /* ShopGunGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShopGunGraph.h; sourceTree = "<group>"; };
 		AE6B71721D3D1C6F006A8225 /* ShopGunCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShopGunCore.h; sourceTree = "<group>"; };
 		AE6B71751D3E1AA7006A8225 /* ShopGunEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShopGunEvents.h; sourceTree = "<group>"; };
 		AE6B71771D3E22F8006A8225 /* ShopGunSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShopGunSDK.podspec; sourceTree = "<group>"; };
@@ -213,6 +213,7 @@
 		AEA5A9EC1D3CB1B000DC5EA3 /* Graph */ = {
 			isa = PBXGroup;
 			children = (
+				AE4FFECA1D3E5F0E0031954C /* ShopGunGraph.h */,
 				AEA5AAD11D3CE6C800DC5EA3 /* GraphRequest.swift */,
 			);
 			path = Graph;
@@ -302,7 +303,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEA5AA791D3CDA7B00DC5EA3 /* ShopGunCore.framework in Headers */,
 				AE6B71761D3E1AA7006A8225 /* ShopGunEvents.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -311,7 +311,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEA5AAAD1D3CE50700DC5EA3 /* ShopGunCore.framework in Headers */,
+				AE4FFECB1D3E5F0E0031954C /* ShopGunGraph.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

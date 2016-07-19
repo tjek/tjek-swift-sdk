@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        ShopGunCore.SDKConfig.appId = "sdfg"
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)

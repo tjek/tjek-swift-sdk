@@ -7,8 +7,9 @@
 //
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
-import UIKit
+import Foundation
 import ShopGunCore
+
 
 @objc(SGNEventsTracker)
 public class EventsTracker : NSObject {

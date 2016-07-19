@@ -31,13 +31,13 @@ Pod::Spec.new do |s|
   s.subspec 'Core' do |ss|
     ss.source_files = 'Source/Core/**/*.swift'
     ss.pod_target_xcconfig = { 'ENABLE_TESTABILITY' => 'YES' }
-    ss.frameworks   = 'Foundation', 'UIKit'
+    ss.frameworks   = 'Foundation'
   end
 
   s.subspec 'Events' do |ss|
     ss.source_files = 'Source/Events/**/*.swift'
     ss.pod_target_xcconfig = { 'ENABLE_TESTABILITY' => 'YES' }
-    ss.frameworks   = 'Foundation', 'UIKit'
+    ss.frameworks   = 'Foundation'
 
     ss.dependency 'ShopGunSDK/Core'
   end
