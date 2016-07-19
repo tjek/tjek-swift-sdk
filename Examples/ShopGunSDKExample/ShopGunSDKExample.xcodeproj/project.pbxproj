@@ -1,0 +1,489 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AE21A0001D3CFE3D009DD8E7 /* ShopGunCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA5AA0D1D3CB45300DC5EA3 /* ShopGunCore.framework */; };
+		AE21A0011D3CFE3D009DD8E7 /* ShopGunEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA5AA831D3CE45400DC5EA3 /* ShopGunEvents.framework */; };
+		AE21A0021D3CFE3D009DD8E7 /* ShopGunGraph.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA5AACA1D3CE66C00DC5EA3 /* ShopGunGraph.framework */; };
+		AEA5AA011D3CB3F400DC5EA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEA5A9F81D3CB3F400DC5EA3 /* Assets.xcassets */; };
+		AEA5AA021D3CB3F400DC5EA3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA5A9F91D3CB3F400DC5EA3 /* LaunchScreen.storyboard */; };
+		AEA5AA031D3CB3F400DC5EA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA5A9FB1D3CB3F400DC5EA3 /* Main.storyboard */; };
+		AEA5AA051D3CB3F400DC5EA3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5A9FF1D3CB3F400DC5EA3 /* AppDelegate.swift */; };
+		AEA5AA061D3CB3F400DC5EA3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA001D3CB3F400DC5EA3 /* ViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AEA5AA0C1D3CB45300DC5EA3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AEA5A9CE1D3CB11A00DC5EA3;
+			remoteInfo = ShopGunCore;
+		};
+		AEA5AA821D3CE45400DC5EA3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AEA5AA451D3CBEBB00DC5EA3;
+			remoteInfo = ShopGunEvents;
+		};
+		AEA5AA841D3CE45400DC5EA3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AEA5AA321D3CB64A00DC5EA3;
+			remoteInfo = "ShopGunCore-Tests";
+		};
+		AEA5AA861D3CE45400DC5EA3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AEA5AA6C1D3CC88300DC5EA3;
+			remoteInfo = "ShopGunEvents-Tests";
+		};
+		AEA5AA9E1D3CE4A300DC5EA3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = AEA5A9CD1D3CB11A00DC5EA3;
+			remoteInfo = ShopGunCore;
+		};
+		AEA5AAA21D3CE4A300DC5EA3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = AEA5AA441D3CBEBB00DC5EA3;
+			remoteInfo = ShopGunEvents;
+		};
+		AEA5AAC91D3CE66C00DC5EA3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AEA5AAB21D3CE50700DC5EA3;
+			remoteInfo = ShopGunGraph;
+		};
+		AEA5AACB1D3CE66C00DC5EA3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AEA5AAC01D3CE56000DC5EA3;
+			remoteInfo = "ShopGunGraph-Tests";
+		};
+		AEA5AACF1D3CE67900DC5EA3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = AEA5AAA51D3CE50700DC5EA3;
+			remoteInfo = ShopGunGraph;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AEA5AAA41D3CE4A300DC5EA3 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		AEA5A9F81D3CB3F400DC5EA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AEA5A9FA1D3CB3F400DC5EA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		AEA5A9FC1D3CB3F400DC5EA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		AEA5A9FD1D3CB3F400DC5EA3 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AEA5A9FF1D3CB3F400DC5EA3 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AEA5AA001D3CB3F400DC5EA3 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ShopGunSDK.xcodeproj; path = ../../ShopGunSDK.xcodeproj; sourceTree = "<group>"; };
+		AEBEBCAC1D34F282007E7D9D /* ShopGunSDKExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShopGunSDKExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AEBEBCA91D34F282007E7D9D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE21A0001D3CFE3D009DD8E7 /* ShopGunCore.framework in Frameworks */,
+				AE21A0011D3CFE3D009DD8E7 /* ShopGunEvents.framework in Frameworks */,
+				AE21A0021D3CFE3D009DD8E7 /* ShopGunGraph.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AEA5A9F71D3CB3F400DC5EA3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AEA5A9F81D3CB3F400DC5EA3 /* Assets.xcassets */,
+				AEA5A9F91D3CB3F400DC5EA3 /* LaunchScreen.storyboard */,
+				AEA5A9FB1D3CB3F400DC5EA3 /* Main.storyboard */,
+				AEA5A9FD1D3CB3F400DC5EA3 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		AEA5A9FE1D3CB3F400DC5EA3 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				AEA5A9FF1D3CB3F400DC5EA3 /* AppDelegate.swift */,
+				AEA5AA001D3CB3F400DC5EA3 /* ViewController.swift */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		AEA5AA071D3CB44200DC5EA3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AEA5AA091D3CB45300DC5EA3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AEA5AA0D1D3CB45300DC5EA3 /* ShopGunCore.framework */,
+				AEA5AA831D3CE45400DC5EA3 /* ShopGunEvents.framework */,
+				AEA5AACA1D3CE66C00DC5EA3 /* ShopGunGraph.framework */,
+				AEA5AA851D3CE45400DC5EA3 /* ShopGunCore-Tests.xctest */,
+				AEA5AA871D3CE45400DC5EA3 /* ShopGunEvents-Tests.xctest */,
+				AEA5AACC1D3CE66C00DC5EA3 /* ShopGunGraph-Tests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AEBEBCA31D34F282007E7D9D = {
+			isa = PBXGroup;
+			children = (
+				AEA5A9FE1D3CB3F400DC5EA3 /* Source */,
+				AEA5A9F71D3CB3F400DC5EA3 /* Resources */,
+				AEA5AA071D3CB44200DC5EA3 /* Frameworks */,
+				AEBEBCAD1D34F282007E7D9D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AEBEBCAD1D34F282007E7D9D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AEBEBCAC1D34F282007E7D9D /* ShopGunSDKExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AEBEBCAB1D34F282007E7D9D /* ShopGunSDKExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AEBEBCBE1D34F282007E7D9D /* Build configuration list for PBXNativeTarget "ShopGunSDKExample" */;
+			buildPhases = (
+				AEBEBCA81D34F282007E7D9D /* Sources */,
+				AEBEBCA91D34F282007E7D9D /* Frameworks */,
+				AEBEBCAA1D34F282007E7D9D /* Resources */,
+				AEA5AAA41D3CE4A300DC5EA3 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AEA5AA9F1D3CE4A300DC5EA3 /* PBXTargetDependency */,
+				AEA5AAA31D3CE4A300DC5EA3 /* PBXTargetDependency */,
+				AEA5AAD01D3CE67900DC5EA3 /* PBXTargetDependency */,
+			);
+			name = ShopGunSDKExample;
+			productName = SGNEventsKitExample;
+			productReference = AEBEBCAC1D34F282007E7D9D /* ShopGunSDKExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AEBEBCA41D34F282007E7D9D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = ShopGun;
+				TargetAttributes = {
+					AEBEBCAB1D34F282007E7D9D = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+				};
+			};
+			buildConfigurationList = AEBEBCA71D34F282007E7D9D /* Build configuration list for PBXProject "ShopGunSDKExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AEBEBCA31D34F282007E7D9D;
+			productRefGroup = AEBEBCAD1D34F282007E7D9D /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = AEA5AA091D3CB45300DC5EA3 /* Products */;
+					ProjectRef = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				AEBEBCAB1D34F282007E7D9D /* ShopGunSDKExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		AEA5AA0D1D3CB45300DC5EA3 /* ShopGunCore.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ShopGunCore.framework;
+			remoteRef = AEA5AA0C1D3CB45300DC5EA3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AEA5AA831D3CE45400DC5EA3 /* ShopGunEvents.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ShopGunEvents.framework;
+			remoteRef = AEA5AA821D3CE45400DC5EA3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AEA5AA851D3CE45400DC5EA3 /* ShopGunCore-Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "ShopGunCore-Tests.xctest";
+			remoteRef = AEA5AA841D3CE45400DC5EA3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AEA5AA871D3CE45400DC5EA3 /* ShopGunEvents-Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "ShopGunEvents-Tests.xctest";
+			remoteRef = AEA5AA861D3CE45400DC5EA3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AEA5AACA1D3CE66C00DC5EA3 /* ShopGunGraph.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ShopGunGraph.framework;
+			remoteRef = AEA5AAC91D3CE66C00DC5EA3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AEA5AACC1D3CE66C00DC5EA3 /* ShopGunGraph-Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "ShopGunGraph-Tests.xctest";
+			remoteRef = AEA5AACB1D3CE66C00DC5EA3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AEBEBCAA1D34F282007E7D9D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AEA5AA031D3CB3F400DC5EA3 /* Main.storyboard in Resources */,
+				AEA5AA011D3CB3F400DC5EA3 /* Assets.xcassets in Resources */,
+				AEA5AA021D3CB3F400DC5EA3 /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AEBEBCA81D34F282007E7D9D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AEA5AA061D3CB3F400DC5EA3 /* ViewController.swift in Sources */,
+				AEA5AA051D3CB3F400DC5EA3 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AEA5AA9F1D3CE4A300DC5EA3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ShopGunCore;
+			targetProxy = AEA5AA9E1D3CE4A300DC5EA3 /* PBXContainerItemProxy */;
+		};
+		AEA5AAA31D3CE4A300DC5EA3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ShopGunEvents;
+			targetProxy = AEA5AAA21D3CE4A300DC5EA3 /* PBXContainerItemProxy */;
+		};
+		AEA5AAD01D3CE67900DC5EA3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ShopGunGraph;
+			targetProxy = AEA5AACF1D3CE67900DC5EA3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		AEA5A9F91D3CB3F400DC5EA3 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AEA5A9FA1D3CB3F400DC5EA3 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		AEA5A9FB1D3CB3F400DC5EA3 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AEA5A9FC1D3CB3F400DC5EA3 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AEBEBCBC1D34F282007E7D9D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AEBEBCBD1D34F282007E7D9D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AEBEBCBF1D34F282007E7D9D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.shopgun.ios.sdk.example;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AEBEBCC01D34F282007E7D9D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.shopgun.ios.sdk.example;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AEBEBCA71D34F282007E7D9D /* Build configuration list for PBXProject "ShopGunSDKExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AEBEBCBC1D34F282007E7D9D /* Debug */,
+				AEBEBCBD1D34F282007E7D9D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AEBEBCBE1D34F282007E7D9D /* Build configuration list for PBXNativeTarget "ShopGunSDKExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AEBEBCBF1D34F282007E7D9D /* Debug */,
+				AEBEBCC01D34F282007E7D9D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AEBEBCA41D34F282007E7D9D /* Project object */;
+}

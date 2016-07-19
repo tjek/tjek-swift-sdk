@@ -1,4 +1,0 @@
-source 'https://github.com/CocoaPods/Specs.git'
-
-pod "ETA-SDK/CatalogReader", :path => "../"
-pod "ETA-SDK/WebCatalogView", :path => "../"

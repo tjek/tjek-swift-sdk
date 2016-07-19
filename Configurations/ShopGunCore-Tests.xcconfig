@@ -1,0 +1,20 @@
+//
+//  _____ _           _____
+// |   __| |_ ___ ___|   __|_ _ ___
+// |__   |   | . | . |  |  | | |   |
+// |_____|_|_|___|  _|_____|___|_|_|
+//               |_|
+//
+//  Copyright (c) 2016 ShopGun. All rights reserved.
+
+#include "Common/SharedTest.xcconfig"
+#include "Common/SDKVersion.xcconfig"
+
+PRODUCT_NAME = ShopGunCore-Tests
+PRODUCT_BUNDLE_IDENTIFIER = com.shopgun.ios.sdk.core.tests
+
+SWIFT_VERSION = 2.3
+
+IPHONEOS_DEPLOYMENT_TARGET = 8.0
+
+INFOPLIST_FILE = $(SRCROOT)/Resources/Info.plist

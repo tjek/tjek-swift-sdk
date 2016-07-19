@@ -1,4 +1,5 @@
-# eTilbudsavis iOS SDK - Change Log
+# Change Log
+
 
 ## v3.1.0
 
