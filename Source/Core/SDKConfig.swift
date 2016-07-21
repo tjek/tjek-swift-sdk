@@ -33,18 +33,16 @@ public class SDKConfig : NSObject {
         }
     }
     
+    // TODO: fetch clientId from keychain
     public static var clientId : String {
         return ""
     }
     
+    // TODO: fetch sessionId from keychain
     public static var sessionId : String {
         return ""
     }
     
-    
-    public static func test(arr:[String]?) {
-    
-    }
     
     
     // MARK: Private

@@ -9,8 +9,7 @@
 
 #import <XCTest/XCTest.h>
 
-@import ShopGunCore;
-@import ShopGunGraph;
+@import ShopGunSDK;
 
 @interface ShopGunGraphTests_ObjC : XCTestCase
 

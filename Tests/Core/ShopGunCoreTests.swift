@@ -8,7 +8,7 @@
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
 import XCTest
-@testable import ShopGunCore
+@testable import ShopGunSDK
 
 class ShopGunCoreTests: XCTestCase {
     
@@ -24,7 +24,7 @@ class ShopGunCoreTests: XCTestCase {
     
     func testExample() {
         
-//        ShopGunCore.SDKConfig.appId
+        ShopGunSDK.SDKConfig.appId = "fds"
 //        ShopGunCore.SDKConfig.clientId
 //        ShopGunCore.SDKConfig.sessionId        
     }

@@ -8,7 +8,6 @@
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
 import Foundation
-import ShopGunCore
 
 @objc(SGNGraphRequest)
 public class GraphRequest : NSObject {

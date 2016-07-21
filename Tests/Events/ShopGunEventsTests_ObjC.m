@@ -9,8 +9,7 @@
 
 #import <XCTest/XCTest.h>
 
-@import ShopGunCore;
-@import ShopGunEvents;
+@import ShopGunSDK;
 
 @interface ShopGunEventsTests_ObjC : XCTestCase
 
@@ -20,7 +19,8 @@
 
 - (void)setUp {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    
+    SGNSDKConfig.appId = @"sdfg";
 }
 
 - (void)tearDown {
@@ -28,11 +28,31 @@
     [super tearDown];
 }
 
-- (void)testExample {
-    SGNEventsTracker* tracker = [[SGNEventsTracker alloc] initWithTrackId:@"sdfg"];
+- (void) testFlushTimeout {
     
-    [tracker trackEvent:@"x-type" variables:@{}];
+    SGNEventsTracker* tracker = [[SGNEventsTracker alloc] initWithTrackId:@""];
+    
+    // tracker starts with default timeout
+    XCTAssert(tracker.flushTimeout == SGNEventsTracker.defaultFlushTimeout);
+    
+    // changing timeout works
+    tracker.flushTimeout = 12345;
+    XCTAssert(tracker.flushTimeout == 12345);
+    
+    // reset timeout sets it back to default
+    [tracker resetFlushTimeout];
+    XCTAssert(tracker.flushTimeout == SGNEventsTracker.defaultFlushTimeout);
+    
+    
+    // changing global default works, and is used by tracker instances
+    SGNEventsTracker.defaultFlushTimeout = 23456;
+    XCTAssert(SGNEventsTracker.defaultFlushTimeout == 23456);
+    XCTAssert(tracker.flushTimeout == 23456);
+    
+    // reseting default works, and tracker instances use it
+    [SGNEventsTracker resetDefaultFlushTimeout];
+    XCTAssert(SGNEventsTracker.defaultFlushTimeout != 23456);
+    XCTAssert(tracker.flushTimeout == SGNEventsTracker.defaultFlushTimeout);
 }
-
 
 @end

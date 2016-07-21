@@ -7,96 +7,53 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AE21A00A1D3D12B6009DD8E7 /* ViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21A0041D3D1253009DD8E7 /* ViewContext.swift */; };
-		AE21A00B1D3D12B6009DD8E7 /* CampaignContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21A0061D3D1281009DD8E7 /* CampaignContext.swift */; };
-		AE21A00C1D3D12B6009DD8E7 /* LocationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21A0081D3D12A0009DD8E7 /* LocationContext.swift */; };
-		AE4FFECB1D3E5F0E0031954C /* ShopGunGraph.h in Headers */ = {isa = PBXBuildFile; fileRef = AE4FFECA1D3E5F0E0031954C /* ShopGunGraph.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AE6B71731D3D1C6F006A8225 /* ShopGunCore.h in Headers */ = {isa = PBXBuildFile; fileRef = AE6B71721D3D1C6F006A8225 /* ShopGunCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AE6B71761D3E1AA7006A8225 /* ShopGunEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = AE6B71751D3E1AA7006A8225 /* ShopGunEvents.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AEA5AA2B1D3CB52500DC5EA3 /* SDKConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA2A1D3CB52500DC5EA3 /* SDKConfig.swift */; };
-		AEA5AA371D3CB64A00DC5EA3 /* ShopGunCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA5A9CE1D3CB11A00DC5EA3 /* ShopGunCore.framework */; };
+		AE06C0201D3F7D4D00BC8D47 /* ShopGunSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = AE06C01F1D3F7D3C00BC8D47 /* ShopGunSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AE06C03C1D3FA70000BC8D47 /* SDKConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA2A1D3CB52500DC5EA3 /* SDKConfig.swift */; };
+		AE06C03D1D3FA70000BC8D47 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAD31D3CFA6400DC5EA3 /* Utils.swift */; };
+		AE06C03E1D3FA70000BC8D47 /* EventsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA4D1D3CBEF100DC5EA3 /* EventsTracker.swift */; };
+		AE06C03F1D3FA70000BC8D47 /* ViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21A0041D3D1253009DD8E7 /* ViewContext.swift */; };
+		AE06C0401D3FA70000BC8D47 /* CampaignContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21A0061D3D1281009DD8E7 /* CampaignContext.swift */; };
+		AE06C0411D3FA70000BC8D47 /* LocationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21A0081D3D12A0009DD8E7 /* LocationContext.swift */; };
+		AE06C0421D3FA70000BC8D47 /* GraphRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAD11D3CE6C800DC5EA3 /* GraphRequest.swift */; };
+		AE06C0431D40C48A00BC8D47 /* ShopGunEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA5A1D3CC5C900DC5EA3 /* ShopGunEventsTests.swift */; };
+		AE06C0441D40C48A00BC8D47 /* ShopGunEventsTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA5B1D3CC5C900DC5EA3 /* ShopGunEventsTests_ObjC.m */; };
+		AE06C0451D40C48A00BC8D47 /* ShopGunGraphTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAC31D3CE60C00DC5EA3 /* ShopGunGraphTests.swift */; };
+		AE06C0461D40C48A00BC8D47 /* ShopGunGraphTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAC41D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m */; };
+		AE06C0471D40C4E100BC8D47 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06BFF01D3E9BB100BC8D47 /* ShopGunSDK.framework */; };
 		AEA5AA3D1D3CB72000DC5EA3 /* ShopGunCoreTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5A9F41D3CB28100DC5EA3 /* ShopGunCoreTests_ObjC.m */; };
 		AEA5AA3E1D3CB72000DC5EA3 /* ShopGunCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5A9F51D3CB28100DC5EA3 /* ShopGunCoreTests.swift */; };
-		AEA5AA4E1D3CBEF100DC5EA3 /* EventsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA4D1D3CBEF100DC5EA3 /* EventsTracker.swift */; };
-		AEA5AA701D3CC8FE00DC5EA3 /* ShopGunEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA5AA451D3CBEBB00DC5EA3 /* ShopGunEvents.framework */; };
-		AEA5AA711D3CC91100DC5EA3 /* ShopGunEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA5A1D3CC5C900DC5EA3 /* ShopGunEventsTests.swift */; };
-		AEA5AA721D3CC91700DC5EA3 /* ShopGunEventsTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA5B1D3CC5C900DC5EA3 /* ShopGunEventsTests_ObjC.m */; };
-		AEA5AA751D3CCB2600DC5EA3 /* ShopGunCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA5A9CE1D3CB11A00DC5EA3 /* ShopGunCore.framework */; };
-		AEA5AAAB1D3CE50700DC5EA3 /* ShopGunCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA5A9CE1D3CB11A00DC5EA3 /* ShopGunCore.framework */; };
-		AEA5AAC51D3CE60C00DC5EA3 /* ShopGunGraphTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAC31D3CE60C00DC5EA3 /* ShopGunGraphTests.swift */; };
-		AEA5AAC61D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAC41D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m */; };
-		AEA5AAD21D3CE6C800DC5EA3 /* GraphRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAD11D3CE6C800DC5EA3 /* GraphRequest.swift */; };
-		AEA5AAD41D3CFA6400DC5EA3 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAD31D3CFA6400DC5EA3 /* Utils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		AE6B71701D3D1B52006A8225 /* PBXContainerItemProxy */ = {
+		AE06C0481D40C4E400BC8D47 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AEA5A9C51D3CB11A00DC5EA3 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = AEA5A9CD1D3CB11A00DC5EA3;
-			remoteInfo = ShopGunCore;
-		};
-		AEA5AA731D3CC93D00DC5EA3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AEA5A9C51D3CB11A00DC5EA3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AEA5AA441D3CBEBB00DC5EA3;
-			remoteInfo = ShopGunEvents;
-		};
-		AEA5AA771D3CCB4000DC5EA3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AEA5A9C51D3CB11A00DC5EA3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AEA5A9CD1D3CB11A00DC5EA3;
-			remoteInfo = ShopGunCore;
-		};
-		AEA5AAA71D3CE50700DC5EA3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AEA5A9C51D3CB11A00DC5EA3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AEA5A9CD1D3CB11A00DC5EA3;
-			remoteInfo = ShopGunCore;
-		};
-		AEA5AAB61D3CE56000DC5EA3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AEA5A9C51D3CB11A00DC5EA3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AEA5AA441D3CBEBB00DC5EA3;
-			remoteInfo = ShopGunEvents;
+			remoteGlobalIDString = AE06BFEF1D3E9BB100BC8D47;
+			remoteInfo = ShopGunSDK;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AE06BFF01D3E9BB100BC8D47 /* ShopGunSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE06BFF81D3E9BD500BC8D47 /* ShopGunSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ShopGunSDK.xcconfig; sourceTree = "<group>"; };
+		AE06C01F1D3F7D3C00BC8D47 /* ShopGunSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShopGunSDK.h; sourceTree = "<group>"; };
 		AE21A0041D3D1253009DD8E7 /* ViewContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewContext.swift; sourceTree = "<group>"; };
 		AE21A0061D3D1281009DD8E7 /* CampaignContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CampaignContext.swift; sourceTree = "<group>"; };
 		AE21A0081D3D12A0009DD8E7 /* LocationContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationContext.swift; sourceTree = "<group>"; };
-		AE4FFECA1D3E5F0E0031954C /* ShopGunGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShopGunGraph.h; sourceTree = "<group>"; };
-		AE6B71721D3D1C6F006A8225 /* ShopGunCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShopGunCore.h; sourceTree = "<group>"; };
-		AE6B71751D3E1AA7006A8225 /* ShopGunEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShopGunEvents.h; sourceTree = "<group>"; };
-		AE6B71771D3E22F8006A8225 /* ShopGunSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShopGunSDK.podspec; sourceTree = "<group>"; };
-		AEA5A9CE1D3CB11A00DC5EA3 /* ShopGunCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE6B71771D3E22F8006A8225 /* ShopGunSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShopGunSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		AEA5A9F31D3CB1DF00DC5EA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AEA5A9F41D3CB28100DC5EA3 /* ShopGunCoreTests_ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShopGunCoreTests_ObjC.m; sourceTree = "<group>"; };
 		AEA5A9F51D3CB28100DC5EA3 /* ShopGunCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopGunCoreTests.swift; sourceTree = "<group>"; };
 		AEA5AA2A1D3CB52500DC5EA3 /* SDKConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDKConfig.swift; sourceTree = "<group>"; };
-		AEA5AA321D3CB64A00DC5EA3 /* ShopGunCore-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunCore-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AEA5AA451D3CBEBB00DC5EA3 /* ShopGunEvents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunEvents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEA5AA321D3CB64A00DC5EA3 /* ShopGunSDK-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunSDK-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEA5AA4D1D3CBEF100DC5EA3 /* EventsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTracker.swift; sourceTree = "<group>"; };
-		AEA5AA501D3CBFFE00DC5EA3 /* ShopGunCore.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ShopGunCore.xcconfig; sourceTree = "<group>"; };
-		AEA5AA531D3CC3BF00DC5EA3 /* ShopGunEvents.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ShopGunEvents.xcconfig; sourceTree = "<group>"; };
-		AEA5AA541D3CC3BF00DC5EA3 /* ShopGunGraph.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ShopGunGraph.xcconfig; sourceTree = "<group>"; };
-		AEA5AA581D3CC52400DC5EA3 /* ShopGunCore-Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunCore-Tests.xcconfig"; sourceTree = "<group>"; };
+		AEA5AA581D3CC52400DC5EA3 /* ShopGunSDK-Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Tests.xcconfig"; sourceTree = "<group>"; };
 		AEA5AA5A1D3CC5C900DC5EA3 /* ShopGunEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopGunEventsTests.swift; sourceTree = "<group>"; };
 		AEA5AA5B1D3CC5C900DC5EA3 /* ShopGunEventsTests_ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShopGunEventsTests_ObjC.m; sourceTree = "<group>"; };
 		AEA5AA5D1D3CC62300DC5EA3 /* SDKVersion.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SDKVersion.xcconfig; sourceTree = "<group>"; };
 		AEA5AA5E1D3CC62300DC5EA3 /* SharedFramework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SharedFramework.xcconfig; sourceTree = "<group>"; };
 		AEA5AA5F1D3CC74600DC5EA3 /* SharedTest.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SharedTest.xcconfig; sourceTree = "<group>"; };
-		AEA5AA6C1D3CC88300DC5EA3 /* ShopGunEvents-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunEvents-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AEA5AA6E1D3CC8B200DC5EA3 /* ShopGunEvents-Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunEvents-Tests.xcconfig"; sourceTree = "<group>"; };
-		AEA5AA6F1D3CC8B200DC5EA3 /* ShopGunGraph-Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunGraph-Tests.xcconfig"; sourceTree = "<group>"; };
-		AEA5AAB21D3CE50700DC5EA3 /* ShopGunGraph.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunGraph.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AEA5AAC01D3CE56000DC5EA3 /* ShopGunGraph-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunGraph-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEA5AAC31D3CE60C00DC5EA3 /* ShopGunGraphTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopGunGraphTests.swift; sourceTree = "<group>"; };
 		AEA5AAC41D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShopGunGraphTests_ObjC.m; sourceTree = "<group>"; };
 		AEA5AAD11D3CE6C800DC5EA3 /* GraphRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphRequest.swift; sourceTree = "<group>"; };
@@ -104,7 +61,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		AEA5A9CA1D3CB11A00DC5EA3 /* Frameworks */ = {
+		AE06BFEC1D3E9BB100BC8D47 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -115,38 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEA5AA371D3CB64A00DC5EA3 /* ShopGunCore.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AA411D3CBEBB00DC5EA3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AEA5AA751D3CCB2600DC5EA3 /* ShopGunCore.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AA661D3CC88300DC5EA3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AEA5AA701D3CC8FE00DC5EA3 /* ShopGunEvents.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AAAA1D3CE50700DC5EA3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AEA5AAAB1D3CE50700DC5EA3 /* ShopGunCore.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AABA1D3CE56000DC5EA3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				AE06C0471D40C4E100BC8D47 /* ShopGunSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,12 +94,8 @@
 		AEA5A9CF1D3CB11A00DC5EA3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AEA5A9CE1D3CB11A00DC5EA3 /* ShopGunCore.framework */,
-				AEA5AA321D3CB64A00DC5EA3 /* ShopGunCore-Tests.xctest */,
-				AEA5AA451D3CBEBB00DC5EA3 /* ShopGunEvents.framework */,
-				AEA5AA6C1D3CC88300DC5EA3 /* ShopGunEvents-Tests.xctest */,
-				AEA5AAB21D3CE50700DC5EA3 /* ShopGunGraph.framework */,
-				AEA5AAC01D3CE56000DC5EA3 /* ShopGunGraph-Tests.xctest */,
+				AEA5AA321D3CB64A00DC5EA3 /* ShopGunSDK-Tests.xctest */,
+				AE06BFF01D3E9BB100BC8D47 /* ShopGunSDK.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -181,6 +103,7 @@
 		AEA5A9E81D3CB1B000DC5EA3 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				AE06C01F1D3F7D3C00BC8D47 /* ShopGunSDK.h */,
 				AEA5A9E91D3CB1B000DC5EA3 /* Core */,
 				AEA5A9EB1D3CB1B000DC5EA3 /* Events */,
 				AEA5A9EC1D3CB1B000DC5EA3 /* Graph */,
@@ -191,7 +114,6 @@
 		AEA5A9E91D3CB1B000DC5EA3 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				AE6B71721D3D1C6F006A8225 /* ShopGunCore.h */,
 				AEA5AA2A1D3CB52500DC5EA3 /* SDKConfig.swift */,
 				AEA5AAD31D3CFA6400DC5EA3 /* Utils.swift */,
 			);
@@ -201,7 +123,6 @@
 		AEA5A9EB1D3CB1B000DC5EA3 /* Events */ = {
 			isa = PBXGroup;
 			children = (
-				AE6B71751D3E1AA7006A8225 /* ShopGunEvents.h */,
 				AEA5AA4D1D3CBEF100DC5EA3 /* EventsTracker.swift */,
 				AE21A0041D3D1253009DD8E7 /* ViewContext.swift */,
 				AE21A0061D3D1281009DD8E7 /* CampaignContext.swift */,
@@ -213,7 +134,6 @@
 		AEA5A9EC1D3CB1B000DC5EA3 /* Graph */ = {
 			isa = PBXGroup;
 			children = (
-				AE4FFECA1D3E5F0E0031954C /* ShopGunGraph.h */,
 				AEA5AAD11D3CE6C800DC5EA3 /* GraphRequest.swift */,
 			);
 			path = Graph;
@@ -249,12 +169,8 @@
 		AEA5AA4F1D3CBFAB00DC5EA3 /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
-				AEA5AA501D3CBFFE00DC5EA3 /* ShopGunCore.xcconfig */,
-				AEA5AA531D3CC3BF00DC5EA3 /* ShopGunEvents.xcconfig */,
-				AEA5AA541D3CC3BF00DC5EA3 /* ShopGunGraph.xcconfig */,
-				AEA5AA581D3CC52400DC5EA3 /* ShopGunCore-Tests.xcconfig */,
-				AEA5AA6E1D3CC8B200DC5EA3 /* ShopGunEvents-Tests.xcconfig */,
-				AEA5AA6F1D3CC8B200DC5EA3 /* ShopGunGraph-Tests.xcconfig */,
+				AE06BFF81D3E9BD500BC8D47 /* ShopGunSDK.xcconfig */,
+				AEA5AA581D3CC52400DC5EA3 /* ShopGunSDK-Tests.xcconfig */,
 				AEA5AA5C1D3CC62300DC5EA3 /* Common */,
 			);
 			path = Configurations;
@@ -291,54 +207,38 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		AEA5A9CB1D3CB11A00DC5EA3 /* Headers */ = {
+		AE06BFED1D3E9BB100BC8D47 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE6B71731D3D1C6F006A8225 /* ShopGunCore.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AA421D3CBEBB00DC5EA3 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AE6B71761D3E1AA7006A8225 /* ShopGunEvents.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AAAC1D3CE50700DC5EA3 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AE4FFECB1D3E5F0E0031954C /* ShopGunGraph.h in Headers */,
+				AE06C0201D3F7D4D00BC8D47 /* ShopGunSDK.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		AEA5A9CD1D3CB11A00DC5EA3 /* ShopGunCore */ = {
+		AE06BFEF1D3E9BB100BC8D47 /* ShopGunSDK */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AEA5A9E21D3CB11A00DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunCore" */;
+			buildConfigurationList = AE06BFF51D3E9BB100BC8D47 /* Build configuration list for PBXNativeTarget "ShopGunSDK" */;
 			buildPhases = (
-				AEA5A9C91D3CB11A00DC5EA3 /* Sources */,
-				AEA5A9CA1D3CB11A00DC5EA3 /* Frameworks */,
-				AEA5A9CB1D3CB11A00DC5EA3 /* Headers */,
-				AEA5A9CC1D3CB11A00DC5EA3 /* Resources */,
+				AE06BFEB1D3E9BB100BC8D47 /* Sources */,
+				AE06BFEC1D3E9BB100BC8D47 /* Frameworks */,
+				AE06BFED1D3E9BB100BC8D47 /* Headers */,
+				AE06BFEE1D3E9BB100BC8D47 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = ShopGunCore;
-			productName = ShopGunCore;
-			productReference = AEA5A9CE1D3CB11A00DC5EA3 /* ShopGunCore.framework */;
+			name = ShopGunSDK;
+			productName = ShopGunSDK;
+			productReference = AE06BFF01D3E9BB100BC8D47 /* ShopGunSDK.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		AEA5AA311D3CB64A00DC5EA3 /* ShopGunCore-Tests */ = {
+		AEA5AA311D3CB64A00DC5EA3 /* ShopGunSDK-Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AEA5AA3A1D3CB64A00DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunCore-Tests" */;
+			buildConfigurationList = AEA5AA3A1D3CB64A00DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunSDK-Tests" */;
 			buildPhases = (
 				AEA5AA2E1D3CB64A00DC5EA3 /* Sources */,
 				AEA5AA2F1D3CB64A00DC5EA3 /* Frameworks */,
@@ -347,85 +247,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				AE6B71711D3D1B52006A8225 /* PBXTargetDependency */,
+				AE06C0491D40C4E400BC8D47 /* PBXTargetDependency */,
 			);
-			name = "ShopGunCore-Tests";
+			name = "ShopGunSDK-Tests";
 			productName = ShopGunCoreTests;
-			productReference = AEA5AA321D3CB64A00DC5EA3 /* ShopGunCore-Tests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		AEA5AA441D3CBEBB00DC5EA3 /* ShopGunEvents */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AEA5AA4A1D3CBEBB00DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunEvents" */;
-			buildPhases = (
-				AEA5AA401D3CBEBB00DC5EA3 /* Sources */,
-				AEA5AA411D3CBEBB00DC5EA3 /* Frameworks */,
-				AEA5AA421D3CBEBB00DC5EA3 /* Headers */,
-				AEA5AA431D3CBEBB00DC5EA3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AEA5AA781D3CCB4000DC5EA3 /* PBXTargetDependency */,
-			);
-			name = ShopGunEvents;
-			productName = ShopGunEvents;
-			productReference = AEA5AA451D3CBEBB00DC5EA3 /* ShopGunEvents.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		AEA5AA601D3CC88300DC5EA3 /* ShopGunEvents-Tests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AEA5AA691D3CC88300DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunEvents-Tests" */;
-			buildPhases = (
-				AEA5AA631D3CC88300DC5EA3 /* Sources */,
-				AEA5AA661D3CC88300DC5EA3 /* Frameworks */,
-				AEA5AA681D3CC88300DC5EA3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AEA5AA741D3CC93D00DC5EA3 /* PBXTargetDependency */,
-			);
-			name = "ShopGunEvents-Tests";
-			productName = ShopGunCoreTests;
-			productReference = AEA5AA6C1D3CC88300DC5EA3 /* ShopGunEvents-Tests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		AEA5AAA51D3CE50700DC5EA3 /* ShopGunGraph */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AEA5AAAF1D3CE50700DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunGraph" */;
-			buildPhases = (
-				AEA5AAA81D3CE50700DC5EA3 /* Sources */,
-				AEA5AAAA1D3CE50700DC5EA3 /* Frameworks */,
-				AEA5AAAC1D3CE50700DC5EA3 /* Headers */,
-				AEA5AAAE1D3CE50700DC5EA3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AEA5AAA61D3CE50700DC5EA3 /* PBXTargetDependency */,
-			);
-			name = ShopGunGraph;
-			productName = ShopGunEvents;
-			productReference = AEA5AAB21D3CE50700DC5EA3 /* ShopGunGraph.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		AEA5AAB41D3CE56000DC5EA3 /* ShopGunGraph-Tests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AEA5AABD1D3CE56000DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunGraph-Tests" */;
-			buildPhases = (
-				AEA5AAB71D3CE56000DC5EA3 /* Sources */,
-				AEA5AABA1D3CE56000DC5EA3 /* Frameworks */,
-				AEA5AABC1D3CE56000DC5EA3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AEA5AAB51D3CE56000DC5EA3 /* PBXTargetDependency */,
-			);
-			name = "ShopGunGraph-Tests";
-			productName = ShopGunCoreTests;
-			productReference = AEA5AAC01D3CE56000DC5EA3 /* ShopGunGraph-Tests.xctest */;
+			productReference = AEA5AA321D3CB64A00DC5EA3 /* ShopGunSDK-Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -438,13 +264,10 @@
 				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = ShopGun;
 				TargetAttributes = {
-					AEA5A9CD1D3CB11A00DC5EA3 = {
+					AE06BFEF1D3E9BB100BC8D47 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
 					AEA5AA311D3CB64A00DC5EA3 = {
-						CreatedOnToolsVersion = 7.3.1;
-					};
-					AEA5AA441D3CBEBB00DC5EA3 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
 				};
@@ -461,18 +284,14 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AEA5A9CD1D3CB11A00DC5EA3 /* ShopGunCore */,
-				AEA5AA441D3CBEBB00DC5EA3 /* ShopGunEvents */,
-				AEA5AAA51D3CE50700DC5EA3 /* ShopGunGraph */,
-				AEA5AA311D3CB64A00DC5EA3 /* ShopGunCore-Tests */,
-				AEA5AA601D3CC88300DC5EA3 /* ShopGunEvents-Tests */,
-				AEA5AAB41D3CE56000DC5EA3 /* ShopGunGraph-Tests */,
+				AE06BFEF1D3E9BB100BC8D47 /* ShopGunSDK */,
+				AEA5AA311D3CB64A00DC5EA3 /* ShopGunSDK-Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		AEA5A9CC1D3CB11A00DC5EA3 /* Resources */ = {
+		AE06BFEE1D3E9BB100BC8D47 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -486,43 +305,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AEA5AA431D3CBEBB00DC5EA3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AA681D3CC88300DC5EA3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AAAE1D3CE50700DC5EA3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AABC1D3CE56000DC5EA3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		AEA5A9C91D3CB11A00DC5EA3 /* Sources */ = {
+		AE06BFEB1D3E9BB100BC8D47 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEA5AA2B1D3CB52500DC5EA3 /* SDKConfig.swift in Sources */,
-				AEA5AAD41D3CFA6400DC5EA3 /* Utils.swift in Sources */,
+				AE06C0411D3FA70000BC8D47 /* LocationContext.swift in Sources */,
+				AE06C03F1D3FA70000BC8D47 /* ViewContext.swift in Sources */,
+				AE06C0421D3FA70000BC8D47 /* GraphRequest.swift in Sources */,
+				AE06C03C1D3FA70000BC8D47 /* SDKConfig.swift in Sources */,
+				AE06C03E1D3FA70000BC8D47 /* EventsTracker.swift in Sources */,
+				AE06C0401D3FA70000BC8D47 /* CampaignContext.swift in Sources */,
+				AE06C03D1D3FA70000BC8D47 /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -530,79 +326,40 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE06C0451D40C48A00BC8D47 /* ShopGunGraphTests.swift in Sources */,
 				AEA5AA3E1D3CB72000DC5EA3 /* ShopGunCoreTests.swift in Sources */,
+				AE06C0441D40C48A00BC8D47 /* ShopGunEventsTests_ObjC.m in Sources */,
 				AEA5AA3D1D3CB72000DC5EA3 /* ShopGunCoreTests_ObjC.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AA401D3CBEBB00DC5EA3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AE21A00A1D3D12B6009DD8E7 /* ViewContext.swift in Sources */,
-				AE21A00B1D3D12B6009DD8E7 /* CampaignContext.swift in Sources */,
-				AE21A00C1D3D12B6009DD8E7 /* LocationContext.swift in Sources */,
-				AEA5AA4E1D3CBEF100DC5EA3 /* EventsTracker.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AA631D3CC88300DC5EA3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AEA5AA711D3CC91100DC5EA3 /* ShopGunEventsTests.swift in Sources */,
-				AEA5AA721D3CC91700DC5EA3 /* ShopGunEventsTests_ObjC.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AAA81D3CE50700DC5EA3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AEA5AAD21D3CE6C800DC5EA3 /* GraphRequest.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AEA5AAB71D3CE56000DC5EA3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AEA5AAC51D3CE60C00DC5EA3 /* ShopGunGraphTests.swift in Sources */,
-				AEA5AAC61D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m in Sources */,
+				AE06C0431D40C48A00BC8D47 /* ShopGunEventsTests.swift in Sources */,
+				AE06C0461D40C48A00BC8D47 /* ShopGunGraphTests_ObjC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		AE6B71711D3D1B52006A8225 /* PBXTargetDependency */ = {
+		AE06C0491D40C4E400BC8D47 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AEA5A9CD1D3CB11A00DC5EA3 /* ShopGunCore */;
-			targetProxy = AE6B71701D3D1B52006A8225 /* PBXContainerItemProxy */;
-		};
-		AEA5AA741D3CC93D00DC5EA3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AEA5AA441D3CBEBB00DC5EA3 /* ShopGunEvents */;
-			targetProxy = AEA5AA731D3CC93D00DC5EA3 /* PBXContainerItemProxy */;
-		};
-		AEA5AA781D3CCB4000DC5EA3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AEA5A9CD1D3CB11A00DC5EA3 /* ShopGunCore */;
-			targetProxy = AEA5AA771D3CCB4000DC5EA3 /* PBXContainerItemProxy */;
-		};
-		AEA5AAA61D3CE50700DC5EA3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AEA5A9CD1D3CB11A00DC5EA3 /* ShopGunCore */;
-			targetProxy = AEA5AAA71D3CE50700DC5EA3 /* PBXContainerItemProxy */;
-		};
-		AEA5AAB51D3CE56000DC5EA3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AEA5AA441D3CBEBB00DC5EA3 /* ShopGunEvents */;
-			targetProxy = AEA5AAB61D3CE56000DC5EA3 /* PBXContainerItemProxy */;
+			target = AE06BFEF1D3E9BB100BC8D47 /* ShopGunSDK */;
+			targetProxy = AE06C0481D40C4E400BC8D47 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		AE06BFF61D3E9BB100BC8D47 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AE06BFF81D3E9BD500BC8D47 /* ShopGunSDK.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		AE06BFF71D3E9BB100BC8D47 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AE06BFF81D3E9BD500BC8D47 /* ShopGunSDK.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
 		AEA5A9E01D3CB11A00DC5EA3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -690,86 +447,16 @@
 			};
 			name = Release;
 		};
-		AEA5A9E31D3CB11A00DC5EA3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA501D3CBFFE00DC5EA3 /* ShopGunCore.xcconfig */;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		AEA5A9E41D3CB11A00DC5EA3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA501D3CBFFE00DC5EA3 /* ShopGunCore.xcconfig */;
-			buildSettings = {
-			};
-			name = Release;
-		};
 		AEA5AA3B1D3CB64A00DC5EA3 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA581D3CC52400DC5EA3 /* ShopGunCore-Tests.xcconfig */;
+			baseConfigurationReference = AEA5AA581D3CC52400DC5EA3 /* ShopGunSDK-Tests.xcconfig */;
 			buildSettings = {
 			};
 			name = Debug;
 		};
 		AEA5AA3C1D3CB64A00DC5EA3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA581D3CC52400DC5EA3 /* ShopGunCore-Tests.xcconfig */;
-			buildSettings = {
-			};
-			name = Release;
-		};
-		AEA5AA4B1D3CBEBB00DC5EA3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA531D3CC3BF00DC5EA3 /* ShopGunEvents.xcconfig */;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		AEA5AA4C1D3CBEBB00DC5EA3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA531D3CC3BF00DC5EA3 /* ShopGunEvents.xcconfig */;
-			buildSettings = {
-			};
-			name = Release;
-		};
-		AEA5AA6A1D3CC88300DC5EA3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA6E1D3CC8B200DC5EA3 /* ShopGunEvents-Tests.xcconfig */;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		AEA5AA6B1D3CC88300DC5EA3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA6E1D3CC8B200DC5EA3 /* ShopGunEvents-Tests.xcconfig */;
-			buildSettings = {
-			};
-			name = Release;
-		};
-		AEA5AAB01D3CE50700DC5EA3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA541D3CC3BF00DC5EA3 /* ShopGunGraph.xcconfig */;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		AEA5AAB11D3CE50700DC5EA3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA541D3CC3BF00DC5EA3 /* ShopGunGraph.xcconfig */;
-			buildSettings = {
-			};
-			name = Release;
-		};
-		AEA5AABE1D3CE56000DC5EA3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA6F1D3CC8B200DC5EA3 /* ShopGunGraph-Tests.xcconfig */;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		AEA5AABF1D3CE56000DC5EA3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA6F1D3CC8B200DC5EA3 /* ShopGunGraph-Tests.xcconfig */;
+			baseConfigurationReference = AEA5AA581D3CC52400DC5EA3 /* ShopGunSDK-Tests.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;
@@ -777,6 +464,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AE06BFF51D3E9BB100BC8D47 /* Build configuration list for PBXNativeTarget "ShopGunSDK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE06BFF61D3E9BB100BC8D47 /* Debug */,
+				AE06BFF71D3E9BB100BC8D47 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		AEA5A9C81D3CB11A00DC5EA3 /* Build configuration list for PBXProject "ShopGunSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -786,56 +481,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AEA5A9E21D3CB11A00DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunCore" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AEA5A9E31D3CB11A00DC5EA3 /* Debug */,
-				AEA5A9E41D3CB11A00DC5EA3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AEA5AA3A1D3CB64A00DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunCore-Tests" */ = {
+		AEA5AA3A1D3CB64A00DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunSDK-Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AEA5AA3B1D3CB64A00DC5EA3 /* Debug */,
 				AEA5AA3C1D3CB64A00DC5EA3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AEA5AA4A1D3CBEBB00DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunEvents" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AEA5AA4B1D3CBEBB00DC5EA3 /* Debug */,
-				AEA5AA4C1D3CBEBB00DC5EA3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AEA5AA691D3CC88300DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunEvents-Tests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AEA5AA6A1D3CC88300DC5EA3 /* Debug */,
-				AEA5AA6B1D3CC88300DC5EA3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AEA5AAAF1D3CE50700DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunGraph" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AEA5AAB01D3CE50700DC5EA3 /* Debug */,
-				AEA5AAB11D3CE50700DC5EA3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AEA5AABD1D3CE56000DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunGraph-Tests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AEA5AABE1D3CE56000DC5EA3 /* Debug */,
-				AEA5AABF1D3CE56000DC5EA3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

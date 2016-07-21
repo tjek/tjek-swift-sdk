@@ -16,7 +16,8 @@ Pod::Spec.new do |s|
 
   s.source       = {
                     :git => 'https://github.com/shopgun/shopgun-ios-sdk.git',
-                    :tag => "v" + s.version.to_s
+                    :branch => 'feature/experimental'
+#                     :tag => "v" + s.version.to_s
                     }
 
 
@@ -25,8 +26,6 @@ Pod::Spec.new do |s|
 
 
   s.module_name = 'ShopGunSDK'
-
-  s.default_subspecs = 'Core', 'Graph'
 
   s.subspec 'Core' do |ss|
     ss.source_files = 'Source/Core/**/*.swift'

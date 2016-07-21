@@ -10,7 +10,7 @@
 
 #import <XCTest/XCTest.h>
 
-@import ShopGunCore;
+@import ShopGunSDK;
 
 @interface ShopGunCoreTests_ObjC : XCTestCase
 

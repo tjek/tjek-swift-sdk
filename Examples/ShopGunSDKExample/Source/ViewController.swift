@@ -9,19 +9,18 @@
 
 import UIKit
 
-import ShopGunCore
-import ShopGunEvents
-import ShopGunGraph
+import ShopGunSDK
 
 class ViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        ShopGunCore.SDKConfig.appId = "sdfg"
+        ObjCTestClass.test()
+        
     }
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
 
     }
     override func didReceiveMemoryWarning() {

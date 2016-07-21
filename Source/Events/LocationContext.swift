@@ -9,7 +9,17 @@
 
 import Foundation
 
+import CoreLocation
+
 @objc(SGNLocationContext)
 public class LocationContext : NSObject {
     
+    static func fetchCurrentUserLocation()-> CLLocation? {
+        let authStatus = CLLocationManager.authorizationStatus()
+        guard (authStatus == .AuthorizedWhenInUse || authStatus == .AuthorizedAlways) else {
+            return nil
+        }
+        
+        return CLLocationManager().location
+    }
 }

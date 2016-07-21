@@ -8,8 +8,8 @@
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
 import XCTest
-import ShopGunCore
-@testable import ShopGunEvents
+
+@testable import ShopGunSDK
 
 class ShopGunGraphTests: XCTestCase {
     
@@ -24,7 +24,7 @@ class ShopGunGraphTests: XCTestCase {
     }
     
     func testExample() {
-//        ShopGunEvents.EventsTracker()
+        
     }
     
 }

@@ -10,8 +10,8 @@
 #include "Common/SharedTest.xcconfig"
 #include "Common/SDKVersion.xcconfig"
 
-PRODUCT_NAME = ShopGunEvents-Tests
-PRODUCT_BUNDLE_IDENTIFIER = com.shopgun.ios.sdk.events.tests
+PRODUCT_NAME = ShopGunSDK-Tests
+PRODUCT_BUNDLE_IDENTIFIER = com.shopgun.ios.sdk.tests
 
 SWIFT_VERSION = 2.3
 

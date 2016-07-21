@@ -7,14 +7,17 @@
 //
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
-#include "Common/SharedTest.xcconfig"
+#include "Common/SharedFramework.xcconfig"
 #include "Common/SDKVersion.xcconfig"
 
-PRODUCT_NAME = ShopGunGraph-Tests
-PRODUCT_BUNDLE_IDENTIFIER = com.shopgun.ios.sdk.graph.tests
+PRODUCT_NAME = ShopGunSDK
+PRODUCT_BUNDLE_IDENTIFIER = com.shopgun.ios.sdk
 
 SWIFT_VERSION = 2.3
 
 IPHONEOS_DEPLOYMENT_TARGET = 8.0
 
 INFOPLIST_FILE = $(SRCROOT)/Resources/Info.plist
+
+// Enable testability to make internal things visible with @testable import
+ENABLE_TESTABILITY = YES

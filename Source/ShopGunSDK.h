@@ -7,6 +7,4 @@
 //
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
-
 @import Foundation;
-
