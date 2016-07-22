@@ -23,36 +23,36 @@ class ShopGunEventsTests: XCTestCase {
         super.tearDown()
     }
     
-    func testFlushTimeout() {
-        let tracker = EventsTracker(trackId:"")
-        
-        // tracker starts with default timeout
-        XCTAssert(tracker.flushTimeout == EventsTracker.defaultFlushTimeout)
-        
-        // changing timeout works
-        tracker.flushTimeout = 12345
-        XCTAssert(tracker.flushTimeout == 12345)
-        
-        // reset timeout sets it back to default
-        tracker.resetFlushTimeout()
-        XCTAssert(tracker.flushTimeout == EventsTracker.defaultFlushTimeout)
-        
-        
-        // changing global default works, and is used by tracker instances
-        EventsTracker.defaultFlushTimeout = 23456
-        XCTAssert(EventsTracker.defaultFlushTimeout == 23456)
-        XCTAssert(tracker.flushTimeout == 23456)
-        
-        // reseting default works, and tracker instances use it
-        EventsTracker.resetDefaultFlushTimeout()
-        XCTAssert(EventsTracker.defaultFlushTimeout != 23456)
-        XCTAssert(tracker.flushTimeout == EventsTracker.defaultFlushTimeout)
-    }
-    
-//    func testExample() {
+//    func testFlushTimeout() {
 //        let tracker = EventsTracker(trackId:"")
 //        
-//        tracker.trackEvent("x-type", variables: nil)
+//        // tracker starts with default timeout
+//        XCTAssert(tracker.flushTimeout == EventsTracker.defaultFlushTimeout)
+//        
+//        // changing timeout works
+//        tracker.flushTimeout = 12345
+//        XCTAssert(tracker.flushTimeout == 12345)
+//        
+//        // reset timeout sets it back to default
+//        tracker.resetFlushTimeout()
+//        XCTAssert(tracker.flushTimeout == EventsTracker.defaultFlushTimeout)
+//        
+//        
+//        // changing global default works, and is used by tracker instances
+//        EventsTracker.defaultFlushTimeout = 23456
+//        XCTAssert(EventsTracker.defaultFlushTimeout == 23456)
+//        XCTAssert(tracker.flushTimeout == 23456)
+//        
+//        // reseting default works, and tracker instances use it
+//        EventsTracker.resetDefaultFlushTimeout()
+//        XCTAssert(EventsTracker.defaultFlushTimeout != 23456)
+//        XCTAssert(tracker.flushTimeout == EventsTracker.defaultFlushTimeout)
 //    }
+    
+    func testTrackEvent() {
+        let tracker = EventsTracker(trackId:"myTrackId")
+        
+        tracker.trackEvent("x-type", variables: ["foo":"bar"])
+    }
     
 }

@@ -25,64 +25,25 @@ public class EventsTracker : NSObject {
     }
     public func trackEvent(type:String, variables:[String:String]?) {
         
-        //TODO: do tracking!
-        print(SDKConfig.appId)
+//        TODO: do tracking!
+//        print(SDKConfig.appId)
         print ("TRACKING type:\(type) variables:\(variables) trackId:\(trackId)")
+        
+        // build event
+        let event = Event(type, trackId:trackId)
+        
+        // serialize event
+        var serializedEvent:SerializedEvent = ["id":event.uuid]
+        
+        // send serialized event to pool
+        EventsTracker._pool.pushEvent(serializedEvent)
     }
     
-    
-    
-    
-    public var flushTimeout:Int {
-        get {
-            return _flushTimeout ?? EventsTracker.defaultFlushTimeout
-        }
-        set {
-            _flushTimeout = newValue
-        }
-    }
-    public func resetFlushTimeout() {
-        _flushTimeout = nil
-    }
-    
-    
-    public var flushLimit:Int {
-        get {
-            return _flushLimit ?? EventsTracker.defaultFlushLimit
-        }
-        set {
-            _flushLimit = newValue
-        }
-    }
-    public func resetFlushLimit() {
-        _flushLimit = nil
-    }
-    
-    
-    public var baseURL:NSURL {
-        get {
-            return _baseURL ?? EventsTracker.defaultBaseURL
-        }
-        set {
-            _baseURL = newValue
-        }
-    }
-    public func resetBaseURL() {
-        _baseURL = nil
-    }
     
     // TODO: implement viewContext
     public var viewContext:ViewContext? = nil
     // TODO: implement campaignContext
     public var campaignContext:CampaignContext? = nil
-    
-    
-    
-    // MARK: Private (instance)
-    private var _flushTimeout:Int?
-    private var _flushLimit:Int?
-    private var _baseURL:NSURL?
-    
     
     
     
@@ -122,42 +83,26 @@ public class EventsTracker : NSObject {
     
     // MARK: Property defaults
     
-    public static var defaultFlushTimeout:Int {
+    public static var flushTimeout:Int {
+        get { return _pool.flushTimeout }
+        set { _pool.flushTimeout = newValue }
+    }
+    public static var flushLimit:Int {
+        get { return _pool.flushLimit }
+        set { _pool.flushLimit = newValue }
+    }
+    
+    
+    public static var baseURL:NSURL {
         get {
-            return _overrideDefaultFlushTimeout ?? _defaultFlushTimeout
+            return _overrideBaseURL ?? _defaultBaseURL
         }
         set {
-            _overrideDefaultFlushTimeout = newValue
+            _overrideBaseURL = newValue
         }
     }
-    public static func resetDefaultFlushTimeout() {
-        _overrideDefaultFlushTimeout = nil
-    }
-    
-    
-    public static var defaultFlushLimit:Int {
-        get {
-            return _overrideDefaultFlushLimit ?? _defaultFlushLimit
-        }
-        set {
-            _overrideDefaultFlushLimit = newValue
-        }
-    }
-    public static func resetDefaultFlushLimit() {
-        _overrideDefaultFlushLimit = nil
-    }
-    
-    
-    public static var defaultBaseURL:NSURL {
-        get {
-            return _overrideDefaultBaseURL ?? _defaultBaseURL
-        }
-        set {
-            _overrideDefaultBaseURL = newValue
-        }
-    }
-    public static func resetDefaultBaseURL() {
-        _overrideDefaultBaseURL = nil
+    public static func resetBaseURL() {
+        _overrideBaseURL = nil
     }
     
     
@@ -172,13 +117,51 @@ public class EventsTracker : NSObject {
     }()
     private static var _overrideTrackId : String? = nil
     
-    private static let _defaultFlushTimeout:Int = 30
-    private static var _overrideDefaultFlushTimeout:Int?
-
-    private static let _defaultFlushLimit:Int = 200
-    private static var _overrideDefaultFlushLimit:Int?
     
     private static let _defaultBaseURL:NSURL = NSURL(string: "events.shopgun.com")!
-    private static var _overrideDefaultBaseURL:NSURL?
+    private static var _overrideBaseURL:NSURL?
+    
+    private static var _pool:EventsPool = {
+        let pool = EventsPool(flushTimeout:30, flushLimit:200) { events, completion in
+            
+//            
+//            // build json dictionary to ship
+//            let jsonDict:JSONDict = ["version": version,
+//                                     "events": eventDicts]
+//            
+//            
+//            // TODO: move to another class?
+//            let request = NSMutableURLRequest(URL:NSURL(string:"events.shopgun.com/track")!)
+//            request.HTTPMethod = "POST"
+//            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+//            request.addValue("application/json", forHTTPHeaderField: "Accept")
+//            
+//            request.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(jsonDict, options:[])
+//            
+//            
+//            let task = networkSession.dataTaskWithRequest(request) {
+//                data, response, error in
+//                
+//            }
+//            task.resume()
 
+            
+            // actually do the shipping of the events
+            print ("> Shipping \(events.count) events...")
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(8 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+                
+                var response:[String:EventShipperResponseStatus] = [:]
+                for serializedEvent in events {
+                    response[serializedEvent["id"] as! String] = EventShipperResponseStatus.ack
+                }
+                
+                completion(eventIdStatuses: response)
+            }
+        }
+        
+        
+        
+        return pool
+    }()
 }

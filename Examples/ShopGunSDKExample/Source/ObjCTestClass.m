@@ -15,6 +15,7 @@
 
 + (void) test {
     SGNSDKConfig.appId = @"sdfg";
+    
 }
 
 @end

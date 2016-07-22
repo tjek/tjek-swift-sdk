@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AE06C01D1D3F7C0A00BC8D47 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; };
 		AE06C0271D3F863A00BC8D47 /* ObjCTestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = AE06C0261D3F863A00BC8D47 /* ObjCTestClass.m */; };
+		AE41DD7D1D4232C1006CB1FF /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; };
+		AE41DD7E1D4232C1006CB1FF /* ShopGunSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEA5AA011D3CB3F400DC5EA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEA5A9F81D3CB3F400DC5EA3 /* Assets.xcassets */; };
 		AEA5AA021D3CB3F400DC5EA3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA5A9F91D3CB3F400DC5EA3 /* LaunchScreen.storyboard */; };
 		AEA5AA031D3CB3F400DC5EA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA5A9FB1D3CB3F400DC5EA3 /* Main.storyboard */; };
@@ -24,26 +25,12 @@
 			remoteGlobalIDString = AE06BFF01D3E9BB100BC8D47;
 			remoteInfo = ShopGunSDK;
 		};
-		AE06C0181D3F7B6D00BC8D47 /* PBXContainerItemProxy */ = {
+		AE41DD7F1D4232C1006CB1FF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = AE06BFEF1D3E9BB100BC8D47;
 			remoteInfo = ShopGunSDK;
-		};
-		AEA5AA0C1D3CB45300DC5EA3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = AEA5A9CE1D3CB11A00DC5EA3;
-			remoteInfo = ShopGunCore;
-		};
-		AEA5AA821D3CE45400DC5EA3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = AEA5AA451D3CBEBB00DC5EA3;
-			remoteInfo = ShopGunEvents;
 		};
 		AEA5AA841D3CE45400DC5EA3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,39 +39,19 @@
 			remoteGlobalIDString = AEA5AA321D3CB64A00DC5EA3;
 			remoteInfo = "ShopGunCore-Tests";
 		};
-		AEA5AA861D3CE45400DC5EA3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = AEA5AA6C1D3CC88300DC5EA3;
-			remoteInfo = "ShopGunEvents-Tests";
-		};
-		AEA5AAC91D3CE66C00DC5EA3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = AEA5AAB21D3CE50700DC5EA3;
-			remoteInfo = ShopGunGraph;
-		};
-		AEA5AACB1D3CE66C00DC5EA3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = AEA5AAC01D3CE56000DC5EA3;
-			remoteInfo = "ShopGunGraph-Tests";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		AEA5AAA41D3CE4A300DC5EA3 /* Embed Frameworks */ = {
+		AE41DD811D4232C1006CB1FF /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				AE41DD7E1D4232C1006CB1FF /* ShopGunSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -107,7 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE06C01D1D3F7C0A00BC8D47 /* ShopGunSDK.framework in Frameworks */,
+				AE41DD7D1D4232C1006CB1FF /* ShopGunSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,13 +115,8 @@
 		AEA5AA091D3CB45300DC5EA3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AEA5AA0D1D3CB45300DC5EA3 /* ShopGunCore.framework */,
-				AEA5AA831D3CE45400DC5EA3 /* ShopGunEvents.framework */,
-				AEA5AACA1D3CE66C00DC5EA3 /* ShopGunGraph.framework */,
-				AEA5AA851D3CE45400DC5EA3 /* ShopGunCore-Tests.xctest */,
-				AEA5AA871D3CE45400DC5EA3 /* ShopGunEvents-Tests.xctest */,
-				AEA5AACC1D3CE66C00DC5EA3 /* ShopGunGraph-Tests.xctest */,
 				AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */,
+				AEA5AA851D3CE45400DC5EA3 /* ShopGunSDK-Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -187,12 +149,12 @@
 				AEBEBCA81D34F282007E7D9D /* Sources */,
 				AEBEBCA91D34F282007E7D9D /* Frameworks */,
 				AEBEBCAA1D34F282007E7D9D /* Resources */,
-				AEA5AAA41D3CE4A300DC5EA3 /* Embed Frameworks */,
+				AE41DD811D4232C1006CB1FF /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				AE06C0191D3F7B6D00BC8D47 /* PBXTargetDependency */,
+				AE41DD801D4232C1006CB1FF /* PBXTargetDependency */,
 			);
 			name = ShopGunSDKExample;
 			productName = SGNEventsKitExample;
@@ -246,46 +208,11 @@
 			remoteRef = AE06C0131D3F6C1300BC8D47 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		AEA5AA0D1D3CB45300DC5EA3 /* ShopGunCore.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ShopGunCore.framework;
-			remoteRef = AEA5AA0C1D3CB45300DC5EA3 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AEA5AA831D3CE45400DC5EA3 /* ShopGunEvents.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ShopGunEvents.framework;
-			remoteRef = AEA5AA821D3CE45400DC5EA3 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AEA5AA851D3CE45400DC5EA3 /* ShopGunCore-Tests.xctest */ = {
+		AEA5AA851D3CE45400DC5EA3 /* ShopGunSDK-Tests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = "ShopGunCore-Tests.xctest";
+			path = "ShopGunSDK-Tests.xctest";
 			remoteRef = AEA5AA841D3CE45400DC5EA3 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AEA5AA871D3CE45400DC5EA3 /* ShopGunEvents-Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "ShopGunEvents-Tests.xctest";
-			remoteRef = AEA5AA861D3CE45400DC5EA3 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AEA5AACA1D3CE66C00DC5EA3 /* ShopGunGraph.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ShopGunGraph.framework;
-			remoteRef = AEA5AAC91D3CE66C00DC5EA3 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AEA5AACC1D3CE66C00DC5EA3 /* ShopGunGraph-Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "ShopGunGraph-Tests.xctest";
-			remoteRef = AEA5AACB1D3CE66C00DC5EA3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -317,10 +244,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		AE06C0191D3F7B6D00BC8D47 /* PBXTargetDependency */ = {
+		AE41DD801D4232C1006CB1FF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = ShopGunSDK;
-			targetProxy = AE06C0181D3F7B6D00BC8D47 /* PBXContainerItemProxy */;
+			targetProxy = AE41DD7F1D4232C1006CB1FF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

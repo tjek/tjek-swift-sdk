@@ -16,15 +16,37 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        ObjCTestClass.test()
+//        EventsTracker.trackEvent("sdfg")
         
+        EventsTracker.trackId = "ABC123"
+        EventsTracker.flushTimeout = 5
+        EventsTracker.flushLimit = 3
+//        ObjCTestClass.test()
+        
+        
+        self.view?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ViewController.viewTapped(_:))))
     }
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
+//        EventsTracker.trackEvent("x-viewDidAppear", variables: ["foo":"bar"])
+        
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    func viewTapped(tap:UITapGestureRecognizer) {
+//        EventsTracker.defaultTracker = EventsTracker(trackId:"sdfg")
+//        EventsTracker.defaultTracker.viewContext = "SDfgsd"
+//        EventsTracker.defaultTracker.trackEvent("x-ViewTapped")
+        
+        
+        
+//        EventsTracker.viewContext = "222"
+//        
+//        
+//        let tracker = EventsTracker(trackId:"sdfg")
     }
 }
 

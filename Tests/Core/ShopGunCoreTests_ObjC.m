@@ -30,6 +30,7 @@
 
 - (void)testExample {
 //    NSLog(@"%@", SGNSDKConfig.appId);
+    
 }
 
 
