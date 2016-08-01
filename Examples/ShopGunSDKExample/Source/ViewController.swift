@@ -21,6 +21,8 @@ class ViewController: UIViewController {
         EventsTracker.trackId = "ABC123"
         EventsTracker.flushTimeout = 5
         EventsTracker.flushLimit = 3
+        EventsTracker.baseURL = NSURL(string: "https://events-staging.shopgun.com")!
+        
 //        ObjCTestClass.test()
         
         
@@ -29,7 +31,12 @@ class ViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
-//        EventsTracker.trackEvent("x-viewDidAppear", variables: ["foo":"bar"])
+        EventsTracker.trackEvent("x-viewDidAppear", properties: ["foo":"bar",
+            "shit":NSDate(),
+            "null":NSNull(),
+            "arr":["a",1, 5.2],
+            "dict":["b":15]
+            ])
         
     }
     override func didReceiveMemoryWarning() {
@@ -43,6 +50,7 @@ class ViewController: UIViewController {
         
         
         
+        EventsTracker.trackEvent("x-viewTapped")
 //        EventsTracker.viewContext = "222"
 //        
 //        

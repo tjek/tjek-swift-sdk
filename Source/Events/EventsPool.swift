@@ -9,19 +9,15 @@
 
 import Foundation
 
+
+// TODO: Remove concept of `event` from pool... just have a 'poolable' object that has a uuid:String
+// TODO: move disk-caching responsibility out of the pool. It's up to person passing in poolable object to know how to cache that type of obj
+
 typealias SerializedEvent = [String:AnyObject]
 
-enum EventShipperResponseStatus {
-    case ack
-    case nack
-    case validation_failed
-    case unknown
-}
-
-
 class EventsPool {
-    typealias EventShipperCompletion = (eventIdStatuses:[String:EventShipperResponseStatus]?) -> Void
-    typealias EventShipper = (events:[SerializedEvent], completion:EventShipperCompletion) -> Void
+    typealias EventShipperCompletion = (shippedEventIds:[String]?) -> Void
+    typealias EventShipper = (serializedEvents:[SerializedEvent], completion:EventShipperCompletion) -> Void
     
     
     init(flushTimeout:Int, flushLimit:Int, eventShipper:EventShipper) {
@@ -120,43 +116,37 @@ class EventsPool {
         
         // pass the serialized events to the eventShipper (on a bg queue)
         dispatch_async(dispatch_get_global_queue(0, 0)) {
-            self._eventShipperBlock(events: eventsToShip) {
-                [unowned self] response in
+            self._eventShipperBlock(serializedEvents: eventsToShip) {
+                [unowned self] shippedEventIds in
                 
                 // perform completion in pool's queue
                 dispatch_async(self._poolQueue) {
                     
-                    // only if we receive some statuses back (eg. no network error)
+                    // only if we receive some shipped events back (eg. no network error)
                     // we are going to trim the pending events queue of all the events that were successfully received
-                    if response != nil {
-                        var trimmedEvents:[SerializedEvent] = self._pendingEvents
-                        var removedEventCount = 0
+                    if shippedEventIds != nil {
                         
-                        for (idx, pendingEvent) in self._pendingEvents.enumerate().reverse() {
-                            let eventId = pendingEvent["id"] as? String
-                            
-                            // pending event is invalid (has no id), or
-                            // the response's status was not .nack (eg. it was received, and was successful or validation failed)
-                            if eventId == nil || response![eventId!] != EventShipperResponseStatus.nack {
-                                // remove that event from the future pending events
-                                trimmedEvents.removeAtIndex(idx)
-                                removedEventCount += 1
+                        var mutableShippedIds = shippedEventIds!
+                        
+                        let trimmedEvents = self._pendingEvents.filter {
+                            if mutableShippedIds.count > 0,
+                                let eventId:String = $0["id"] as? String,
+                                let idx = mutableShippedIds.indexOf(eventId) {
                                 
-                                // no more events to remove
-                                if removedEventCount == eventsToShip.count {
-                                    break
-                                }
+                                mutableShippedIds.removeAtIndex(idx)
+                                return false
                             }
+                            return true
                         }
                         
                         // something changed in the pending events - sync back to memory (and disk) cache
-                        if removedEventCount > 0 {
+                        if trimmedEvents.count != self._pendingEvents.count {
                             self._pendingEvents = trimmedEvents
                             EventsPool.savePendingEventsToDisk(self._pendingEvents)
                         }
                     } else {
                         // TODO: possibly scale back timeout if regularly getting network error
-                        // Also, if maybe have a way to handle pendingEvents count getting really large?
+                        // Also, if maybe have a way to handle pendingEvents count getting really large? Just clear old events on init if > big_number
                     }
                     
                     self._isFlushing = false

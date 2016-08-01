@@ -8,6 +8,7 @@
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
 import Foundation
+import UIKit
 
 @objc(SGNEventsTracker)
 public class EventsTracker : NSObject {
@@ -21,22 +22,14 @@ public class EventsTracker : NSObject {
     }
     
     public func trackEvent(type:String) {
-        trackEvent(type, variables: nil)
+        trackEvent(type, properties: nil)
     }
-    public func trackEvent(type:String, variables:[String:String]?) {
-        
-//        TODO: do tracking!
-//        print(SDKConfig.appId)
-        print ("TRACKING type:\(type) variables:\(variables) trackId:\(trackId)")
-        
-        // build event
-        let event = Event(type, trackId:trackId)
-        
-        // serialize event
-        var serializedEvent:SerializedEvent = ["id":event.uuid]
+    public func trackEvent(type:String, properties:[String:AnyObject]?) {
         
         // send serialized event to pool
-        EventsTracker._pool.pushEvent(serializedEvent)
+        if let serializedEvent = EventsTracker.buildSerializedEvent(type, trackId:trackId, properties:properties) {
+            EventsTracker._pool.pushEvent(serializedEvent)
+        }
     }
     
     
@@ -52,7 +45,7 @@ public class EventsTracker : NSObject {
     // MARK: - Static properties & methods
     
     
-    public static func trackEvent(type:String, variables:[String:String]? = nil, trackId:String? = EventsTracker.trackId) {
+    public static func trackEvent(type:String, properties:[String:AnyObject]? = nil, trackId:String? = EventsTracker.trackId) {
 
         guard trackId != nil else {
             // TODO: more details about how to provide trackId
@@ -61,7 +54,7 @@ public class EventsTracker : NSObject {
         }
 
         let tracker = EventsTracker(trackId: trackId!)
-        tracker.trackEvent(type, variables: variables)
+        tracker.trackEvent(type, properties: properties)
     }
     
     
@@ -122,46 +115,327 @@ public class EventsTracker : NSObject {
     private static var _overrideBaseURL:NSURL?
     
     private static var _pool:EventsPool = {
-        let pool = EventsPool(flushTimeout:30, flushLimit:200) { events, completion in
+        let pool = EventsPool(flushTimeout:30, flushLimit:200) { (serializedEvents, completion) in
             
-//            
-//            // build json dictionary to ship
-//            let jsonDict:JSONDict = ["version": version,
-//                                     "events": eventDicts]
-//            
-//            
-//            // TODO: move to another class?
-//            let request = NSMutableURLRequest(URL:NSURL(string:"events.shopgun.com/track")!)
-//            request.HTTPMethod = "POST"
-//            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//            request.addValue("application/json", forHTTPHeaderField: "Accept")
-//            
-//            request.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(jsonDict, options:[])
-//            
-//            
-//            let task = networkSession.dataTaskWithRequest(request) {
-//                data, response, error in
-//                
-//            }
-//            task.resume()
-
+            
+            
+            var modifiedEvents = serializedEvents.map { (event:SerializedEvent) -> SerializedEvent in
+                
+                var modifiedEvent = event
+                modifiedEvent["sentAt"] = EventsTracker.ISO8601_dateFormatter.stringFromDate(NSDate())
+                
+                return modifiedEvent
+            }
+            
+            
+            
+            // build json dictionary to ship. serializedEvents is in the format that was posted to the pool
+            let jsonDict = ["events": modifiedEvents]
+            
+            
+            let url = baseURL.URLByAppendingPathComponent("track")
+            
+            let request = NSMutableURLRequest(URL:url)
+            request.HTTPMethod = "POST"
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue("application/json", forHTTPHeaderField: "Accept")
+            
+                
+            if let jsonData = try? NSJSONSerialization.dataWithJSONObject(jsonDict, options:[]) {
+                request.HTTPBody = jsonData
+            } else {
+                // unable to serialize jsonDict... EJECT!
+                completion(shippedEventIds: nil)
+                return
+            }
             
             // actually do the shipping of the events
-            print ("> Shipping \(events.count) events...")
+            print ("> Shipping \(serializedEvents.count) events...")
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(8 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+            let task = networkSession.dataTaskWithRequest(request) {
+                data, response, error in
                 
-                var response:[String:EventShipperResponseStatus] = [:]
-                for serializedEvent in events {
-                    response[serializedEvent["id"] as! String] = EventShipperResponseStatus.ack
+                
+                if data != nil,
+                    let jsonData = try? NSJSONSerialization.JSONObjectWithData(data!, options:[]) as? [String:AnyObject],
+                    let events = jsonData!["events"] as? [[String:AnyObject]] {
+                    
+                    var shippedEventIds:[String] = []
+                    
+                    for eventData:[String:AnyObject] in events {
+                        if let uuid = eventData["id"] as? String,
+                            let status = eventData["status"] as? String {
+                            
+                            // status is 'nack'
+                            if status != "nack" {
+                                shippedEventIds.append(uuid)
+                                
+                                // TODO: count failures? log errors?
+//                                if status != "ack" {
+//                                    print ("ship error: \(eventData)")
+//                                }
+                            }
+                        }
+                    }
+                    print("< Shipped \(shippedEventIds.count) events!")
+                    completion(shippedEventIds: shippedEventIds)
+                } else {
+                    print("< Shipping error :( ", error)
+                    completion(shippedEventIds: nil)
                 }
-                
-                completion(eventIdStatuses: response)
             }
+            task.resume()
         }
-        
-        
         
         return pool
     }()
+    
+    
+    private static let networkSession:NSURLSession = {
+        return NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+    }()
+    
+    
+    
+    
+    private static func buildSerializedEvent(type:String, trackId:String, properties:[String:AnyObject]? = nil, uuid:String = NSUUID().UUIDString, recordedDate:NSDate = NSDate(), clientId:String = SDKConfig.clientId) -> SerializedEvent? {
+        
+        var event = [String:AnyObject]()
+        
+        event["version"] = "1.0.0" //Modify this when event's structure changes
+        event["id"] = uuid
+        event["type"] = type
+        event["recordedAt"] = ISO8601_dateFormatter.stringFromDate(recordedDate)
+        
+        // client
+        event["client"] = ["id": clientId,
+                           "trackId": trackId]
+        
+        // properties
+        if properties != nil {
+            event["properties"] = cleanProperties(properties!)
+        }
+        
+        event["context"] = Context.toDictionary()
+        
+        return event
+    }
+    
+    
+    // given some properties that were passed to the EventsTracker, remove those that cant be converted to JSON values
+    // TODO: nicer way? auto-convert NSDate?
+    private static func cleanProperties(prop:AnyObject)->AnyObject? {
+        
+        switch prop {
+        case is Int,
+             is Double,
+             is Float,
+             is NSNull,
+             is String:
+            return prop
+        case is Array<AnyObject>:
+            var result:[AnyObject]? = nil
+            for val in (prop as! Array<AnyObject>) {
+                if let cleanVal = cleanProperties(val) {
+                    if result == nil { result = [] }
+                    result?.append(cleanVal)
+                }
+            }
+            return result
+        case is Dictionary<String,AnyObject>:
+            var result:[String:AnyObject]? = nil
+            for (key, val) in (prop as! Dictionary<String,AnyObject>) {
+                if let cleanVal = cleanProperties(val) {
+                    if result == nil { result = [:] }
+                    result?[key] = cleanVal
+                }
+            }
+            return result
+        default:
+            return nil
+        }
+    }
+    
+    private static let ISO8601_dateFormatter:NSDateFormatter = {
+        let formatter = NSDateFormatter()
+        formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+        return formatter
+    }()    
 }
+
+
+
+
+
+
+protocol ContextGenerator {
+    static func toDictionary() -> [String:AnyObject]?
+}
+struct Context : ContextGenerator{
+    
+    
+    static func toDictionary() -> [String:AnyObject]? {
+        var dict = [String:AnyObject]()
+        
+        dict["application"] = ApplicationContext.toDictionary()
+        dict["device"] = DeviceContext.toDictionary()
+        dict["os"] = OperatingSystemContext.toDictionary()
+//        dict["network"] = nil
+//        dict["location"] = nil
+        dict["locale"] = locale
+        dict["timezone"] = OperatingSystemContext.toDictionary()
+        dict["userAgent"] = userAgent
+        
+//        dict["session"] = nil
+//        dict["view"] = nil
+//        dict["campaign"] = nil
+        
+        return dict
+    }
+    
+    
+    static var locale:String {
+        return NSLocale.autoupdatingCurrentLocale().localeIdentifier
+    }
+    
+    static let userAgent:String = {
+        let sdkBundleId = "com.shopgun.ios.sdk"
+        
+        var userAgent = sdkBundleId
+        
+        if let sdkVersion = NSBundle(identifier: sdkBundleId)?.infoDictionary!["CFBundleShortVersionString"] as? String {
+            userAgent = userAgent.stringByAppendingFormat("/%@", sdkVersion)
+        }
+        
+        if let appBundleId = NSBundle.mainBundle().bundleIdentifier {
+            userAgent = userAgent.stringByAppendingFormat("(%@", appBundleId)
+            if let appVersion = ApplicationContext.version {
+                userAgent = userAgent.stringByAppendingFormat("/%@", appVersion)
+            }
+            userAgent = userAgent.stringByAppendingString(")")
+        }
+        
+        return userAgent
+    }()
+    
+    struct ApplicationContext : ContextGenerator {
+        /*
+         "name": "Shopgun iOS (beta)",
+         "version": "19.0.1",
+         "build": "2.0.1-43123-beta"
+         */
+        static let name:String? = {
+            let bundle = NSBundle.mainBundle()
+            
+            if let name = bundle.objectForInfoDictionaryKey("CFBundleDisplayName") as? String {
+                return name
+            }
+            else if let name = bundle.objectForInfoDictionaryKey("CFBundleName") as? String {
+                return name
+            }
+            else if let name = bundle.objectForInfoDictionaryKey("CFBundleExecutable") as? String {
+                return name
+            }
+            else {
+                return nil
+            }
+        }()
+        
+        static let version:String? = {
+            return NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as? String
+        }()
+        
+        static let build:String? = {
+            return NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as? String
+        }()
+        
+        
+        static func toDictionary() -> [String:AnyObject]? {
+            var dict = [String:AnyObject]()
+            dict["name"]  = name
+            dict["version"] = version
+            dict["build"] = build
+            return dict.count > 0 ? dict : nil
+        }
+    }
+    
+    struct DeviceContext : ContextGenerator {
+        static let manufacturer:String = "Apple"
+        
+        /// eg. "iPhone7,2"
+        static let model:String? = {
+            return UIDevice.currentDevice().model
+        }()
+        // The _native_ size, in absolute px. Always portrait.
+        static var screenSize:CGSize {
+            return UIScreen.mainScreen().nativeBounds.size
+        }
+
+        static func toDictionary() -> [String:AnyObject]? {
+            var dict = [String:AnyObject]()
+            dict["manufacturer"]  = manufacturer
+            dict["model"] = model
+            dict["screen"] = ["height":screenSize.height,
+                              "width":screenSize.width]
+            
+            return dict
+        }
+    }
+    
+    
+    struct OperatingSystemContext : ContextGenerator {
+        
+        static let name:String = {
+            #if os(iOS)
+                return "iOS"
+            #elseif os(watchOS)
+                return "watchOS"
+            #elseif os(tvOS)
+                return "tvOS"
+            #elseif os(OSX)
+                return "macOS"
+            #elseif os(Linux)
+                return "Linux"
+            #else
+                return "Unknown"
+            #endif
+        }()
+        
+        static let version:String = {
+            return UIDevice.currentDevice().systemVersion
+        }()
+        
+        static func toDictionary() -> [String:AnyObject]? {
+            var dict = [String:AnyObject]()
+            dict["name"]  = name
+            dict["version"] = version
+            return dict
+        }
+    }
+    
+    
+    struct TimeZoneContext : ContextGenerator {
+        
+        static var utcOffsetSeconds:Int {
+            return NSTimeZone.localTimeZone().secondsFromGMT
+        }
+        
+        static func toDictionary() -> [String:AnyObject]? {
+            var dict = [String:AnyObject]()
+            dict["utcOffsetSeconds"]  = utcOffsetSeconds
+            return dict
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
