@@ -16,6 +16,8 @@
 + (void) test {
     SGNSDKConfig.appId = @"sdfg";
     
+    
+    [SGNEventsTracker.sharedTracker trackEvent:@"sdfg"];
 }
 
 @end

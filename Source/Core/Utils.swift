@@ -21,4 +21,10 @@ struct Utils {
         return nil
     }
     
+    static let ISO8601_dateFormatter:NSDateFormatter = {
+        let formatter = NSDateFormatter()
+        formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+        return formatter
+    }()
 }

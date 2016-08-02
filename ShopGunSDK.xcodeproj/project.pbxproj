@@ -11,9 +11,6 @@
 		AE06C03C1D3FA70000BC8D47 /* SDKConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA2A1D3CB52500DC5EA3 /* SDKConfig.swift */; };
 		AE06C03D1D3FA70000BC8D47 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAD31D3CFA6400DC5EA3 /* Utils.swift */; };
 		AE06C03E1D3FA70000BC8D47 /* EventsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA4D1D3CBEF100DC5EA3 /* EventsTracker.swift */; };
-		AE06C03F1D3FA70000BC8D47 /* ViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21A0041D3D1253009DD8E7 /* ViewContext.swift */; };
-		AE06C0401D3FA70000BC8D47 /* CampaignContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21A0061D3D1281009DD8E7 /* CampaignContext.swift */; };
-		AE06C0411D3FA70000BC8D47 /* LocationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21A0081D3D12A0009DD8E7 /* LocationContext.swift */; };
 		AE06C0421D3FA70000BC8D47 /* GraphRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAD11D3CE6C800DC5EA3 /* GraphRequest.swift */; };
 		AE06C0431D40C48A00BC8D47 /* ShopGunEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA5A1D3CC5C900DC5EA3 /* ShopGunEventsTests.swift */; };
 		AE06C0441D40C48A00BC8D47 /* ShopGunEventsTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA5B1D3CC5C900DC5EA3 /* ShopGunEventsTests_ObjC.m */; };
@@ -21,7 +18,7 @@
 		AE06C0461D40C48A00BC8D47 /* ShopGunGraphTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAC41D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m */; };
 		AE06C0471D40C4E100BC8D47 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06BFF01D3E9BB100BC8D47 /* ShopGunSDK.framework */; };
 		AE06C04D1D40EB1200BC8D47 /* EventsPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06C04C1D40EB1200BC8D47 /* EventsPool.swift */; };
-		AE41DD7C1D421E92006CB1FF /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE41DD7B1D421E92006CB1FF /* Event.swift */; };
+		AE62408B1D50A4560062CAD4 /* EventsTrackerContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62408A1D50A4560062CAD4 /* EventsTrackerContext.swift */; };
 		AEA5AA3D1D3CB72000DC5EA3 /* ShopGunCoreTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5A9F41D3CB28100DC5EA3 /* ShopGunCoreTests_ObjC.m */; };
 		AEA5AA3E1D3CB72000DC5EA3 /* ShopGunCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5A9F51D3CB28100DC5EA3 /* ShopGunCoreTests.swift */; };
 /* End PBXBuildFile section */
@@ -41,10 +38,7 @@
 		AE06BFF81D3E9BD500BC8D47 /* ShopGunSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ShopGunSDK.xcconfig; sourceTree = "<group>"; };
 		AE06C01F1D3F7D3C00BC8D47 /* ShopGunSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShopGunSDK.h; sourceTree = "<group>"; };
 		AE06C04C1D40EB1200BC8D47 /* EventsPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsPool.swift; sourceTree = "<group>"; };
-		AE21A0041D3D1253009DD8E7 /* ViewContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewContext.swift; sourceTree = "<group>"; };
-		AE21A0061D3D1281009DD8E7 /* CampaignContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CampaignContext.swift; sourceTree = "<group>"; };
-		AE21A0081D3D12A0009DD8E7 /* LocationContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationContext.swift; sourceTree = "<group>"; };
-		AE41DD7B1D421E92006CB1FF /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		AE62408A1D50A4560062CAD4 /* EventsTrackerContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTrackerContext.swift; sourceTree = "<group>"; };
 		AE6B71771D3E22F8006A8225 /* ShopGunSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShopGunSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		AEA5A9F31D3CB1DF00DC5EA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AEA5A9F41D3CB28100DC5EA3 /* ShopGunCoreTests_ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShopGunCoreTests_ObjC.m; sourceTree = "<group>"; };
@@ -129,10 +123,7 @@
 			children = (
 				AEA5AA4D1D3CBEF100DC5EA3 /* EventsTracker.swift */,
 				AE06C04C1D40EB1200BC8D47 /* EventsPool.swift */,
-				AE41DD7B1D421E92006CB1FF /* Event.swift */,
-				AE21A0041D3D1253009DD8E7 /* ViewContext.swift */,
-				AE21A0061D3D1281009DD8E7 /* CampaignContext.swift */,
-				AE21A0081D3D12A0009DD8E7 /* LocationContext.swift */,
+				AE62408A1D50A4560062CAD4 /* EventsTrackerContext.swift */,
 			);
 			path = Events;
 			sourceTree = "<group>";
@@ -267,11 +258,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = ShopGun;
 				TargetAttributes = {
 					AE06BFEF1D3E9BB100BC8D47 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 					};
 					AEA5AA311D3CB64A00DC5EA3 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -318,14 +310,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE06C0411D3FA70000BC8D47 /* LocationContext.swift in Sources */,
-				AE41DD7C1D421E92006CB1FF /* Event.swift in Sources */,
-				AE06C03F1D3FA70000BC8D47 /* ViewContext.swift in Sources */,
 				AE06C04D1D40EB1200BC8D47 /* EventsPool.swift in Sources */,
 				AE06C0421D3FA70000BC8D47 /* GraphRequest.swift in Sources */,
+				AE62408B1D50A4560062CAD4 /* EventsTrackerContext.swift in Sources */,
 				AE06C03C1D3FA70000BC8D47 /* SDKConfig.swift in Sources */,
 				AE06C03E1D3FA70000BC8D47 /* EventsTracker.swift in Sources */,
-				AE06C0401D3FA70000BC8D47 /* CampaignContext.swift in Sources */,
 				AE06C03D1D3FA70000BC8D47 /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -358,6 +347,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE06BFF81D3E9BD500BC8D47 /* ShopGunSDK.xcconfig */;
 			buildSettings = {
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -365,6 +355,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE06BFF81D3E9BD500BC8D47 /* ShopGunSDK.xcconfig */;
 			buildSettings = {
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
@@ -381,8 +373,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -428,8 +422,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -466,6 +462,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AEA5AA581D3CC52400DC5EA3 /* ShopGunSDK-Tests.xcconfig */;
 			buildSettings = {
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};

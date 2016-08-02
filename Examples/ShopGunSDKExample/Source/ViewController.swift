@@ -18,9 +18,10 @@ class ViewController: UIViewController {
         
 //        EventsTracker.trackEvent("sdfg")
         
-        EventsTracker.trackId = "ABC123"
-        EventsTracker.flushTimeout = 5
-        EventsTracker.flushLimit = 3
+//        EventsTracker.sharedTracker?.trackEvent("sfdG")
+//        EventsTracker.trackId = "ABC123"
+//        EventsTracker.flushTimeout = 5
+//        EventsTracker.flushLimit = 3
         EventsTracker.baseURL = NSURL(string: "https://events-staging.shopgun.com")!
         
 //        ObjCTestClass.test()
@@ -31,7 +32,9 @@ class ViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
-        EventsTracker.trackEvent("x-viewDidAppear", properties: ["foo":"bar",
+        EventsTracker.sharedTracker?.updateView(["home", "offers"])
+        
+        EventsTracker.sharedTracker?.trackEvent("x-viewDidAppear", properties: ["foo":"bar",
             "shit":NSDate(),
             "null":NSNull(),
             "arr":["a",1, 5.2],
@@ -49,8 +52,7 @@ class ViewController: UIViewController {
 //        EventsTracker.defaultTracker.trackEvent("x-ViewTapped")
         
         
-        
-        EventsTracker.trackEvent("x-viewTapped")
+        EventsTracker.sharedTracker?.trackEvent("x-viewTapped")
 //        EventsTracker.viewContext = "222"
 //        
 //        
