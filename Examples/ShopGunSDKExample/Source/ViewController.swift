@@ -50,7 +50,7 @@ class ViewController: UIViewController {
 //        EventsTracker.defaultTracker = EventsTracker(trackId:"sdfg")
 //        EventsTracker.defaultTracker.viewContext = "SDfgsd"
 //        EventsTracker.defaultTracker.trackEvent("x-ViewTapped")
-        
+        print("clientId:",SDKConfig.clientId)
         
         EventsTracker.sharedTracker?.trackEvent("x-viewTapped")
 //        EventsTracker.viewContext = "222"

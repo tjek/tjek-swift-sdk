@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		AE06C0271D3F863A00BC8D47 /* ObjCTestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = AE06C0261D3F863A00BC8D47 /* ObjCTestClass.m */; };
-		AE41DD7D1D4232C1006CB1FF /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; };
-		AE41DD7E1D4232C1006CB1FF /* ShopGunSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AE06E3331D520BC800C84762 /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06E3321D520BC800C84762 /* Valet.framework */; };
+		AE06E3341D520BC800C84762 /* Valet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE06E3321D520BC800C84762 /* Valet.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AE7D784D1D51DB1900B414CE /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; };
+		AE7D78521D51DB2500B414CE /* ShopGunSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEA5AA011D3CB3F400DC5EA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEA5A9F81D3CB3F400DC5EA3 /* Assets.xcassets */; };
 		AEA5AA021D3CB3F400DC5EA3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA5A9F91D3CB3F400DC5EA3 /* LaunchScreen.storyboard */; };
 		AEA5AA031D3CB3F400DC5EA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA5A9FB1D3CB3F400DC5EA3 /* Main.storyboard */; };
@@ -25,7 +27,7 @@
 			remoteGlobalIDString = AE06BFF01D3E9BB100BC8D47;
 			remoteInfo = ShopGunSDK;
 		};
-		AE41DD7F1D4232C1006CB1FF /* PBXContainerItemProxy */ = {
+		AE7D78581D51F0C100B414CE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */;
 			proxyType = 1;
@@ -42,16 +44,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		AE41DD811D4232C1006CB1FF /* Embed Frameworks */ = {
+		AE7D78501D51DB2100B414CE /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				AE41DD7E1D4232C1006CB1FF /* ShopGunSDK.framework in Embed Frameworks */,
+				AE7D78521D51DB2500B414CE /* ShopGunSDK.framework in Embed Frameworks */,
+				AE06E3341D520BC800C84762 /* Valet.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -59,6 +62,7 @@
 		AE06C0241D3F863A00BC8D47 /* ShopGunSDKExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ShopGunSDKExample-Bridging-Header.h"; sourceTree = "<group>"; };
 		AE06C0251D3F863A00BC8D47 /* ObjCTestClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCTestClass.h; sourceTree = "<group>"; };
 		AE06C0261D3F863A00BC8D47 /* ObjCTestClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCTestClass.m; sourceTree = "<group>"; };
+		AE06E3321D520BC800C84762 /* Valet.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Valet.framework; path = ../../Carthage/Build/iOS/Valet.framework; sourceTree = "<group>"; };
 		AE2520E21D507EB300847C29 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		AEA5A9F81D3CB3F400DC5EA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AEA5A9FA1D3CB3F400DC5EA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -75,7 +79,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE41DD7D1D4232C1006CB1FF /* ShopGunSDK.framework in Frameworks */,
+				AE7D784D1D51DB1900B414CE /* ShopGunSDK.framework in Frameworks */,
+				AE06E3331D520BC800C84762 /* Valet.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,6 +113,7 @@
 		AEA5AA071D3CB44200DC5EA3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AE06E3321D520BC800C84762 /* Valet.framework */,
 				AE2520E21D507EB300847C29 /* CoreLocation.framework */,
 				AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */,
 			);
@@ -151,12 +157,12 @@
 				AEBEBCA81D34F282007E7D9D /* Sources */,
 				AEBEBCA91D34F282007E7D9D /* Frameworks */,
 				AEBEBCAA1D34F282007E7D9D /* Resources */,
-				AE41DD811D4232C1006CB1FF /* Embed Frameworks */,
+				AE7D78501D51DB2100B414CE /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				AE41DD801D4232C1006CB1FF /* PBXTargetDependency */,
+				AE7D78591D51F0C100B414CE /* PBXTargetDependency */,
 			);
 			name = ShopGunSDKExample;
 			productName = SGNEventsKitExample;
@@ -175,6 +181,7 @@
 				TargetAttributes = {
 					AEBEBCAB1D34F282007E7D9D = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = MN86AVA6GX;
 						LastSwiftMigration = 0800;
 					};
 				};
@@ -247,10 +254,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		AE41DD801D4232C1006CB1FF /* PBXTargetDependency */ = {
+		AE7D78591D51F0C100B414CE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = ShopGunSDK;
-			targetProxy = AE41DD7F1D4232C1006CB1FF /* PBXContainerItemProxy */;
+			targetProxy = AE7D78581D51F0C100B414CE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -369,6 +376,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = MN86AVA6GX;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../../Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -386,6 +398,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = MN86AVA6GX;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../../Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

@@ -35,6 +35,10 @@ Unlike CocoaPods, with Carthage you will not be able to choose which subsets of 
 
 For further details see the [Carhage Readme](https://guides.cocoapods.org/)
 
+Furthermore, you will need to manually embed the `Valet.framework` into your app.
+
+**TODO: Write how to do this**
+
 
 ## Usage
 
@@ -61,4 +65,5 @@ ShopGunSDK.SDKConfig.appId = "<myAppId>"
 // Obj-C
 SGNSDKConfig.appId = @"<myAppId>";
 ```
+
 

@@ -8,7 +8,7 @@
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
 import Foundation
-
+import Valet
 
 @objc(SGNSDKConfig)
 public class SDKConfig : NSObject {
@@ -33,15 +33,45 @@ public class SDKConfig : NSObject {
         }
     }
     
-    // TODO: fetch clientId from keychain
+    
+    private static let keychainValet:VALValet? = VALValet(identifier: "com.shopgun.ios.sdk.keychain", accessibility: .AfterFirstUnlock)
+    
+    private static var _clientId : String?
     public static var clientId : String {
-        return ""
+        if _clientId == nil {
+            if let cachedClientId = keychainValet?.stringForKey("ClientId") {
+                _clientId = cachedClientId
+            }
+            else {
+                _clientId = NSUUID().UUIDString
+                keychainValet?.setString(_clientId!, forKey: "ClientId")
+            }
+        }
+        return _clientId!
     }
     
-    // TODO: fetch sessionId from keychain
-    public static var sessionId : String {
-        return ""
+    public static func resetClientId() {
+        keychainValet?.removeObjectForKey("ClientId")
+        _clientId = nil
     }
+    
+    
+    
+    private static var _sessionId : String?
+    public static var sessionId : String {
+        if _sessionId == nil {
+            if let cachedSessionId = keychainValet?.stringForKey("SessionId") {
+                _sessionId = cachedSessionId
+            }
+            else {
+                _sessionId = NSUUID().UUIDString
+                keychainValet?.setString(_sessionId!, forKey: "SessionId")
+            }
+        }
+        return _sessionId!
+    }
+
+    
     
     
     

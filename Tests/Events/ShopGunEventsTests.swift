@@ -50,6 +50,8 @@ class ShopGunEventsTests: XCTestCase {
 //    }
     
     func testTrackEvent() {
+        print (SDKConfig.clientId)
+        
         let tracker = EventsTracker(trackId:"myTrackId")
         
         tracker.trackEvent("x-type", properties: ["foo":"bar"])
