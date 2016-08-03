@@ -30,7 +30,7 @@ Pod::Spec.new do |s|
   s.subspec 'Core' do |ss|
     ss.source_files = 'Source/Core/**/*.swift'
     ss.pod_target_xcconfig = { 'ENABLE_TESTABILITY' => 'YES' }
-    ss.frameworks   = 'Foundation'
+    ss.frameworks   = 'Foundation', 'UIKit'
     ss.dependency 'Valet', '~> 2.2.2'
   end
 
