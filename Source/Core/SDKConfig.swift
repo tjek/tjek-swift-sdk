@@ -9,7 +9,6 @@
 
 import Foundation
 import UIKit
-import Valet
 
 @objc(SGNSDKConfig)
 public class SDKConfig : NSObject {
@@ -37,19 +36,20 @@ public class SDKConfig : NSObject {
     // ClientId will be generated on first use, and then saved to the keychain
     public static var clientId : String {
         if _clientId == nil {
-            if let cachedClientId = keychainValet?.stringForKey("ClientId") {
+            if let cachedClientId = Utils.getKeychainString("ClientId") {
                 _clientId = cachedClientId
             }
             else {
                 _clientId = NSUUID().UUIDString
-                keychainValet?.setString(_clientId!, forKey: "ClientId")
+                
+                Utils.setKeychainString(_clientId!, key: "ClientId")
             }
         }
         return _clientId!
     }
     
     public static func resetClientId() {
-        keychainValet?.removeObjectForKey("ClientId")
+        Utils.removeKeychainObject("ClientId")
         _clientId = nil
     }
     
@@ -71,7 +71,6 @@ public class SDKConfig : NSObject {
         return Utils.fetchInfoPlistValue("AppId") as? String
     }()
     
-    private static let keychainValet:VALValet? = VALValet(identifier: "com.shopgun.ios.sdk.keychain", accessibility: .AfterFirstUnlock)
     private static var _clientId : String?
 
     private static let _sessionHandler:SessionLifecycleHandler = SessionLifecycleHandler()
@@ -110,7 +109,4 @@ public class SDKConfig : NSObject {
             _sessionUUID = nil
         }
     }
-    
-    
-
 }

@@ -8,7 +8,7 @@
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
 import Foundation
-
+import Valet
 
 struct Utils {
 
@@ -27,4 +27,16 @@ struct Utils {
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
         return formatter
     }()
+    
+    
+    private static let keychainValet:VALValet? = VALValet(identifier: "com.shopgun.ios.sdk.keychain", accessibility: .AfterFirstUnlock)
+    static func setKeychainString(string:String, key:String) -> Bool {
+        return keychainValet?.setString(string, forKey: key) ?? false
+    }
+    static func getKeychainString(key:String) -> String? {
+        return keychainValet?.stringForKey(key)
+    }
+    static func removeKeychainObject(key:String) -> Bool {
+        return keychainValet?.removeObjectForKey(key) ?? false
+    }
 }
