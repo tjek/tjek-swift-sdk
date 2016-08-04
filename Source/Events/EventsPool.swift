@@ -49,8 +49,6 @@ class EventsPool {
             // need to wait until first initialization
             EventsPool.savePendingEventsToDisk(self._pendingEvents)
             
-            print("[pool] push pending:\(self._pendingEvents.count) \(event["id"])")
-            
             // flush any pending events (only if limit reached)
             self.flushPendingEventsIfNeeded()
         }

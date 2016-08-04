@@ -79,7 +79,11 @@ public class EventsTracker : NSObject {
         }
     }
     
-    public static func trackEvent(type:String, properties:[String:AnyObject]? = nil) {
+    
+    public static func trackEvent(type:String) {
+        trackEvent(type, properties: nil)
+    }
+    public static func trackEvent(type:String, properties:[String:AnyObject]?) {
         sharedTracker?.trackEvent(type, properties: properties)
     }
     
@@ -96,19 +100,7 @@ public class EventsTracker : NSObject {
         set { _pool.flushLimit = newValue }
     }
     
-    
-    public static var baseURL:NSURL {
-        get {
-            return _overrideBaseURL ?? _defaultBaseURL
-        }
-        set {
-            _overrideBaseURL = newValue
-        }
-    }
-    public static func resetBaseURL() {
-        _overrideBaseURL = nil
-    }
-    
+    public static var baseURL:NSURL = NSURL(string: "https://events.shopgun.com")!
     
     
     
@@ -128,9 +120,6 @@ public class EventsTracker : NSObject {
     
     
     
-    
-    private static let _defaultBaseURL:NSURL = NSURL(string: "events.shopgun.com")!
-    private static var _overrideBaseURL:NSURL?
     
     private static var _pool:EventsPool = {
         let pool = EventsPool(flushTimeout:30, flushLimit:200) { (serializedEvents, completion) in
@@ -168,8 +157,6 @@ public class EventsTracker : NSObject {
             }
             
             // actually do the shipping of the events
-            print ("> Shipping \(serializedEvents.count) events...")
-            
             let task = networkSession.dataTaskWithRequest(request) {
                 data, response, error in
                 
@@ -195,10 +182,8 @@ public class EventsTracker : NSObject {
                             }
                         }
                     }
-                    print("< Shipped \(shippedEventIds.count) events!")
                     completion(shippedEventIds: shippedEventIds)
                 } else {
-                    print("< Shipping error :( ", error)
                     completion(shippedEventIds: nil)
                 }
             }

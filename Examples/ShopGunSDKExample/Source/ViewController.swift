@@ -13,51 +13,36 @@ import ShopGunSDK
 
 class ViewController: UIViewController {
     
+    let conn = GraphConnection(baseURL:NSURL(string: "https://graph-staging.shopgun.com")!, timeout:10)
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        EventsTracker.trackEvent("sdfg")
+        ObjCTestClass.config()
+        ObjCTestClass.eventsTracker()
+        ObjCTestClass.graphRequest()
+
         
-//        EventsTracker.sharedTracker?.trackEvent("sfdG")
-//        EventsTracker.trackId = "ABC123"
-//        EventsTracker.flushTimeout = 5
-//        EventsTracker.flushLimit = 3
-        EventsTracker.baseURL = NSURL(string: "https://events-staging.shopgun.com")!
-        
-//        ObjCTestClass.test()
+        let dblTap = UITapGestureRecognizer(target: self, action: #selector(ViewController.viewDblTapped(_:)))
+        dblTap.numberOfTapsRequired = 2
+        self.view?.addGestureRecognizer(dblTap)
         
         
-        self.view?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ViewController.viewTapped(_:))))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(ViewController.viewTapped(_:)))
+        tap.requireGestureRecognizerToFail(dblTap)
+        self.view?.addGestureRecognizer(tap)
+        
     }
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-
-        EventsTracker.sharedTracker?.updateView(["home", "offers"])
-        
-        EventsTracker.sharedTracker?.trackEvent("x-viewDidAppear", properties: ["foo":"bar",
-            "shit":NSDate(),
-            "null":NSNull(),
-            "arr":["a",1, 5.2],
-            "dict":["b":15]
-            ])
-        
-    }
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
     }
     
-    func viewTapped(tap:UITapGestureRecognizer) {
-//        EventsTracker.defaultTracker = EventsTracker(trackId:"sdfg")
-//        EventsTracker.defaultTracker.viewContext = "SDfgsd"
-//        EventsTracker.defaultTracker.trackEvent("x-ViewTapped")
-        print("clientId:",SDKConfig.clientId)
-        print("sessionId:",SDKConfig.sessionId)
+    func viewDblTapped(tap:UITapGestureRecognizer) {
         
-        EventsTracker.sharedTracker?.trackEvent("x-viewTapped")
-//        EventsTracker.viewContext = "222"
-//        
-//        
-//        let tracker = EventsTracker(trackId:"sdfg")
+    }
+    func viewTapped(tap:UITapGestureRecognizer) {
+        
     }
 }
 

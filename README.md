@@ -1,4 +1,19 @@
-# ShopGunSDK
+ShopGunSDK
+==========
+
+[![Platform](https://cocoapod-badges.herokuapp.com/p/ShopGunSDK/badge.png)](http://cocoadocs.org/docsets/ShopGunSDK)
+[![Version](https://cocoapod-badges.herokuapp.com/v/ShopGunSDK/badge.png)](http://cocoadocs.org/docsets/ShopGunSDK) 
+[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+
+
+A framework for interacting with the ShopGun APIs from within your own apps.
+
+Functionality includes:
+
+- `GraphKit`: An interface for easily making requests to ShopGun's graph API.
+- `EventsKit`: An events tracker for efficiently sending events to the ShopGun API.
+
+
 
 ## Installation
 
@@ -20,8 +35,9 @@ pod 'ShopGunSDK/Graph'
 pod 'ShopGunSDK/Events'
 ```
 
-For further details see the [CocoaPods Guides](https://guides.cocoapods.org/)
+For further details see the [CocoaPods Guides](https://guides.cocoapods.org/).
 
+> **Note**: For the legacy _eTilbudsavis SDK_, please use the old [`ETA-SDK`](http://cocoapods.org/pods/ETA-SDK) pod.
 
 ### Carthage
 

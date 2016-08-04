@@ -10,6 +10,8 @@
 
 @interface ObjCTestClass : NSObject
 
-+ (void) test;
++ (void) config;
++ (void) eventsTracker;
++ (void) graphRequest;
 
 @end
