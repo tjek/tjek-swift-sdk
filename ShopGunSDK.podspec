@@ -50,4 +50,13 @@ Pod::Spec.new do |s|
     ss.dependency 'ShopGunSDK/Core'
   end
 
+  s.subspec 'PDF' do |ss|
+    ss.source_files = 'Source/PDFPublication/**/*.swift'
+    ss.frameworks   = 'Foundation', 'UIKit'
+
+    ss.dependency 'ShopGunSDK/Core'
+    ss.dependency 'AlamofireImage', '~> 2.4.1'
+
+  end
+
 end

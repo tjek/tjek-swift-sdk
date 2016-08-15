@@ -10,6 +10,13 @@
 		AE06C0271D3F863A00BC8D47 /* ObjCTestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = AE06C0261D3F863A00BC8D47 /* ObjCTestClass.m */; };
 		AE06E3331D520BC800C84762 /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06E3321D520BC800C84762 /* Valet.framework */; };
 		AE06E3341D520BC800C84762 /* Valet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE06E3321D520BC800C84762 /* Valet.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AE58EDC91D546F3F002BC38A /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE58EDC81D546F3F002BC38A /* PDFViewController.swift */; };
+		AE5FE9311D620468003102F3 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE92F1D620468003102F3 /* Alamofire.framework */; };
+		AE5FE9321D620468003102F3 /* AlamofireImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE9301D620468003102F3 /* AlamofireImage.framework */; };
+		AE5FE9341D620472003102F3 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE92F1D620468003102F3 /* Alamofire.framework */; };
+		AE5FE9351D620472003102F3 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE92F1D620468003102F3 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AE5FE9361D620472003102F3 /* AlamofireImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE9301D620468003102F3 /* AlamofireImage.framework */; };
+		AE5FE9371D620472003102F3 /* AlamofireImage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE9301D620468003102F3 /* AlamofireImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AE7D784D1D51DB1900B414CE /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; };
 		AE7D78521D51DB2500B414CE /* ShopGunSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEA5AA011D3CB3F400DC5EA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEA5A9F81D3CB3F400DC5EA3 /* Assets.xcassets */; };
@@ -51,7 +58,9 @@
 			dstSubfolderSpec = 10;
 			files = (
 				AE7D78521D51DB2500B414CE /* ShopGunSDK.framework in Embed Frameworks */,
+				AE5FE9351D620472003102F3 /* Alamofire.framework in Embed Frameworks */,
 				AE06E3341D520BC800C84762 /* Valet.framework in Embed Frameworks */,
+				AE5FE9371D620472003102F3 /* AlamofireImage.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -64,6 +73,9 @@
 		AE06C0261D3F863A00BC8D47 /* ObjCTestClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCTestClass.m; sourceTree = "<group>"; };
 		AE06E3321D520BC800C84762 /* Valet.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Valet.framework; path = ../../Carthage/Build/iOS/Valet.framework; sourceTree = "<group>"; };
 		AE2520E21D507EB300847C29 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		AE58EDC81D546F3F002BC38A /* PDFViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
+		AE5FE92F1D620468003102F3 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = ../../Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		AE5FE9301D620468003102F3 /* AlamofireImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlamofireImage.framework; path = ../../Carthage/Build/iOS/AlamofireImage.framework; sourceTree = "<group>"; };
 		AEA5A9F81D3CB3F400DC5EA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AEA5A9FA1D3CB3F400DC5EA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AEA5A9FC1D3CB3F400DC5EA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -79,7 +91,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE5FE9311D620468003102F3 /* Alamofire.framework in Frameworks */,
+				AE5FE9321D620468003102F3 /* AlamofireImage.framework in Frameworks */,
 				AE7D784D1D51DB1900B414CE /* ShopGunSDK.framework in Frameworks */,
+				AE5FE9361D620472003102F3 /* AlamofireImage.framework in Frameworks */,
+				AE5FE9341D620472003102F3 /* Alamofire.framework in Frameworks */,
 				AE06E3331D520BC800C84762 /* Valet.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -103,6 +119,7 @@
 			children = (
 				AEA5A9FF1D3CB3F400DC5EA3 /* AppDelegate.swift */,
 				AEA5AA001D3CB3F400DC5EA3 /* ViewController.swift */,
+				AE58EDC81D546F3F002BC38A /* PDFViewController.swift */,
 				AE06C0251D3F863A00BC8D47 /* ObjCTestClass.h */,
 				AE06C0261D3F863A00BC8D47 /* ObjCTestClass.m */,
 				AE06C0241D3F863A00BC8D47 /* ShopGunSDKExample-Bridging-Header.h */,
@@ -113,6 +130,8 @@
 		AEA5AA071D3CB44200DC5EA3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AE5FE92F1D620468003102F3 /* Alamofire.framework */,
+				AE5FE9301D620468003102F3 /* AlamofireImage.framework */,
 				AE06E3321D520BC800C84762 /* Valet.framework */,
 				AE2520E21D507EB300847C29 /* CoreLocation.framework */,
 				AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */,
@@ -248,6 +267,7 @@
 				AE06C0271D3F863A00BC8D47 /* ObjCTestClass.m in Sources */,
 				AEA5AA061D3CB3F400DC5EA3 /* ViewController.swift in Sources */,
 				AEA5AA051D3CB3F400DC5EA3 /* AppDelegate.swift in Sources */,
+				AE58EDC91D546F3F002BC38A /* PDFViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

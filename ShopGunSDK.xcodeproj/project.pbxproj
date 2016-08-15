@@ -20,12 +20,21 @@
 		AE06C04D1D40EB1200BC8D47 /* EventsPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06C04C1D40EB1200BC8D47 /* EventsPool.swift */; };
 		AE06E3391D52268300C84762 /* GraphConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06E3381D52268300C84762 /* GraphConnection.swift */; };
 		AE06E34D1D53532900C84762 /* GraphResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06E34C1D53532900C84762 /* GraphResponse.swift */; };
+		AE12AAEA1D59D41E00BBEFFC /* VersoPagedLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE12AAE91D59D41E00BBEFFC /* VersoPagedLayout.swift */; };
+		AE12AAEC1D59D44700BBEFFC /* PDFPublicationPageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE12AAEB1D59D44700BBEFFC /* PDFPublicationPageCell.swift */; };
+		AE1939EE1D5B5BA500574399 /* VersoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1939ED1D5B5BA500574399 /* VersoView.swift */; };
+		AE58EDC71D537AE6002BC38A /* PDFPublicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE58EDC61D537AE6002BC38A /* PDFPublicationViewController.swift */; };
+		AE5FE92D1D61B4D2003102F3 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE92B1D61B4D2003102F3 /* Alamofire.framework */; };
+		AE5FE92E1D61B4D2003102F3 /* AlamofireImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE92C1D61B4D2003102F3 /* AlamofireImage.framework */; };
 		AE62408B1D50A4560062CAD4 /* EventsTracker.Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62408A1D50A4560062CAD4 /* EventsTracker.Context.swift */; };
 		AE7D78321D50DD2100B414CE /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE7D78291D50D88100B414CE /* Valet.framework */; };
 		AE7D78491D51DA5D00B414CE /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE7D78291D50D88100B414CE /* Valet.framework */; };
 		AE7D784B1D51DAA800B414CE /* Valet.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AE7D78291D50D88100B414CE /* Valet.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEA5AA3D1D3CB72000DC5EA3 /* ShopGunCoreTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5A9F41D3CB28100DC5EA3 /* ShopGunCoreTests_ObjC.m */; };
 		AEA5AA3E1D3CB72000DC5EA3 /* ShopGunCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5A9F51D3CB28100DC5EA3 /* ShopGunCoreTests.swift */; };
+		AEB0569D1D5DF08B00F3035D /* VersoGridLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB0569C1D5DF08A00F3035D /* VersoGridLayout.swift */; };
+		AEC36B891D5A091000267FA7 /* VersoPageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC36B881D5A091000267FA7 /* VersoPageCell.swift */; };
+		AECDA0A41D5B2F1900F5830A /* VersoZoomingReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECDA0A31D5B2F1900F5830A /* VersoZoomingReusableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +67,12 @@
 		AE06C04C1D40EB1200BC8D47 /* EventsPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsPool.swift; sourceTree = "<group>"; };
 		AE06E3381D52268300C84762 /* GraphConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphConnection.swift; sourceTree = "<group>"; };
 		AE06E34C1D53532900C84762 /* GraphResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphResponse.swift; sourceTree = "<group>"; };
+		AE12AAE91D59D41E00BBEFFC /* VersoPagedLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersoPagedLayout.swift; sourceTree = "<group>"; };
+		AE12AAEB1D59D44700BBEFFC /* PDFPublicationPageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFPublicationPageCell.swift; sourceTree = "<group>"; };
+		AE1939ED1D5B5BA500574399 /* VersoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersoView.swift; sourceTree = "<group>"; };
+		AE58EDC61D537AE6002BC38A /* PDFPublicationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFPublicationViewController.swift; sourceTree = "<group>"; };
+		AE5FE92B1D61B4D2003102F3 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		AE5FE92C1D61B4D2003102F3 /* AlamofireImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlamofireImage.framework; path = Carthage/Build/iOS/AlamofireImage.framework; sourceTree = "<group>"; };
 		AE62408A1D50A4560062CAD4 /* EventsTracker.Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTracker.Context.swift; sourceTree = "<group>"; };
 		AE6B71771D3E22F8006A8225 /* ShopGunSDK.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = ShopGunSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		AE7D78291D50D88100B414CE /* Valet.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Valet.framework; path = Carthage/Build/iOS/Valet.framework; sourceTree = "<group>"; };
@@ -77,6 +92,9 @@
 		AEA5AAC41D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShopGunGraphTests_ObjC.m; sourceTree = "<group>"; };
 		AEA5AAD11D3CE6C800DC5EA3 /* GraphRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphRequest.swift; sourceTree = "<group>"; };
 		AEA5AAD31D3CFA6400DC5EA3 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		AEB0569C1D5DF08A00F3035D /* VersoGridLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersoGridLayout.swift; sourceTree = "<group>"; };
+		AEC36B881D5A091000267FA7 /* VersoPageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersoPageCell.swift; sourceTree = "<group>"; };
+		AECDA0A31D5B2F1900F5830A /* VersoZoomingReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersoZoomingReusableView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +102,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE5FE92D1D61B4D2003102F3 /* Alamofire.framework in Frameworks */,
+				AE5FE92E1D61B4D2003102F3 /* AlamofireImage.framework in Frameworks */,
 				AE7D78491D51DA5D00B414CE /* Valet.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -100,9 +120,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AE58EDC51D537AC7002BC38A /* PDFPublication */ = {
+			isa = PBXGroup;
+			children = (
+				AE58EDC61D537AE6002BC38A /* PDFPublicationViewController.swift */,
+				AE12AAEB1D59D44700BBEFFC /* PDFPublicationPageCell.swift */,
+				AE1939ED1D5B5BA500574399 /* VersoView.swift */,
+				AEC36B881D5A091000267FA7 /* VersoPageCell.swift */,
+				AE12AAE91D59D41E00BBEFFC /* VersoPagedLayout.swift */,
+				AEB0569C1D5DF08A00F3035D /* VersoGridLayout.swift */,
+				AECDA0A31D5B2F1900F5830A /* VersoZoomingReusableView.swift */,
+			);
+			path = PDFPublication;
+			sourceTree = "<group>";
+		};
 		AE7D782B1D50D88E00B414CE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AE5FE92B1D61B4D2003102F3 /* Alamofire.framework */,
+				AE5FE92C1D61B4D2003102F3 /* AlamofireImage.framework */,
 				AE7D78291D50D88100B414CE /* Valet.framework */,
 			);
 			name = Frameworks;
@@ -137,6 +173,7 @@
 				AEA5A9E91D3CB1B000DC5EA3 /* Core */,
 				AEA5A9EB1D3CB1B000DC5EA3 /* Events */,
 				AEA5A9EC1D3CB1B000DC5EA3 /* Graph */,
+				AE58EDC51D537AC7002BC38A /* PDFPublication */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -350,6 +387,8 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/Valet.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/AlamofireImage.framework",
 			);
 			outputPaths = (
 			);
@@ -364,12 +403,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE12AAEA1D59D41E00BBEFFC /* VersoPagedLayout.swift in Sources */,
+				AEC36B891D5A091000267FA7 /* VersoPageCell.swift in Sources */,
 				AE06C04D1D40EB1200BC8D47 /* EventsPool.swift in Sources */,
 				AE06E3391D52268300C84762 /* GraphConnection.swift in Sources */,
 				AE06C0421D3FA70000BC8D47 /* GraphRequest.swift in Sources */,
 				AE62408B1D50A4560062CAD4 /* EventsTracker.Context.swift in Sources */,
+				AE12AAEC1D59D44700BBEFFC /* PDFPublicationPageCell.swift in Sources */,
+				AE58EDC71D537AE6002BC38A /* PDFPublicationViewController.swift in Sources */,
+				AE1939EE1D5B5BA500574399 /* VersoView.swift in Sources */,
+				AECDA0A41D5B2F1900F5830A /* VersoZoomingReusableView.swift in Sources */,
 				AE06C03C1D3FA70000BC8D47 /* SDKConfig.swift in Sources */,
 				AE06C03E1D3FA70000BC8D47 /* EventsTracker.swift in Sources */,
+				AEB0569D1D5DF08B00F3035D /* VersoGridLayout.swift in Sources */,
 				AE06C03D1D3FA70000BC8D47 /* Utils.swift in Sources */,
 				AE06E34D1D53532900C84762 /* GraphResponse.swift in Sources */,
 			);

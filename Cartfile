@@ -1,3 +1,4 @@
 
 github "square/Valet"
 
+github "Alamofire/AlamofireImage" ~> 2.0
