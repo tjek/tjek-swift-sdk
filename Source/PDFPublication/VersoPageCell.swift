@@ -44,8 +44,6 @@ public class VersoPageCell<T:UIView> : UICollectionViewCell {
     }
     
     
-    private var pageContentsAlignment = VersoPageLayoutAttributes.PageContentsAlignment.Center
-    
     override public func layoutSubviews() {
         super.layoutSubviews()
         
@@ -58,13 +56,13 @@ public class VersoPageCell<T:UIView> : UICollectionViewCell {
             
             // TODO: make sure size is within bounds
             frame.origin.y = round(CGRectGetMidY(b) - frame.size.height/2)
-            switch pageContentsAlignment {
-            case .Center:
-                frame.origin.x = round(CGRectGetMidX(b) - frame.size.width/2)
+            switch contentMode {
             case .Left:
                 frame.origin.x = CGRectGetMinX(b)
             case .Right:
                 frame.origin.x = CGRectGetMaxX(b) - frame.size.width
+            default: //center
+                frame.origin.x = round(CGRectGetMidX(b) - frame.size.width/2)
             }
         
             view.frame = frame
@@ -73,9 +71,20 @@ public class VersoPageCell<T:UIView> : UICollectionViewCell {
     
     
     override public func applyLayoutAttributes(layoutAttributes: UICollectionViewLayoutAttributes) {
-        if let attrs = layoutAttributes as? VersoPageLayoutAttributes where pageContentsAlignment != attrs.contentsAlignment {
-             pageContentsAlignment = attrs.contentsAlignment
-            setNeedsLayout()
+        if let attrs = layoutAttributes as? VersoPageLayoutAttributes {
+            
+            var newContentMode = UIViewContentMode.Center
+            
+            switch attrs.contentsAlignment {
+            case .Center:
+                newContentMode = .Center
+            case .Left:
+                newContentMode = .Left
+            case .Right:
+                newContentMode = .Right
+            }
+            
+            contentMode = newContentMode
         }
     }
 }
