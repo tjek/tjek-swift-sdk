@@ -13,48 +13,39 @@ import UIKit
 import AlamofireImage
 
 
-
-public protocol PDFPublicationPageViewModelProtocol {
+public protocol PDFPublicationPageViewDelegate : class {
     
-    var pageIndex:UInt { get }
+    func didConfigurePDFPageContents(pageIndex:Int, viewModel:PDFPublicationPageViewModelProtocol)
     
-    var pageTitle:String? { get }
-    
-    var aspectRatio:Double { get }
-    
-    var defaultImageURL:NSURL? { get }
-
-    var zoomImageURL:NSURL? { get }
-    
-    var hotspots:[PDFPublicationHotspotViewModelProtocol]? { get }
-}
-
-
-public protocol PDFPublicationPageContentsViewDelegate : class {
-    
-    func didConfigurePDFPageContents(pageIndex:UInt, viewModel:PDFPublicationPageViewModelProtocol)
-    
-    func didLoadPDFPageContentsImage(pageIndex:UInt, imageURL:NSURL, fromCache:Bool)
+    func didLoadPDFPageContentsImage(pageIndex:Int, imageURL:NSURL, fromCache:Bool)
     
     // did zoom?
 }
 
 
-public class PDFPublicationPageContentsView : UIView {
 
-    override public init(frame: CGRect) {
+public class PDFPublicationPageView : VersoPageView {
+
+    public required init(frame: CGRect) {
         super.init(frame: frame)
         
         addSubview(pageLabel)
         
-        imageView.frame = frame
+        
         addSubview(imageView)
         
         
-        backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.2)
+        imageView.backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: 0.2)
+        
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(PDFPublicationPageView.didTap(_:))))
     }
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
+    
+    
+    
+    
+    func didTap(tap:UITapGestureRecognizer) {
+        print ("tap")
     }
     
     
@@ -66,12 +57,11 @@ public class PDFPublicationPageContentsView : UIView {
     
     
     
-    weak public var delegate:PDFPublicationPageContentsViewDelegate?
+    
+    weak public var delegate:PDFPublicationPageViewDelegate?
     
     
-    public typealias ViewModelType = PDFPublicationPageViewModelProtocol
-    
-    public func configure(viewModel:ViewModelType) {
+    public func configure(viewModel: PDFPublicationPageViewModelProtocol) {
         
         reset()
         
@@ -89,7 +79,6 @@ public class PDFPublicationPageContentsView : UIView {
         delegate?.didConfigurePDFPageContents(pageIndex, viewModel: viewModel)
         
         if let imageURL = viewModel.defaultImageURL {
-            
             // load the image from the url
             imageView.af_setImageWithURL(imageURL, imageTransition: .CrossDissolve(0.1), runImageTransitionIfCached: false) { [weak self] response in
                 guard self != nil else {
@@ -106,9 +95,7 @@ public class PDFPublicationPageContentsView : UIView {
                         
                         if newAspectRatio != self!.aspectRatio {
                             self!.aspectRatio = newAspectRatio
-                            
-                            // somewhat hacky way of invalidating the parent cell's layout
-                            self!.superview?.superview?.setNeedsLayout()
+                            // TODO: this will only affect future uses of this page. Somehow trigger a re-layout from the verso. Maybe in the delegate?
                         }
                     }
                     
@@ -128,8 +115,6 @@ public class PDFPublicationPageContentsView : UIView {
                 }
             }
         }
-        
-        setNeedsLayout()
     }
 
     
@@ -142,7 +127,9 @@ public class PDFPublicationPageContentsView : UIView {
     }
     
     
-    // MARK: Views
+    
+    
+    // MARK: Subviews
     
     var pageLabel:UILabel = {
         
@@ -163,6 +150,10 @@ public class PDFPublicationPageContentsView : UIView {
         
         return view
     }()
+    
+    
+    
+    
     
     
     // MARK: UIView subclass
@@ -197,26 +188,7 @@ public class PDFPublicationPageContentsView : UIView {
         labelFrame.origin = CGPoint(x:round(bounds.size.width/2 - labelFrame.size.width/2), y:round(bounds.size.height/2 - labelFrame.size.height/2))
         
         pageLabel.frame = labelFrame
+        
+        imageView.frame = bounds
     }
 }
-
-
-
-
-
-
-
-
-/// A subclass that implements the VersoPageCell with the PDFPublication contents view
-
-// TODO: do this in an extension?
-public class PDFPublicationPageCell : VersoPageCell<PDFPublicationPageContentsView> {
-    
-    public func configure(viewModel: PDFPublicationPageViewModelProtocol) {
-        contentView.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.1)
-        pageContentsView?.configure(viewModel)
-    }
-    
-}
-
-
