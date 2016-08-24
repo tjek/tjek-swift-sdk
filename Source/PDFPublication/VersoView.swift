@@ -548,6 +548,8 @@ public class VersoView : UIView {
         view.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
         view.delegate = self
         view.pagingEnabled = true
+        
+        view.decelerationRate = UIScrollViewDecelerationRateFast
         return view
     }()
     
@@ -556,10 +558,14 @@ public class VersoView : UIView {
         let view = InsetZoomView(frame:self.frame)
         view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         
+        view.addSubview(self.zoomViewContents)
+
+        
         view.delegate = self
         view.maximumZoomScale = 4.0
         
-        view.addSubview(self.zoomViewContents)
+        view.sgn_enableDoubleTapGestures()
+
         //        view.backgroundColor = UIColor(red: 0, green: 0, blue: 1, alpha: 0.3)
         return view
     }()
@@ -928,6 +934,92 @@ func ==(lhs: VersoView.SpreadPageIndexLayout, rhs: VersoView.SpreadPageIndexLayo
         
     default:
         return false
+    }
+}
+
+
+
+
+extension UIScrollView {
+
+    public func sgn_enableDoubleTapGestures() {
+        // create and add the gesture recognizer
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(UIScrollView._sgn_didDoubleTap(_:)))
+        doubleTap.numberOfTapsRequired = 2
+        
+        addGestureRecognizer(doubleTap)
+
+    }
+
+    // TODO: add disable func
+    // TODO: add doubleTap gesture accessor
+    // TODO: allow to disable double-tap animations
+    
+    @objc
+    private func _sgn_didDoubleTap(tap:UITapGestureRecognizer) {
+        guard tap.state == .Ended else {
+            return
+        }
+        
+        // no-op if zoom is disabled
+        guard pinchGestureRecognizer != nil && pinchGestureRecognizer!.enabled == true else {
+            return
+        }
+        
+        // no zoom, so eject
+        guard minimumZoomScale < maximumZoomScale else {
+            return
+        }
+        
+        guard let zoomedView = delegate?.viewForZoomingInScrollView?(self) else {
+            return
+        }
+        
+        // fake 'willBegin'
+        delegate?.scrollViewWillBeginZooming?(self, withView:zoomedView)
+
+        let zoomedIn = zoomScale > minimumZoomScale
+        
+        
+        let zoomAnimations = {
+            if zoomedIn {
+                // zoomed in - so zoom out again
+                self.setZoomScale(self.minimumZoomScale, animated: false)
+            }
+            else {
+                // zoomed out - find the rect we want to zoom to
+                let targetScale = self.maximumZoomScale
+                let targetCenter = tap.locationInView(zoomedView)
+                    //zoomedView.convertPoint(tap.locationInView(self), fromView: self)
+                
+                var targetZoomRect = CGRectZero
+                targetZoomRect.size = CGSize(width: zoomedView.frame.size.width / targetScale,
+                                             height: zoomedView.frame.size.height / targetScale)
+                
+                targetZoomRect.origin = CGPoint(x: targetCenter.x - ((targetZoomRect.size.width / 2.0)),
+                                                y: targetCenter.y - ((targetZoomRect.size.height / 2.0)))
+                
+                self.zoomToRect(targetZoomRect, animated: false)
+            }
+
+        }
+    
+        let animated = true
+        
+        
+        // here we use a custom animation to make zooming faster/nicer
+        let duration:NSTimeInterval = zoomedIn ? 0.30 : 0.40;
+        let damping:CGFloat = zoomedIn ? 0.9 : 0.8;
+        let initialVelocity:CGFloat = zoomedIn ? 0.9 : 0.75;
+
+    
+        UIView.animateWithDuration(animated ? duration : 0, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: initialVelocity, options: [.BeginFromCurrentState], animations: zoomAnimations) { [weak self] finished in
+            
+            if self != nil && finished {
+                // fake 'didZoom'
+                self!.delegate?.scrollViewDidEndZooming?(self!, withView:zoomedView, atScale:self!.zoomScale)
+            }
+        }
     }
 }
 

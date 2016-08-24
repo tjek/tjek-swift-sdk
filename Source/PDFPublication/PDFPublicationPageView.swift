@@ -47,7 +47,18 @@ public class PDFPublicationPageView : VersoPageView {
         
         imageView.backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: 0.2)
         
-        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(PDFPublicationPageView.didTap(_:))))
+        
+        // add gestures
+        let tap = UITapGestureRecognizer(target: self, action: #selector(PDFPublicationPageView.didTap(_:)))
+        
+        let longPress = UILongPressGestureRecognizer(target: self, action:#selector(PDFPublicationPageView.didLongPress(_:)))
+        
+        addGestureRecognizer(longPress)
+        addGestureRecognizer(tap)
+        
+//        let dblTap = UITapGestureRecognizer(target: self, action: #selector(PDFPublicationPageView.didDoubleTap(_:)))
+//        dblTap.numberOfTapsRequired = 2
+//        addGestureRecognizer(dblTap)
     }
     public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
@@ -63,7 +74,16 @@ public class PDFPublicationPageView : VersoPageView {
     
     func didTap(tap:UITapGestureRecognizer) {
         // TODO: tell delegate
-        print ("tap")
+        print ("did tap")
+    }
+    
+    func didLongPress(press:UILongPressGestureRecognizer) {
+        // TODO: tell delegate (both registered & released)
+        print ("did long press \(press.state.rawValue)")
+    }
+    func didDoubleTap(dblTap:UITapGestureRecognizer) {
+        // TODO: tell delegate
+        print ("did DoubleTap")
     }
     
     
