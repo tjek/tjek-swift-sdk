@@ -9,7 +9,7 @@
 
 import UIKit
 
-
+import AlamofireImage
 
 @objc(SGNPDFPublicationView)
 public class PDFPublicationView : UIView {
@@ -17,20 +17,46 @@ public class PDFPublicationView : UIView {
     public override init(frame: CGRect) {
         super.init(frame:frame)
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PDFPublicationView.didEnterBackgroundNotification(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PDFPublicationView.willEnterForegroundNotification(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        
         backgroundColor = UIColor.whiteColor()
         
         verso.frame = frame
         verso.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         addSubview(verso)
         
+        
+        
         // FIXME: dont do this
-        UIImageView.af_sharedImageDownloader.imageCache?.removeAllImages()
+        AlamofireImage.ImageDownloader.defaultURLCache().removeAllCachedResponses()
+        if let imageCache = AlamofireImage.ImageDownloader.defaultInstance.imageCache as? AutoPurgingImageCache {
+            print ("\(imageCache.memoryUsage) / \(imageCache.memoryCapacity)")
+        }
+        AlamofireImage.ImageDownloader.defaultInstance.imageCache?.removeAllImages()
+//        UIImageView.af_sharedImageDownloader.imageCache?.removeAllImages()
         
     }
     required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillEnterForegroundNotification, object: nil)
+    }
     
-    
+    func didEnterBackgroundNotification(notification:NSNotification) {
+        print ("did enter background")
+        for pageIndex in verso.activePageIndexes {
+            triggerEvent_PageDisappeared(pageIndex)
+        }
+    }
+    func willEnterForegroundNotification(notification:NSNotification) {
+        print ("will enter foreground")
+        for pageIndex in verso.activePageIndexes {
+            _pageDidAppear(pageIndex)
+        }
+    }
     
     // MARK: - Public
     
@@ -41,6 +67,8 @@ public class PDFPublicationView : UIView {
         publicationViewModel = viewModel
         
         verso.backgroundColor = viewModel?.bgColor
+        
+        // TODO: do we clear the pageviewmodels if this is updated again?
         
         // force a re-fetch of the pageCount
         verso.reloadPages()
@@ -85,6 +113,9 @@ public class PDFPublicationView : UIView {
     /// Used by the PDFPublicationPageViewDelegate methods
     private var activePageIndexesWithPendingLoadEvents = NSMutableIndexSet()
     
+    /// the indexes of the pages that are loading their zoom images.
+    /// This is reset whenever active pages change
+    private var pageIndexesLoadingZoomImage = NSMutableIndexSet()
     
     lazy private var verso:VersoView = {
         let verso = VersoView()
@@ -113,20 +144,19 @@ extension PDFPublicationView : VersoViewDataSource {
         if let pubPage = pageView as? PDFPublicationPageView {
             
             let pageIndex = pubPage.pageIndex
-            print ("Configuring \(pageIndex)")
             
             pubPage.delegate = self
-                
-            // valid view model
+            
             if let viewModel = pageViewModels?[safe:Int(pageIndex)] {
                 
+                // valid view model
                 pubPage.configure(viewModel)
             }
                 
             else
             {
                 // build blank view model
-                let viewModel = PDFPublicationPageViewModel(pageIndex:pageIndex, pageTitle:String(pageIndex), aspectRatio: publicationViewModel!.aspectRatio)
+                let viewModel = PDFPublicationPageViewModel(pageIndex:pageIndex, pageTitle:String(pageIndex+1), aspectRatio: publicationViewModel!.aspectRatio)
                 
                 pubPage.configure(viewModel)
             }
@@ -157,25 +187,32 @@ extension PDFPublicationView : VersoViewDataSource {
 
 extension PDFPublicationView : VersoViewDelegate {
     
+    private func _pageDidAppear(pageIndex:Int) {
+        
+        // scrolling animation stopped and a new set of page Indexes are now visible.
+        // trigger 'PAGE_APPEARED' event
+        triggerEvent_PageAppeared(pageIndex)
+        
+        
+        // if image loaded then trigger 'PAGE_LOADED' event
+        if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PDFPublicationPageView
+            where pageView.imageLoadState == .Loaded {
+            
+            triggerEvent_PageLoaded(pageIndex, fromCache: true)
+        }
+        else {
+            // page became active but image hasnt yet loaded... keep track of it
+            activePageIndexesWithPendingLoadEvents.addIndex(Int(pageIndex))
+        }
+    }
+    
     public func activePagesDidChangeForVerso(verso: VersoView, activePageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
         
         // go through all the newly added page indexes, triggering `appeared` (and possibly `loaded`) events
         for pageIndex in added {
             // scrolling animation stopped and a new set of page Indexes are now visible.
-            // trigger 'PAGE_APPEARED' event
-            triggerEvent_PageAppeared(pageIndex)
             
-            
-            // if image loaded then trigger 'PAGE_LOADED' event
-            if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PDFPublicationPageView
-                where pageView.isImageLoaded {
-                
-                triggerEvent_PageLoaded(pageIndex, fromCache: true)
-            }
-            else {
-                // page became active but image hasnt het loaded... keep track of it
-                activePageIndexesWithPendingLoadEvents.addIndex(Int(pageIndex))
-            }
+            _pageDidAppear(pageIndex)
         }
         
         // go through all the newly removed page indexes, triggering `disappeared` events and removing them from pending list
@@ -184,6 +221,12 @@ extension PDFPublicationView : VersoViewDelegate {
             
             // trigger a 'PAGE_DISAPPEARED event
             triggerEvent_PageDisappeared(pageIndex)
+
+            
+            // cancel the loading of the zoomimage
+            if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PDFPublicationPageView {
+                pageView.clearZoomImage(animated: false)
+            }
         }
     }
     
@@ -191,6 +234,38 @@ extension PDFPublicationView : VersoViewDelegate {
         
         // TODO: start pre-warming images if we scroll past a certain point (and dont scroll back again within a time-frame)
 //        print ("visible pages changed: \(visiblePageIndexes.arrayOfAllIndexes())")
+    }
+    
+    
+    public func didStartZoomingPagesForVerso(verso: VersoView, zoomingPageIndexes: NSIndexSet, zoomScale: CGFloat) {
+        
+        
+//        print ("did start zooming \(zoomScale)")
+    }
+    
+    public func didZoomPagesForVerso(verso: VersoView, zoomingPageIndexes: NSIndexSet, zoomScale: CGFloat) {
+        
+        
+//        print ("did zoom \(zoomScale)")
+    }
+    
+    public func didEndZoomingPagesForVerso(verso: VersoView, zoomingPageIndexes: NSIndexSet, zoomScale: CGFloat) {
+        
+        if zoomScale > 1 {
+            
+            for pageIndex in zoomingPageIndexes {
+                if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PDFPublicationPageView
+                    where pageView.zoomImageLoadState == .NotLoaded,
+                    let zoomImageURL = pageViewModels?[safe:pageIndex]?.zoomImageURL {
+                    
+                    // started zooming on a page with no zoom-image loaded.
+                    pageView.startLoadingZoomImageFromURL(zoomImageURL)
+                    
+                }
+            }
+        }
+        
+//        print ("did end zooming \(zoomScale)")
     }
     
 }
@@ -205,25 +280,31 @@ extension PDFPublicationView : VersoViewDelegate {
 
 extension PDFPublicationView : PDFPublicationPageViewDelegate {
  
-    public func didConfigurePDFPageContents(pageIndex: Int, viewModel: PDFPublicationPageViewModelProtocol) {
-        //        print("didConfig page: \(pageIndex)")
-    }
+//    public func didConfigurePDFPublicationPage(pageView:PDFPublicationPageView, viewModel:PDFPublicationPageViewModelProtocol) {
+//        
+//    }
     
-    public func didLoadPDFPageContentsImage(pageIndex: Int, imageURL:NSURL, fromCache: Bool) {
+    public func didLoadPDFPublicationPageImage(pageView:PDFPublicationPageView, imageURL:NSURL, fromCache:Bool) {
         
-        if activePageIndexesWithPendingLoadEvents.containsIndex(Int(pageIndex)),
-            let viewModel = pageViewModels?[safe:Int(pageIndex)] where viewModel.defaultImageURL == imageURL {
+        let pageIndex = pageView.pageIndex
+        
+        if activePageIndexesWithPendingLoadEvents.containsIndex(pageIndex),
+            let viewModel = pageViewModels?[safe:pageIndex] where viewModel.defaultImageURL == imageURL {
             
             // the page is active, and has not yet had its image loaded.
             // and the image url is the same as that of the viewModel at that page Index (view model hasnt changed since)
             // so trigger 'PAGE_LOADED' event
-            
-            triggerEvent_PageLoaded(pageIndex, fromCache: fromCache)
+            // Only do this if the app is active - otherwise, when the app went into the background, we have sent a disappeared event
+            if UIApplication.sharedApplication().applicationState == .Active {
+                triggerEvent_PageLoaded(pageIndex, fromCache: fromCache)
+            }
             
             activePageIndexesWithPendingLoadEvents.removeIndex(Int(pageIndex))
         }
     }
-    
+//    public func didLoadPDFPublicationPageZoomImage(pageView:PDFPublicationPageView, imageURL:NSURL, fromCache:Bool) {
+//    
+//    }
 }
 
 
@@ -240,12 +321,34 @@ extension PDFPublicationView {
         print("[EVENT] Page Appeared(\(pageIndex))")
     }
     func triggerEvent_PageLoaded(pageIndex:Int,fromCache:Bool) {
-        print("[EVENT] Page Loaded \(pageIndex) cache:\(fromCache)")
+        print("[EVENT] Page Loaded\(pageIndex) cache:\(fromCache)")
     }
     func triggerEvent_PageDisappeared(pageIndex:Int) {
         print("[EVENT] Page Disappeared(\(pageIndex))")
     }
+    func triggerEvent_PagesChanged(fromPageIndexes:NSIndexSet, toPageIndexes:NSIndexSet) {
+        print("[EVENT] Page Changed(\(fromPageIndexes.arrayOfAllIndexes()) -> \(toPageIndexes.arrayOfAllIndexes()))")
+    }
     
+    
+    func triggerEvent_PageZoomedIn(pageIndexes:NSIndexSet, centerPoint:CGPoint) {
+        print("[EVENT] Page Zoomed In(\(pageIndexes.arrayOfAllIndexes())) \(centerPoint)")
+    }
+    func triggerEvent_PageZoomedOut(pageIndexes:NSIndexSet, centerPoint:CGPoint) {
+        print("[EVENT] Page Zoomed Out(\(pageIndexes.arrayOfAllIndexes())) \(centerPoint)")
+    }
+    
+    
+    func triggerEvent_PageTapped(pageIndex:Int, centerPoint:CGPoint) {
+        print("[EVENT] Page Tapped(\(pageIndex)) \(centerPoint)")
+    }
+    func triggerEvent_PageDoubleTapped(pageIndex:Int, centerPoint:CGPoint) {
+        print("[EVENT] Page Double-Tapped(\(pageIndex)) \(centerPoint)")
+    }
+    
+    func triggerEvent_PageLongPressed(pageIndex:Int, centerPoint:CGPoint) {
+        print("[EVENT] Page LongPressed(\(pageIndex)) \(centerPoint)")
+    }
 }
 
 

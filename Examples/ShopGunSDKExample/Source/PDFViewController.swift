@@ -28,9 +28,11 @@ class PDFViewController : UIViewController {
         
         
         
-        let aspectRatio:Double = 1647/962
+        let aspectRatio:Double = 647/962
         let bgColor = UIColor(red:0.93, green:0.93, blue:0.93, alpha:1.00)
         let pageCount = 22
+        let pubId = "902a2e3"
+        
         
         let viewModel = PDFPublicationViewModel(bgColor:bgColor, pageCount:pageCount, aspectRatio:aspectRatio)
         publicationView.updateWithPublicationViewModel(viewModel)
@@ -41,8 +43,8 @@ class PDFViewController : UIViewController {
 //            let defaultUrl:NSURL? = nil
 //            let zoomUrl:NSURL? = nil
             
-            let defaultUrl = NSURL(string:"https://akamai.shopgun.com/img/catalog/view/902a2e3-\(index+1).jpg?m=oayzye")
-            let zoomUrl = NSURL(string:"https://akamai.shopgun.com/img/catalog/zoom/902a2e3-\(index+1).jpg?m=oayzye")
+            let defaultUrl = NSURL(string:"https://akamai.shopgun.com/img/catalog/view/\(pubId)-\(index+1).jpg")
+            let zoomUrl = NSURL(string:"https://akamai.shopgun.com/img/catalog/zoom/\(pubId)-\(index+1).jpg")
             
             let pageModel = PDFPublicationPageViewModel(pageIndex:index, pageTitle: "Page "+String(index), aspectRatio: aspectRatio, imageURL: defaultUrl, zoomImageURL: zoomUrl, hotspots: nil)
             pageModels.append(pageModel)

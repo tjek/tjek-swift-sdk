@@ -12,6 +12,7 @@ import UIKit
 
 
 // All properties needed to render a publication view
+@objc
 public protocol PDFPublicationViewModelProtocol {
     
     // the background brand color of the publication
@@ -28,7 +29,7 @@ public protocol PDFPublicationViewModelProtocol {
 }
 
 
-
+@objc
 public protocol PDFPublicationPageViewModelProtocol {
     
     var pageIndex:Int { get }
@@ -45,7 +46,7 @@ public protocol PDFPublicationPageViewModelProtocol {
 }
 
 
-
+@objc
 public protocol PDFPublicationHotspotViewModelProtocol {
     var data:AnyObject? { get }
     

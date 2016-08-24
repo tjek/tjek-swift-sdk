@@ -15,6 +15,10 @@ import UIKit
 public protocol VersoViewDelegate : class {
     optional func activePagesDidChangeForVerso(verso:VersoView, activePageIndexes:NSIndexSet, added:NSIndexSet, removed:NSIndexSet)
     optional func visiblePagesDidChangeForVerso(verso:VersoView, visiblePageIndexes:NSIndexSet, added:NSIndexSet, removed:NSIndexSet)
+    
+    optional func didStartZoomingPagesForVerso(verso:VersoView, zoomingPageIndexes:NSIndexSet, zoomScale:CGFloat)
+    optional func didZoomPagesForVerso(verso:VersoView, zoomingPageIndexes:NSIndexSet, zoomScale:CGFloat)
+    optional func didEndZoomingPagesForVerso(verso:VersoView, zoomingPageIndexes:NSIndexSet, zoomScale:CGFloat)
 }
 
 @objc
@@ -208,10 +212,10 @@ public class VersoView : UIView {
     
     
     // pages that are _fully_ visible. Changes when animations stop.
-    private var activePageIndexes:NSIndexSet = NSIndexSet()
+    public private(set) var activePageIndexes:NSIndexSet = NSIndexSet()
     
     // live-updated list of the visible page indexes
-    private var visiblePageIndexes:NSIndexSet = NSIndexSet()
+    public private(set) var visiblePageIndexes:NSIndexSet = NSIndexSet()
     
     // the pageViews that are currently being used
     private var pageViewsByPageIndex = [Int:VersoPageView]()
@@ -266,11 +270,13 @@ public class VersoView : UIView {
     private func _updatePageLayouts() {
         let visibleFrame = pageScrollView.bounds
         
-        // twice as wide buffer area
-        let pageLifetimeFrame = CGRectInset(visibleFrame, -visibleFrame.size.width, 0)
+        
+        let spreadWidth = visibleFrame.size.width
+        // generate frame that we will pre-config the pages for
+        let pagePreloadFrame = UIEdgeInsetsInsetRect(visibleFrame, UIEdgeInsetsMake(0, -spreadWidth, 0, -(spreadWidth*6)))
         
         
-        let requiredPageIndexes = VersoView.calculateVisiblePageIndexesInRect(pageLifetimeFrame, pageCount: pageCount, spreadSize: spreadSize, spreadSpacing: spreadSpacing, singlePageMode: singlePageMode, firstPageIsSingle: firstPageIsSingle)
+        let requiredPageIndexes = VersoView.calculateVisiblePageIndexesInRect(pagePreloadFrame, pageCount: pageCount, spreadSize: spreadSize, spreadSpacing: spreadSpacing, singlePageMode: singlePageMode, firstPageIsSingle: firstPageIsSingle)
         
         
         var newPageViewsByPageIndex = [Int:VersoPageView]()
@@ -462,11 +468,15 @@ public class VersoView : UIView {
     }
     
     private func _didStartZooming() {
-        //        pageScrollView.scrollEnabled = false
+        if zoomingPageIndexes.count > 0 {
+            delegate?.didStartZoomingPagesForVerso?(self, zoomingPageIndexes: zoomingPageIndexes, zoomScale: zoomView.zoomScale)
+        }
     }
     
-    private func _didZoom(zoomScale:CGFloat) {
-        
+    private func _didZoom() {
+        if zoomingPageIndexes.count > 0 {
+            delegate?.didZoomPagesForVerso?(self, zoomingPageIndexes: zoomingPageIndexes, zoomScale: zoomView.zoomScale)
+        }
     }
     
     private func _didEndZooming() {
@@ -474,6 +484,11 @@ public class VersoView : UIView {
             
             // TODO: when zoomed in/out we should enable/disable page scrolling
             //            pageScrollView.scrollEnabled = true
+        }
+        
+        
+        if zoomingPageIndexes.count > 0 {
+            delegate?.didEndZoomingPagesForVerso?(self, zoomingPageIndexes: zoomingPageIndexes, zoomScale: zoomView.zoomScale)
         }
     }
     
@@ -620,7 +635,7 @@ extension VersoView : UIScrollViewDelegate {
     }
     public func scrollViewDidZoom(scrollView: UIScrollView) {
         if scrollView == zoomView {
-            _didZoom(zoomView.zoomScale)
+            _didZoom()
         }
     }
     public func scrollViewDidEndZooming(scrollView: UIScrollView, withView view: UIView?, atScale scale: CGFloat) {

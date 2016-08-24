@@ -12,27 +12,37 @@ import UIKit
 
 import AlamofireImage
 
-
+@objc
 public protocol PDFPublicationPageViewDelegate : class {
     
-    func didConfigurePDFPageContents(pageIndex:Int, viewModel:PDFPublicationPageViewModelProtocol)
+    optional func didConfigurePDFPublicationPage(pageView:PDFPublicationPageView, viewModel:PDFPublicationPageViewModelProtocol)
     
-    func didLoadPDFPageContentsImage(pageIndex:Int, imageURL:NSURL, fromCache:Bool)
-    
-    // did zoom?
+    optional func didLoadPDFPublicationPageImage(pageView:PDFPublicationPageView, imageURL:NSURL, fromCache:Bool)
+    optional func didLoadPDFPublicationPageZoomImage(pageView:PDFPublicationPageView, imageURL:NSURL, fromCache:Bool)
 }
-
 
 
 public class PDFPublicationPageView : VersoPageView {
 
+    public enum ImageLoadState {
+        case NotLoaded
+        case Loading
+        case Loaded
+        case Failed
+    }
+    
     public required init(frame: CGRect) {
         super.init(frame: frame)
+        
+        // listen for memory warnings and clear the zoomimage
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PDFPublicationPageView.memoryWarningNotification(_:)), name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
         
         addSubview(pageLabel)
         
         
         addSubview(imageView)
+        
+        addSubview(zoomImageView)
         
         
         imageView.backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: 0.2)
@@ -41,16 +51,26 @@ public class PDFPublicationPageView : VersoPageView {
     }
     public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
+    }
     
+    
+    func memoryWarningNotification(notification:NSNotification) {
+        clearZoomImage(animated:true)
+    }
     
     
     func didTap(tap:UITapGestureRecognizer) {
+        // TODO: tell delegate
         print ("tap")
     }
     
     
     
-    public private(set) var isImageLoaded:Bool = false
+    public private(set) var imageLoadState:ImageLoadState = .NotLoaded
+    public private(set) var zoomImageLoadState:ImageLoadState = .NotLoaded
+    
     
     var aspectRatio:CGFloat = 0
     
@@ -60,6 +80,102 @@ public class PDFPublicationPageView : VersoPageView {
     
     weak public var delegate:PDFPublicationPageViewDelegate?
     
+    public func startLoadingZoomImageFromURL(zoomImageURL:NSURL) {
+        
+        zoomImageLoadState = .Loading
+        zoomImageView.image = nil
+        zoomImageView.hidden = false
+        
+        zoomImageView.af_setImageWithURL(zoomImageURL, imageTransition: .CrossDissolve(0.3), runImageTransitionIfCached: true) { [weak self] response in
+            guard self != nil else {
+                return
+            }
+            
+            if response.result.isSuccess {
+                
+                self!.zoomImageLoadState = .Loaded
+                
+                self!.delegate?.didLoadPDFPublicationPageZoomImage?(self!, imageURL:zoomImageURL, fromCache:(response.response == nil))
+            }
+            else {
+                self!.zoomImageView.hidden = true
+                
+                if let error = response.result.error {
+                    if error.code == NSURLErrorCancelled {
+                        self!.zoomImageLoadState = .NotLoaded
+                        return // image load cancelled
+                    }
+                }
+                // TODO: handle failed image load
+                // tell delegate? show error? retry?
+                // maybe cache failed image urls to re-fail quickly?
+                self!.zoomImageLoadState = .Failed
+            }
+        }
+    }
+    
+    public func startLoadingImageFromURL(imageURL:NSURL) {
+        
+        imageLoadState = .Loading
+        
+        // load the image from the url
+        // TODO: allow for non-AlamoFire image loader
+        // TODO: move image-loading to Publication?
+        imageView.af_setImageWithURL(imageURL, imageTransition: .CrossDissolve(0.1), runImageTransitionIfCached: false) { [weak self] response in
+            guard self != nil else {
+                return
+            }
+            
+            if response.result.isSuccess {
+                // Update the aspect ratio based on the actual loaded image.
+                if let image = response.result.value
+                    where image.size.width > 0 && image.size.height > 0 {
+                    
+                    let newAspectRatio = image.size.width / image.size.height
+                    
+                    if newAspectRatio != self!.aspectRatio {
+                        self!.aspectRatio = newAspectRatio
+                        // TODO: this will only affect future uses of this page. Somehow trigger a re-layout from the verso. Maybe in the delegate?
+                    }
+                }
+                
+                self!.imageLoadState = .Loaded
+                
+                self!.delegate?.didLoadPDFPublicationPageImage?(self!, imageURL:imageURL, fromCache:(response.response == nil))
+            }
+            else {
+                
+                if let error = response.result.error {
+                    if error.code == NSURLErrorCancelled {
+                        self!.imageLoadState = .NotLoaded
+                        return // image load cancelled
+                    }
+                }
+                // TODO: handle failed image load
+                // tell delegate? show error? retry?
+                // maybe cache failed image urls to re-fail quickly?
+                print("image load failed", response.result.error?.localizedDescription, response.result.error?.code)
+                
+                self!.imageLoadState = .Failed
+            }
+        }
+    }
+    
+    public func clearZoomImage(animated animated:Bool) {
+        zoomImageView.af_cancelImageRequest()
+        zoomImageLoadState = .NotLoaded
+        
+        if animated {
+            UIView.transitionWithView(zoomImageView, duration: 0.3, options: [.TransitionCrossDissolve], animations: { [weak self] in
+                self?.zoomImageView.image = nil
+                self?.zoomImageView.hidden = true
+                }, completion: nil)
+        }
+        else {
+            zoomImageView.image = nil
+            zoomImageView.hidden = true
+        }
+    }
     
     public func configure(viewModel: PDFPublicationPageViewModelProtocol) {
         
@@ -71,59 +187,28 @@ public class PDFPublicationPageView : VersoPageView {
         
         pageLabel.text = viewModel.pageTitle
         
-        let pageIndex = viewModel.pageIndex
-        
-        
-        
-        
-        delegate?.didConfigurePDFPageContents(pageIndex, viewModel: viewModel)
         
         if let imageURL = viewModel.defaultImageURL {
-            // load the image from the url
-            imageView.af_setImageWithURL(imageURL, imageTransition: .CrossDissolve(0.1), runImageTransitionIfCached: false) { [weak self] response in
-                guard self != nil else {
-                    return
-                }
-                
-                if response.result.isSuccess {
-                
-                    // Update the aspect ratio based on the actual loaded image.
-                    if let image = response.result.value
-                        where image.size.width > 0 && image.size.height > 0 {
-                        
-                        let newAspectRatio = image.size.width / image.size.height
-                        
-                        if newAspectRatio != self!.aspectRatio {
-                            self!.aspectRatio = newAspectRatio
-                            // TODO: this will only affect future uses of this page. Somehow trigger a re-layout from the verso. Maybe in the delegate?
-                        }
-                    }
-                    
-                    self!.isImageLoaded = true
-                    
-                    self!.delegate?.didLoadPDFPageContentsImage(pageIndex, imageURL:imageURL, fromCache:(response.response == nil))
-                }
-                else {
-                    
-                    if let error = response.result.error {
-                        if error.code == NSURLErrorCancelled {
-                            return // image load cancelled
-                        }
-                    }
-                    // tell delegate? show error? retry?
-                    print("image load failed", response.result.error?.localizedDescription, response.result.error?.code)
-                }
-            }
+            startLoadingImageFromURL(imageURL)
         }
+        
+        delegate?.didConfigurePDFPublicationPage?(self, viewModel: viewModel)
     }
 
     
     
     public func reset() {
+        imageView.af_cancelImageRequest()
         imageView.image = nil
+        imageLoadState = .NotLoaded
+        
+        zoomImageView.af_cancelImageRequest()
+        zoomImageView.image = nil
+        zoomImageView.hidden = true
+        zoomImageLoadState = .NotLoaded
+        
         pageLabel.text = nil
         aspectRatio = 0
-        isImageLoaded = false
     }
     
     
@@ -145,11 +230,19 @@ public class PDFPublicationPageView : VersoPageView {
         
         view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         view.contentMode = .ScaleAspectFit
-
-        // TODO: use a custom image loader
         
         return view
     }()
+    
+    var zoomImageView:UIImageView = {
+        let view = UIImageView(frame: CGRectZero)
+        
+        view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        view.contentMode = .ScaleAspectFit
+        
+        return view
+    }()
+    
     
     
     
@@ -181,7 +274,6 @@ public class PDFPublicationPageView : VersoPageView {
     override public func layoutSubviews() {
         super.layoutSubviews()
         
-        
         // position label in the middle
         var labelFrame = pageLabel.frame
         labelFrame.size = pageLabel.sizeThatFits(frame.size)
@@ -190,5 +282,6 @@ public class PDFPublicationPageView : VersoPageView {
         pageLabel.frame = labelFrame
         
         imageView.frame = bounds
+        zoomImageView.frame = bounds
     }
 }
