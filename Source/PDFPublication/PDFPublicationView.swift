@@ -17,9 +17,11 @@ public class PDFPublicationView : UIView {
     public override init(frame: CGRect) {
         super.init(frame:frame)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PDFPublicationView.didEnterBackgroundNotification(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PDFPublicationView.willEnterForegroundNotification(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        // setup notifications
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PDFPublicationView._didEnterBackgroundNotification(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PDFPublicationView._willEnterForegroundNotification(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        
         
         backgroundColor = UIColor.whiteColor()
         
@@ -35,7 +37,6 @@ public class PDFPublicationView : UIView {
             print ("\(imageCache.memoryUsage) / \(imageCache.memoryCapacity)")
         }
         AlamofireImage.ImageDownloader.defaultInstance.imageCache?.removeAllImages()
-//        UIImageView.af_sharedImageDownloader.imageCache?.removeAllImages()
         
     }
     required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
@@ -45,18 +46,8 @@ public class PDFPublicationView : UIView {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
     
-    func didEnterBackgroundNotification(notification:NSNotification) {
-        print ("did enter background")
-        for pageIndex in verso.activePageIndexes {
-            triggerEvent_PageDisappeared(pageIndex)
-        }
-    }
-    func willEnterForegroundNotification(notification:NSNotification) {
-        print ("will enter foreground")
-        for pageIndex in verso.activePageIndexes {
-            _pageDidAppear(pageIndex)
-        }
-    }
+    
+    
     
     // MARK: - Public
     
@@ -124,6 +115,19 @@ public class PDFPublicationView : UIView {
         return verso
     }()
     
+    
+    
+    // MARK: Notification handlers
+    func _didEnterBackgroundNotification(notification:NSNotification) {
+        for pageIndex in verso.activePageIndexes {
+            triggerEvent_PageDisappeared(pageIndex)
+        }
+    }
+    func _willEnterForegroundNotification(notification:NSNotification) {
+        for pageIndex in verso.activePageIndexes {
+            _pageDidAppear(pageIndex)
+        }
+    }
     
 }
 
@@ -327,6 +331,7 @@ extension PDFPublicationView {
         print("[EVENT] Page Disappeared(\(pageIndex))")
     }
     func triggerEvent_PagesChanged(fromPageIndexes:NSIndexSet, toPageIndexes:NSIndexSet) {
+        // TODO: page Changed events
         print("[EVENT] Page Changed(\(fromPageIndexes.arrayOfAllIndexes()) -> \(toPageIndexes.arrayOfAllIndexes()))")
     }
     
