@@ -19,10 +19,19 @@ public protocol PDFPublicationPageViewDelegate : class {
     
     optional func didLoadPDFPublicationPageImage(pageView:PDFPublicationPageView, imageURL:NSURL, fromCache:Bool)
     optional func didLoadPDFPublicationPageZoomImage(pageView:PDFPublicationPageView, imageURL:NSURL, fromCache:Bool)
+    
+    /// The user touched a location in the view. The location is as a percentage 0->1 of the width/height from the top-left
+    optional func didTouchPDFPublicationPage(pageView:PDFPublicationPageView, location:CGPoint)
+    /// The user tapped (touched then released) a location in the view. The location is as a percentage 0->1 of the width/height from the top-left
+    optional func didTapPDFPublicationPage(pageView:PDFPublicationPageView, location:CGPoint)
+    /// The user began longpressing a location in the view. The location is as a percentage 0->1 of the width/height from the top-left
+    optional func didStartLongPressPDFPublicationPage(pageView:PDFPublicationPageView, location:CGPoint, duration:NSTimeInterval)
+    /// The user finished longpressing a location in the view. The location is as a percentage 0->1 of the width/height from the top-left
+    optional func didEndLongPressPDFPublicationPage(pageView:PDFPublicationPageView, location:CGPoint, duration:NSTimeInterval)
 }
 
 
-public class PDFPublicationPageView : VersoPageView {
+public class PDFPublicationPageView : VersoPageView, UIGestureRecognizerDelegate {
 
     public enum ImageLoadState {
         case NotLoaded
@@ -37,29 +46,17 @@ public class PDFPublicationPageView : VersoPageView {
         // listen for memory warnings and clear the zoomimage
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PDFPublicationPageView.memoryWarningNotification(_:)), name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
         
+        
+        // add subviews
         addSubview(pageLabel)
-        
-        
         addSubview(imageView)
-        
         addSubview(zoomImageView)
         
+//        backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: 0.2)        
         
-        imageView.backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: 0.2)
-        
-        
-        // add gestures
-        let tap = UITapGestureRecognizer(target: self, action: #selector(PDFPublicationPageView.didTap(_:)))
-        
-        let longPress = UILongPressGestureRecognizer(target: self, action:#selector(PDFPublicationPageView.didLongPress(_:)))
-        
-        addGestureRecognizer(longPress)
-        addGestureRecognizer(tap)
-        
-//        let dblTap = UITapGestureRecognizer(target: self, action: #selector(PDFPublicationPageView.didDoubleTap(_:)))
-//        dblTap.numberOfTapsRequired = 2
-//        addGestureRecognizer(dblTap)
+        _initializeGestureRecognizers()
     }
+    
     public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
     deinit {
@@ -67,38 +64,16 @@ public class PDFPublicationPageView : VersoPageView {
     }
     
     
-    func memoryWarningNotification(notification:NSNotification) {
-        clearZoomImage(animated:true)
-    }
     
     
-    func didTap(tap:UITapGestureRecognizer) {
-        // TODO: tell delegate
-        print ("did tap")
-    }
     
-    func didLongPress(press:UILongPressGestureRecognizer) {
-        // TODO: tell delegate (both registered & released)
-        print ("did long press \(press.state.rawValue)")
-    }
-    func didDoubleTap(dblTap:UITapGestureRecognizer) {
-        // TODO: tell delegate
-        print ("did DoubleTap")
-    }
+    // MARK: - Public
     
-    
+    weak public var delegate:PDFPublicationPageViewDelegate?
     
     public private(set) var imageLoadState:ImageLoadState = .NotLoaded
     public private(set) var zoomImageLoadState:ImageLoadState = .NotLoaded
     
-    
-    var aspectRatio:CGFloat = 0
-    
-    
-    
-    
-    
-    weak public var delegate:PDFPublicationPageViewDelegate?
     
     public func startLoadingZoomImageFromURL(zoomImageURL:NSURL) {
         
@@ -216,8 +191,13 @@ public class PDFPublicationPageView : VersoPageView {
     }
 
     
+
     
-    public func reset() {
+    // MARK: - Private
+    
+    private var aspectRatio:CGFloat = 0
+
+    private func reset() {
         imageView.af_cancelImageRequest()
         imageView.image = nil
         imageLoadState = .NotLoaded
@@ -234,9 +214,9 @@ public class PDFPublicationPageView : VersoPageView {
     
     
     
-    // MARK: Subviews
+    // MARK: - Subviews
     
-    var pageLabel:UILabel = {
+    private var pageLabel:UILabel = {
         
         let view = UILabel(frame: CGRectZero)
         view.font = UIFont.systemFontOfSize(UIFont.systemFontSize())
@@ -245,7 +225,7 @@ public class PDFPublicationPageView : VersoPageView {
         return view
     }()
     
-    var imageView:UIImageView = {
+    private var imageView:UIImageView = {
         let view = UIImageView(frame: CGRectZero)
         
         view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
@@ -254,7 +234,7 @@ public class PDFPublicationPageView : VersoPageView {
         return view
     }()
     
-    var zoomImageView:UIImageView = {
+    private var zoomImageView:UIImageView = {
         let view = UIImageView(frame: CGRectZero)
         
         view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
@@ -269,7 +249,7 @@ public class PDFPublicationPageView : VersoPageView {
     
     
     
-    // MARK: UIView subclass
+    // MARK: - UIView subclass
     
     // size based on aspect ratio
     override public func sizeThatFits(size: CGSize) -> CGSize {
@@ -304,4 +284,104 @@ public class PDFPublicationPageView : VersoPageView {
         imageView.frame = bounds
         zoomImageView.frame = bounds
     }
+    
+    
+    
+    // MARK: - Notifications
+    
+    func memoryWarningNotification(notification:NSNotification) {
+        clearZoomImage(animated:true)
+    }
+    
+    
+    
+    // MARK: - Gestures
+    
+    private var touchGesture:UILongPressGestureRecognizer?
+    private var tapGesture:UITapGestureRecognizer?
+    private var longPressGesture:UILongPressGestureRecognizer?
+    private var longPressStartDate:NSDate?
+    
+    private func _initializeGestureRecognizers() {
+        
+        touchGesture = UILongPressGestureRecognizer(target: self, action:#selector(PDFPublicationPageView.didTouch(_:)))
+        touchGesture!.minimumPressDuration = 0.01
+        touchGesture!.cancelsTouchesInView = false
+        touchGesture!.delaysTouchesBegan = false
+        touchGesture!.delaysTouchesEnded = false
+        touchGesture!.delegate = self
+        
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(PDFPublicationPageView.didTap(_:)))
+        tapGesture!.delegate = self
+        
+        longPressGesture = UILongPressGestureRecognizer(target: self, action:#selector(PDFPublicationPageView.didLongPress(_:)))
+        longPressGesture!.delegate = self
+        
+        
+        addGestureRecognizer(longPressGesture!)
+        addGestureRecognizer(tapGesture!)
+        addGestureRecognizer(touchGesture!)
+    }
+    
+    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer == tapGesture ||
+            gestureRecognizer == touchGesture ||
+            gestureRecognizer == longPressGesture {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    
+    
+    
+    func didTouch(touch:UILongPressGestureRecognizer) {
+        guard touch.state == .Began else {
+            return
+        }
+        guard bounds.size.width > 0 && bounds.size.height > 0 else {
+            return
+        }
+        
+        
+        var location = touch.locationInView(self)
+        location.x = location.x / bounds.size.width
+        location.y = location.y / bounds.size.height
+        
+        delegate?.didTouchPDFPublicationPage?(self, location: location)
+    }
+    
+    func didTap(tap:UITapGestureRecognizer) {
+        guard bounds.size.width > 0 && bounds.size.height > 0 else {
+            return
+        }
+        
+        var location = tap.locationInView(self)
+        location.x = location.x / bounds.size.width
+        location.y = location.y / bounds.size.height
+        
+        delegate?.didTapPDFPublicationPage?(self, location: location)
+    }
+    
+    func didLongPress(press:UILongPressGestureRecognizer) {
+        guard bounds.size.width > 0 && bounds.size.height > 0 else {
+            return
+        }
+        
+        var location = press.locationInView(self)
+        location.x = location.x / bounds.size.width
+        location.y = location.y / bounds.size.height
+        
+        if press.state == .Began {
+            longPressStartDate = NSDate()
+            delegate?.didStartLongPressPDFPublicationPage?(self, location: location, duration:press.minimumPressDuration)
+        }
+        else if press.state == .Ended {
+            var duration = longPressStartDate?.timeIntervalSinceNow ?? 0
+            duration = -duration + press.minimumPressDuration
+            delegate?.didEndLongPressPDFPublicationPage?(self, location: location, duration:duration)
+        }
+    }
+
 }

@@ -309,6 +309,17 @@ extension PDFPublicationView : PDFPublicationPageViewDelegate {
 //    public func didLoadPDFPublicationPageZoomImage(pageView:PDFPublicationPageView, imageURL:NSURL, fromCache:Bool) {
 //    
 //    }
+    
+    public func didTapPDFPublicationPage(pageView: PDFPublicationPageView, location: CGPoint) {
+        triggerEvent_PageTapped(pageView.pageIndex, location: location)
+    }
+//    public func didTouchPDFPublicationPage(pageView: PDFPublicationPageView, location: CGPoint) {
+//    }
+//    public func didStartLongPressPDFPublicationPage(pageView: PDFPublicationPageView, location: CGPoint, duration:NSTimeInterval) {
+//    }
+    public func didEndLongPressPDFPublicationPage(pageView: PDFPublicationPageView, location: CGPoint, duration:NSTimeInterval) {
+        triggerEvent_PageLongPressed(pageView.pageIndex, location: location, duration:duration)
+    }
 }
 
 
@@ -344,15 +355,11 @@ extension PDFPublicationView {
     }
     
     
-    func triggerEvent_PageTapped(pageIndex:Int, centerPoint:CGPoint) {
-        print("[EVENT] Page Tapped(\(pageIndex)) \(centerPoint)")
+    func triggerEvent_PageTapped(pageIndex:Int, location:CGPoint) {
+        print("[EVENT] Page Tapped(\(pageIndex)) \(location)")
     }
-    func triggerEvent_PageDoubleTapped(pageIndex:Int, centerPoint:CGPoint) {
-        print("[EVENT] Page Double-Tapped(\(pageIndex)) \(centerPoint)")
-    }
-    
-    func triggerEvent_PageLongPressed(pageIndex:Int, centerPoint:CGPoint) {
-        print("[EVENT] Page LongPressed(\(pageIndex)) \(centerPoint)")
+    func triggerEvent_PageLongPressed(pageIndex:Int, location:CGPoint, duration:NSTimeInterval) {
+        print("[EVENT] Page LongPressed(\(pageIndex)) \(location)")
     }
 }
 
