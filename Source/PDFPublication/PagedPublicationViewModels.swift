@@ -13,7 +13,7 @@ import UIKit
 
 // All properties needed to render a publication view
 @objc
-public protocol PDFPublicationViewModelProtocol {
+public protocol PagedPublicationViewModelProtocol {
     
     // the background brand color of the publication
     var bgColor:UIColor { get }
@@ -30,7 +30,7 @@ public protocol PDFPublicationViewModelProtocol {
 
 
 @objc
-public protocol PDFPublicationPageViewModelProtocol {
+public protocol PagedPublicationPageViewModelProtocol {
     
     var pageIndex:Int { get }
     
@@ -42,12 +42,12 @@ public protocol PDFPublicationPageViewModelProtocol {
     
     var zoomImageURL:NSURL? { get }
     
-    var hotspots:[PDFPublicationHotspotViewModelProtocol]? { get }
+    var hotspots:[PagedPublicationHotspotViewModelProtocol]? { get }
 }
 
 
 @objc
-public protocol PDFPublicationHotspotViewModelProtocol {
+public protocol PagedPublicationHotspotViewModelProtocol {
     var data:AnyObject? { get }
     
     var boundingRect:CGRect { get }
@@ -61,8 +61,8 @@ public protocol PDFPublicationHotspotViewModelProtocol {
 // MARK: Concrete View Models
 
 
-@objc (SGNPDFPublicationViewModel)
-public class PDFPublicationViewModel : NSObject, PDFPublicationViewModelProtocol {
+@objc (SGNPagedPublicationViewModel)
+public class PagedPublicationViewModel : NSObject, PagedPublicationViewModelProtocol {
     public var bgColor: UIColor
     public var pageCount: Int = 0
     public var aspectRatio: Double = 0
@@ -79,8 +79,8 @@ public class PDFPublicationViewModel : NSObject, PDFPublicationViewModelProtocol
     }
 }
 
-@objc (SGNPDFPublicationPageViewModel)
-public class PDFPublicationPageViewModel : NSObject, PDFPublicationPageViewModelProtocol {
+@objc (SGNPagedPublicationPageViewModel)
+public class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewModelProtocol {
     public var pageIndex: Int
     
     public var pageTitle:String?
@@ -93,9 +93,9 @@ public class PDFPublicationPageViewModel : NSObject, PDFPublicationPageViewModel
     public var zoomImage:UIImage?
     
     
-    public var hotspots:[PDFPublicationHotspotViewModelProtocol]?
+    public var hotspots:[PagedPublicationHotspotViewModelProtocol]?
     
-    public init(pageIndex:Int, pageTitle:String?, aspectRatio:Double = 0, imageURL:NSURL? = nil, zoomImageURL:NSURL? = nil, hotspots:[PDFPublicationHotspotViewModelProtocol]? = nil) {
+    public init(pageIndex:Int, pageTitle:String?, aspectRatio:Double = 0, imageURL:NSURL? = nil, zoomImageURL:NSURL? = nil, hotspots:[PagedPublicationHotspotViewModelProtocol]? = nil) {
         self.pageIndex = pageIndex
         self.pageTitle = pageTitle
         self.aspectRatio = aspectRatio
@@ -106,8 +106,8 @@ public class PDFPublicationPageViewModel : NSObject, PDFPublicationPageViewModel
 }
 
 
-@objc (SGNPDFPublicationOfferHotspotViewModel)
-public class PDFPublicationOfferHotspotViewModel : NSObject, PDFPublicationHotspotViewModelProtocol {
+@objc (SGNPagedPublicationOfferHotspotViewModel)
+public class PagedPublicationOfferHotspotViewModel : NSObject, PagedPublicationHotspotViewModelProtocol {
     public var data:AnyObject? = nil // TODO: cast as Offer obj?
     public var boundingRect: CGRect
     

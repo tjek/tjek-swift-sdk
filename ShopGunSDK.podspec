@@ -51,7 +51,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'PDF' do |ss|
-    ss.source_files = 'Source/PDFPublication/**/*.swift'
+    ss.source_files = 'Source/PagedPublication/**/*.swift'
     ss.frameworks   = 'Foundation', 'UIKit'
 
     ss.dependency 'ShopGunSDK/Core'

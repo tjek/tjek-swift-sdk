@@ -13,25 +13,25 @@ import UIKit
 import AlamofireImage
 
 @objc
-public protocol PDFPublicationPageViewDelegate : class {
+public protocol PagedPublicationPageViewDelegate : class {
     
-    optional func didConfigurePDFPublicationPage(pageView:PDFPublicationPageView, viewModel:PDFPublicationPageViewModelProtocol)
+    optional func didConfigurePagedPublicationPage(pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol)
     
-    optional func didLoadPDFPublicationPageImage(pageView:PDFPublicationPageView, imageURL:NSURL, fromCache:Bool)
-    optional func didLoadPDFPublicationPageZoomImage(pageView:PDFPublicationPageView, imageURL:NSURL, fromCache:Bool)
+    optional func didLoadPagedPublicationPageImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)
+    optional func didLoadPagedPublicationPageZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)
     
     /// The user touched a location in the view. The location is as a percentage 0->1 of the width/height from the top-left
-    optional func didTouchPDFPublicationPage(pageView:PDFPublicationPageView, location:CGPoint)
+    optional func didTouchPagedPublicationPage(pageView:PagedPublicationPageView, location:CGPoint)
     /// The user tapped (touched then released) a location in the view. The location is as a percentage 0->1 of the width/height from the top-left
-    optional func didTapPDFPublicationPage(pageView:PDFPublicationPageView, location:CGPoint)
+    optional func didTapPagedPublicationPage(pageView:PagedPublicationPageView, location:CGPoint)
     /// The user began longpressing a location in the view. The location is as a percentage 0->1 of the width/height from the top-left
-    optional func didStartLongPressPDFPublicationPage(pageView:PDFPublicationPageView, location:CGPoint, duration:NSTimeInterval)
+    optional func didStartLongPressPagedPublicationPage(pageView:PagedPublicationPageView, location:CGPoint, duration:NSTimeInterval)
     /// The user finished longpressing a location in the view. The location is as a percentage 0->1 of the width/height from the top-left
-    optional func didEndLongPressPDFPublicationPage(pageView:PDFPublicationPageView, location:CGPoint, duration:NSTimeInterval)
+    optional func didEndLongPressPagedPublicationPage(pageView:PagedPublicationPageView, location:CGPoint, duration:NSTimeInterval)
 }
 
 
-public class PDFPublicationPageView : VersoPageView, UIGestureRecognizerDelegate {
+public class PagedPublicationPageView : VersoPageView, UIGestureRecognizerDelegate {
 
     public enum ImageLoadState {
         case NotLoaded
@@ -44,7 +44,7 @@ public class PDFPublicationPageView : VersoPageView, UIGestureRecognizerDelegate
         super.init(frame: frame)
         
         // listen for memory warnings and clear the zoomimage
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PDFPublicationPageView.memoryWarningNotification(_:)), name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PagedPublicationPageView.memoryWarningNotification(_:)), name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
         
         
         // add subviews
@@ -69,7 +69,7 @@ public class PDFPublicationPageView : VersoPageView, UIGestureRecognizerDelegate
     
     // MARK: - Public
     
-    weak public var delegate:PDFPublicationPageViewDelegate?
+    weak public var delegate:PagedPublicationPageViewDelegate?
     
     public private(set) var imageLoadState:ImageLoadState = .NotLoaded
     public private(set) var zoomImageLoadState:ImageLoadState = .NotLoaded
@@ -90,7 +90,7 @@ public class PDFPublicationPageView : VersoPageView, UIGestureRecognizerDelegate
                 
                 self!.zoomImageLoadState = .Loaded
                 
-                self!.delegate?.didLoadPDFPublicationPageZoomImage?(self!, imageURL:zoomImageURL, fromCache:(response.response == nil))
+                self!.delegate?.didLoadPagedPublicationPageZoomImage?(self!, imageURL:zoomImageURL, fromCache:(response.response == nil))
             }
             else {
                 self!.zoomImageView.hidden = true
@@ -136,7 +136,7 @@ public class PDFPublicationPageView : VersoPageView, UIGestureRecognizerDelegate
                 
                 self!.imageLoadState = .Loaded
                 
-                self!.delegate?.didLoadPDFPublicationPageImage?(self!, imageURL:imageURL, fromCache:(response.response == nil))
+                self!.delegate?.didLoadPagedPublicationPageImage?(self!, imageURL:imageURL, fromCache:(response.response == nil))
             }
             else {
                 
@@ -172,7 +172,7 @@ public class PDFPublicationPageView : VersoPageView, UIGestureRecognizerDelegate
         }
     }
     
-    public func configure(viewModel: PDFPublicationPageViewModelProtocol) {
+    public func configure(viewModel: PagedPublicationPageViewModelProtocol) {
         
         reset()
         
@@ -187,7 +187,7 @@ public class PDFPublicationPageView : VersoPageView, UIGestureRecognizerDelegate
             startLoadingImageFromURL(imageURL)
         }
         
-        delegate?.didConfigurePDFPublicationPage?(self, viewModel: viewModel)
+        delegate?.didConfigurePagedPublicationPage?(self, viewModel: viewModel)
     }
 
     
@@ -304,17 +304,17 @@ public class PDFPublicationPageView : VersoPageView, UIGestureRecognizerDelegate
     
     private func _initializeGestureRecognizers() {
         
-        touchGesture = UILongPressGestureRecognizer(target: self, action:#selector(PDFPublicationPageView.didTouch(_:)))
+        touchGesture = UILongPressGestureRecognizer(target: self, action:#selector(PagedPublicationPageView.didTouch(_:)))
         touchGesture!.minimumPressDuration = 0.01
         touchGesture!.cancelsTouchesInView = false
         touchGesture!.delaysTouchesBegan = false
         touchGesture!.delaysTouchesEnded = false
         touchGesture!.delegate = self
         
-        tapGesture = UITapGestureRecognizer(target: self, action: #selector(PDFPublicationPageView.didTap(_:)))
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(PagedPublicationPageView.didTap(_:)))
         tapGesture!.delegate = self
         
-        longPressGesture = UILongPressGestureRecognizer(target: self, action:#selector(PDFPublicationPageView.didLongPress(_:)))
+        longPressGesture = UILongPressGestureRecognizer(target: self, action:#selector(PagedPublicationPageView.didLongPress(_:)))
         longPressGesture!.delegate = self
         
         
@@ -349,7 +349,7 @@ public class PDFPublicationPageView : VersoPageView, UIGestureRecognizerDelegate
         location.x = location.x / bounds.size.width
         location.y = location.y / bounds.size.height
         
-        delegate?.didTouchPDFPublicationPage?(self, location: location)
+        delegate?.didTouchPagedPublicationPage?(self, location: location)
     }
     
     func didTap(tap:UITapGestureRecognizer) {
@@ -361,7 +361,7 @@ public class PDFPublicationPageView : VersoPageView, UIGestureRecognizerDelegate
         location.x = location.x / bounds.size.width
         location.y = location.y / bounds.size.height
         
-        delegate?.didTapPDFPublicationPage?(self, location: location)
+        delegate?.didTapPagedPublicationPage?(self, location: location)
     }
     
     func didLongPress(press:UILongPressGestureRecognizer) {
@@ -375,12 +375,12 @@ public class PDFPublicationPageView : VersoPageView, UIGestureRecognizerDelegate
         
         if press.state == .Began {
             longPressStartDate = NSDate()
-            delegate?.didStartLongPressPDFPublicationPage?(self, location: location, duration:press.minimumPressDuration)
+            delegate?.didStartLongPressPagedPublicationPage?(self, location: location, duration:press.minimumPressDuration)
         }
         else if press.state == .Ended {
             var duration = longPressStartDate?.timeIntervalSinceNow ?? 0
             duration = -duration + press.minimumPressDuration
-            delegate?.didEndLongPressPDFPublicationPage?(self, location: location, duration:duration)
+            delegate?.didEndLongPressPagedPublicationPage?(self, location: location, duration:duration)
         }
     }
 

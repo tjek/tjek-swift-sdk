@@ -13,8 +13,8 @@ import ShopGunSDK
 
 class PDFViewController : UIViewController {
     
-    lazy var publicationView:PDFPublicationView = {
-        let view = PDFPublicationView()
+    lazy var publicationView:PagedPublicationView = {
+        let view = PagedPublicationView()
 
         return view
     }()
@@ -34,10 +34,10 @@ class PDFViewController : UIViewController {
         let pubId = "902a2e3"
         
         
-        let viewModel = PDFPublicationViewModel(bgColor:bgColor, pageCount:pageCount, aspectRatio:aspectRatio)
+        let viewModel = PagedPublicationViewModel(bgColor:bgColor, pageCount:pageCount, aspectRatio:aspectRatio)
         publicationView.updateWithPublicationViewModel(viewModel)
         
-        var pageModels = [PDFPublicationPageViewModel]()
+        var pageModels = [PagedPublicationPageViewModel]()
         for index in 0..<pageCount {
             
 //            let defaultUrl:NSURL? = nil
@@ -46,7 +46,7 @@ class PDFViewController : UIViewController {
             let defaultUrl = NSURL(string:"https://akamai.shopgun.com/img/catalog/view/\(pubId)-\(index+1).jpg")
             let zoomUrl = NSURL(string:"https://akamai.shopgun.com/img/catalog/zoom/\(pubId)-\(index+1).jpg")
             
-            let pageModel = PDFPublicationPageViewModel(pageIndex:index, pageTitle: "Page "+String(index), aspectRatio: aspectRatio, imageURL: defaultUrl, zoomImageURL: zoomUrl, hotspots: nil)
+            let pageModel = PagedPublicationPageViewModel(pageIndex:index, pageTitle: "Page "+String(index), aspectRatio: aspectRatio, imageURL: defaultUrl, zoomImageURL: zoomUrl, hotspots: nil)
             pageModels.append(pageModel)
         }
         

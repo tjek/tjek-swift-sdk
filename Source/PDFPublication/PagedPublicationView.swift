@@ -11,16 +11,16 @@ import UIKit
 
 import AlamofireImage
 
-@objc(SGNPDFPublicationView)
-public class PDFPublicationView : UIView {
+@objc(SGNPagedPublicationView)
+public class PagedPublicationView : UIView {
 
     public override init(frame: CGRect) {
         super.init(frame:frame)
         
         
         // setup notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PDFPublicationView._didEnterBackgroundNotification(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PDFPublicationView._willEnterForegroundNotification(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PagedPublicationView._didEnterBackgroundNotification(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PagedPublicationView._willEnterForegroundNotification(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
         
         
         backgroundColor = UIColor.whiteColor()
@@ -53,7 +53,7 @@ public class PDFPublicationView : UIView {
     
     
     // TODO: setting this will trigger changes
-    public func updateWithPublicationViewModel(viewModel:PDFPublicationViewModelProtocol?) {
+    public func updateWithPublicationViewModel(viewModel:PagedPublicationViewModelProtocol?) {
         
         publicationViewModel = viewModel
         
@@ -65,7 +65,7 @@ public class PDFPublicationView : UIView {
         verso.reloadPages()
     }
     
-    public func updatePages(viewModels:[PDFPublicationPageViewModel]?) {
+    public func updatePages(viewModels:[PagedPublicationPageViewModel]?) {
         
         pageViewModels = viewModels
         
@@ -76,7 +76,7 @@ public class PDFPublicationView : UIView {
     }
     
     
-    public func updateHotspots(viewModels:[PDFPublicationHotspotViewModelProtocol]?) {
+    public func updateHotspots(viewModels:[PagedPublicationHotspotViewModelProtocol]?) {
         
         // TODO: re-config the visible pages
     }
@@ -89,19 +89,19 @@ public class PDFPublicationView : UIView {
 
     // MARK: - Private properties
     
-    private var publicationViewModel:PDFPublicationViewModelProtocol? = nil {
+    private var publicationViewModel:PagedPublicationViewModelProtocol? = nil {
         didSet {
             
         }
     }
-    private var pageViewModels:[PDFPublicationPageViewModel]? = nil {
+    private var pageViewModels:[PagedPublicationPageViewModel]? = nil {
         didSet {
 
         }
     }
     
     /// The indexes of active pages that havnt been loaded yet. This set changes when pages are activated and deactivated, and when images are loaded
-    /// Used by the PDFPublicationPageViewDelegate methods
+    /// Used by the PagedPublicationPageViewDelegate methods
     private var activePageIndexesWithPendingLoadEvents = NSMutableIndexSet()
     
     /// the indexes of the pages that are loading their zoom images.
@@ -137,7 +137,7 @@ public class PDFPublicationView : UIView {
 
 // MARK: - VersoView DataSource
 
-extension PDFPublicationView : VersoViewDataSource {
+extension PagedPublicationView : VersoViewDataSource {
 
     public func pageCountForVerso(verso: VersoView) -> Int {
         return pageViewModels?.count ?? publicationViewModel?.pageCount ?? 0
@@ -145,7 +145,7 @@ extension PDFPublicationView : VersoViewDataSource {
     
     public func configurePageForVerso(verso: VersoView, pageView: VersoPageView) {
         
-        if let pubPage = pageView as? PDFPublicationPageView {
+        if let pubPage = pageView as? PagedPublicationPageView {
             
             let pageIndex = pubPage.pageIndex
             
@@ -160,7 +160,7 @@ extension PDFPublicationView : VersoViewDataSource {
             else
             {
                 // build blank view model
-                let viewModel = PDFPublicationPageViewModel(pageIndex:pageIndex, pageTitle:String(pageIndex+1), aspectRatio: publicationViewModel!.aspectRatio)
+                let viewModel = PagedPublicationPageViewModel(pageIndex:pageIndex, pageTitle:String(pageIndex+1), aspectRatio: publicationViewModel!.aspectRatio)
                 
                 pubPage.configure(viewModel)
             }
@@ -168,7 +168,7 @@ extension PDFPublicationView : VersoViewDataSource {
     }
     
     public func pageViewClassForVerso(verso:VersoView) -> VersoPageViewClass {
-        return PDFPublicationPageView.self
+        return PagedPublicationPageView.self
     }
     
     public func isVersoSinglePagedForSize(verso:VersoView, size:CGSize) -> Bool {
@@ -189,7 +189,7 @@ extension PDFPublicationView : VersoViewDataSource {
 
 // MARK: - VersoView Delegate
 
-extension PDFPublicationView : VersoViewDelegate {
+extension PagedPublicationView : VersoViewDelegate {
     
     private func _pageDidAppear(pageIndex:Int) {
         
@@ -199,7 +199,7 @@ extension PDFPublicationView : VersoViewDelegate {
         
         
         // if image loaded then trigger 'PAGE_LOADED' event
-        if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PDFPublicationPageView
+        if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView
             where pageView.imageLoadState == .Loaded {
             
             triggerEvent_PageLoaded(pageIndex, fromCache: true)
@@ -228,7 +228,7 @@ extension PDFPublicationView : VersoViewDelegate {
 
             
             // cancel the loading of the zoomimage
-            if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PDFPublicationPageView {
+            if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView {
                 pageView.clearZoomImage(animated: false)
             }
         }
@@ -258,7 +258,7 @@ extension PDFPublicationView : VersoViewDelegate {
         if zoomScale > 1 {
             
             for pageIndex in zoomingPageIndexes {
-                if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PDFPublicationPageView
+                if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView
                     where pageView.zoomImageLoadState == .NotLoaded,
                     let zoomImageURL = pageViewModels?[safe:pageIndex]?.zoomImageURL {
                     
@@ -280,15 +280,15 @@ extension PDFPublicationView : VersoViewDelegate {
     
 
     
-// MARK: - PDFPublicationPage delegate
+// MARK: - PagedPublicationPage delegate
 
-extension PDFPublicationView : PDFPublicationPageViewDelegate {
+extension PagedPublicationView : PagedPublicationPageViewDelegate {
  
-//    public func didConfigurePDFPublicationPage(pageView:PDFPublicationPageView, viewModel:PDFPublicationPageViewModelProtocol) {
+//    public func didConfigurePagedPublicationPage(pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol) {
 //        
 //    }
     
-    public func didLoadPDFPublicationPageImage(pageView:PDFPublicationPageView, imageURL:NSURL, fromCache:Bool) {
+    public func didLoadPagedPublicationPageImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool) {
         
         let pageIndex = pageView.pageIndex
         
@@ -306,18 +306,18 @@ extension PDFPublicationView : PDFPublicationPageViewDelegate {
             activePageIndexesWithPendingLoadEvents.removeIndex(Int(pageIndex))
         }
     }
-//    public func didLoadPDFPublicationPageZoomImage(pageView:PDFPublicationPageView, imageURL:NSURL, fromCache:Bool) {
+//    public func didLoadPagedPublicationPageZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool) {
 //    
 //    }
     
-    public func didTapPDFPublicationPage(pageView: PDFPublicationPageView, location: CGPoint) {
+    public func didTapPagedPublicationPage(pageView: PagedPublicationPageView, location: CGPoint) {
         triggerEvent_PageTapped(pageView.pageIndex, location: location)
     }
-//    public func didTouchPDFPublicationPage(pageView: PDFPublicationPageView, location: CGPoint) {
+//    public func didTouchPagedPublicationPage(pageView: PagedPublicationPageView, location: CGPoint) {
 //    }
-//    public func didStartLongPressPDFPublicationPage(pageView: PDFPublicationPageView, location: CGPoint, duration:NSTimeInterval) {
+//    public func didStartLongPressPagedPublicationPage(pageView: PagedPublicationPageView, location: CGPoint, duration:NSTimeInterval) {
 //    }
-    public func didEndLongPressPDFPublicationPage(pageView: PDFPublicationPageView, location: CGPoint, duration:NSTimeInterval) {
+    public func didEndLongPressPagedPublicationPage(pageView: PagedPublicationPageView, location: CGPoint, duration:NSTimeInterval) {
         triggerEvent_PageLongPressed(pageView.pageIndex, location: location, duration:duration)
     }
 }
@@ -330,7 +330,7 @@ extension PDFPublicationView : PDFPublicationPageViewDelegate {
 // MARK: - Event Handling
 
 // TODO: move to another file
-extension PDFPublicationView {
+extension PagedPublicationView {
     
     func triggerEvent_PageAppeared(pageIndex:Int) {
         print("[EVENT] Page Appeared(\(pageIndex))")
@@ -364,7 +364,7 @@ extension PDFPublicationView {
 }
 
 
-//enum PDFPublicationEventType {
+//enum PagedPublicationEventType {
 //    case Opened(id:String, pageNumber:Int, pageCount:Int)
 //    
 //    
@@ -384,9 +384,9 @@ extension PDFPublicationView {
 
 // MARK: - Fetching
 // TODO: move to another file
-public extension PDFPublicationView {
+public extension PagedPublicationView {
     
-    // uses graphKit to fetch the PDFPublication for the specified publicationId
+    // uses graphKit to fetch the PagedPublication for the specified publicationId
     public func fetchContents(publicationId:String) {
         // put it in a `fetching` state
         
