@@ -56,7 +56,6 @@ public protocol VersoViewDataSource : class {
     optional func maxiumZoomScaleForVerso(verso:VersoView) -> CGFloat
     
     
-    //    optional func outroViewForVerso(verso:VersoView) -> UIView?
 }
 
 
@@ -1004,13 +1003,13 @@ extension UIScrollView {
 
         }
     
+        
         let animated = true
         
-        
         // here we use a custom animation to make zooming faster/nicer
-        let duration:NSTimeInterval = zoomedIn ? 0.30 : 0.40;
+        let duration:NSTimeInterval = zoomedIn ? 0.50 : 0.60;
         let damping:CGFloat = zoomedIn ? 0.9 : 0.8;
-        let initialVelocity:CGFloat = zoomedIn ? 0.9 : 0.75;
+        let initialVelocity:CGFloat = zoomedIn ? 0.9 : 0.8;
 
     
         UIView.animateWithDuration(animated ? duration : 0, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: initialVelocity, options: [.BeginFromCurrentState], animations: zoomAnimations) { [weak self] finished in
