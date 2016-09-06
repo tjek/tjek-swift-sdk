@@ -30,8 +30,48 @@ public protocol PagedPublicationPageViewDelegate : class {
     optional func didEndLongPressPagedPublicationPage(pageView:PagedPublicationPageView, location:CGPoint, duration:NSTimeInterval)
 }
 
+public class LabelledVersoPageView : VersoPageView {
+    
+    public required init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        // add subviews
+        addSubview(pageLabel)
+        
+        layer.borderColor = UIColor(white: 0, alpha: 0.5).CGColor
+        layer.borderWidth = 1
+        
+        backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1.0)
+    }
+    
+    public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
+    
+    
+    public var pageLabel:UILabel = {
+        
+        let view = UILabel(frame: CGRectZero)
+        view.font = UIFont.systemFontOfSize(UIFont.systemFontSize())
+        view.textAlignment = .Center
+        
+        return view
+    }()
+    
+    
+    override public func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // position label in the middle
+        var labelFrame = pageLabel.frame
+        labelFrame.size = pageLabel.sizeThatFits(frame.size)
+        labelFrame.origin = CGPoint(x:round(bounds.size.width/2 - labelFrame.size.width/2), y:round(bounds.size.height/2 - labelFrame.size.height/2))
+        
+        pageLabel.frame = labelFrame
+    }
 
-public class PagedPublicationPageView : VersoPageView, UIGestureRecognizerDelegate {
+}
+
+
+public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizerDelegate {
 
     public enum ImageLoadState {
         case NotLoaded
@@ -48,11 +88,10 @@ public class PagedPublicationPageView : VersoPageView, UIGestureRecognizerDelega
         
         
         // add subviews
-        addSubview(pageLabel)
         addSubview(imageView)
         addSubview(zoomImageView)
         
-//        backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: 0.2)        
+        backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1.0)
         
         _initializeGestureRecognizers()
     }
@@ -215,15 +254,6 @@ public class PagedPublicationPageView : VersoPageView, UIGestureRecognizerDelega
     
     
     // MARK: - Subviews
-    
-    private var pageLabel:UILabel = {
-        
-        let view = UILabel(frame: CGRectZero)
-        view.font = UIFont.systemFontOfSize(UIFont.systemFontSize())
-        view.textAlignment = .Center
-        
-        return view
-    }()
     
     private var imageView:UIImageView = {
         let view = UIImageView(frame: CGRectZero)

@@ -46,16 +46,6 @@ public protocol PagedPublicationPageViewModelProtocol {
 }
 
 
-@objc
-public protocol PagedPublicationHotspotViewModelProtocol {
-    var data:AnyObject? { get }
-    
-    var boundingRect:CGRect { get }
-}
-
-
-
-
 
 
 // MARK: Concrete View Models
@@ -106,13 +96,42 @@ public class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewM
 }
 
 
+
+
+@objc
+public protocol PagedPublicationHotspotViewModelProtocol {
+    var data:AnyObject? { get }
+    
+    /// return CGRectNull if the hotspot isnt in that page
+    func getLocationForPageIndex(pageIndex:Int)->CGRect
+    
+    func getPageIndexes()->NSIndexSet
+}
+
+
 @objc (SGNPagedPublicationOfferHotspotViewModel)
 public class PagedPublicationOfferHotspotViewModel : NSObject, PagedPublicationHotspotViewModelProtocol {
-    public var data:AnyObject? = nil // TODO: cast as Offer obj?
-    public var boundingRect: CGRect
     
-    public init(rect:CGRect, data:AnyObject? = nil) {
-        self.boundingRect = rect
+    public var data:AnyObject? = nil // TODO: cast as Offer obj?
+    
+    
+    public func getLocationForPageIndex(pageIndex:Int)->CGRect {
+        return locations[pageIndex] ?? CGRectNull
+    }
+    
+    public func getPageIndexes()->NSIndexSet {
+        let pageIndexes = NSMutableIndexSet()
+//        for pageIndex in locations.keys.enumerate() {
+//            pageIndexes.addIndex(pageIndex)
+//        }
+        return pageIndexes
+    }
+    
+    private var locations:[Int:CGRect]
+    
+    public init(locations:[Int:CGRect], pageIndexes:[Int], data:AnyObject? = nil) {
+        self.locations = locations
+//        self.pageIndexes = pageIndexes
         self.data = data
     }
 }

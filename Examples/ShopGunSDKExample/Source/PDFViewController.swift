@@ -30,7 +30,7 @@ class PDFViewController : UIViewController {
         
         let aspectRatio:Double = 647/962
         let bgColor = UIColor(red:0.93, green:0.93, blue:0.93, alpha:1.00)
-        let pageCount = 22
+        let pageCount = 3
         let pubId = "902a2e3"
         
         

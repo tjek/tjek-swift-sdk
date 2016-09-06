@@ -26,6 +26,7 @@ public class PagedPublicationView : UIView {
         backgroundColor = UIColor.whiteColor()
         
         verso.frame = frame
+        verso.clipsToBounds = false
         verso.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         addSubview(verso)
         
@@ -44,6 +45,11 @@ public class PagedPublicationView : UIView {
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidEnterBackgroundNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillEnterForegroundNotification, object: nil)
+    }
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        verso.frame = bounds
     }
     
     
@@ -119,12 +125,12 @@ public class PagedPublicationView : UIView {
     
     // MARK: Notification handlers
     func _didEnterBackgroundNotification(notification:NSNotification) {
-        for pageIndex in verso.activePageIndexes {
+        for pageIndex in verso.lastActivePageIndexes {
             triggerEvent_PageDisappeared(pageIndex)
         }
     }
     func _willEnterForegroundNotification(notification:NSNotification) {
-        for pageIndex in verso.activePageIndexes {
+        for pageIndex in verso.lastActivePageIndexes {
             _pageDidAppear(pageIndex)
         }
     }
@@ -139,10 +145,6 @@ public class PagedPublicationView : UIView {
 
 extension PagedPublicationView : VersoViewDataSource {
 
-    public func pageCountForVerso(verso: VersoView) -> Int {
-        return pageViewModels?.count ?? publicationViewModel?.pageCount ?? 0
-    }
-    
     public func configurePageForVerso(verso: VersoView, pageView: VersoPageView) {
         
         if let pubPage = pageView as? PagedPublicationPageView {
@@ -165,21 +167,48 @@ extension PagedPublicationView : VersoViewDataSource {
                 pubPage.configure(viewModel)
             }
         }
+        else if let labelPage = pageView as? LabelledVersoPageView {
+            labelPage.backgroundColor = (pageView.pageIndex % 2 == 1) ? UIColor(red: 1, green: 0.9, blue: 0.9, alpha: 0.4 ) : UIColor(red: 0.9, green: 1, blue: 0.9, alpha: 0.4)
+            labelPage.pageLabel.text = String(labelPage.pageIndex)
+        }
     }
     
-    public func pageViewClassForVerso(verso:VersoView) -> VersoPageViewClass {
-        return PagedPublicationPageView.self
+    public func pageViewClassForVerso(verso:VersoView, pageIndex:Int) -> VersoPageViewClass {
+//        if pageIndex % 2 == 1 {
+            return LabelledVersoPageView.self
+//        } else {
+//            return PagedPublicationPageView.self
+//        }
     }
     
-    public func isVersoSinglePagedForSize(verso:VersoView, size:CGSize) -> Bool {
+    
+    public func spreadConfigurationForVerso(verso:VersoView, size:CGSize) -> VersoSpreadConfiguration {
+        let pageCount = pageViewModels?.count ?? publicationViewModel?.pageCount ?? 0
         
         // TODO: compare verso aspect ratio to publication aspect ratio
-//        let versoAspectRatio = size.height > 0 ? size.width / size.height : 1
-//        let isVersoPortrait = versoAspectRatio < 1
-//        if let contentAspectRatio = publicationViewModel?.aspectRatio {
-//
-//        }
-        return size.width <= size.height
+        //        let versoAspectRatio = size.height > 0 ? size.width / size.height : 1
+        //        let isVersoPortrait = versoAspectRatio < 1
+        //        if let contentAspectRatio = publicationViewModel?.aspectRatio {
+        //
+        //        }
+
+        let isLandscape:Bool = size.width > size.height
+        
+        return VersoSpreadConfiguration.buildPageSpreadConfiguration(pageCount+1, spreadSpacing: 20, spreadPropertyConstructor: { (spreadIndex, nextPageIndex) -> (pageCount: Int, maxZoomScale: CGFloat, widthPercentage: CGFloat) in
+            
+            let isFirstPage = nextPageIndex == 0
+            let isOutro = (nextPageIndex == pageCount)
+            let isLastPage = (nextPageIndex == pageCount-1)
+            
+            
+            let isSinglePage = isFirstPage || isOutro || isLastPage || !isLandscape
+            
+            let spreadPageCount = isSinglePage ? 1 : 2
+            
+            let outroWidth:CGFloat = isLandscape ? 0.8 : 0.7
+            
+            return (spreadPageCount, isOutro ? 0.0 : 4.0, isOutro ? outroWidth : 1.0)
+        })
     }
 }
 
@@ -333,33 +362,33 @@ extension PagedPublicationView : PagedPublicationPageViewDelegate {
 extension PagedPublicationView {
     
     func triggerEvent_PageAppeared(pageIndex:Int) {
-        print("[EVENT] Page Appeared(\(pageIndex))")
+//        print("[EVENT] Page Appeared(\(pageIndex))")
     }
     func triggerEvent_PageLoaded(pageIndex:Int,fromCache:Bool) {
-        print("[EVENT] Page Loaded\(pageIndex) cache:\(fromCache)")
+//        print("[EVENT] Page Loaded\(pageIndex) cache:\(fromCache)")
     }
     func triggerEvent_PageDisappeared(pageIndex:Int) {
-        print("[EVENT] Page Disappeared(\(pageIndex))")
+//        print("[EVENT] Page Disappeared(\(pageIndex))")
     }
     func triggerEvent_PagesChanged(fromPageIndexes:NSIndexSet, toPageIndexes:NSIndexSet) {
         // TODO: page Changed events
-        print("[EVENT] Page Changed(\(fromPageIndexes.arrayOfAllIndexes()) -> \(toPageIndexes.arrayOfAllIndexes()))")
+//        print("[EVENT] Page Changed(\(fromPageIndexes.arrayOfAllIndexes()) -> \(toPageIndexes.arrayOfAllIndexes()))")
     }
     
     
     func triggerEvent_PageZoomedIn(pageIndexes:NSIndexSet, centerPoint:CGPoint) {
-        print("[EVENT] Page Zoomed In(\(pageIndexes.arrayOfAllIndexes())) \(centerPoint)")
+//        print("[EVENT] Page Zoomed In(\(pageIndexes.arrayOfAllIndexes())) \(centerPoint)")
     }
     func triggerEvent_PageZoomedOut(pageIndexes:NSIndexSet, centerPoint:CGPoint) {
-        print("[EVENT] Page Zoomed Out(\(pageIndexes.arrayOfAllIndexes())) \(centerPoint)")
+//        print("[EVENT] Page Zoomed Out(\(pageIndexes.arrayOfAllIndexes())) \(centerPoint)")
     }
     
     
     func triggerEvent_PageTapped(pageIndex:Int, location:CGPoint) {
-        print("[EVENT] Page Tapped(\(pageIndex)) \(location)")
+//        print("[EVENT] Page Tapped(\(pageIndex)) \(location)")
     }
     func triggerEvent_PageLongPressed(pageIndex:Int, location:CGPoint, duration:NSTimeInterval) {
-        print("[EVENT] Page LongPressed(\(pageIndex)) \(location)")
+//        print("[EVENT] Page LongPressed(\(pageIndex)) \(location)")
     }
 }
 
