@@ -157,8 +157,7 @@ extension PagedPublicationView : VersoViewDataSource {
                 
                 // valid view model
                 pubPage.configure(viewModel)
-            }
-                
+            }                
             else
             {
                 // build blank view model
@@ -168,17 +167,17 @@ extension PagedPublicationView : VersoViewDataSource {
             }
         }
         else if let labelPage = pageView as? LabelledVersoPageView {
-            labelPage.backgroundColor = (pageView.pageIndex % 2 == 1) ? UIColor(red: 1, green: 0.9, blue: 0.9, alpha: 0.4 ) : UIColor(red: 0.9, green: 1, blue: 0.9, alpha: 0.4)
             labelPage.pageLabel.text = String(labelPage.pageIndex)
         }
     }
     
     public func pageViewClassForVerso(verso:VersoView, pageIndex:Int) -> VersoPageViewClass {
-//        if pageIndex % 2 == 1 {
+
+        if let pageCount = verso.spreadConfiguration?.pageCount where pageIndex == pageCount-1 {
             return LabelledVersoPageView.self
-//        } else {
-//            return PagedPublicationPageView.self
-//        }
+        } else {
+            return PagedPublicationPageView.self
+        }
     }
     
     
@@ -241,6 +240,8 @@ extension PagedPublicationView : VersoViewDelegate {
     
     public func activePagesDidChangeForVerso(verso: VersoView, activePageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
         
+//        print ("active pages changed: \(activePageIndexes.arrayOfAllIndexes())")
+        
         // go through all the newly added page indexes, triggering `appeared` (and possibly `loaded`) events
         for pageIndex in added {
             // scrolling animation stopped and a new set of page Indexes are now visible.
@@ -263,23 +264,23 @@ extension PagedPublicationView : VersoViewDelegate {
         }
     }
     
-    public func visiblePagesDidChangeForVerso(verso: VersoView, visiblePageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
+    public func currentPagesDidChangeForVerso(verso: VersoView, currentPageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
         
         // TODO: start pre-warming images if we scroll past a certain point (and dont scroll back again within a time-frame)
-//        print ("visible pages changed: \(visiblePageIndexes.arrayOfAllIndexes())")
+//        print ("current pages changed: \(currentPageIndexes.arrayOfAllIndexes())")
     }
     
     
     public func didStartZoomingPagesForVerso(verso: VersoView, zoomingPageIndexes: NSIndexSet, zoomScale: CGFloat) {
         
+//        print ("did start zooming \(zoomScale) \(zoomingPageIndexes.arrayOfAllIndexes())")
         
-//        print ("did start zooming \(zoomScale)")
     }
     
     public func didZoomPagesForVerso(verso: VersoView, zoomingPageIndexes: NSIndexSet, zoomScale: CGFloat) {
         
+//        print ("did zoom \(zoomScale) \(zoomingPageIndexes.arrayOfAllIndexes())")
         
-//        print ("did zoom \(zoomScale)")
     }
     
     public func didEndZoomingPagesForVerso(verso: VersoView, zoomingPageIndexes: NSIndexSet, zoomScale: CGFloat) {
@@ -298,7 +299,7 @@ extension PagedPublicationView : VersoViewDelegate {
             }
         }
         
-//        print ("did end zooming \(zoomScale)")
+//        print ("did end zooming \(zoomScale) \(zoomingPageIndexes.arrayOfAllIndexes())")
     }
     
 }

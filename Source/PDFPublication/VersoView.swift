@@ -13,8 +13,11 @@ import UIKit
 // MARK: - Delegate
 @objc
 public protocol VersoViewDelegate : class {
+    
+    /// This is triggered whenever the centered pages change, but only once any scrolling animation finishes.
     optional func activePagesDidChangeForVerso(verso:VersoView, activePageIndexes:NSIndexSet, added:NSIndexSet, removed:NSIndexSet)
-    optional func visiblePagesDidChangeForVerso(verso:VersoView, visiblePageIndexes:NSIndexSet, added:NSIndexSet, removed:NSIndexSet)
+    /// This is triggered whenever the centered pages change, whilst the user is scrolling.
+    optional func currentPagesDidChangeForVerso(verso:VersoView, currentPageIndexes:NSIndexSet, added:NSIndexSet, removed:NSIndexSet)
     
     optional func didStartZoomingPagesForVerso(verso:VersoView, zoomingPageIndexes:NSIndexSet, zoomScale:CGFloat)
     optional func didZoomPagesForVerso(verso:VersoView, zoomingPageIndexes:NSIndexSet, zoomScale:CGFloat)
@@ -82,8 +85,80 @@ public typealias VersoPageViewClass = VersoPageView.Type
 
 public class VersoView : UIView {
     
+    // MARK: - UIView subclassing
     
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(pageScrollView)
+        
+        pageScrollView.addSubview(zoomView)
+        
+        setNeedsLayout()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    override public func layoutSubviews() {
+        assert(dataSource != nil, "You must provide a VersoDataSource")
+        
+        
+        
+        
+        // move pageViews out of zoomView (without side-effects)
+        UIView.performWithoutAnimation { [weak self] in
+            self?._resetZoomView()
+        }
+        
+        
+        super.layoutSubviews()
+        
+        
+        pageScrollView.frame = bounds
+        
+        
+        let oldVersoSize = versoSize
+        versoSize = bounds.size
+        
+        
+        // get a new spread configuration
+        let oldSpreadConfig = spreadConfiguration
+        if spreadConfiguration == nil || versoSize != oldVersoSize {
+            spreadConfiguration = dataSource?.spreadConfigurationForVerso(self, size: versoSize)
+        }
+        
+        
+        // there was a change in size or configuration ... relayout
+        if oldVersoSize != versoSize || oldSpreadConfig != spreadConfiguration {
+            
+            // recalc all layout states, and update spreads
+            _updateSpreadPositions()
+            
+        }
+    }
+    
+    override public func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        
+        // When Verso is moved to a new superview, reload all the pages.
+        // This is basically a 'first-run' event
+        if superview != nil {
+            reloadPages()
+        }
+    }
+    
+    
+
+    
+    
+    
+    /// The datasource for this VersoView. You must set this.
     public weak var dataSource:VersoViewDataSource?
+    
+    /// The delegate for this Veros. This is optional.
     public weak var delegate:VersoViewDelegate?
     
     
@@ -91,11 +166,23 @@ public class VersoView : UIView {
     /// The page indexes that were active when scrolling animations last ended
     public private(set) var lastActivePageIndexes:NSIndexSet = NSIndexSet()
     
+    /// All the page indexes that are currently the target of this VersoView
+    public private(set) var currentPageIndexes:NSIndexSet = NSIndexSet()
+    
+    /// The spreadConfiguration provided by the dataSource
+    public private(set) var spreadConfiguration:VersoSpreadConfiguration?
     
     
+    
+    /// This triggers a refetch of info from the dataSource, and all the pageViews are re-configured.
     public func reloadPages() {
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
             guard self != nil else { return }
+            
+            for (_, pageView) in self!.pageViewsByPageIndex {
+                pageView.removeFromSuperview()
+            }
+            self?.pageViewsByPageIndex = [:]
             
             self?.lastActiveSpreadIndex = nil
             self?.currentSpreadIndex = 0
@@ -105,6 +192,7 @@ public class VersoView : UIView {
         }
     }
     
+    /// Scrolls the VersoView to point to a specific page. This is a no-op if the page doesnt exist.
     public func jumpToPage(pageIndex:Int, animated:Bool) {
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
             
@@ -112,13 +200,14 @@ public class VersoView : UIView {
                 return
             }
             
-            let spreadIndex = self?.spreadConfiguration?.spreadIndexForPageIndex(pageIndex) ?? 0
-            
-            self?.pageScrollView.setContentOffset(VersoView.calc_scrollOffsetForSpread(spreadIndex, spreadFrames:self!.spreadFrames, versoSize: self!.versoSize), animated: animated)
+            if let spreadIndex = self?.spreadConfiguration?.spreadIndexForPageIndex(pageIndex) {
+                self?.pageScrollView.setContentOffset(VersoView.calc_scrollOffsetForSpread(spreadIndex, spreadFrames:self!.spreadFrames, versoSize: self!.versoSize), animated: animated)
+            }
         }
     }
     
     
+    /// This causes all the preloaded pages to be reconfigured by the dataSource
     public func reconfigureVisiblePages() {
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
             guard self != nil else { return }
@@ -138,94 +227,30 @@ public class VersoView : UIView {
     
     
     
-    // MARK: - UIView subclassing
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        addSubview(pageScrollView)
-        
-        
-        pageScrollView.addSubview(zoomView)
-        
-        reloadPages()
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
-    override public func layoutSubviews() {
-        assert(dataSource != nil, "You must provide a VersoDataSource")
-        
-        super.layoutSubviews()
-        
-        
-        pageScrollView.frame = bounds
-        
-        
-        let oldVersoSize = versoSize
-        versoSize = bounds.size
-        
-        
-        // get a new spread configuration
-        let oldSpreadConfig = spreadConfiguration
-        if spreadConfiguration == nil || versoSize != oldVersoSize {
-             spreadConfiguration = dataSource?.spreadConfigurationForVerso(self, size: versoSize)
-        }
-        
-        
-        // there was a change in size or configuration ... relayout
-        if oldVersoSize != versoSize || oldSpreadConfig != spreadConfiguration {
-            
-            // recalc all layout states, and update spreads
-            _updateSpreadPositions()
-
-        }
-    }
-    
-    override public func didMoveToSuperview() {
-        super.didMoveToSuperview()
-        
-        // When Verso is moved to a new superview, reload all the pages.
-        // This is basically a 'first-run' event
-        if superview != nil {
-            reloadPages()
-        }
-    }
-    
-    
-    
     
     
     
     // MARK: - Private Proprties
     
-    // layout properties
-    private var spreadConfiguration:VersoSpreadConfiguration?
-    
-    
-    // layout state
+    /// The current size of this VersoView
     private var versoSize:CGSize = CGSizeZero
     
+    /// Precalculated frames for all spreads
+    private var spreadFrames:[CGRect] = []
     
-    private var spreadFrames:[CGRect] = [] // precalculated frames for all spreads
-    private var pageFrames:[CGRect] = [] // precalculated initial (non-resized) frames for all pages
-    
-    
+    /// Precalculated initial (non-resized) frames for all pages
+    private var pageFrames:[CGRect] = []
     
     /// the pageIndexes that are embedded in the zoomView
     private var zoomingPageIndexes:NSIndexSet = NSIndexSet()
+    private var zoomingPageInitialFrame:[Int:CGRect] = [:]
+    
     
     /// the pageViews that are currently being used
     private var pageViewsByPageIndex = [Int:VersoPageView]()
 
     /// the spreadIndex under the center of the verso (with some magic for first/last spreads)
     private var currentSpreadIndex:Int = 0
-    /// all the pageIndexes on the `currentSpreadIndex`
-    private var currentPageIndexes:NSIndexSet = NSIndexSet()
-
     
     /// the `currentSpreadIndex` when animation ended
     private var lastActiveSpreadIndex:Int?
@@ -270,13 +295,6 @@ public class VersoView : UIView {
             
             
             self?._enableZoomingForActivePageViews(force: true)
-        }
-        
-        
-        
-        // move pageViews out of zoomView (without side-effects)
-        UIView.performWithoutAnimation { [weak self] in
-            self?._resetZoomView()
         }
         
         
@@ -552,11 +570,28 @@ public class VersoView : UIView {
             }
         }
         
-        if newCurrentSpreadIndex! != currentSpreadIndex {
-            currentSpreadIndex = newCurrentSpreadIndex!
-            
-            currentPageIndexes = config.pageIndexesForSpreadIndex(currentSpreadIndex)
+        currentSpreadIndex = newCurrentSpreadIndex!
+        
+        
+        let newCurrentPageIndexes = config.pageIndexesForSpreadIndex(currentSpreadIndex)
+        guard newCurrentPageIndexes.isEqualToIndexSet(currentPageIndexes) == false else {
+            return
         }
+        
+        
+        
+        // calc diff
+        let addedIndexes = NSMutableIndexSet(indexSet:newCurrentPageIndexes)
+        addedIndexes.removeIndexes(currentPageIndexes)
+        
+        let removedIndexes = NSMutableIndexSet(indexSet:currentPageIndexes)
+        removedIndexes.removeIndexes(newCurrentPageIndexes)
+        
+        currentPageIndexes = newCurrentPageIndexes
+        
+        // notify delegate of changes to current pages
+        delegate?.currentPagesDidChangeForVerso?(self, currentPageIndexes: currentPageIndexes, added: addedIndexes, removed: removedIndexes)
+        
     }
     
     
@@ -629,17 +664,19 @@ public class VersoView : UIView {
         
         // reset previous zooming pageViews
         for pageIndex in zoomingPageIndexes {
-            if let pageView = pageViewsByPageIndex[pageIndex] {
+            if let pageView = pageViewsByPageIndex[pageIndex], let targetFrame = zoomingPageInitialFrame[pageView.pageIndex] {
                 pageScrollView.insertSubview(pageView, belowSubview: zoomView)
                 
                 pageView.transform = CGAffineTransformIdentity
-                pageView.frame = _resizedFrameForPageView(pageView)
+                pageView.frame = targetFrame
                 pageView.alpha = 1
             }
         }
         
         zoomView.maximumZoomScale = 1
+        zoomView.backgroundColor = UIColor(white: 0, alpha: 0)
         zoomingPageIndexes = NSIndexSet()
+        zoomingPageInitialFrame = [:]
     }
     
     
@@ -675,7 +712,6 @@ public class VersoView : UIView {
         zoomView.zoomScale = 1.0
         zoomView.contentInset = UIEdgeInsetsZero
         zoomView.contentOffset = CGPointZero
-        zoomView.backgroundColor = UIColor(white: 0, alpha: 0)
         
         // move zoomview visible frame
         zoomView.frame = pageScrollView.bounds
@@ -691,10 +727,11 @@ public class VersoView : UIView {
         var activePageViews = [VersoPageView]()
         for pageIndex in zoomingPageIndexes {
             if let pageView = pageViewsByPageIndex[pageIndex] {
+                
                 activePageViews.append(pageView)
                 
-                let pageFrame = pageScrollView.convertRect(pageFrames[pageIndex], toView: zoomView)
-                combinedPageFrame = combinedPageFrame==CGRectZero ? pageFrame : combinedPageFrame.union(pageFrame)
+                let pageViewFrame = pageView.convertRect(pageView.bounds, toView: zoomView)
+                combinedPageFrame = combinedPageFrame==CGRectZero ? pageViewFrame : combinedPageFrame.union(pageViewFrame)
             }
         }
         
@@ -703,8 +740,9 @@ public class VersoView : UIView {
         
         for pageView in activePageViews {
             
-            let newPageFrame = zoomViewContents.convertRect(pageView.bounds, fromView: pageView)
+            zoomingPageInitialFrame[pageView.pageIndex] = pageView.frame
             
+            let newPageFrame = zoomViewContents.convertRect(pageView.bounds, fromView: pageView)
             pageView.frame = newPageFrame
             zoomViewContents.addSubview(pageView)
         }

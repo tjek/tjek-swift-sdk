@@ -50,7 +50,8 @@ public class LabelledVersoPageView : VersoPageView {
     public var pageLabel:UILabel = {
         
         let view = UILabel(frame: CGRectZero)
-        view.font = UIFont.systemFontOfSize(UIFont.systemFontSize())
+        view.font = UIFont.boldSystemFontOfSize(24)
+        view.textColor = UIColor(white: 0, alpha: 0.8)
         view.textAlignment = .Center
         
         return view
@@ -67,7 +68,7 @@ public class LabelledVersoPageView : VersoPageView {
         
         pageLabel.frame = labelFrame
     }
-
+    
 }
 
 
