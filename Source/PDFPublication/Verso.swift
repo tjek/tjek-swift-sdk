@@ -263,10 +263,12 @@ public class VersoView : UIView {
     /// the visibleRect when the drag starts
     private var dragStartVisibleRect:CGRect = CGRectZero
     
+    /// The background color provided by the datasource when we started zooming.
+    private var zoomTargetBackgroundColor:UIColor?
+    
     
     
     // MARK: - Spread & PageView Layout
-    
     
     /**
         Re-calc all the spread frames.
@@ -759,9 +761,6 @@ public class VersoView : UIView {
         zoomView.targetContentFrame = combinedPageFrame
     }
     
-    
-    private var zoomTargetBackgroundColor:UIColor?
-    
     private func _didStartZooming() {
         if zoomingPageIndexes.count > 0 {
             delegate?.didStartZoomingPagesForVerso?(self, zoomingPageIndexes: zoomingPageIndexes, zoomScale: zoomView.zoomScale)
@@ -773,15 +772,12 @@ public class VersoView : UIView {
     private func _didZoom() {
         
         // fade in the zoomView's background as we zoom
-        // alpha 0->0.7 zoom 1->1.5
-        // x0 + ((x1-x0) / (y1-y0)) * (y-y0)
-        
-        var whiteVal:CGFloat = 0
         var maxAlpha:CGFloat = 0.7
-        
         let targetBGColor = zoomTargetBackgroundColor ?? UIColor(white: 0, alpha: maxAlpha)
         targetBGColor.getWhite(nil, alpha: &maxAlpha)
         
+        // alpha 0->0.7 zoom 1->1.5
+        // x0 + ((x1-x0) / (y1-y0)) * (y-y0)
         let targetAlpha = min(0 + ((maxAlpha-0) / (1.5-1)) * (zoomView.zoomScale-1), maxAlpha)
         zoomView.backgroundColor = targetBGColor.colorWithAlphaComponent(targetAlpha)
         
@@ -1443,23 +1439,61 @@ extension VersoSpreadConfiguration {
 
 
 
+// MARK: - Double-Tappable ScrollView
 
-// MARK: - Double-tappable ScrollView
+import ObjectiveC
+
+private var doubleTapGestureAssociationKey: UInt8 = 0
+private var doubleTapAnimatedAssociationKey: UInt8 = 0
 
 extension UIScrollView {
-
-    public func sgn_enableDoubleTapGestures() {
-        // create and add the gesture recognizer
-        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(UIScrollView._sgn_didDoubleTap(_:)))
-        doubleTap.numberOfTapsRequired = 2
-        
-        addGestureRecognizer(doubleTap)
-
+    /// The double-tap gesture that performs the zoom
+    /// This is nil until `sgn_enableDoubleTapGestures` is called
+    public private(set) var sgn_doubleTapGesture:UITapGestureRecognizer? {
+        get {
+            return objc_getAssociatedObject(self, &doubleTapGestureAssociationKey) as? UITapGestureRecognizer
+        }
+        set(newValue) {
+            objc_setAssociatedObject(self, &doubleTapGestureAssociationKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        }
     }
-
-    // TODO: add disable func
-    // TODO: add doubleTap gesture accessor
-    // TODO: allow to disable double-tap animations
+    /// Should the double-tap zoom be animated? Defaults to true
+    public var sgn_doubleTapZoomAnimated:Bool {
+        get {
+            return objc_getAssociatedObject(self, &doubleTapAnimatedAssociationKey) as? Bool ?? true
+        }
+        set(newValue) {
+            objc_setAssociatedObject(self, &doubleTapAnimatedAssociationKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
+        }
+    }
+    
+    /// This will create, add, and enable, the double-tap gesture to this scrollview.
+    public func sgn_enableDoubleTapGestures() {
+        var doubleTap = sgn_doubleTapGesture
+        if doubleTap == nil {
+            doubleTap = UITapGestureRecognizer(target: self, action: #selector(UIScrollView._sgn_didDoubleTap(_:)))
+            doubleTap!.numberOfTapsRequired = 2
+            
+            sgn_doubleTapGesture = doubleTap
+        }
+        sgn_doubleTapZoomAnimated = false
+        addGestureRecognizer(doubleTap!)
+        doubleTap!.enabled = true
+    }
+    
+    /// This will remove and nil-out the double-tap gesture.
+    public func sgn_disableDoubleTapGestures() {
+        guard let doubleTap = sgn_doubleTapGesture else {
+            return
+        }
+        
+        removeGestureRecognizer(doubleTap)
+        sgn_doubleTapGesture = nil
+    }
+    
+    
+    
+    
     
     @objc
     private func _sgn_didDoubleTap(tap:UITapGestureRecognizer) {
@@ -1511,7 +1545,7 @@ extension UIScrollView {
         }
     
         
-        let animated = true
+        let animated = sgn_doubleTapZoomAnimated
         
         // here we use a custom animation to make zooming faster/nicer
         let duration:NSTimeInterval = zoomedIn ? 0.50 : 0.60;

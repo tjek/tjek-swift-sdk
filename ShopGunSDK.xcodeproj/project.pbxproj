@@ -21,7 +21,7 @@
 		AE06E3391D52268300C84762 /* GraphConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06E3381D52268300C84762 /* GraphConnection.swift */; };
 		AE06E34D1D53532900C84762 /* GraphResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06E34C1D53532900C84762 /* GraphResponse.swift */; };
 		AE12AAEC1D59D44700BBEFFC /* PagedPublicationPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE12AAEB1D59D44700BBEFFC /* PagedPublicationPageView.swift */; };
-		AE1939EE1D5B5BA500574399 /* VersoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1939ED1D5B5BA500574399 /* VersoView.swift */; };
+		AE1939EE1D5B5BA500574399 /* Verso.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1939ED1D5B5BA500574399 /* Verso.swift */; };
 		AE2312AD1D6C84B7006B84BA /* PagedPublicationViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2312AC1D6C84B7006B84BA /* PagedPublicationViewModels.swift */; };
 		AE58EDC71D537AE6002BC38A /* PagedPublicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE58EDC61D537AE6002BC38A /* PagedPublicationView.swift */; };
 		AE5FE92D1D61B4D2003102F3 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE92B1D61B4D2003102F3 /* Alamofire.framework */; };
@@ -65,7 +65,7 @@
 		AE06E3381D52268300C84762 /* GraphConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphConnection.swift; sourceTree = "<group>"; };
 		AE06E34C1D53532900C84762 /* GraphResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphResponse.swift; sourceTree = "<group>"; };
 		AE12AAEB1D59D44700BBEFFC /* PagedPublicationPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PagedPublicationPageView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		AE1939ED1D5B5BA500574399 /* VersoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersoView.swift; sourceTree = "<group>"; };
+		AE1939ED1D5B5BA500574399 /* Verso.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Verso.swift; sourceTree = "<group>"; };
 		AE2312AC1D6C84B7006B84BA /* PagedPublicationViewModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagedPublicationViewModels.swift; sourceTree = "<group>"; };
 		AE58EDC61D537AE6002BC38A /* PagedPublicationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PagedPublicationView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		AE5FE92B1D61B4D2003102F3 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
@@ -120,7 +120,7 @@
 				AE58EDC61D537AE6002BC38A /* PagedPublicationView.swift */,
 				AE12AAEB1D59D44700BBEFFC /* PagedPublicationPageView.swift */,
 				AE2312AC1D6C84B7006B84BA /* PagedPublicationViewModels.swift */,
-				AE1939ED1D5B5BA500574399 /* VersoView.swift */,
+				AE1939ED1D5B5BA500574399 /* Verso.swift */,
 			);
 			name = PagedPublication;
 			path = PDFPublication;
@@ -401,7 +401,7 @@
 				AE62408B1D50A4560062CAD4 /* EventsTracker.Context.swift in Sources */,
 				AE12AAEC1D59D44700BBEFFC /* PagedPublicationPageView.swift in Sources */,
 				AE58EDC71D537AE6002BC38A /* PagedPublicationView.swift in Sources */,
-				AE1939EE1D5B5BA500574399 /* VersoView.swift in Sources */,
+				AE1939EE1D5B5BA500574399 /* Verso.swift in Sources */,
 				AE06C03C1D3FA70000BC8D47 /* SDKConfig.swift in Sources */,
 				AE2312AD1D6C84B7006B84BA /* PagedPublicationViewModels.swift in Sources */,
 				AE06C03E1D3FA70000BC8D47 /* EventsTracker.swift in Sources */,
