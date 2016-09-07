@@ -168,6 +168,7 @@ extension PagedPublicationView : VersoViewDataSource {
         }
         else if let labelPage = pageView as? LabelledVersoPageView {
             labelPage.pageLabel.text = String(labelPage.pageIndex)
+            labelPage.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.3)
         }
     }
     

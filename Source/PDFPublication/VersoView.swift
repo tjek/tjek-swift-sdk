@@ -51,11 +51,13 @@ public protocol VersoViewDataSource : class {
     /// Default is 6
     optional func leadingPageCountToPreloadForVerso(verso:VersoView, visiblePageIndexes:NSIndexSet) -> Int
     
-    
     /// Provide a set of indexes to preload around the visible page indexes.
     /// This is for more advanced customization of the preloading indexes.
     /// The result of this will be combined with the results of the countBefore & countAfter (but only if they are defined)
     optional func preloadPageIndexesForVerso(verso:VersoView, visiblePageIndexes:NSIndexSet) -> NSIndexSet
+    
+    /// What color should the background fade to when zooming. Defaults to black w/ 0.7 alpha
+    optional func zoomBackgroundColorForVerso(verso:VersoView, zoomingPageIndexes:NSIndexSet) -> UIColor
 }
 
 
@@ -102,38 +104,40 @@ public class VersoView : UIView {
     }
     
     
+    private var performingLayout:Bool = false
+    
     override public func layoutSubviews() {
         assert(dataSource != nil, "You must provide a VersoDataSource")
-        
-        
-        
-        
-        // move pageViews out of zoomView (without side-effects)
-        UIView.performWithoutAnimation { [weak self] in
-            self?._resetZoomView()
-        }
-        
         
         super.layoutSubviews()
         
         
-        pageScrollView.frame = bounds
-        
-        
-        let oldVersoSize = versoSize
-        versoSize = bounds.size
+        let newVersoSize = bounds.size
+        var newSpreadConfig = spreadConfiguration
         
         
         // get a new spread configuration
-        let oldSpreadConfig = spreadConfiguration
-        if spreadConfiguration == nil || versoSize != oldVersoSize {
-            spreadConfiguration = dataSource?.spreadConfigurationForVerso(self, size: versoSize)
+        if spreadConfiguration == nil || versoSize != newVersoSize {
+            newSpreadConfig = dataSource?.spreadConfigurationForVerso(self, size: newVersoSize)
+        }
+        
+        let willRelayout = versoSize != newVersoSize || spreadConfiguration != newSpreadConfig
+        
+        
+        if willRelayout {
+            // move pageViews out of zoomView (without side-effects)
+            UIView.performWithoutAnimation { [weak self] in
+                self?._resetZoomView()
+            }
         }
         
         
+        pageScrollView.frame = bounds
+        versoSize = newVersoSize
+        spreadConfiguration = newSpreadConfig
+        
         // there was a change in size or configuration ... relayout
-        if oldVersoSize != versoSize || oldSpreadConfig != spreadConfiguration {
-            
+        if willRelayout {
             // recalc all layout states, and update spreads
             _updateSpreadPositions()
             
@@ -243,7 +247,6 @@ public class VersoView : UIView {
     
     /// the pageIndexes that are embedded in the zoomView
     private var zoomingPageIndexes:NSIndexSet = NSIndexSet()
-    private var zoomingPageInitialFrame:[Int:CGRect] = [:]
     
     
     /// the pageViews that are currently being used
@@ -287,14 +290,18 @@ public class VersoView : UIView {
         
         CATransaction.begin() // start a transaction, so we get a completion handler
         
+        performingLayout = true
+        
         
         // when the layout is complete, move the active page views into the zoomview
         CATransaction.setCompletionBlock { [weak self] in
             
             self?.pageScrollView.scrollEnabled = true
             
-            
             self?._enableZoomingForActivePageViews(force: true)
+            
+            self?.performingLayout = false
+            
         }
         
         
@@ -352,11 +359,9 @@ public class VersoView : UIView {
         // go through all the page views we have, and find out what we need
         for (pageIndex, pageView) in pageViewsByPageIndex {
             
-            if pageIndexesToPrepare.containsIndex(pageIndex) == false {
+            if pageIndexesToPrepare.containsIndex(pageIndex) == false && zoomingPageIndexes.containsIndex(pageIndex) == false {
                 // we have a page view that can be recycled
-                if zoomingPageIndexes.containsIndex(pageIndex) == false {
                     recyclablePageViews.append(pageView)
-                }
             } else {
                 missingPageViewIndexes.removeIndex(pageIndex)
                 preparedPageViews[pageIndex] = pageView
@@ -645,10 +650,14 @@ public class VersoView : UIView {
         zoomView.maximumZoomScale = 1.0
     }
     @objc private func _didFinishScrolling() {
-        
-        _updateLastActiveSpreadIndex()
-        
-        _enableZoomingForActivePageViews(force: false)
+        // dont do any post-scrolling layout if the user rotated the device while scroll-animations were being performed.
+        if performingLayout == false {
+            _updateLastActiveSpreadIndex()
+            
+            _enableZoomingForActivePageViews(force: false)
+            
+            updateMaxZoomScale()
+        }
     }
     
     
@@ -658,25 +667,34 @@ public class VersoView : UIView {
     
     // MARK: - Zooming
     
-    
+    private func updateMaxZoomScale() {
+        // update zoom scale based on the active spread
+        if let spreadIndex = lastActiveSpreadIndex,
+            let zoomScale = spreadConfiguration?.spreadPropertyForSpreadIndex(spreadIndex)?.maxZoomScale {
+            
+            zoomView.maximumZoomScale = zoomScale
+        } else {
+            zoomView.maximumZoomScale = 1.0
+        }
+
+    }
     /// Remove all pageViews that are in the zoomView, placing them correctly back in the pageScrollView
     private func _resetZoomView() {
         
         // reset previous zooming pageViews
-        for pageIndex in zoomingPageIndexes {
-            if let pageView = pageViewsByPageIndex[pageIndex], let targetFrame = zoomingPageInitialFrame[pageView.pageIndex] {
+        for pageIndex in zoomingPageIndexes {            
+            if let pageView = pageViewsByPageIndex[pageIndex] {
                 pageScrollView.insertSubview(pageView, belowSubview: zoomView)
                 
                 pageView.transform = CGAffineTransformIdentity
-                pageView.frame = targetFrame
+                pageView.frame = _resizedFrameForPageView(pageView)
                 pageView.alpha = 1
             }
         }
         
-        zoomView.maximumZoomScale = 1
-        zoomView.backgroundColor = UIColor(white: 0, alpha: 0)
+        zoomView.maximumZoomScale = 1.0
+        zoomView.backgroundColor = UIColor.clearColor()
         zoomingPageIndexes = NSIndexSet()
-        zoomingPageInitialFrame = [:]
     }
     
     
@@ -693,16 +711,7 @@ public class VersoView : UIView {
         
         _resetZoomView()
         
-        
-        // update zoom scale based on the active spread
-        if let spreadIndex = lastActiveSpreadIndex,
-            let zoomScale = spreadConfiguration?.spreadPropertyForSpreadIndex(spreadIndex)?.maxZoomScale {
-            
-            zoomView.maximumZoomScale = zoomScale
-        } else {
-            zoomView.maximumZoomScale = 1.0
-        }
-        
+        updateMaxZoomScale()
         
         // update which pages are zooming
         zoomingPageIndexes = lastActivePageIndexes
@@ -740,8 +749,6 @@ public class VersoView : UIView {
         
         for pageView in activePageViews {
             
-            zoomingPageInitialFrame[pageView.pageIndex] = pageView.frame
-            
             let newPageFrame = zoomViewContents.convertRect(pageView.bounds, fromView: pageView)
             pageView.frame = newPageFrame
             zoomViewContents.addSubview(pageView)
@@ -752,22 +759,31 @@ public class VersoView : UIView {
         zoomView.targetContentFrame = combinedPageFrame
     }
     
+    
+    private var zoomTargetBackgroundColor:UIColor?
+    
     private func _didStartZooming() {
         if zoomingPageIndexes.count > 0 {
             delegate?.didStartZoomingPagesForVerso?(self, zoomingPageIndexes: zoomingPageIndexes, zoomScale: zoomView.zoomScale)
+            
+            zoomTargetBackgroundColor = dataSource?.zoomBackgroundColorForVerso?(self, zoomingPageIndexes:zoomingPageIndexes)
         }
     }
     
     private func _didZoom() {
         
         // fade in the zoomView's background as we zoom
-        // alpha 0->0.8 zoom 1->1.5
+        // alpha 0->0.7 zoom 1->1.5
         // x0 + ((x1-x0) / (y1-y0)) * (y-y0)
         
-        let maxAlpha:CGFloat = 0.7
-        let alpha = min(0 + ((maxAlpha-0) / (1.5-1)) * (zoomView.zoomScale-1), maxAlpha)
+        var whiteVal:CGFloat = 0
+        var maxAlpha:CGFloat = 0.7
         
-        zoomView.backgroundColor = UIColor(white: 0, alpha: alpha)
+        let targetBGColor = zoomTargetBackgroundColor ?? UIColor(white: 0, alpha: maxAlpha)
+        targetBGColor.getWhite(nil, alpha: &maxAlpha)
+        
+        let targetAlpha = min(0 + ((maxAlpha-0) / (1.5-1)) * (zoomView.zoomScale-1), maxAlpha)
+        zoomView.backgroundColor = targetBGColor.colorWithAlphaComponent(targetAlpha)
         
         if zoomingPageIndexes.count > 0 {
             delegate?.didZoomPagesForVerso?(self, zoomingPageIndexes: zoomingPageIndexes, zoomScale: zoomView.zoomScale)
@@ -810,7 +826,7 @@ public class VersoView : UIView {
 
         
         view.delegate = self
-        view.maximumZoomScale = 4.0
+        view.maximumZoomScale = 1.0
         
         view.sgn_enableDoubleTapGestures()
         
