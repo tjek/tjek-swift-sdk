@@ -58,6 +58,10 @@ public protocol VersoViewDataSource : class {
     
     /// What color should the background fade to when zooming. Defaults to black w/ 0.7 alpha
     optional func zoomBackgroundColorForVerso(verso:VersoView, zoomingPageIndexes:NSIndexSet) -> UIColor
+    
+    
+    optional func spreadOverlayViewForVerso(verso:VersoView, pageIndexes:NSIndexSet) -> UIView?
+
 }
 
 
@@ -189,7 +193,10 @@ public class VersoView : UIView {
             self?.pageViewsByPageIndex = [:]
             
             self?.lastActiveSpreadIndex = nil
-            self?.currentSpreadIndex = 0
+            self?.lastActivePageIndexes = NSIndexSet()
+            self?.currentSpreadIndex = nil
+            self?.currentPageIndexes = NSIndexSet()
+            
             self?.spreadConfiguration = nil
             
             self?.setNeedsLayout()
@@ -227,6 +234,13 @@ public class VersoView : UIView {
         return pageViewsByPageIndex[pageIndex]
     }
     
+    public func reconfigureSpreadOverlay() {
+        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            guard self != nil else { return }
+            
+            self?._updateSpreadOverlay()
+        }
+    }
     
     
     
@@ -253,7 +267,7 @@ public class VersoView : UIView {
     private var pageViewsByPageIndex = [Int:VersoPageView]()
 
     /// the spreadIndex under the center of the verso (with some magic for first/last spreads)
-    private var currentSpreadIndex:Int = 0
+    private var currentSpreadIndex:Int?
     
     /// the `currentSpreadIndex` when animation ended
     private var lastActiveSpreadIndex:Int?
@@ -306,6 +320,10 @@ public class VersoView : UIView {
             
         }
         
+        // remove the overlay
+        spreadOverlayView?.removeFromSuperview()
+        spreadOverlayView = nil
+
         
         // disable scrolling
         pageScrollView.scrollEnabled = false
@@ -325,19 +343,33 @@ public class VersoView : UIView {
         pageScrollView.setContentOffset(VersoView.calc_scrollOffsetForSpread(targetSpreadIndex ?? 0, spreadFrames:spreadFrames, versoSize: versoSize), animated: false)
         
         
-        // update to the current & active spread index now we have updated the content offset & spreadFrames
-        _updateLastActiveSpreadIndex()
-        
         
         // generate/config any extra pageviews that we might need
         // these will be added/positioned in the pagingScrollView
         _preparePageViews()
         
         
+        // update to the current & active spread index now we have updated the content offset & spreadFrames
+        _updateLastActiveSpreadIndex()
+        
+        
         CATransaction.commit()
 
     }
     
+    private func _frameForPageViews(pageIndexes:NSIndexSet) -> CGRect {
+        
+        var combinedFrame:CGRect?
+        for pageIndex in pageIndexes {
+            if let pageView = pageViewsByPageIndex[pageIndex] {
+                let pageFrame = pageView.frame
+                
+                combinedFrame = combinedFrame?.union(pageFrame) ?? pageFrame
+            }
+        }
+        
+        return combinedFrame ?? CGRectZero
+    }
     
     
     /// This handles the creation/re-use and configuration of pageViews. This is triggered whilst the user scrolls.
@@ -446,6 +478,10 @@ public class VersoView : UIView {
             return NSIndexSet()
         }
         
+        guard config.pageCount > 0 else {
+            return NSIndexSet()
+        }
+        
         // get all the page indexes we are going to config and position, based on delegate callbacks
         let requiredPageIndexes = NSMutableIndexSet(indexSet: visiblePageIndexes)
         
@@ -536,7 +572,7 @@ public class VersoView : UIView {
         let visibleRect = pageScrollView.bounds.insetBy(dx: -2, dy: -2)
         
         if spreadFrames.count == 0 {
-            newCurrentSpreadIndex = 0
+            newCurrentSpreadIndex = nil
         }
         else if visibleRect.contains(spreadFrames.first!) {
             // first page is visible - assume first
@@ -577,10 +613,10 @@ public class VersoView : UIView {
             }
         }
         
-        currentSpreadIndex = newCurrentSpreadIndex!
+        currentSpreadIndex = newCurrentSpreadIndex
         
         
-        let newCurrentPageIndexes = config.pageIndexesForSpreadIndex(currentSpreadIndex)
+        let newCurrentPageIndexes = currentSpreadIndex != nil ? config.pageIndexesForSpreadIndex(currentSpreadIndex!) : NSIndexSet()
         guard newCurrentPageIndexes.isEqualToIndexSet(currentPageIndexes) == false else {
             return
         }
@@ -658,18 +694,34 @@ public class VersoView : UIView {
             
             _enableZoomingForActivePageViews(force: false)
             
-            updateMaxZoomScale()
+            _updateMaxZoomScale()
+        }
+    }
+    
+    
+    private func _updateSpreadOverlay() {
+        
+        let newSpreadOverlayView = lastActivePageIndexes.count > 0 ? dataSource?.spreadOverlayViewForVerso?(self, pageIndexes:lastActivePageIndexes) : nil
+        
+        if newSpreadOverlayView != spreadOverlayView {
+            spreadOverlayView?.removeFromSuperview()
+            spreadOverlayView = newSpreadOverlayView
+            spreadOverlayView?.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        }
+        
+        
+        if spreadOverlayView != nil {
+            zoomViewContents.addSubview(spreadOverlayView!)
+            spreadOverlayView?.frame = zoomViewContents.bounds
         }
     }
     
     
     
     
-    
-    
     // MARK: - Zooming
     
-    private func updateMaxZoomScale() {
+    private func _updateMaxZoomScale() {
         // update zoom scale based on the active spread
         if let spreadIndex = lastActiveSpreadIndex,
             let zoomScale = spreadConfiguration?.spreadPropertyForSpreadIndex(spreadIndex)?.maxZoomScale {
@@ -693,12 +745,13 @@ public class VersoView : UIView {
                 pageView.alpha = 1
             }
         }
-        
+
         zoomView.maximumZoomScale = 1.0
         zoomView.backgroundColor = UIColor.clearColor()
         zoomingPageIndexes = NSIndexSet()
     }
     
+    private var spreadOverlayView:UIView?
     
     /**
      Resets the zoomView to correct location and adds pageviews that will be zoomed
@@ -713,7 +766,7 @@ public class VersoView : UIView {
         
         _resetZoomView()
         
-        updateMaxZoomScale()
+        _updateMaxZoomScale()
         
         // update which pages are zooming
         zoomingPageIndexes = lastActivePageIndexes
@@ -759,6 +812,8 @@ public class VersoView : UIView {
         zoomViewContents.frame = CGRect(origin: CGPointZero, size: combinedPageFrame.size)
         
         zoomView.targetContentFrame = combinedPageFrame
+        
+        _updateSpreadOverlay()
     }
     
     private func _didStartZooming() {
@@ -890,19 +945,24 @@ extension VersoView : UIScrollViewDelegate {
     
     public func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         if scrollView == pageScrollView {
+            
+            guard spreadConfiguration?.spreadCount > 0 else {
+                return
+            }
+            
             // calculate the spreadIndex that was centered when  we started this drag
-            dragStartSpreadIndex = currentSpreadIndex
+            dragStartSpreadIndex = currentSpreadIndex ?? 0
             dragStartVisibleRect = scrollView.bounds
             _didStartScrolling()
         }
     }
     public func scrollViewWillEndDragging(scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollView == pageScrollView {
-            guard let config = spreadConfiguration else {
+            guard let config = spreadConfiguration where config.spreadCount > 0 else {
                 return
             }
             
-            var targetSpreadIndex = currentSpreadIndex
+            var targetSpreadIndex = currentSpreadIndex ?? 0
             
             // spread hasnt changed, use velocity to inc/dec spread
             if targetSpreadIndex == dragStartSpreadIndex {
@@ -1476,7 +1536,7 @@ extension UIScrollView {
             
             sgn_doubleTapGesture = doubleTap
         }
-        sgn_doubleTapZoomAnimated = false
+
         addGestureRecognizer(doubleTap!)
         doubleTap!.enabled = true
     }

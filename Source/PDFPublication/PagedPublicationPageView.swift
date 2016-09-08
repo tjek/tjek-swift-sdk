@@ -231,7 +231,6 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
     }
 
     
-
     
     // MARK: - Private
     
@@ -273,9 +272,6 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
         
         return view
     }()
-    
-    
-    
     
     
     

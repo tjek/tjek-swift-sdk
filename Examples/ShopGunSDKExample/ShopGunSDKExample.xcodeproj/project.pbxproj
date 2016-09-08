@@ -24,6 +24,10 @@
 		AEA5AA031D3CB3F400DC5EA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA5A9FB1D3CB3F400DC5EA3 /* Main.storyboard */; };
 		AEA5AA051D3CB3F400DC5EA3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5A9FF1D3CB3F400DC5EA3 /* AppDelegate.swift */; };
 		AEA5AA061D3CB3F400DC5EA3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA001D3CB3F400DC5EA3 /* ViewController.swift */; };
+		AED8A9B41D81595D00C92ED5 /* efbbJc3.json in Resources */ = {isa = PBXBuildFile; fileRef = AED8A9B31D81595D00C92ED5 /* efbbJc3.json */; };
+		AED8A9B71D815B7E00C92ED5 /* efbbJc3.hotspots.json in Resources */ = {isa = PBXBuildFile; fileRef = AED8A9B61D815B7E00C92ED5 /* efbbJc3.hotspots.json */; };
+		AED8A9B91D815CDE00C92ED5 /* efbbJc3.pages.json in Resources */ = {isa = PBXBuildFile; fileRef = AED8A9B81D815CDE00C92ED5 /* efbbJc3.pages.json */; };
+		AED8A9BB1D81640000C92ED5 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED8A9BA1D81640000C92ED5 /* UIColorExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +88,10 @@
 		AEA5AA001D3CB3F400DC5EA3 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		AEA5AA081D3CB45300DC5EA3 /* ShopGunSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ShopGunSDK.xcodeproj; path = ../../ShopGunSDK.xcodeproj; sourceTree = "<group>"; };
 		AEBEBCAC1D34F282007E7D9D /* ShopGunSDKExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShopGunSDKExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AED8A9B31D81595D00C92ED5 /* efbbJc3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = efbbJc3.json; path = Resources/efbbJc3.json; sourceTree = SOURCE_ROOT; };
+		AED8A9B61D815B7E00C92ED5 /* efbbJc3.hotspots.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = efbbJc3.hotspots.json; path = Resources/efbbJc3.hotspots.json; sourceTree = SOURCE_ROOT; };
+		AED8A9B81D815CDE00C92ED5 /* efbbJc3.pages.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = efbbJc3.pages.json; path = Resources/efbbJc3.pages.json; sourceTree = SOURCE_ROOT; };
+		AED8A9BA1D81640000C92ED5 /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,8 +128,12 @@
 				AEA5A9FF1D3CB3F400DC5EA3 /* AppDelegate.swift */,
 				AEA5AA001D3CB3F400DC5EA3 /* ViewController.swift */,
 				AE58EDC81D546F3F002BC38A /* PDFViewController.swift */,
+				AED8A9B31D81595D00C92ED5 /* efbbJc3.json */,
+				AED8A9B81D815CDE00C92ED5 /* efbbJc3.pages.json */,
+				AED8A9B61D815B7E00C92ED5 /* efbbJc3.hotspots.json */,
 				AE06C0251D3F863A00BC8D47 /* ObjCTestClass.h */,
 				AE06C0261D3F863A00BC8D47 /* ObjCTestClass.m */,
+				AED8A9BA1D81640000C92ED5 /* UIColorExtension.swift */,
 				AE06C0241D3F863A00BC8D47 /* ShopGunSDKExample-Bridging-Header.h */,
 			);
 			path = Source;
@@ -253,7 +265,10 @@
 			files = (
 				AEA5AA031D3CB3F400DC5EA3 /* Main.storyboard in Resources */,
 				AEA5AA011D3CB3F400DC5EA3 /* Assets.xcassets in Resources */,
+				AED8A9B71D815B7E00C92ED5 /* efbbJc3.hotspots.json in Resources */,
 				AEA5AA021D3CB3F400DC5EA3 /* LaunchScreen.storyboard in Resources */,
+				AED8A9B41D81595D00C92ED5 /* efbbJc3.json in Resources */,
+				AED8A9B91D815CDE00C92ED5 /* efbbJc3.pages.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,6 +281,7 @@
 			files = (
 				AE06C0271D3F863A00BC8D47 /* ObjCTestClass.m in Sources */,
 				AEA5AA061D3CB3F400DC5EA3 /* ViewController.swift in Sources */,
+				AED8A9BB1D81640000C92ED5 /* UIColorExtension.swift in Sources */,
 				AEA5AA051D3CB3F400DC5EA3 /* AppDelegate.swift in Sources */,
 				AE58EDC91D546F3F002BC38A /* PDFViewController.swift in Sources */,
 			);

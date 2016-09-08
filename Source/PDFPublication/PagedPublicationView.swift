@@ -63,6 +63,8 @@ public class PagedPublicationView : UIView {
         
         publicationViewModel = viewModel
         
+        pageCount = publicationViewModel?.pageCount ?? 0
+        
         verso.backgroundColor = viewModel?.bgColor
         
         // TODO: do we clear the pageviewmodels if this is updated again?
@@ -73,38 +75,56 @@ public class PagedPublicationView : UIView {
     
     public func updatePages(viewModels:[PagedPublicationPageViewModel]?) {
         
+        let publicationAspectRatio = publicationViewModel?.aspectRatio ?? 1.0
+        
+        if viewModels != nil {
+            for viewModel in viewModels! {
+                if viewModel.aspectRatio <= 0 {
+                    viewModel.aspectRatio = publicationAspectRatio
+                }
+            }
+        }
+        
         pageViewModels = viewModels
         
-        // force a re-fetch of the pageCount
-        verso.reloadPages()
-        
-        // TODO: maybe just re-config the visible pages if pagecount didnt change?
+        let newPageCount = pageViewModels?.count ?? 0
+        if newPageCount != pageCount {
+            pageCount = newPageCount
+            
+            // force a re-fetch of the pageCount
+            verso.reloadPages()
+        }
+        else {
+            // just re-config the visible pages if pagecount didnt change
+            verso.reconfigureVisiblePages()
+        }
     }
     
     
-    public func updateHotspots(viewModels:[PagedPublicationHotspotViewModelProtocol]?) {
+    public func updateHotspots(viewModels:[PagedPublicationHotspotViewModel]?) {
+        
+        hotspotViewModels = viewModels
+        
+        verso.reconfigureSpreadOverlay()
         
         // TODO: re-config the visible pages
     }
     
     
-    
-    
+    private var pageCount:Int = 0
+    private var outroPageIndex:Int? {
+        get {
+            return pageCount > 0 ? pageCount : nil
+        }
+    }
     
     
 
     // MARK: - Private properties
     
-    private var publicationViewModel:PagedPublicationViewModelProtocol? = nil {
-        didSet {
-            
-        }
-    }
-    private var pageViewModels:[PagedPublicationPageViewModel]? = nil {
-        didSet {
-
-        }
-    }
+    private var publicationViewModel:PagedPublicationViewModelProtocol?
+    private var pageViewModels:[PagedPublicationPageViewModel]?
+    private var hotspotViewModels:[PagedPublicationHotspotViewModel]?
     
     /// The indexes of active pages that havnt been loaded yet. This set changes when pages are activated and deactivated, and when images are loaded
     /// Used by the PagedPublicationPageViewDelegate methods
@@ -135,6 +155,8 @@ public class PagedPublicationView : UIView {
         }
     }
     
+    
+    private var hotspotOverlayView:HotspotOverlayView = HotspotOverlayView()
 }
 
 
@@ -160,8 +182,10 @@ extension PagedPublicationView : VersoViewDataSource {
             }                
             else
             {
+                let aspectRatio = publicationViewModel?.aspectRatio ?? 1.0
+                
                 // build blank view model
-                let viewModel = PagedPublicationPageViewModel(pageIndex:pageIndex, pageTitle:String(pageIndex+1), aspectRatio: publicationViewModel!.aspectRatio)
+                let viewModel = PagedPublicationPageViewModel(pageIndex:pageIndex, pageTitle:String(pageIndex+1), aspectRatio: aspectRatio)
                 
                 pubPage.configure(viewModel)
             }
@@ -173,17 +197,22 @@ extension PagedPublicationView : VersoViewDataSource {
     }
     
     public func pageViewClassForVerso(verso:VersoView, pageIndex:Int) -> VersoPageViewClass {
-
-        if let pageCount = verso.spreadConfiguration?.pageCount where pageIndex == pageCount-1 {
+        if outroPageIndex == pageIndex {
             return LabelledVersoPageView.self
-        } else {
+        }
+        else {
             return PagedPublicationPageView.self
         }
+//        outroPageIndex != nil && 
+//        if let pageCount = verso.spreadConfiguration?.pageCount where pageIndex == pageCount-1 {
+//            return LabelledVersoPageView.self
+//        } else {
+//            return PagedPublicationPageView.self
+//        }
     }
     
     
     public func spreadConfigurationForVerso(verso:VersoView, size:CGSize) -> VersoSpreadConfiguration {
-        let pageCount = pageViewModels?.count ?? publicationViewModel?.pageCount ?? 0
         
         // TODO: compare verso aspect ratio to publication aspect ratio
         //        let versoAspectRatio = size.height > 0 ? size.width / size.height : 1
@@ -192,13 +221,18 @@ extension PagedPublicationView : VersoViewDataSource {
         //
         //        }
 
+        let totalPageCount = pageCount == 0 ? 0 : pageCount + 1
+        let outroIndex = outroPageIndex
+        let lastPageIndex = max((outroIndex != nil ? (outroIndex! - 1) : pageCount - 1), 0)
+        
+        
         let isLandscape:Bool = size.width > size.height
         
-        return VersoSpreadConfiguration.buildPageSpreadConfiguration(pageCount+1, spreadSpacing: 20, spreadPropertyConstructor: { (spreadIndex, nextPageIndex) -> (pageCount: Int, maxZoomScale: CGFloat, widthPercentage: CGFloat) in
+        return VersoSpreadConfiguration.buildPageSpreadConfiguration(totalPageCount, spreadSpacing: 20, spreadPropertyConstructor: { (spreadIndex, nextPageIndex) -> (spreadPageCount: Int, maxZoomScale: CGFloat, widthPercentage: CGFloat) in
             
             let isFirstPage = nextPageIndex == 0
-            let isOutro = (nextPageIndex == pageCount)
-            let isLastPage = (nextPageIndex == pageCount-1)
+            let isOutro = outroIndex == nextPageIndex
+            let isLastPage = nextPageIndex == lastPageIndex
             
             
             let isSinglePage = isFirstPage || isOutro || isLastPage || !isLandscape
@@ -209,6 +243,32 @@ extension PagedPublicationView : VersoViewDataSource {
             
             return (spreadPageCount, isOutro ? 0.0 : 4.0, isOutro ? outroWidth : 1.0)
         })
+    }
+    
+    
+    public func spreadOverlayViewForVerso(verso:VersoView, pageIndexes:NSIndexSet) -> UIView? {
+        
+        
+        // no overlay for outro
+        if outroPageIndex != nil && pageIndexes.containsIndex(outroPageIndex!) {
+            return nil
+        }
+        
+        // configure the overlay
+        
+        hotspotOverlayView.pageIndexes = pageIndexes
+        hotspotOverlayView.backgroundColor = UIColor(red: 1, green: 0.8, blue:0.8, alpha: 0.5)
+
+//        var dummyHotspots:[PagedPublicationHotspotViewModelProtocol] = []
+//
+//        dummyHotspots.append(PagedPublicationHotspotViewModel(pageLocations: [pageIndexes.firstIndex:CGRectMake(0.5,0.5, 0.1,0.1)]))
+//        dummyHotspots.append(PagedPublicationHotspotViewModel(pageLocations: [pageIndexes.firstIndex:CGRectMake(0.0,0.0, 0.2,0.1)]))
+//        dummyHotspots.append(PagedPublicationHotspotViewModel(pageLocations: [pageIndexes.firstIndex:CGRectMake(0.9,0.8, 0.1,0.2)]))
+//        dummyHotspots.append(PagedPublicationHotspotViewModel(pageLocations: [pageIndexes.firstIndex:CGRectMake(0.9,0.4, 0.2,0.2)]))
+//        
+//        hotspotOverlayView.updateWithHotspots(dummyHotspots)
+        
+        return hotspotOverlayView
     }
 }
 
@@ -241,7 +301,7 @@ extension PagedPublicationView : VersoViewDelegate {
     
     public func activePagesDidChangeForVerso(verso: VersoView, activePageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
         
-//        print ("active pages changed: \(activePageIndexes.arrayOfAllIndexes())")
+        print ("active pages changed: \(activePageIndexes.arrayOfAllIndexes())")
         
         // go through all the newly added page indexes, triggering `appeared` (and possibly `loaded`) events
         for pageIndex in added {
@@ -364,18 +424,18 @@ extension PagedPublicationView : PagedPublicationPageViewDelegate {
 extension PagedPublicationView {
     
     func triggerEvent_PageAppeared(pageIndex:Int) {
-//        print("[EVENT] Page Appeared(\(pageIndex))")
+        print("[EVENT] Page Appeared(\(pageIndex))")
     }
     func triggerEvent_PageLoaded(pageIndex:Int,fromCache:Bool) {
-//        print("[EVENT] Page Loaded\(pageIndex) cache:\(fromCache)")
+        print("[EVENT] Page Loaded\(pageIndex) cache:\(fromCache)")
     }
     func triggerEvent_PageDisappeared(pageIndex:Int) {
-//        print("[EVENT] Page Disappeared(\(pageIndex))")
+        print("[EVENT] Page Disappeared(\(pageIndex))")
     }
-    func triggerEvent_PagesChanged(fromPageIndexes:NSIndexSet, toPageIndexes:NSIndexSet) {
-        // TODO: page Changed events
+//    func triggerEvent_PagesChanged(fromPageIndexes:NSIndexSet, toPageIndexes:NSIndexSet) {
+//        // TODO: page Changed events
 //        print("[EVENT] Page Changed(\(fromPageIndexes.arrayOfAllIndexes()) -> \(toPageIndexes.arrayOfAllIndexes()))")
-    }
+//    }
     
     
     func triggerEvent_PageZoomedIn(pageIndexes:NSIndexSet, centerPoint:CGPoint) {
@@ -445,3 +505,6 @@ extension NSIndexSet {
         return allIndexes
     }
 }
+
+
+

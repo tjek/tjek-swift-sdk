@@ -1,0 +1,44 @@
+{
+    "id": "efbbJc3",
+    "ern": "ern:catalog:efbbJc3",
+    "label": null,
+    "background": null,
+    "run_from": "2016-09-08T22:00:00+0000",
+    "run_till": "2016-09-15T21:59:59+0000",
+    "page_count": 72,
+    "offer_count": 349,
+    "branding": {
+        "name": "f\u00f8tex",
+        "website": "http:\/\/foetex.dk",
+        "description": "I 1960 \u00e5bnede det f\u00f8rste f\u00f8tex varehus i Guldsmedgade i \u00c5rhus og gav borgerne i Jyllands hovedstad en helt ny m\u00e5de at handle p\u00e5. Der var tale om et moderne supermarked, hvor der var samlet flere varegrupper under \u00e9t tag.",
+        "logo": "https:\/\/akamai.shopgun.com\/img\/logo\/default\/00ii638cfuop3byz.png",
+        "color": "002e5e",
+        "pageflip": {
+            "logo": "https:\/\/akamai.shopgun.com\/img\/logo\/pageflip\/00ii638cqugthwce.png",
+            "color": "002e5e"
+        }
+    },
+    "dealer_id": "bdf5A",
+    "dealer_url": "https:\/\/api.etilbudsavis.dk\/v2\/dealers\/bdf5A",
+    "store_id": "271aBTg",
+    "store_url": "https:\/\/api.etilbudsavis.dk\/v2\/stores\/271aBTg",
+    "dimensions": {
+        "height": 1.1901,
+        "width": 1
+    },
+    "images": {
+        "@note.1": "this object contains a single image, used to present a catalog (usually the frontpage)",
+        "thumb": "https:\/\/akamai.shopgun.com\/img\/catalog\/thumb\/efbbJc3-1.jpg?m=oco7b1",
+        "view": "https:\/\/akamai.shopgun.com\/img\/catalog\/view\/efbbJc3-1.jpg?m=oco7b1",
+        "zoom": "https:\/\/akamai.shopgun.com\/img\/catalog\/zoom\/efbbJc3-1.jpg?m=oco7b1"
+    },
+    "pages": {
+        "@note.1": "",
+        "thumb": [],
+        "view": [],
+        "zoom": []
+    },
+    "category_ids": [],
+    "pdf_url": null
+}
+

@@ -22,7 +22,7 @@ public protocol PagedPublicationViewModelProtocol {
     var pageCount:Int { get }
     
     // width/height ratio of pages in this publication. 0 if unknown
-    var aspectRatio:Double { get }
+    var aspectRatio:CGFloat { get }
     
     
     var isFetching:Bool { get }
@@ -36,7 +36,7 @@ public protocol PagedPublicationPageViewModelProtocol {
     
     var pageTitle:String? { get }
     
-    var aspectRatio:Double { get }
+    var aspectRatio:CGFloat { get }
     
     var defaultImageURL:NSURL? { get }
     
@@ -55,12 +55,12 @@ public protocol PagedPublicationPageViewModelProtocol {
 public class PagedPublicationViewModel : NSObject, PagedPublicationViewModelProtocol {
     public var bgColor: UIColor
     public var pageCount: Int = 0
-    public var aspectRatio: Double = 0
+    public var aspectRatio: CGFloat = 0
     
     public var isFetching: Bool
     
     
-    public init(bgColor:UIColor, pageCount:Int = 0, aspectRatio:Double = 0) {
+    public init(bgColor:UIColor, pageCount:Int = 0, aspectRatio:CGFloat = 0) {
         self.bgColor = bgColor
         self.pageCount = pageCount
         self.aspectRatio = aspectRatio
@@ -74,7 +74,7 @@ public class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewM
     public var pageIndex: Int
     
     public var pageTitle:String?
-    public var aspectRatio: Double = 0
+    public var aspectRatio: CGFloat = 0
     
     public var defaultImage:UIImage?
     public var defaultImageURL:NSURL?
@@ -85,7 +85,7 @@ public class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewM
     
     public var hotspots:[PagedPublicationHotspotViewModelProtocol]?
     
-    public init(pageIndex:Int, pageTitle:String?, aspectRatio:Double = 0, imageURL:NSURL? = nil, zoomImageURL:NSURL? = nil, hotspots:[PagedPublicationHotspotViewModelProtocol]? = nil) {
+    public init(pageIndex:Int, pageTitle:String?, aspectRatio:CGFloat = 0, imageURL:NSURL? = nil, zoomImageURL:NSURL? = nil, hotspots:[PagedPublicationHotspotViewModelProtocol]? = nil) {
         self.pageIndex = pageIndex
         self.pageTitle = pageTitle
         self.aspectRatio = aspectRatio
@@ -96,43 +96,4 @@ public class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewM
 }
 
 
-
-
-@objc
-public protocol PagedPublicationHotspotViewModelProtocol {
-    var data:AnyObject? { get }
-    
-    /// return CGRectNull if the hotspot isnt in that page
-    func getLocationForPageIndex(pageIndex:Int)->CGRect
-    
-    func getPageIndexes()->NSIndexSet
-}
-
-
-@objc (SGNPagedPublicationOfferHotspotViewModel)
-public class PagedPublicationOfferHotspotViewModel : NSObject, PagedPublicationHotspotViewModelProtocol {
-    
-    public var data:AnyObject? = nil // TODO: cast as Offer obj?
-    
-    
-    public func getLocationForPageIndex(pageIndex:Int)->CGRect {
-        return locations[pageIndex] ?? CGRectNull
-    }
-    
-    public func getPageIndexes()->NSIndexSet {
-        let pageIndexes = NSMutableIndexSet()
-//        for pageIndex in locations.keys.enumerate() {
-//            pageIndexes.addIndex(pageIndex)
-//        }
-        return pageIndexes
-    }
-    
-    private var locations:[Int:CGRect]
-    
-    public init(locations:[Int:CGRect], pageIndexes:[Int], data:AnyObject? = nil) {
-        self.locations = locations
-//        self.pageIndexes = pageIndexes
-        self.data = data
-    }
-}
 
