@@ -18,16 +18,7 @@ public protocol PagedPublicationPageViewDelegate : class {
     optional func didConfigurePagedPublicationPage(pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol)
     
     optional func didLoadPagedPublicationPageImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)
-    optional func didLoadPagedPublicationPageZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)
-    
-    /// The user touched a location in the view. The location is as a percentage 0->1 of the width/height from the top-left
-    optional func didTouchPagedPublicationPage(pageView:PagedPublicationPageView, location:CGPoint)
-    /// The user tapped (touched then released) a location in the view. The location is as a percentage 0->1 of the width/height from the top-left
-    optional func didTapPagedPublicationPage(pageView:PagedPublicationPageView, location:CGPoint)
-    /// The user began longpressing a location in the view. The location is as a percentage 0->1 of the width/height from the top-left
-    optional func didStartLongPressPagedPublicationPage(pageView:PagedPublicationPageView, location:CGPoint, duration:NSTimeInterval)
-    /// The user finished longpressing a location in the view. The location is as a percentage 0->1 of the width/height from the top-left
-    optional func didEndLongPressPagedPublicationPage(pageView:PagedPublicationPageView, location:CGPoint, duration:NSTimeInterval)
+    optional func didLoadPagedPublicationPageZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)    
 }
 
 public class LabelledVersoPageView : VersoPageView {
@@ -37,9 +28,6 @@ public class LabelledVersoPageView : VersoPageView {
         
         // add subviews
         addSubview(pageLabel)
-        
-        layer.borderColor = UIColor(white: 0, alpha: 0.5).CGColor
-        layer.borderWidth = 1
         
         backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1.0)
     }
@@ -92,9 +80,7 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
         addSubview(imageView)
         addSubview(zoomImageView)
         
-        backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1.0)
-        
-        _initializeGestureRecognizers()
+        backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
     }
     
     public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
@@ -319,96 +305,4 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
     func memoryWarningNotification(notification:NSNotification) {
         clearZoomImage(animated:true)
     }
-    
-    
-    
-    // MARK: - Gestures
-    
-    private var touchGesture:UILongPressGestureRecognizer?
-    private var tapGesture:UITapGestureRecognizer?
-    private var longPressGesture:UILongPressGestureRecognizer?
-    private var longPressStartDate:NSDate?
-    
-    private func _initializeGestureRecognizers() {
-        
-        touchGesture = UILongPressGestureRecognizer(target: self, action:#selector(PagedPublicationPageView.didTouch(_:)))
-        touchGesture!.minimumPressDuration = 0.01
-        touchGesture!.cancelsTouchesInView = false
-        touchGesture!.delaysTouchesBegan = false
-        touchGesture!.delaysTouchesEnded = false
-        touchGesture!.delegate = self
-        
-        tapGesture = UITapGestureRecognizer(target: self, action: #selector(PagedPublicationPageView.didTap(_:)))
-        tapGesture!.delegate = self
-        
-        longPressGesture = UILongPressGestureRecognizer(target: self, action:#selector(PagedPublicationPageView.didLongPress(_:)))
-        longPressGesture!.delegate = self
-        
-        
-        addGestureRecognizer(longPressGesture!)
-        addGestureRecognizer(tapGesture!)
-        addGestureRecognizer(touchGesture!)
-    }
-    
-    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if gestureRecognizer == tapGesture ||
-            gestureRecognizer == touchGesture ||
-            gestureRecognizer == longPressGesture {
-            return true
-        }
-        else {
-            return false
-        }
-    }
-    
-    
-    
-    func didTouch(touch:UILongPressGestureRecognizer) {
-        guard touch.state == .Began else {
-            return
-        }
-        guard bounds.size.width > 0 && bounds.size.height > 0 else {
-            return
-        }
-        
-        
-        var location = touch.locationInView(self)
-        location.x = location.x / bounds.size.width
-        location.y = location.y / bounds.size.height
-        
-        delegate?.didTouchPagedPublicationPage?(self, location: location)
-    }
-    
-    func didTap(tap:UITapGestureRecognizer) {
-        guard bounds.size.width > 0 && bounds.size.height > 0 else {
-            return
-        }
-        
-        var location = tap.locationInView(self)
-        location.x = location.x / bounds.size.width
-        location.y = location.y / bounds.size.height
-        
-        delegate?.didTapPagedPublicationPage?(self, location: location)
-    }
-    
-    func didLongPress(press:UILongPressGestureRecognizer) {
-        guard bounds.size.width > 0 && bounds.size.height > 0 else {
-            return
-        }
-        
-        var location = press.locationInView(self)
-        location.x = location.x / bounds.size.width
-        location.y = location.y / bounds.size.height
-        
-        if press.state == .Began {
-            longPressStartDate = NSDate()
-            delegate?.didStartLongPressPagedPublicationPage?(self, location: location, duration:press.minimumPressDuration)
-        }
-        else if press.state == .Ended {
-            var duration = longPressStartDate?.timeIntervalSinceNow ?? 0
-            duration = -duration + press.minimumPressDuration
-            delegate?.didEndLongPressPagedPublicationPage?(self, location: location, duration:duration)
-        }
-    }
-
 }

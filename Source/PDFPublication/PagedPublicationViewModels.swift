@@ -41,8 +41,6 @@ public protocol PagedPublicationPageViewModelProtocol {
     var defaultImageURL:NSURL? { get }
     
     var zoomImageURL:NSURL? { get }
-    
-    var hotspots:[PagedPublicationHotspotViewModelProtocol]? { get }
 }
 
 
@@ -82,16 +80,12 @@ public class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewM
     public var zoomImageURL:NSURL?
     public var zoomImage:UIImage?
     
-    
-    public var hotspots:[PagedPublicationHotspotViewModelProtocol]?
-    
-    public init(pageIndex:Int, pageTitle:String?, aspectRatio:CGFloat = 0, imageURL:NSURL? = nil, zoomImageURL:NSURL? = nil, hotspots:[PagedPublicationHotspotViewModelProtocol]? = nil) {
+    public init(pageIndex:Int, pageTitle:String?, aspectRatio:CGFloat = 0, imageURL:NSURL? = nil, zoomImageURL:NSURL? = nil) {
         self.pageIndex = pageIndex
         self.pageTitle = pageTitle
         self.aspectRatio = aspectRatio
         self.defaultImageURL = imageURL
         self.zoomImageURL = zoomImageURL
-        self.hotspots = hotspots
     }
 }
 

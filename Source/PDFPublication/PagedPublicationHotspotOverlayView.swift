@@ -47,98 +47,293 @@ public class PagedPublicationHotspotViewModel : NSObject, PagedPublicationHotspo
 }
 
 
+protocol HotspotOverlayViewDelegate : class {
+    
+    func didTapHotspotsInOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint)
+    func didLongPressHotspotsInOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint)
+    
+}
+
+extension HotspotOverlayViewDelegate {
+    
+    func didTapHotspotsInOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[PagedPublicationView.HotspotView], locationInOverlay:CGPoint) {}
+    func didLongPressHotspotsInOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[PagedPublicationView.HotspotView], locationInOverlay:CGPoint) {}
+}
+
+
 
 extension PagedPublicationView {
-    class HotspotOverlayView : UIView {
-        
-        var pageIndexes:NSIndexSet = NSIndexSet()
-        
-        private var hotspotsModels:[PagedPublicationHotspotViewModelProtocol] = []
-        private var hotspotViews:[UIView] = []
-        
-        func updateWithHotspots(hotspots:[PagedPublicationHotspotViewModelProtocol]) {
+    
+    class HotspotView : UIView {
+        override init(frame: CGRect) {
+            super.init(frame: frame)
             
-            return
-            
-            
-            for hotspotView in hotspotViews {
-                hotspotView.removeFromSuperview()
-            }
-            
-            var newHotspotModels:[PagedPublicationHotspotViewModelProtocol] = []
-            
-            
-            for hotspot in hotspots {
-                
-                var combinedHotspotLocation:CGRect?
-                
-                let hotspotPageIndexes = hotspot.getPageIndexes()
-                for hotspotPageIndex in hotspotPageIndexes {
-                    if pageIndexes.containsIndex(hotspotPageIndex) {
-                        let hotspotLocation = hotspot.getLocationForPageIndex(hotspotPageIndex)
-                        
-                        if hotspotLocation.isEmpty == false {
-                            combinedHotspotLocation = combinedHotspotLocation?.union(hotspotLocation) ?? hotspotLocation
-                        }
-                    }
-                }
-                
-                guard combinedHotspotLocation != nil else {
-                    continue
-                }
-//                
-//                combinedHotspotLocation!.intersectInPlace(CGRectMake(0,0,1,1))
-//                let hotspotFrame = _frameForHotspot(hotspot)
-//                
-//                newHotspotModels.append(hotspot)
-//                
-//                let hotspotView = UIView(frame: hotspotFrame)
-//                hotspotView.hidden = hotspotFrame.isEmpty
-//                hotspotView.backgroundColor = UIColor(red: 1, green: 0.8, blue: 0.8, alpha: 0.5)
-//                hotspotView.layer.borderWidth = 1
-//                hotspotView.layer.borderColor = UIColor(white: 1, alpha: 0.6).CGColor
-//                
-//                addSubview(hotspotView)
-//                hotspotViews.append(hotspotView)
-            }
-            
-            hotspotsModels = newHotspotModels
+            backgroundColor = UIColor(white: 1, alpha: 0.5)
+            layer.borderWidth = 1.0 / max(UIScreen.mainScreen().scale, 0)
+            layer.borderColor = UIColor(white: 0, alpha: 0.4).CGColor
+            layer.cornerRadius = 4
         }
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+    }
+    
+    class HotspotOverlayView : UIView, UIGestureRecognizerDelegate {
         
-        
-        
-//        private func _frameForHotspot(hotspot:PagedPublicationHotspotViewModelProtocol) -> CGRect {
-//            
-//            let location = hotspot.getLocationForPageIndex(pageIndex).intersect(CGRectMake(0,0,1,1))
-//            guard location.isEmpty == false else {
-//                return CGRectNull
-//            }
-//            
-//            let maxSize = bounds.size
-//            let hotspotFrame = CGRect(x: maxSize.width * location.origin.x,
-//                                      y: maxSize.height * location.origin.y,
-//                                      width: maxSize.width * location.size.width,
-//                                      height: maxSize.height * location.size.height)
-//            
-//            
-//            // we dont want super-thin hotspots
-//            guard hotspotFrame.width > 10 && hotspotFrame.height > 10 else {
-//                return CGRectNull
-//            }
-//            
-//            return hotspotFrame
-//        }
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            
+            _initializeGestureRecognizers()
+        }
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
         
         override func layoutSubviews() {
             super.layoutSubviews()
             
-//            for (index, hotspot) in hotspotsModels.enumerate() {
-//                if let hotspotView = hotspotViews[safe:index] {
-//                    let hotspotFrame = _frameForHotspot(hotspot)
-//                    hotspotView.frame = hotspotFrame
-//                    hotspotView.hidden = hotspotFrame.isEmpty
-//                }
-//            }
+            for (index, hotspot) in hotspotModels.enumerate() {
+                if let hotspotView = hotspotViews[safe:index], let hotspotFrame = _frameForHotspot(hotspot) {
+                    hotspotView.frame = hotspotFrame
+                }
+            }
         }
+
+        weak var delegate:HotspotOverlayViewDelegate?
+        
+        
+        
+        private func _getHotspotsAtPoint(location:CGPoint) -> (views:[UIView], models:[PagedPublicationHotspotViewModelProtocol]) {
+            
+            var views:[UIView] = []
+            var models:[PagedPublicationHotspotViewModelProtocol] = []
+            
+            
+            // get only the hotspots & views that were touched
+            for (index, hotspotView) in hotspotViews.enumerate() {
+                if hotspotView.frame.contains(location) {
+                    let hotspotModel = hotspotModels[index]
+                    
+                    views.append(hotspotView)
+                    models.append(hotspotModel)
+                }
+            }
+            return (views:views, models:models)
+        }
+        
+        
+        // MARK: - Gestures
+        
+        var touchGesture:UILongPressGestureRecognizer?
+        var tapGesture:UITapGestureRecognizer?
+        var longPressGesture:UILongPressGestureRecognizer?
+        
+        private func _initializeGestureRecognizers() {
+            
+            touchGesture = UILongPressGestureRecognizer(target: self, action:#selector(HotspotOverlayView.didTouch(_:)))
+            touchGesture!.minimumPressDuration = 0.01
+            touchGesture!.delegate = self
+            
+            tapGesture = UITapGestureRecognizer(target: self, action: #selector(HotspotOverlayView.didTap(_:)))
+            tapGesture!.delegate = self
+
+            longPressGesture = UILongPressGestureRecognizer(target: self, action:#selector(HotspotOverlayView.didLongPress(_:)))
+            longPressGesture!.delegate = self
+            
+            tapGesture?.requireGestureRecognizerToFail(longPressGesture!)
+            
+            addGestureRecognizer(longPressGesture!)
+            addGestureRecognizer(tapGesture!)
+            addGestureRecognizer(touchGesture!)
+        }
+        
+        func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            if gestureRecognizer == tapGesture {
+                return gestureRecognizer != longPressGesture
+            }
+            else if gestureRecognizer == touchGesture {
+                return true
+            }
+            else if gestureRecognizer == longPressGesture {
+                return otherGestureRecognizer != tapGesture
+            }
+            else {
+                return false
+            }
+        }
+
+        
+        
+        func didTouch(touch:UILongPressGestureRecognizer) {
+            guard bounds.size.width > 0 && bounds.size.height > 0 else {
+                return
+            }
+            
+            if touch.state == .Began {
+                
+                let location = touch.locationInView(self)
+                
+                let hotspots = _getHotspotsAtPoint(location)
+                
+                // highlight the hotspots that were touched
+                UIView.animateWithDuration(0.1, delay: 0, options: [.BeginFromCurrentState], animations: {
+                    for hotspotView in hotspots.views {
+                        hotspotView.alpha = 0.5
+                    }
+                    }, completion: nil)
+
+            } else if touch.state == .Ended || touch.state == .Failed  || touch.state == .Cancelled {
+
+                // fade out all hotspot views when touch finishes
+                UIView.animateWithDuration(0.2, delay: 0.0, options:[.BeginFromCurrentState], animations: { [weak self] in
+                    guard self != nil else { return }
+                    
+                    for view in self!.hotspotViews {
+                        view.alpha = 0.0
+                    }
+                    }, completion: nil)
+
+            }
+        }
+        
+        func didTap(tap:UITapGestureRecognizer) {
+            guard bounds.size.width > 0 && bounds.size.height > 0 else {
+                return
+            }
+            
+            let location = tap.locationInView(self)
+
+            let hotspots = _getHotspotsAtPoint(location)
+            if hotspots.models.count > 0 {
+                delegate?.didTapHotspotsInOverlayView(self, hotspots: hotspots.models, hotspotViews: hotspots.views, locationInOverlay: location)
+            }
+        }
+        
+        func didLongPress(press:UILongPressGestureRecognizer) {
+            guard bounds.size.width > 0 && bounds.size.height > 0 else {
+                return
+            }
+            
+            let location = press.locationInView(self)
+
+            if press.state == .Began {
+                let hotspots = _getHotspotsAtPoint(location)
+                
+                // bounce the views
+                for hotspotView in hotspots.views {
+                    UIView.animateWithDuration(0.1, delay: 0, options: [.BeginFromCurrentState], animations: {
+                        
+                        hotspotView.alpha = 1.0
+                        hotspotView.layer.transform = CATransform3DMakeScale(1.1, 1.1, 1.1)
+                        
+                    }) { (finished) in
+                        UIView.animateWithDuration(0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.7, options: [.BeginFromCurrentState], animations: {
+                            hotspotView.layer.transform = CATransform3DIdentity
+                            hotspotView.alpha = 0.5
+                        }) { (finished) in
+                            hotspotView.alpha = 0.0
+                        }
+                    }
+                }
+                
+                if hotspots.models.count > 0 {
+                    delegate?.didLongPressHotspotsInOverlayView(self, hotspots: hotspots.models, hotspotViews: hotspots.views, locationInOverlay: location)
+                }
+            }
+        }
+
+        
+        /* Verso layout ensuing bugs
+            Verso hotpspots
+ */
+        
+        
+        
+        // MARK: Hotspot views
+        
+        
+        private var hotspotModels:[PagedPublicationHotspotViewModel] = []
+        private var hotspotViews:[UIView] = []
+        private var pageViews:[Int:UIView] = [:]
+        
+        func updateWithHotspots(hotspots:[PagedPublicationHotspotViewModel], pageFrames:[Int:CGRect]) {
+            
+            // update pageViews (simply used for their frames & autoresizing powers)
+            for (_, pageView) in pageViews {
+                pageView.removeFromSuperview()
+            }
+            var newPageViews:[Int:UIView] = [:]
+            for (pageIndex, pageFrame) in pageFrames {
+                let pageView = UIView(frame:pageFrame)
+                pageView.hidden = true
+                pageView.userInteractionEnabled = false
+                pageView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+                addSubview(pageView)
+                newPageViews[pageIndex] = pageView
+            }
+            pageViews = newPageViews
+
+            
+            
+            let minSize = CGSize(width: min(bounds.size.width * 0.02, 20), height: min(bounds.size.height * 0.02, 20))
+            
+            for hotspotView in hotspotViews {
+                hotspotView.removeFromSuperview()
+            }
+            var newHotspotModels:[PagedPublicationHotspotViewModel] = []
+            var newHotspotViews:[UIView] = []
+            for hotspot in hotspots {
+                if let hotspotFrame = _frameForHotspot(hotspot)
+                    where hotspotFrame.isEmpty == false && hotspotFrame.width > minSize.width && hotspotFrame.height > minSize.height {
+                    
+                    let hotspotView = HotspotView(frame: hotspotFrame)
+                    hotspotView.alpha = 0
+                    hotspotView.userInteractionEnabled = false
+                    
+                    addSubview(hotspotView)
+                    
+                    newHotspotViews.append(hotspotView)
+                    newHotspotModels.append(hotspot)
+                }
+            }
+            hotspotViews = newHotspotViews
+            hotspotModels = newHotspotModels
+            
+            alpha = 0
+            UIView.animateWithDuration(0.3) { [weak self] in
+                self?.alpha = 1.0
+            }
+        }
+        
+        
+        
+        private func _frameForHotspot(hotspot:PagedPublicationHotspotViewModel) -> CGRect? {
+            
+            var combinedHotspotFrame:CGRect?
+            
+            let hotspotPageIndexes = hotspot.getPageIndexes()
+            for hotspotPageIndex in hotspotPageIndexes {
+                guard let pageView = pageViews[hotspotPageIndex] else {
+                    continue
+                }
+                
+                let hotspotLocation = hotspot.getLocationForPageIndex(hotspotPageIndex)
+                guard hotspotLocation.isEmpty == false else {
+                    continue
+                }
+                
+                let pageFrame = pageView.frame
+                
+                let hotspotFrame = CGRect(x: pageFrame.origin.x + (hotspotLocation.origin.x * pageFrame.width),
+                                          y: pageFrame.origin.y + (hotspotLocation.origin.y * pageFrame.height),
+                                          width: hotspotLocation.width * pageFrame.width,
+                                          height: hotspotLocation.height * pageFrame.height)
+                
+                combinedHotspotFrame = combinedHotspotFrame?.union(hotspotFrame) ?? hotspotFrame
+            }
+            
+            return combinedHotspotFrame
+        }
+        
     }
 }

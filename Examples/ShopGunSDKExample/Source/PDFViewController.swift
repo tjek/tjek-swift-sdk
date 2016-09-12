@@ -30,9 +30,9 @@ class PDFViewController : UIViewController {
             if let publication = viewModel {
                 self?.publicationView.updateWithPublicationViewModel(publication)
                 
-//                self?.fetchPublicationHotspotData("efbbJc3", aspectRatio:publication.aspectRatio, delay:1.5) { [weak self] (viewModels) in
-//                    self?.publicationView.updateHotspots(viewModels)
-//                }
+                self?.fetchPublicationHotspotData("efbbJc3", aspectRatio:publication.aspectRatio, delay:1.5) { [weak self] (viewModels) in
+                    self?.publicationView.updateHotspots(viewModels)
+                }
             }
 
         }
@@ -66,16 +66,8 @@ class PDFViewController : UIViewController {
 //        
         
         
-        let dbltap = UITapGestureRecognizer(target: self, action: #selector(PDFViewController.didDoubleTap(_:)))
-        dbltap.numberOfTapsRequired = 2
-        
-        self.view?.addGestureRecognizer(dbltap)
     }
     
-    func didDoubleTap(gesture:UITapGestureRecognizer) {
-        
-        //        publicationView.jumpToPage()
-    }
     
     
     func fetchPublicationData(publicationID:String, delay:NSTimeInterval = 0, completion:(PagedPublicationViewModel?)->Void) {
@@ -135,7 +127,7 @@ class PDFViewController : UIViewController {
                     }
                     
                     
-                    let pageModel = PagedPublicationPageViewModel(pageIndex:pageIndex, pageTitle: "Page "+String(pageIndex), aspectRatio: 0, imageURL: viewImageURL, zoomImageURL: zoomImageURL, hotspots: nil)
+                    let pageModel = PagedPublicationPageViewModel(pageIndex:pageIndex, pageTitle: String(pageIndex+1), aspectRatio: 0, imageURL: viewImageURL, zoomImageURL: zoomImageURL)
                     viewModels!.append(pageModel)
                 }
             }
@@ -214,13 +206,8 @@ class PDFViewController : UIViewController {
                         }
                     }
                     
-//                    let offerName:String = hotspotData["heading"] as? String ?? "?"
-                    
-//                    print("\(hotspotIndex): '\(offerName)' \(pageRects)\n")
-                    
-                    
-//                    let hotspotModel = PagedPublicationHotspotViewModel(pageLocations: <#T##[Int : CGRect]#>, data: <#T##AnyObject?#>)
-//                    viewModels!.append(hotspotModel)
+                    let hotspotModel = PagedPublicationHotspotViewModel(pageLocations: pageRects, data: nil)
+                    viewModels!.append(hotspotModel)
                 }
             }
             dispatch_async(dispatch_get_main_queue()) {

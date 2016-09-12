@@ -34,9 +34,6 @@ public class PagedPublicationView : UIView {
         
         // FIXME: dont do this
         AlamofireImage.ImageDownloader.defaultURLCache().removeAllCachedResponses()
-        if let imageCache = AlamofireImage.ImageDownloader.defaultInstance.imageCache as? AutoPurgingImageCache {
-            print ("\(imageCache.memoryUsage) / \(imageCache.memoryCapacity)")
-        }
         AlamofireImage.ImageDownloader.defaultInstance.imageCache?.removeAllImages()
         
     }
@@ -103,11 +100,22 @@ public class PagedPublicationView : UIView {
     
     public func updateHotspots(viewModels:[PagedPublicationHotspotViewModel]?) {
         
-        hotspotViewModels = viewModels
+        var newHotspotsByPageIndex:[Int:[PagedPublicationHotspotViewModel]] = [:]
+        
+        if viewModels != nil {
+            for hotspotModel in viewModels! {
+                let hotspotPageIndexes = hotspotModel.getPageIndexes()
+                
+                for pageIndex in hotspotPageIndexes {
+                    var hotspotsForPage = newHotspotsByPageIndex[pageIndex] ?? []
+                    hotspotsForPage.append(hotspotModel)
+                    newHotspotsByPageIndex[pageIndex] = hotspotsForPage
+                }
+            }
+        }
+        hotspotsByPageIndex = newHotspotsByPageIndex
         
         verso.reconfigureSpreadOverlay()
-        
-        // TODO: re-config the visible pages
     }
     
     
@@ -124,7 +132,7 @@ public class PagedPublicationView : UIView {
     
     private var publicationViewModel:PagedPublicationViewModelProtocol?
     private var pageViewModels:[PagedPublicationPageViewModel]?
-    private var hotspotViewModels:[PagedPublicationHotspotViewModel]?
+    private var hotspotsByPageIndex:[Int:[PagedPublicationHotspotViewModel]] = [:]
     
     /// The indexes of active pages that havnt been loaded yet. This set changes when pages are activated and deactivated, and when images are loaded
     /// Used by the PagedPublicationPageViewDelegate methods
@@ -246,27 +254,36 @@ extension PagedPublicationView : VersoViewDataSource {
     }
     
     
-    public func spreadOverlayViewForVerso(verso:VersoView, pageIndexes:NSIndexSet) -> UIView? {
-        
+    public func spreadOverlayViewForVerso(verso: VersoView, overlaySize: CGSize, pageFrames: [Int : CGRect]) -> UIView? {
         
         // no overlay for outro
-        if outroPageIndex != nil && pageIndexes.containsIndex(outroPageIndex!) {
+        if outroPageIndex != nil && pageFrames[outroPageIndex!] != nil {
             return nil
         }
         
         // configure the overlay
+        var spreadHotspots:[PagedPublicationHotspotViewModel] = []
+        for (pageIndex, _) in pageFrames {
+            if let hotspots = hotspotsByPageIndex[pageIndex] {
+                for hotspot in hotspots {
+                    if spreadHotspots.contains(hotspot) == false {
+                        spreadHotspots.append(hotspot)
+                    }
+                }
+            }
+        }
+        if spreadHotspots.count == 0 {
+            return nil
+        }
         
-        hotspotOverlayView.pageIndexes = pageIndexes
-        hotspotOverlayView.backgroundColor = UIColor(red: 1, green: 0.8, blue:0.8, alpha: 0.5)
-
-//        var dummyHotspots:[PagedPublicationHotspotViewModelProtocol] = []
-//
-//        dummyHotspots.append(PagedPublicationHotspotViewModel(pageLocations: [pageIndexes.firstIndex:CGRectMake(0.5,0.5, 0.1,0.1)]))
-//        dummyHotspots.append(PagedPublicationHotspotViewModel(pageLocations: [pageIndexes.firstIndex:CGRectMake(0.0,0.0, 0.2,0.1)]))
-//        dummyHotspots.append(PagedPublicationHotspotViewModel(pageLocations: [pageIndexes.firstIndex:CGRectMake(0.9,0.8, 0.1,0.2)]))
-//        dummyHotspots.append(PagedPublicationHotspotViewModel(pageLocations: [pageIndexes.firstIndex:CGRectMake(0.9,0.4, 0.2,0.2)]))
-//        
-//        hotspotOverlayView.updateWithHotspots(dummyHotspots)
+        hotspotOverlayView.delegate = self
+        hotspotOverlayView.frame.size = overlaySize
+        hotspotOverlayView.updateWithHotspots(spreadHotspots, pageFrames: pageFrames)        
+        
+        // disable tap when double-tapping
+        if let doubleTap = verso.zoomDoubleTapGestureRecognizer {
+            hotspotOverlayView.tapGesture?.requireGestureRecognizerToFail(doubleTap)
+        }
         
         return hotspotOverlayView
     }
@@ -400,19 +417,26 @@ extension PagedPublicationView : PagedPublicationPageViewDelegate {
 //    public func didLoadPagedPublicationPageZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool) {
 //    
 //    }
-    
-    public func didTapPagedPublicationPage(pageView: PagedPublicationPageView, location: CGPoint) {
-        triggerEvent_PageTapped(pageView.pageIndex, location: location)
-    }
-//    public func didTouchPagedPublicationPage(pageView: PagedPublicationPageView, location: CGPoint) {
-//    }
-//    public func didStartLongPressPagedPublicationPage(pageView: PagedPublicationPageView, location: CGPoint, duration:NSTimeInterval) {
-//    }
-    public func didEndLongPressPagedPublicationPage(pageView: PagedPublicationPageView, location: CGPoint, duration:NSTimeInterval) {
-        triggerEvent_PageLongPressed(pageView.pageIndex, location: location, duration:duration)
-    }
 }
 
+
+
+
+extension PagedPublicationView : HotspotOverlayViewDelegate {
+    
+    func didTapHotspotsInOverlayView(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [PagedPublicationHotspotViewModelProtocol], hotspotViews: [UIView], locationInOverlay: CGPoint) {
+//        triggerEvent_PageTapped(pageView.pageIndex, location: location)
+        print ("Tapped! \(hotspots.count)")
+    }
+    
+    func didLongPressHotspotsInOverlayView(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [PagedPublicationHotspotViewModelProtocol], hotspotViews: [UIView], locationInOverlay: CGPoint) {
+        
+//        triggerEvent_PageLongPressed(pageView.pageIndex, location: location, duration:duration)
+
+        print ("LongPress! \(hotspots.count)")
+    }
+    
+}
 
 
 
