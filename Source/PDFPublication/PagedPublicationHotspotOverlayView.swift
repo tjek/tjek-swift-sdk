@@ -49,15 +49,14 @@ public class PagedPublicationHotspotViewModel : NSObject, PagedPublicationHotspo
 
 protocol HotspotOverlayViewDelegate : class {
     
-    func didTapHotspotsInOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint)
-    func didLongPressHotspotsInOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint)
-    
+    func didTapHotspotOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint)
+    func didLongPressHotspotOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint)
 }
 
 extension HotspotOverlayViewDelegate {
     
-    func didTapHotspotsInOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[PagedPublicationView.HotspotView], locationInOverlay:CGPoint) {}
-    func didLongPressHotspotsInOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[PagedPublicationView.HotspotView], locationInOverlay:CGPoint) {}
+    func didTapHotspotOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {}
+    func didLongPressHotspotOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {}
 }
 
 
@@ -93,14 +92,13 @@ extension PagedPublicationView {
             super.layoutSubviews()
             
             for (index, hotspot) in hotspotModels.enumerate() {
-                if let hotspotView = hotspotViews[safe:index], let hotspotFrame = _frameForHotspot(hotspot) {
+                if let hotspotView = hotspotViews[sgn_safe:index], let hotspotFrame = _frameForHotspot(hotspot) {
                     hotspotView.frame = hotspotFrame
                 }
             }
         }
 
         weak var delegate:HotspotOverlayViewDelegate?
-        
         
         
         private func _getHotspotsAtPoint(location:CGPoint) -> (views:[UIView], models:[PagedPublicationHotspotViewModelProtocol]) {
@@ -201,12 +199,24 @@ extension PagedPublicationView {
                 return
             }
             
-            let location = tap.locationInView(self)
-
-            let hotspots = _getHotspotsAtPoint(location)
-            if hotspots.models.count > 0 {
-                delegate?.didTapHotspotsInOverlayView(self, hotspots: hotspots.models, hotspotViews: hotspots.views, locationInOverlay: location)
+            var possibleTargetPage:(index:Int, location:CGPoint)?
+            for (pageIndex, pageView) in pageViews {
+                let pageLocation = tap.locationInView(pageView)
+                if pageView.bounds.isEmpty == false && pageView.bounds.contains(pageLocation) {
+                    possibleTargetPage = (index:pageIndex, location:CGPoint(x:pageLocation.x/pageView.bounds.size.width, y:pageLocation.y/pageView.bounds.size.height))
+                    break
+                }
             }
+            
+            guard let targetPage = possibleTargetPage else {
+                return
+            }
+            
+            let overlayLocation = tap.locationInView(self)
+            
+            let hotspots = _getHotspotsAtPoint(overlayLocation)
+
+            delegate?.didTapHotspotOverlayView(self, hotspots: hotspots.models, hotspotViews: hotspots.views, locationInOverlay: overlayLocation, pageIndex: targetPage.index, locationInPage: targetPage.location)
         }
         
         func didLongPress(press:UILongPressGestureRecognizer) {
@@ -214,10 +224,10 @@ extension PagedPublicationView {
                 return
             }
             
-            let location = press.locationInView(self)
+            let overlayLocation = press.locationInView(self)
 
             if press.state == .Began {
-                let hotspots = _getHotspotsAtPoint(location)
+                let hotspots = _getHotspotsAtPoint(overlayLocation)
                 
                 // bounce the views
                 for hotspotView in hotspots.views {
@@ -236,17 +246,24 @@ extension PagedPublicationView {
                     }
                 }
                 
-                if hotspots.models.count > 0 {
-                    delegate?.didLongPressHotspotsInOverlayView(self, hotspots: hotspots.models, hotspotViews: hotspots.views, locationInOverlay: location)
+                
+                
+                var possibleTargetPage:(index:Int, location:CGPoint)?
+                for (pageIndex, pageView) in pageViews {
+                    let pageLocation = press.locationInView(pageView)
+                    if pageView.bounds.isEmpty == false && pageView.bounds.contains(pageLocation) {
+                        possibleTargetPage = (index:pageIndex, location:CGPoint(x:pageLocation.x/pageView.bounds.size.width, y:pageLocation.y/pageView.bounds.size.height))
+                        break
+                    }
                 }
+                
+                guard let targetPage = possibleTargetPage else {
+                    return
+                }
+
+                delegate?.didLongPressHotspotOverlayView(self, hotspots: hotspots.models, hotspotViews: hotspots.views, locationInOverlay: overlayLocation, pageIndex: targetPage.index, locationInPage: targetPage.location)
             }
         }
-
-        
-        /* Verso layout ensuing bugs
-            Verso hotpspots
- */
-        
         
         
         // MARK: Hotspot views

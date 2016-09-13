@@ -9,6 +9,7 @@
 
 import UIKit
 
+import AlamofireImage
 import ShopGunSDK
 
 class PDFViewController : UIViewController {
@@ -21,6 +22,13 @@ class PDFViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        // FIXME: dont do this
+        AlamofireImage.ImageDownloader.defaultURLCache().removeAllCachedResponses()
+        AlamofireImage.ImageDownloader.defaultInstance.imageCache?.removeAllImages()
+
+        
         publicationView.frame = view.frame
         publicationView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         view.addSubview(publicationView)

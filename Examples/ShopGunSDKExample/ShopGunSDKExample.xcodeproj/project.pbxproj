@@ -8,14 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		AE06C0271D3F863A00BC8D47 /* ObjCTestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = AE06C0261D3F863A00BC8D47 /* ObjCTestClass.m */; };
-		AE06E3331D520BC800C84762 /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06E3321D520BC800C84762 /* Valet.framework */; };
 		AE06E3341D520BC800C84762 /* Valet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE06E3321D520BC800C84762 /* Valet.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AE58EDC91D546F3F002BC38A /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE58EDC81D546F3F002BC38A /* PDFViewController.swift */; };
 		AE5FE9311D620468003102F3 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE92F1D620468003102F3 /* Alamofire.framework */; };
 		AE5FE9321D620468003102F3 /* AlamofireImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE9301D620468003102F3 /* AlamofireImage.framework */; };
-		AE5FE9341D620472003102F3 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE92F1D620468003102F3 /* Alamofire.framework */; };
 		AE5FE9351D620472003102F3 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE92F1D620468003102F3 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		AE5FE9361D620472003102F3 /* AlamofireImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE9301D620468003102F3 /* AlamofireImage.framework */; };
 		AE5FE9371D620472003102F3 /* AlamofireImage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE5FE9301D620468003102F3 /* AlamofireImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AE7D784D1D51DB1900B414CE /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; };
 		AE7D78521D51DB2500B414CE /* ShopGunSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -28,6 +25,9 @@
 		AED8A9B71D815B7E00C92ED5 /* efbbJc3.hotspots.json in Resources */ = {isa = PBXBuildFile; fileRef = AED8A9B61D815B7E00C92ED5 /* efbbJc3.hotspots.json */; };
 		AED8A9B91D815CDE00C92ED5 /* efbbJc3.pages.json in Resources */ = {isa = PBXBuildFile; fileRef = AED8A9B81D815CDE00C92ED5 /* efbbJc3.pages.json */; };
 		AED8A9BB1D81640000C92ED5 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED8A9BA1D81640000C92ED5 /* UIColorExtension.swift */; };
+		AED8A9DD1D87F5C400C92ED5 /* Verso.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AED8A9DC1D87F5C400C92ED5 /* Verso.framework */; };
+		AED8A9DE1D87F5E000C92ED5 /* Verso.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AED8A9DC1D87F5C400C92ED5 /* Verso.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AED8A9DF1D87F60600C92ED5 /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06E3321D520BC800C84762 /* Valet.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +65,7 @@
 				AE5FE9351D620472003102F3 /* Alamofire.framework in Embed Frameworks */,
 				AE06E3341D520BC800C84762 /* Valet.framework in Embed Frameworks */,
 				AE5FE9371D620472003102F3 /* AlamofireImage.framework in Embed Frameworks */,
+				AED8A9DE1D87F5E000C92ED5 /* Verso.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,6 +93,7 @@
 		AED8A9B61D815B7E00C92ED5 /* efbbJc3.hotspots.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = efbbJc3.hotspots.json; path = Resources/efbbJc3.hotspots.json; sourceTree = SOURCE_ROOT; };
 		AED8A9B81D815CDE00C92ED5 /* efbbJc3.pages.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = efbbJc3.pages.json; path = Resources/efbbJc3.pages.json; sourceTree = SOURCE_ROOT; };
 		AED8A9BA1D81640000C92ED5 /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
+		AED8A9DC1D87F5C400C92ED5 /* Verso.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Verso.framework; path = ../../Carthage/Build/iOS/Verso.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,10 +103,9 @@
 			files = (
 				AE5FE9311D620468003102F3 /* Alamofire.framework in Frameworks */,
 				AE5FE9321D620468003102F3 /* AlamofireImage.framework in Frameworks */,
+				AED8A9DD1D87F5C400C92ED5 /* Verso.framework in Frameworks */,
+				AED8A9DF1D87F60600C92ED5 /* Valet.framework in Frameworks */,
 				AE7D784D1D51DB1900B414CE /* ShopGunSDK.framework in Frameworks */,
-				AE5FE9361D620472003102F3 /* AlamofireImage.framework in Frameworks */,
-				AE5FE9341D620472003102F3 /* Alamofire.framework in Frameworks */,
-				AE06E3331D520BC800C84762 /* Valet.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,6 +143,7 @@
 		AEA5AA071D3CB44200DC5EA3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AED8A9DC1D87F5C400C92ED5 /* Verso.framework */,
 				AE5FE92F1D620468003102F3 /* Alamofire.framework */,
 				AE5FE9301D620468003102F3 /* AlamofireImage.framework */,
 				AE06E3321D520BC800C84762 /* Valet.framework */,

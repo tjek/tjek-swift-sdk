@@ -9,7 +9,8 @@
 
 import UIKit
 
-import AlamofireImage
+import Verso
+
 
 @objc(SGNPagedPublicationView)
 public class PagedPublicationView : UIView {
@@ -29,13 +30,6 @@ public class PagedPublicationView : UIView {
         verso.clipsToBounds = false
         verso.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         addSubview(verso)
-        
-        
-        
-        // FIXME: dont do this
-        AlamofireImage.ImageDownloader.defaultURLCache().removeAllCachedResponses()
-        AlamofireImage.ImageDownloader.defaultInstance.imageCache?.removeAllImages()
-        
     }
     required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
@@ -183,7 +177,7 @@ extension PagedPublicationView : VersoViewDataSource {
             
             pubPage.delegate = self
             
-            if let viewModel = pageViewModels?[safe:Int(pageIndex)] {
+            if let viewModel = pageViewModels?[sgn_safe:Int(pageIndex)] {
                 
                 // valid view model
                 pubPage.configure(viewModel)
@@ -318,8 +312,6 @@ extension PagedPublicationView : VersoViewDelegate {
     
     public func activePagesDidChangeForVerso(verso: VersoView, activePageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
         
-        print ("active pages changed: \(activePageIndexes.arrayOfAllIndexes())")
-        
         // go through all the newly added page indexes, triggering `appeared` (and possibly `loaded`) events
         for pageIndex in added {
             // scrolling animation stopped and a new set of page Indexes are now visible.
@@ -368,7 +360,7 @@ extension PagedPublicationView : VersoViewDelegate {
             for pageIndex in zoomingPageIndexes {
                 if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView
                     where pageView.zoomImageLoadState == .NotLoaded,
-                    let zoomImageURL = pageViewModels?[safe:pageIndex]?.zoomImageURL {
+                    let zoomImageURL = pageViewModels?[sgn_safe:pageIndex]?.zoomImageURL {
                     
                     // started zooming on a page with no zoom-image loaded.
                     pageView.startLoadingZoomImageFromURL(zoomImageURL)
@@ -401,7 +393,7 @@ extension PagedPublicationView : PagedPublicationPageViewDelegate {
         let pageIndex = pageView.pageIndex
         
         if activePageIndexesWithPendingLoadEvents.containsIndex(pageIndex),
-            let viewModel = pageViewModels?[safe:pageIndex] where viewModel.defaultImageURL == imageURL {
+            let viewModel = pageViewModels?[sgn_safe:pageIndex] where viewModel.defaultImageURL == imageURL {
             
             // the page is active, and has not yet had its image loaded.
             // and the image url is the same as that of the viewModel at that page Index (view model hasnt changed since)
@@ -424,97 +416,21 @@ extension PagedPublicationView : PagedPublicationPageViewDelegate {
 
 extension PagedPublicationView : HotspotOverlayViewDelegate {
     
-    func didTapHotspotsInOverlayView(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [PagedPublicationHotspotViewModelProtocol], hotspotViews: [UIView], locationInOverlay: CGPoint) {
-//        triggerEvent_PageTapped(pageView.pageIndex, location: location)
-        print ("Tapped! \(hotspots.count)")
-    }
-    
-    func didLongPressHotspotsInOverlayView(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [PagedPublicationHotspotViewModelProtocol], hotspotViews: [UIView], locationInOverlay: CGPoint) {
+    func didTapHotspotOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {
         
-//        triggerEvent_PageLongPressed(pageView.pageIndex, location: location, duration:duration)
-
-        print ("LongPress! \(hotspots.count)")
+        triggerEvent_PageTapped(pageIndex, location: locationInPage)
+        
     }
-    
+    func didLongPressHotspotOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {
+        
+        triggerEvent_PageLongPressed(pageIndex, location: locationInPage)
+        
+    }
 }
 
 
 
 
-
-// MARK: - Event Handling
-
-// TODO: move to another file
-extension PagedPublicationView {
-    
-    func triggerEvent_PageAppeared(pageIndex:Int) {
-        print("[EVENT] Page Appeared(\(pageIndex))")
-    }
-    func triggerEvent_PageLoaded(pageIndex:Int,fromCache:Bool) {
-        print("[EVENT] Page Loaded\(pageIndex) cache:\(fromCache)")
-    }
-    func triggerEvent_PageDisappeared(pageIndex:Int) {
-        print("[EVENT] Page Disappeared(\(pageIndex))")
-    }
-//    func triggerEvent_PagesChanged(fromPageIndexes:NSIndexSet, toPageIndexes:NSIndexSet) {
-//        // TODO: page Changed events
-//        print("[EVENT] Page Changed(\(fromPageIndexes.arrayOfAllIndexes()) -> \(toPageIndexes.arrayOfAllIndexes()))")
-//    }
-    
-    
-    func triggerEvent_PageZoomedIn(pageIndexes:NSIndexSet, centerPoint:CGPoint) {
-//        print("[EVENT] Page Zoomed In(\(pageIndexes.arrayOfAllIndexes())) \(centerPoint)")
-    }
-    func triggerEvent_PageZoomedOut(pageIndexes:NSIndexSet, centerPoint:CGPoint) {
-//        print("[EVENT] Page Zoomed Out(\(pageIndexes.arrayOfAllIndexes())) \(centerPoint)")
-    }
-    
-    
-    func triggerEvent_PageTapped(pageIndex:Int, location:CGPoint) {
-//        print("[EVENT] Page Tapped(\(pageIndex)) \(location)")
-    }
-    func triggerEvent_PageLongPressed(pageIndex:Int, location:CGPoint, duration:NSTimeInterval) {
-//        print("[EVENT] Page LongPressed(\(pageIndex)) \(location)")
-    }
-}
-
-
-//enum PagedPublicationEventType {
-//    case Opened(id:String, pageNumber:Int, pageCount:Int)
-//    
-//    
-//    // TODO: func to get properties dict & type name
-//}
-
-
-
-
-
-
-
-
-
-
-
-
-// MARK: - Fetching
-// TODO: move to another file
-public extension PagedPublicationView {
-    
-    // uses graphKit to fetch the PagedPublication for the specified publicationId
-    public func fetchContents(publicationId:String) {
-        // put it in a `fetching` state
-        
-        
-        
-        // TODO: perform the request with GraphKit
-        
-        // TODO: update publicationVM
-//        updateWithPublicationViewModel(nil)
-        
-    }
-    
-}
 
 
 

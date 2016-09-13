@@ -1,3 +1,4 @@
-github "Alamofire/Alamofire" "3.4.1"
+github "Alamofire/Alamofire" "3.5.0"
 github "square/Valet" "2.2.2"
-github "Alamofire/AlamofireImage" "2.4.1"
+github "ShopGun/Verso-ios" "f1804db376b22f3b21bcf8c9f93e81acff732902"
+github "Alamofire/AlamofireImage" "2.5.0"

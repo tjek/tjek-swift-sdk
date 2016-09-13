@@ -9,8 +9,9 @@
 
 import UIKit
 
-
+import Verso
 import AlamofireImage
+
 
 @objc
 public protocol PagedPublicationPageViewDelegate : class {
@@ -18,7 +19,8 @@ public protocol PagedPublicationPageViewDelegate : class {
     optional func didConfigurePagedPublicationPage(pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol)
     
     optional func didLoadPagedPublicationPageImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)
-    optional func didLoadPagedPublicationPageZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)    
+    optional func didLoadPagedPublicationPageZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)
+    
 }
 
 public class LabelledVersoPageView : VersoPageView {

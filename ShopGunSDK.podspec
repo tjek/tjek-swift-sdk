@@ -50,11 +50,12 @@ Pod::Spec.new do |s|
     ss.dependency 'ShopGunSDK/Core'
   end
 
-  s.subspec 'PDF' do |ss|
+  s.subspec 'PagedPublication' do |ss|
     ss.source_files = 'Source/PagedPublication/**/*.swift'
     ss.frameworks   = 'Foundation', 'UIKit'
 
     ss.dependency 'ShopGunSDK/Core'
+    ss.dependency 'Verso', '~> 1.0.0'
     ss.dependency 'AlamofireImage', '~> 2.4.1'
 
   end

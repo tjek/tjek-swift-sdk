@@ -2,3 +2,5 @@
 github "square/Valet"
 
 github "Alamofire/AlamofireImage" ~> 2.0
+
+github "ShopGun/Verso-ios" "feature/Swifty-v1"
