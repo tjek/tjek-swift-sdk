@@ -26,12 +26,6 @@ xcuserdata
 *.hmap
 *.ipa
 
-# Swift Package Manager
-.build/
-
-# CocoaPods
-Pods
-Podfile.lock
-
-# Carthage
-Carthage/Checkouts/
+## Dependency Managers
+Pods/
+Carthage/Build

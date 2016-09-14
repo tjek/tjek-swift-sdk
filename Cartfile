@@ -1,6 +1,6 @@
 
-github "square/Valet"
-
-github "Alamofire/AlamofireImage" ~> 2.0
+github "square/Valet" ~> 2.2.2
 
 github "ShopGun/Verso-ios" "feature/Swifty-v1"
+
+github "Alamofire/AlamofireImage" ~> 2.5.0

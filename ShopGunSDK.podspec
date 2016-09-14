@@ -56,7 +56,7 @@ Pod::Spec.new do |s|
 
     ss.dependency 'ShopGunSDK/Core'
     ss.dependency 'Verso', '~> 1.0.0'
-    ss.dependency 'AlamofireImage', '~> 2.4.1'
+    ss.dependency 'AlamofireImage', '~> 2.5.0'
 
   end
 
