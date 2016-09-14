@@ -118,14 +118,12 @@ extension PagedPublicationView {
     
     
     func triggerEvent_PageSpreadZoomedIn(pageIndexes:NSIndexSet) {
-        // TODO: not triggered yet
         let pageNums:[Int] = pageIndexes.map { (pageIndex) -> Int in
             return pageIndex + 1
         }
         Events.pageSpreadZoomedIn(pageNums: pageNums).trackEvent()
     }
     func triggerEvent_PageSpreadZoomedOut(pageIndexes:NSIndexSet) {
-        // TODO: not triggered yet
         let pageNums:[Int] = pageIndexes.map { (pageIndex) -> Int in
             return pageIndex + 1
         }

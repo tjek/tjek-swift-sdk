@@ -147,12 +147,12 @@ public class PagedPublicationView : UIView {
     
     // MARK: Notification handlers
     func _didEnterBackgroundNotification(notification:NSNotification) {
-        for pageIndex in verso.lastActivePageIndexes {
+        for pageIndex in verso.currentSpreadPageIndexes {
             triggerEvent_PageDisappeared(pageIndex)
         }
     }
     func _willEnterForegroundNotification(notification:NSNotification) {
-        for pageIndex in verso.lastActivePageIndexes {
+        for pageIndex in verso.currentSpreadPageIndexes {
             _pageDidAppear(pageIndex)
         }
     }
@@ -293,30 +293,10 @@ extension PagedPublicationView : VersoViewDataSource {
 
 extension PagedPublicationView : VersoViewDelegate {
     
-    private func _pageDidAppear(pageIndex:Int) {
-        
-        // scrolling animation stopped and a new set of page Indexes are now visible.
-        // trigger 'PAGE_APPEARED' event
-        triggerEvent_PageAppeared(pageIndex)
-        
-        
-        // if image loaded then trigger 'PAGE_LOADED' event
-        if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView
-            where pageView.imageLoadState == .Loaded {
-            
-            triggerEvent_PageLoaded(pageIndex, fromCache: true)
-        }
-        else {
-            // page became active but image hasnt yet loaded... keep track of it
-            activePageIndexesWithPendingLoadEvents.addIndex(Int(pageIndex))
-        }
-    }
-    
-    public func activePagesDidChangeForVerso(verso: VersoView, activePageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
-        
+    public func currentSpreadPagesChangedForVerso(verso: VersoView, spreadPageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
         
         // pages changed while we were zoomed in - trigger a zoom-out event
-        if zoomedPageIndexes.count > 0 && activePageIndexes.isEqualToIndexSet(zoomedPageIndexes) == false {
+        if zoomedPageIndexes.count > 0 && spreadPageIndexes.isEqualToIndexSet(zoomedPageIndexes) == false {
             _didZoomOut()
         }
         
@@ -343,10 +323,10 @@ extension PagedPublicationView : VersoViewDelegate {
         }
     }
     
-    public func currentPagesDidChangeForVerso(verso: VersoView, currentPageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
+    public func visibleSpreadPagesChangedForVerso(verso: VersoView, spreadPageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
         
         // TODO: start pre-warming images if we scroll past a certain point (and dont scroll back again within a time-frame)
-//        print ("current pages changed: \(currentPageIndexes.arrayOfAllIndexes())")
+//        print ("visible spread pages changed: \(spreadPageIndexes.arrayOfAllIndexes())")
     }
     
     
@@ -399,6 +379,28 @@ extension PagedPublicationView : VersoViewDelegate {
         else if zoomedPageIndexes.isEqualToIndexSet(zoomingPageIndexes) && zoomScale <= 1 {
             // there were some zoomed in pages, but now we have zoomed out, so trigger zoom-out event
             _didZoomOut()
+        }
+    }
+    
+    
+    
+    
+    private func _pageDidAppear(pageIndex:Int) {
+        
+        // scrolling animation stopped and a new set of page Indexes are now visible.
+        // trigger 'PAGE_APPEARED' event
+        triggerEvent_PageAppeared(pageIndex)
+        
+        
+        // if image loaded then trigger 'PAGE_LOADED' event
+        if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView
+            where pageView.imageLoadState == .Loaded {
+            
+            triggerEvent_PageLoaded(pageIndex, fromCache: true)
+        }
+        else {
+            // page became active but image hasnt yet loaded... keep track of it
+            activePageIndexesWithPendingLoadEvents.addIndex(Int(pageIndex))
         }
     }
     
