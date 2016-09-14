@@ -159,6 +159,8 @@ public class PagedPublicationView : UIView {
     
     
     private var hotspotOverlayView:HotspotOverlayView = HotspotOverlayView()
+    
+    private var zoomedPageIndexes:NSIndexSet = NSIndexSet()
 }
 
 
@@ -312,6 +314,13 @@ extension PagedPublicationView : VersoViewDelegate {
     
     public func activePagesDidChangeForVerso(verso: VersoView, activePageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
         
+        
+        // pages changed while we were zoomed in - trigger a zoom-out event
+        if zoomedPageIndexes.count > 0 && activePageIndexes.isEqualToIndexSet(zoomedPageIndexes) == false {
+            _didZoomOut()
+        }
+        
+        
         // go through all the newly added page indexes, triggering `appeared` (and possibly `loaded`) events
         for pageIndex in added {
             // scrolling animation stopped and a new set of page Indexes are now visible.
@@ -367,16 +376,46 @@ extension PagedPublicationView : VersoViewDelegate {
                     
                 }
             }
+            
+            
+            
         }
         
-//        print ("did end zooming \(zoomScale) \(zoomingPageIndexes.arrayOfAllIndexes())")
+        // Handle a weird case where we think we are zoomed in, but what we are no zoomed into
+        // is not what we have just zoomed into (eg. some page layout happened that we didnt respond to)
+        // In this case trigger a zoom out event for existing zoomed-in pages, and reset the zoomed-in page indexes
+        if zoomedPageIndexes.isEqualToIndexSet(zoomingPageIndexes) == false && zoomedPageIndexes.count > 0 {
+            _didZoomOut()
+        }
+        
+        
+        // We are not zoomed in and we are being told that Verso has zoomed in.
+        // Trigger a zoom-in event, and remember that we have done so.
+        if zoomedPageIndexes.count == 0 && zoomingPageIndexes.count > 0 && zoomScale > 1 {
+            _didZoomIn(zoomingPageIndexes)
+        }
+        // We are now zoomed out fully of the pages we were previously zoomed into.
+        // Trigger zoom-out event, and remember that we are now not zoomed in.
+        else if zoomedPageIndexes.isEqualToIndexSet(zoomingPageIndexes) && zoomScale <= 1 {
+            // there were some zoomed in pages, but now we have zoomed out, so trigger zoom-out event
+            _didZoomOut()
+        }
     }
     
+    private func _didZoomOut() {
+        triggerEvent_PageSpreadZoomedOut(zoomedPageIndexes)
+        zoomedPageIndexes = NSIndexSet()
+    }
+    
+    private func _didZoomIn(zoomingPageIndexes:NSIndexSet) {
+        triggerEvent_PageSpreadZoomedIn(zoomingPageIndexes)
+        zoomedPageIndexes = zoomingPageIndexes
+    }
 }
-    
 
-    
-    
+
+
+
     
 
     
