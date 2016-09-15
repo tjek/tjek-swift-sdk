@@ -147,12 +147,12 @@ public class PagedPublicationView : UIView {
     
     // MARK: Notification handlers
     func _didEnterBackgroundNotification(notification:NSNotification) {
-        for pageIndex in verso.currentSpreadPageIndexes {
+        for pageIndex in verso.currentPageIndexes {
             triggerEvent_PageDisappeared(pageIndex)
         }
     }
     func _willEnterForegroundNotification(notification:NSNotification) {
-        for pageIndex in verso.currentSpreadPageIndexes {
+        for pageIndex in verso.currentPageIndexes {
             _pageDidAppear(pageIndex)
         }
     }
@@ -283,6 +283,21 @@ extension PagedPublicationView : VersoViewDataSource {
         
         return hotspotOverlayView
     }
+    
+
+    public func adjustPreloadPageIndexesForVerso(verso: VersoView, visiblePageIndexes: NSIndexSet, preloadPageIndexes:NSIndexSet) -> NSIndexSet? {
+        
+        let centerIndex:Int = pageCount/2
+        
+        if visiblePageIndexes.lastIndex > centerIndex {
+            let adjustedPreloadPages = NSMutableIndexSet(indexSet: preloadPageIndexes)
+            adjustedPreloadPages.addIndex(pageCount)
+            return adjustedPreloadPages
+        }
+        else {
+            return nil
+        }
+    }
 }
 
     
@@ -293,10 +308,10 @@ extension PagedPublicationView : VersoViewDataSource {
 
 extension PagedPublicationView : VersoViewDelegate {
     
-    public func currentSpreadPagesChangedForVerso(verso: VersoView, spreadPageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
-        
+    public func currentPageIndexesChangedForVerso(verso: VersoView, pageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
+//        print ("current pages changed: \(pageIndexes.arrayOfAllIndexes())")
         // pages changed while we were zoomed in - trigger a zoom-out event
-        if zoomedPageIndexes.count > 0 && spreadPageIndexes.isEqualToIndexSet(zoomedPageIndexes) == false {
+        if zoomedPageIndexes.count > 0 && pageIndexes.isEqualToIndexSet(zoomedPageIndexes) == false {
             _didZoomOut()
         }
         
@@ -323,10 +338,10 @@ extension PagedPublicationView : VersoViewDelegate {
         }
     }
     
-    public func visibleSpreadPagesChangedForVerso(verso: VersoView, spreadPageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
+    public func visiblePageIndexesChangedForVerso(verso: VersoView, pageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
         
         // TODO: start pre-warming images if we scroll past a certain point (and dont scroll back again within a time-frame)
-//        print ("visible spread pages changed: \(spreadPageIndexes.arrayOfAllIndexes())")
+//        print ("visible pages changed: \(pageIndexes.arrayOfAllIndexes())")
     }
     
     
