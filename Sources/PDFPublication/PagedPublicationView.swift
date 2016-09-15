@@ -315,6 +315,11 @@ extension PagedPublicationView : VersoViewDelegate {
             _didZoomOut()
         }
         
+        let oldPageIndexes = NSMutableIndexSet(indexSet:pageIndexes)
+        oldPageIndexes.removeIndexes(added)
+        oldPageIndexes.addIndexes(removed)
+        
+        triggerEvent_PageSpreadChanged(oldPageIndexes, newPageIndexes: pageIndexes)
         
         // go through all the newly added page indexes, triggering `appeared` (and possibly `loaded`) events
         for pageIndex in added {
@@ -480,6 +485,14 @@ extension PagedPublicationView : HotspotOverlayViewDelegate {
     func didLongPressHotspotOverlayView(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {
         
         triggerEvent_PageLongPressed(pageIndex, location: locationInPage)
+        
+        
+        // debug page-jump when long-pressing
+        var target = pageIndex + 10
+        if target > pageCount {
+            target = 0
+        }
+        verso.jumpToPage(target, animated: true)
         
     }
 }
