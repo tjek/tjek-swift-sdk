@@ -92,7 +92,6 @@ extension PagedPublicationView {
     
     
     func triggerEvent_PageAppeared(pageIndex:Int) {
-        // TODO: need to handle better when view is in background
         Events.pageAppeared(pageNum:pageIndex+1).trackEvent()
     }
     func triggerEvent_PageLoaded(pageIndex:Int,fromCache:Bool) {
@@ -104,7 +103,6 @@ extension PagedPublicationView {
 
     
     func triggerEvent_PageSpreadChanged(oldPageIndexes:NSIndexSet, newPageIndexes:NSIndexSet) {
-        // TODO: not triggered yet
         let newPageNums:[Int] = newPageIndexes.map { (pageIndex) -> Int in
             return pageIndex + 1
         }

@@ -113,28 +113,47 @@ public class PagedPublicationView : UIView {
     }
     
     
-    private var pageCount:Int = 0
-    private var outroPageIndex:Int? {
-        get {
-            return pageCount > 0 ? pageCount : nil
+    
+    
+    /// Tell the page publication that it is no longer visible.
+    /// (eg. a view has been placed over the top of the PagedPublicationView, so the content is no longer visible)
+    /// This will pause event collection, until `didEnterForeground` is called again.
+    public func didEnterBackground() {
+        for pageIndex in verso.currentPageIndexes {
+            _pageDidDisappear(pageIndex)
+        }
+    }
+    
+    /// Tell the page publication that it is now visible again.
+    /// (eg. when a view that was placed over the top of this view is removed, and the content becomes visible again).
+    /// This will restart event collection. You MUST remember to call this if you previously called `didEnterBackground`, otherwise
+    /// the PagePublicationView will not function correctly.
+    public func didEnterForeground() {
+        for pageIndex in verso.currentPageIndexes {
+            _pageDidAppear(pageIndex)
         }
     }
     
     
-
+    
+    
+    
+    
+    // MARK: Private
+    
+    
+    private var pageCount:Int = 0
+    private var outroPageIndex:Int? {
+        get {
+            return outroPageView != nil && pageCount > 0 ? pageCount : nil
+        }
+    }
+    
     // MARK: - Private properties
     
     private var publicationViewModel:PagedPublicationViewModelProtocol?
     private var pageViewModels:[PagedPublicationPageViewModel]?
     private var hotspotsByPageIndex:[Int:[PagedPublicationHotspotViewModel]] = [:]
-    
-    /// The indexes of active pages that havnt been loaded yet. This set changes when pages are activated and deactivated, and when images are loaded
-    /// Used by the PagedPublicationPageViewDelegate methods
-    private var activePageIndexesWithPendingLoadEvents = NSMutableIndexSet()
-    
-    /// the indexes of the pages that are loading their zoom images.
-    /// This is reset whenever active pages change
-    private var pageIndexesLoadingZoomImage = NSMutableIndexSet()
     
     lazy private var verso:VersoView = {
         let verso = VersoView()
@@ -145,22 +164,97 @@ public class PagedPublicationView : UIView {
     
     
     
-    // MARK: Notification handlers
-    func _didEnterBackgroundNotification(notification:NSNotification) {
-        for pageIndex in verso.currentPageIndexes {
-            triggerEvent_PageDisappeared(pageIndex)
-        }
-    }
-    func _willEnterForegroundNotification(notification:NSNotification) {
-        for pageIndex in verso.currentPageIndexes {
-            _pageDidAppear(pageIndex)
-        }
-    }
-    
-    
+    /// the view that is placed over the current spread
     private var hotspotOverlayView:HotspotOverlayView = HotspotOverlayView()
     
+    
+    
+    /// The indexes of active pages that havnt been loaded yet. This set changes when pages are activated and deactivated, and when images are loaded
+    /// Used by the PagedPublicationPageViewDelegate methods
+    private var activePageIndexesWithPendingLoadEvents = NSMutableIndexSet()
+    
+    
+    
+    // MARK: Page Zooming
+    
+    /// a list of the pageIndexes that are activelty being zoomed (empty if not zoomed in)
     private var zoomedPageIndexes:NSIndexSet = NSIndexSet()
+    
+    private func _didZoomOut() {
+        triggerEvent_PageSpreadZoomedOut(zoomedPageIndexes)
+        zoomedPageIndexes = NSIndexSet()
+    }
+    
+    private func _didZoomIn(zoomingPageIndexes:NSIndexSet) {
+        triggerEvent_PageSpreadZoomedIn(zoomingPageIndexes)
+        zoomedPageIndexes = zoomingPageIndexes
+    }
+    
+    
+    
+    
+    // MARK: Page Appearance/Disappearance
+    
+    
+    
+    @objc
+    private func _didEnterBackgroundNotification(notification:NSNotification) {
+        didEnterBackground()
+    }
+    @objc
+    private func _willEnterForegroundNotification(notification:NSNotification) {
+        didEnterForeground()
+    }
+
+    
+    /// page indexes that have had the _appeared_ event triggered. when `disappeared` they are removed from here
+    private var appearedPages:Set<Int> = []
+    
+    private func _pageDidAppear(pageIndex:Int) {
+        guard appearedPages.contains(pageIndex) == false else {
+            return
+        }
+        
+        appearedPages.insert(pageIndex)
+        
+        
+        // scrolling animation stopped and a new set of page Indexes are now visible.
+        // trigger 'PAGE_APPEARED' event
+        triggerEvent_PageAppeared(pageIndex)
+        
+        
+        // if image loaded then trigger 'PAGE_LOADED' event
+        if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView
+            where pageView.imageLoadState == .Loaded {
+            
+            triggerEvent_PageLoaded(pageIndex, fromCache: true)
+        }
+        else {
+            // page became active but image hasnt yet loaded... keep track of it
+            activePageIndexesWithPendingLoadEvents.addIndex(Int(pageIndex))
+        }
+    }
+    
+    private func _pageDidDisappear(pageIndex:Int) {
+        
+        guard appearedPages.contains(pageIndex) else {
+            return
+        }
+        
+        appearedPages.remove(pageIndex)
+        
+        
+        activePageIndexesWithPendingLoadEvents.removeIndex(Int(pageIndex))
+        
+        // trigger a 'PAGE_DISAPPEARED event
+        triggerEvent_PageDisappeared(pageIndex)
+        
+        
+        // cancel the loading of the zoomimage
+        if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView {
+            pageView.clearZoomImage(animated: false)
+        }
+    }
 }
 
 
@@ -287,11 +381,15 @@ extension PagedPublicationView : VersoViewDataSource {
 
     public func adjustPreloadPageIndexesForVerso(verso: VersoView, visiblePageIndexes: NSIndexSet, preloadPageIndexes:NSIndexSet) -> NSIndexSet? {
         
-        let centerIndex:Int = pageCount/2
+        guard let realOutroPageIndex = outroPageIndex else {
+            return nil
+        }
         
-        if visiblePageIndexes.lastIndex > centerIndex {
+        // add outro to preload page indexes if we have scrolled close to it
+        let distToOutro = realOutroPageIndex - visiblePageIndexes.lastIndex
+        if distToOutro < 10 {
             let adjustedPreloadPages = NSMutableIndexSet(indexSet: preloadPageIndexes)
-            adjustedPreloadPages.addIndex(pageCount)
+            adjustedPreloadPages.addIndex(realOutroPageIndex)
             return adjustedPreloadPages
         }
         else {
@@ -309,57 +407,46 @@ extension PagedPublicationView : VersoViewDataSource {
 extension PagedPublicationView : VersoViewDelegate {
     
     public func currentPageIndexesChangedForVerso(verso: VersoView, pageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
-//        print ("current pages changed: \(pageIndexes.arrayOfAllIndexes())")
+
         // pages changed while we were zoomed in - trigger a zoom-out event
         if zoomedPageIndexes.count > 0 && pageIndexes.isEqualToIndexSet(zoomedPageIndexes) == false {
             _didZoomOut()
         }
         
+        // find the oldPageIndexes, and trigger change event if it was a change
         let oldPageIndexes = NSMutableIndexSet(indexSet:pageIndexes)
         oldPageIndexes.removeIndexes(added)
         oldPageIndexes.addIndexes(removed)
+        if oldPageIndexes.count > 0 {
+            triggerEvent_PageSpreadChanged(oldPageIndexes, newPageIndexes: pageIndexes)
+        }
         
-        triggerEvent_PageSpreadChanged(oldPageIndexes, newPageIndexes: pageIndexes)
         
         // go through all the newly added page indexes, triggering `appeared` (and possibly `loaded`) events
         for pageIndex in added {
             // scrolling animation stopped and a new set of page Indexes are now visible.
-            
             _pageDidAppear(pageIndex)
         }
         
         // go through all the newly removed page indexes, triggering `disappeared` events and removing them from pending list
         for pageIndex in removed {
-            activePageIndexesWithPendingLoadEvents.removeIndex(Int(pageIndex))
-            
-            // trigger a 'PAGE_DISAPPEARED event
-            triggerEvent_PageDisappeared(pageIndex)
-
-            
-            // cancel the loading of the zoomimage
-            if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView {
-                pageView.clearZoomImage(animated: false)
-            }
+            _pageDidDisappear(pageIndex)
         }
+        
+//        print ("current pages changed: \(pageIndexes.arrayOfAllIndexes())")
     }
     
     public func visiblePageIndexesChangedForVerso(verso: VersoView, pageIndexes: NSIndexSet, added: NSIndexSet, removed: NSIndexSet) {
-        
-        // TODO: start pre-warming images if we scroll past a certain point (and dont scroll back again within a time-frame)
 //        print ("visible pages changed: \(pageIndexes.arrayOfAllIndexes())")
     }
     
     
     public func didStartZoomingPagesForVerso(verso: VersoView, zoomingPageIndexes: NSIndexSet, zoomScale: CGFloat) {
-        
 //        print ("did start zooming \(zoomScale) \(zoomingPageIndexes.arrayOfAllIndexes())")
-        
     }
     
     public func didZoomPagesForVerso(verso: VersoView, zoomingPageIndexes: NSIndexSet, zoomScale: CGFloat) {
-        
 //        print ("did zoom \(zoomScale) \(zoomingPageIndexes.arrayOfAllIndexes())")
-        
     }
     
     public func didEndZoomingPagesForVerso(verso: VersoView, zoomingPageIndexes: NSIndexSet, zoomScale: CGFloat) {
@@ -402,37 +489,6 @@ extension PagedPublicationView : VersoViewDelegate {
         }
     }
     
-    
-    
-    
-    private func _pageDidAppear(pageIndex:Int) {
-        
-        // scrolling animation stopped and a new set of page Indexes are now visible.
-        // trigger 'PAGE_APPEARED' event
-        triggerEvent_PageAppeared(pageIndex)
-        
-        
-        // if image loaded then trigger 'PAGE_LOADED' event
-        if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView
-            where pageView.imageLoadState == .Loaded {
-            
-            triggerEvent_PageLoaded(pageIndex, fromCache: true)
-        }
-        else {
-            // page became active but image hasnt yet loaded... keep track of it
-            activePageIndexesWithPendingLoadEvents.addIndex(Int(pageIndex))
-        }
-    }
-    
-    private func _didZoomOut() {
-        triggerEvent_PageSpreadZoomedOut(zoomedPageIndexes)
-        zoomedPageIndexes = NSIndexSet()
-    }
-    
-    private func _didZoomIn(zoomingPageIndexes:NSIndexSet) {
-        triggerEvent_PageSpreadZoomedIn(zoomingPageIndexes)
-        zoomedPageIndexes = zoomingPageIndexes
-    }
 }
 
 
@@ -444,12 +500,8 @@ extension PagedPublicationView : VersoViewDelegate {
 // MARK: - PagedPublicationPage delegate
 
 extension PagedPublicationView : PagedPublicationPageViewDelegate {
- 
-//    public func didConfigurePagedPublicationPage(pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol) {
-//        
-//    }
     
-    public func didLoadPagedPublicationPageImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool) {
+    public func didFinishLoadingImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool) {
         
         let pageIndex = pageView.pageIndex
         
@@ -467,8 +519,12 @@ extension PagedPublicationView : PagedPublicationPageViewDelegate {
             activePageIndexesWithPendingLoadEvents.removeIndex(Int(pageIndex))
         }
     }
-//    public func didLoadPagedPublicationPageZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool) {
+//    public func didFinishLoadingZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool) {
 //    
+//    }
+    
+//    public func didConfigure(pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol) {
+//
 //    }
 }
 

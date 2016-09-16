@@ -16,10 +16,10 @@ import AlamofireImage
 @objc
 public protocol PagedPublicationPageViewDelegate : class {
     
-    optional func didConfigurePagedPublicationPage(pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol)
+    optional func didConfigure(pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol)
     
-    optional func didLoadPagedPublicationPageImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)
-    optional func didLoadPagedPublicationPageZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)
+    optional func didFinishLoadingImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)
+    optional func didFinishLoadingZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)
     
 }
 
@@ -118,7 +118,7 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
                 
                 self!.zoomImageLoadState = .Loaded
                 
-                self!.delegate?.didLoadPagedPublicationPageZoomImage?(self!, imageURL:zoomImageURL, fromCache:(response.response == nil))
+                self!.delegate?.didFinishLoadingZoomImage?(self!, imageURL:zoomImageURL, fromCache:(response.response == nil))
             }
             else {
                 self!.zoomImageView.hidden = true
@@ -164,7 +164,7 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
                 
                 self!.imageLoadState = .Loaded
                 
-                self!.delegate?.didLoadPagedPublicationPageImage?(self!, imageURL:imageURL, fromCache:(response.response == nil))
+                self!.delegate?.didFinishLoadingImage?(self!, imageURL:imageURL, fromCache:(response.response == nil))
             }
             else {
                 
@@ -215,7 +215,7 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
             startLoadingImageFromURL(imageURL)
         }
         
-        delegate?.didConfigurePagedPublicationPage?(self, viewModel: viewModel)
+        delegate?.didConfigure?(self, viewModel: viewModel)
     }
 
     
