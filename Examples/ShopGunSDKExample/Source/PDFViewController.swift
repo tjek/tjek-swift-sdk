@@ -16,7 +16,7 @@ class PDFViewController : UIViewController {
     
     lazy var publicationView:PagedPublicationView = {
         let view = PagedPublicationView()
-
+        view.dataSource = self
         return view
     }()
     
@@ -37,6 +37,8 @@ class PDFViewController : UIViewController {
         fetchPublicationData("efbbJc3", delay:0.2) { [weak self] (viewModel) in
             if let publication = viewModel {
                 self?.publicationView.update(publication: publication)
+                
+                self?.publicationView.jump(toPageIndex:71, animated:true)
                 
                 self?.fetchPublicationHotspotData("efbbJc3", aspectRatio:publication.aspectRatio, delay:1.5) { [weak self] (viewModels) in
                     self?.publicationView.update(hotspots:viewModels)
@@ -222,5 +224,34 @@ class PDFViewController : UIViewController {
                 completion(viewModels)
             }
         }
+    }
+}
+
+extension PDFViewController : PagedPublicationViewDataSource {
+//    func outroViewClass(pagedPublicationView: PagedPublicationView, size: CGSize) -> (OutroView.Type)? {
+//        return ExampleOutroView.self
+//    }
+//    func outroViewWidth(pagedPublicationView: PagedPublicationView, size: CGSize) -> CGFloat {
+//        return size.width > size.height ? 0.7 : 0.8
+//    }
+    func configureOutroView(pagedPublicationView: PagedPublicationView, outroView: OutroView) {
+        guard let outro = outroView as? ExampleOutroView else {
+            return
+        }
+        
+        outro.layer.borderColor = UIColor.red.cgColor
+        outro.layer.borderWidth = 1
+    }
+}
+
+
+class ExampleOutroView : OutroView {
+    required init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        backgroundColor = UIColor.green
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

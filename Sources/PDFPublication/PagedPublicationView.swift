@@ -11,6 +11,36 @@ import UIKit
 
 import Verso
 
+public protocol PagedPublicationViewDataSource : PagedPublicationViewDataSourceOptional {
+    
+}
+
+public typealias OutroView = VersoPageView
+public protocol PagedPublicationViewDataSourceOptional : class {
+    
+    func outroViewClass(pagedPublicationView:PagedPublicationView, size:CGSize) -> (OutroView.Type)?
+    func configureOutroView(pagedPublicationView:PagedPublicationView, outroView:OutroView)
+    func outroViewWidth(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat
+    func outroViewMaxZoom(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat
+}
+
+// Default values for datasource
+public extension PagedPublicationViewDataSourceOptional {
+    func configureOutroView(pagedPublicationView:PagedPublicationView, outroView:VersoPageView) { }
+    func outroViewClass(pagedPublicationView:PagedPublicationView, size:CGSize) -> (OutroView.Type)? {
+        return nil
+    }
+    func outroViewWidth(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat {
+        return 0.8
+    }
+    func outroViewMaxZoom(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat {
+        return 1.0
+    }
+}
+/// Have PagedPublicationView as the source of the default optional values, for when dataSource is nil.
+extension PagedPublicationView : PagedPublicationViewDataSourceOptional {}
+
+
 
 @objc(SGNPagedPublicationView)
 open class PagedPublicationView : UIView {
@@ -47,7 +77,7 @@ open class PagedPublicationView : UIView {
     
     
     // MARK: - Public
-    
+    open weak var dataSource:PagedPublicationViewDataSource?
     
     // TODO: setting this will trigger changes
     open func update(publication viewModel:PagedPublicationViewModelProtocol?) {
@@ -112,7 +142,9 @@ open class PagedPublicationView : UIView {
         verso.reconfigureSpreadOverlay()
     }
     
-    
+    public func jump(toPageIndex pageIndex:Int, animated:Bool) {
+        verso.jump(toPageIndex: pageIndex, animated: animated)
+    }
     
     
     /// Tell the page publication that it is no longer visible.
@@ -135,31 +167,24 @@ open class PagedPublicationView : UIView {
     }
     
     
-    open func updateOutroPageView(_ pageView:VersoPageView?, outroWidth:CGFloat = 0.7) {
-        
-    }
-    
-    open var outroPageView:VersoPageView? {
-        didSet {
-            verso.reloadPages()
-            if oldValue == nil {
-                
-            }
-        }
-    }
-    
-    
-    
     
     
     
     
     // MARK: Private
     
+    /// A neat trick to allow pure-swift optional protocol methods: http://blog.stablekernel.com/optional-protocol-methods-in-pure-swift
+    fileprivate var dataSourceOptional: PagedPublicationViewDataSourceOptional {
+        return dataSource ?? self
+    }
+    
     fileprivate var pageCount:Int = 0
+    
+    
+    fileprivate var outroViewProperties:(viewClass:(OutroView.Type)?, width:CGFloat, maxZoom:CGFloat) = (nil, 1.0, 1.0)
     fileprivate var outroPageIndex:Int? {
         get {
-            return outroPageView != nil && pageCount > 0 ? pageCount : nil
+            return outroViewProperties.viewClass != nil && pageCount > 0 ? pageCount : nil
         }
     }
     
@@ -298,58 +323,51 @@ extension PagedPublicationView : VersoViewDataSource {
                 pubPage.configure(viewModel)
             }
         }
-        else if let labelPage = pageView as? LabelledVersoPageView {
-            labelPage.pageLabel.text = String(labelPage.pageIndex)
-            labelPage.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.3)
+        else if type(of: pageView) === self.outroViewProperties.viewClass {
+            dataSourceOptional.configureOutroView(pagedPublicationView: self, outroView: pageView)
         }
     }
     
     public func pageViewClass(verso:VersoView, pageIndex:Int) -> VersoPageViewClass {
         if outroPageIndex == pageIndex {
-            return LabelledVersoPageView.self
+            return outroViewProperties.viewClass ?? VersoPageView.self
         }
         else {
             return PagedPublicationPageView.self
         }
-//        outroPageIndex != nil && 
-//        if let pageCount = verso.spreadConfiguration?.pageCount where pageIndex == pageCount-1 {
-//            return LabelledVersoPageView.self
-//        } else {
-//            return PagedPublicationPageView.self
-//        }
     }
-    
     
     public func spreadConfiguration(verso:VersoView, size:CGSize) -> VersoSpreadConfiguration {
         
-        // TODO: compare verso aspect ratio to publication aspect ratio
-        //        let versoAspectRatio = size.height > 0 ? size.width / size.height : 1
-        //        let isVersoPortrait = versoAspectRatio < 1
-        //        if let contentAspectRatio = publicationViewModel?.aspectRatio {
-        //
-        //        }
-
-        let totalPageCount = pageCount == 0 ? 0 : pageCount + 1
+        // update outro properties from datasource
+        outroViewProperties = (dataSourceOptional.outroViewClass(pagedPublicationView: self, size:size),
+                               dataSourceOptional.outroViewWidth(pagedPublicationView: self, size:size),
+                               dataSourceOptional.outroViewMaxZoom(pagedPublicationView: self, size:size))
+        
         let outroIndex = outroPageIndex
+        let totalPageCount = pageCount > 0 && outroIndex != nil ? pageCount + 1 : pageCount
+        
+        
         let lastPageIndex = max((outroIndex != nil ? (outroIndex! - 1) : pageCount - 1), 0)
         
+        let spreadSpacing:CGFloat = 20
         
+        // TODO: compare verso aspect ratio to publication aspect ratio
         let isLandscape:Bool = size.width > size.height
         
-        return VersoSpreadConfiguration.buildPageSpreadConfiguration(pageCount: totalPageCount, spreadSpacing: 20, spreadPropertyConstructor: { (spreadIndex, nextPageIndex) -> (spreadPageCount: Int, maxZoomScale: CGFloat, widthPercentage: CGFloat) in
+        
+        return VersoSpreadConfiguration.buildPageSpreadConfiguration(pageCount: totalPageCount, spreadSpacing: spreadSpacing, spreadPropertyConstructor: { (spreadIndex, nextPageIndex) -> (spreadPageCount: Int, maxZoomScale: CGFloat, widthPercentage: CGFloat) in
+            
+            // it's the outro
+            if outroIndex == nextPageIndex {
+                return (1, self.outroViewProperties.maxZoom, self.outroViewProperties.width)
+            }
             
             let isFirstPage = nextPageIndex == 0
-            let isOutro = outroIndex == nextPageIndex
             let isLastPage = nextPageIndex == lastPageIndex
             
-            
-            let isSinglePage = isFirstPage || isOutro || isLastPage || !isLandscape
-            
-            let spreadPageCount = isSinglePage ? 1 : 2
-            
-            let outroWidth:CGFloat = isLandscape ? 0.8 : 0.7
-            
-            return (spreadPageCount, isOutro ? 0.0 : 4.0, isOutro ? outroWidth : 1.0)
+            let spreadPageCount = isFirstPage || isLastPage || !isLandscape ? 1 : 2
+            return (spreadPageCount, 4.0, 1.0)
         })
     }
     
