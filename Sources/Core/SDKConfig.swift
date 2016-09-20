@@ -40,16 +40,16 @@ public class SDKConfig : NSObject {
                 _clientId = cachedClientId
             }
             else {
-                _clientId = NSUUID().UUIDString
+                _clientId = UUID().uuidString
                 
-                Utils.setKeychainString(_clientId!, key: "ClientId")
+                _ = Utils.setKeychainString(_clientId!, key: "ClientId")
             }
         }
         return _clientId!
     }
     
     public static func resetClientId() {
-        Utils.removeKeychainObject("ClientId")
+        _ = Utils.removeKeychainObject("ClientId")
         _clientId = nil
     }
     
@@ -66,46 +66,46 @@ public class SDKConfig : NSObject {
     
     // MARK: Private
     
-    private static var _overrideAppId : String? = nil
-    private static let _globalAppId : String? = {
+    fileprivate static var _overrideAppId : String? = nil
+    fileprivate static let _globalAppId : String? = {
         return Utils.fetchInfoPlistValue("AppId") as? String
     }()
     
-    private static var _clientId : String?
+    fileprivate static var _clientId : String?
 
-    private static let _sessionHandler:SessionLifecycleHandler = SessionLifecycleHandler()
-    private class SessionLifecycleHandler {
+    fileprivate static let _sessionHandler:SessionLifecycleHandler = SessionLifecycleHandler()
+    fileprivate class SessionLifecycleHandler {
         
         /// sessionUUID is lazily generated if nil
-        private var _sessionUUID:String?
+        fileprivate var _sessionUUID:String?
         var sessionUUID:String {
             if _sessionUUID == nil {
-                _sessionUUID = NSUUID().UUIDString
+                _sessionUUID = UUID().uuidString
             }
             return _sessionUUID!
         }
         
         init() {
             // force a re-creation of the sessionUUID
-            sessionUUID
+            _ = sessionUUID
             
-            NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SessionLifecycleHandler.appDidBecomeActive), name: UIApplicationDidBecomeActiveNotification, object: nil)
-            NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SessionLifecycleHandler.appDidEnterBackground), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector:#selector(SessionLifecycleHandler.appDidBecomeActive), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+            NotificationCenter.default.addObserver(self, selector:#selector(SessionLifecycleHandler.appDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
 
 
         }
         deinit {
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidEnterBackgroundNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
         }
         
         @objc
-        private func appDidBecomeActive() {
+        fileprivate func appDidBecomeActive() {
             // re-create sessionId if needed
-            sessionUUID
+            _ = sessionUUID
         }
         @objc
-        private func appDidEnterBackground() {
+        fileprivate func appDidEnterBackground() {
             _sessionUUID = nil
         }
     }

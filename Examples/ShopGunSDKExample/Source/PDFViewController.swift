@@ -9,7 +9,7 @@
 
 import UIKit
 
-import AlamofireImage
+import Kingfisher
 import ShopGunSDK
 
 class PDFViewController : UIViewController {
@@ -25,27 +25,27 @@ class PDFViewController : UIViewController {
         
         
         // FIXME: dont do this
-        AlamofireImage.ImageDownloader.defaultURLCache().removeAllCachedResponses()
-        AlamofireImage.ImageDownloader.defaultInstance.imageCache?.removeAllImages()
-
+        KingfisherManager.shared.cache.clearDiskCache()
+        KingfisherManager.shared.cache.clearMemoryCache()
+        
         
         publicationView.frame = view.frame
-        publicationView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        publicationView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(publicationView)
         
         
         fetchPublicationData("efbbJc3", delay:0.2) { [weak self] (viewModel) in
             if let publication = viewModel {
-                self?.publicationView.updateWithPublicationViewModel(publication)
+                self?.publicationView.update(publication: publication)
                 
                 self?.fetchPublicationHotspotData("efbbJc3", aspectRatio:publication.aspectRatio, delay:1.5) { [weak self] (viewModels) in
-                    self?.publicationView.updateHotspots(viewModels)
+                    self?.publicationView.update(hotspots:viewModels)
                 }
             }
 
         }
         fetchPublicationPageData("efbbJc3", delay:0.5) { [weak self] (viewModels) in
-            self?.publicationView.updatePages(viewModels)
+            self?.publicationView.update(pages:viewModels)
         }
         
 //        let aspectRatio:Double = 647/962
@@ -78,60 +78,60 @@ class PDFViewController : UIViewController {
     
     
     
-    func fetchPublicationData(publicationID:String, delay:NSTimeInterval = 0, completion:(PagedPublicationViewModel?)->Void) {
+    func fetchPublicationData(_ publicationID:String, delay:TimeInterval = 0, completion:@escaping (PagedPublicationViewModel?)->Void) {
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_global_queue(0, 0)) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + delay) {
             var viewModel:PagedPublicationViewModel? = nil
             
-            if let filePath = NSBundle.mainBundle().pathForResource(publicationID, ofType:"json"),
-                let data = NSData(contentsOfFile:filePath),
-                let pubData = try? NSJSONSerialization.JSONObjectWithData(data, options:[]) as? NSDictionary {
+            if let filePath = Bundle.main.path(forResource: publicationID, ofType:"json"),
+                let data = try? Data(contentsOf: URL(fileURLWithPath: filePath)),
+                let pubData = try? JSONSerialization.jsonObject(with: data, options:[]) as? NSDictionary {
                 
                 
-                var bgColorStr:String = pubData?.valueForKeyPath("branding.pageflip.color") as? String ?? pubData?.valueForKeyPath("branding.color") as? String ?? "FF0000"
+                var bgColorStr:String = pubData?.value(forKeyPath: "branding.pageflip.color") as? String ?? pubData?.value(forKeyPath: "branding.color") as? String ?? "FF0000"
                 if bgColorStr.hasPrefix("#") == false {
                     bgColorStr = "#"+bgColorStr
                 }
                 
                 let bgColor = UIColor(rgba: bgColorStr)
                 
-                let pageCount:Int = pubData?.valueForKeyPath("page_count") as? Int ?? 0
+                let pageCount:Int = pubData?.value(forKeyPath: "page_count") as? Int ?? 0
                 
-                let width:CGFloat = pubData?.valueForKeyPath("dimensions.width") as? CGFloat ?? 1.0
-                let height:CGFloat = pubData?.valueForKeyPath("dimensions.height") as? CGFloat ?? 1.0
+                let width:CGFloat = pubData?.value(forKeyPath: "dimensions.width") as? CGFloat ?? 1.0
+                let height:CGFloat = pubData?.value(forKeyPath: "dimensions.height") as? CGFloat ?? 1.0
                 let aspectRatio:CGFloat = width > 0 && height > 0 ? width / height : 1.0
                 
                 
                 viewModel = PagedPublicationViewModel(bgColor:bgColor, pageCount:pageCount, aspectRatio:aspectRatio)
             }
             
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 completion(viewModel)
             }
         }
     }
     
     
-    func fetchPublicationPageData(publicationID:String, delay:NSTimeInterval = 0, completion:([PagedPublicationPageViewModel]?)->Void) {
+    func fetchPublicationPageData(_ publicationID:String, delay:TimeInterval = 0, completion:@escaping ([PagedPublicationPageViewModel]?)->Void) {
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_global_queue(0, 0)) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + delay) {
             var viewModels:[PagedPublicationPageViewModel]? = nil
             
-            if let filePath = NSBundle.mainBundle().pathForResource(publicationID+".pages", ofType:"json"),
-                let data = NSData(contentsOfFile:filePath),
-                let pagesData = try? NSJSONSerialization.JSONObjectWithData(data, options:[]) as? [[String:AnyObject]] {
+            if let filePath = Bundle.main.path(forResource: publicationID+".pages", ofType:"json"),
+                let data = try? Data(contentsOf: URL(fileURLWithPath: filePath)),
+                let pagesData = try? JSONSerialization.jsonObject(with: data, options:[]) as? [[String:AnyObject]] {
                 
                 viewModels = []
-                for (pageIndex,pageData) in pagesData!.enumerate() {
+                for (pageIndex,pageData) in pagesData!.enumerated() {
                     
-                    var viewImageURL:NSURL?
-                    var zoomImageURL:NSURL?
+                    var viewImageURL:URL?
+                    var zoomImageURL:URL?
                     
                     if let urlStr = pageData["view"] as? String {
-                        viewImageURL = NSURL(string: urlStr)
+                        viewImageURL = URL(string: urlStr)
                     }
                     if let urlStr = pageData["zoom"] as? String {
-                        zoomImageURL = NSURL(string: urlStr)
+                        zoomImageURL = URL(string: urlStr)
                     }
                     
                     
@@ -139,24 +139,24 @@ class PDFViewController : UIViewController {
                     viewModels!.append(pageModel)
                 }
             }
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 completion(viewModels)
             }
         }
     }
     
     
-    func fetchPublicationHotspotData(publicationID:String, aspectRatio:CGFloat, delay:NSTimeInterval = 0, completion:([PagedPublicationHotspotViewModel]?)->Void) {
+    func fetchPublicationHotspotData(_ publicationID:String, aspectRatio:CGFloat, delay:TimeInterval = 0, completion:@escaping ([PagedPublicationHotspotViewModel]?)->Void) {
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_global_queue(0, 0)) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + delay) {
             var viewModels:[PagedPublicationHotspotViewModel]? = nil
             
-            if let filePath = NSBundle.mainBundle().pathForResource(publicationID+".hotspots", ofType:"json"),
-                let data = NSData(contentsOfFile:filePath),
-                let hotspotsData = try? NSJSONSerialization.JSONObjectWithData(data, options:[]) as? [[String:AnyObject]] {
+            if let filePath = Bundle.main.path(forResource: publicationID+".hotspots", ofType:"json"),
+                let data = try? Data(contentsOf: URL(fileURLWithPath: filePath)),
+                let hotspotsData = try? JSONSerialization.jsonObject(with: data, options:[]) as? [[String:AnyObject]] {
                 
                 viewModels = []
-                for (_, hotspotData) in hotspotsData!.enumerate() {
+                for (_, hotspotData) in hotspotsData!.enumerated() {
                     
                     var pageRects:[Int:CGRect] = [:]
                     if let locationData = hotspotData["locations"] as? [String:[[CGFloat]]] {
@@ -218,7 +218,7 @@ class PDFViewController : UIViewController {
                     viewModels!.append(hotspotModel)
                 }
             }
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 completion(viewModels)
             }
         }

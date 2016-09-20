@@ -22,10 +22,10 @@ public class EventsTracker : NSObject {
         self.trackId = trackId
     }
     
-    public func trackEvent(type:String) {
+    public func trackEvent(_ type:String) {
         trackEvent(type, properties: nil)
     }
-    public func trackEvent(type:String, properties:[String:AnyObject]?) {
+    public func trackEvent(_ type:String, properties:[String:AnyObject]?) {
         if let serializedEvent = EventsTracker.buildSerializedEvent(type, trackId:trackId, properties:properties, viewContext:_currentViewContext, campaignContext:_currentCampaignContext) {
             EventsTracker._pool.pushEvent(serializedEvent)
         }
@@ -33,7 +33,7 @@ public class EventsTracker : NSObject {
     
     
     
-    public func updateView(path:[String]? = nil, uri:String? = nil, previousPath:[String]? = nil) {
+    public func updateView(_ path:[String]? = nil, uri:String? = nil, previousPath:[String]? = nil) {
         
         if path == nil && previousPath == nil && uri == nil {
             _currentViewContext = nil
@@ -80,10 +80,10 @@ public class EventsTracker : NSObject {
     }
     
     
-    public static func trackEvent(type:String) {
+    public static func trackEvent(_ type:String) {
         trackEvent(type, properties: nil)
     }
-    public static func trackEvent(type:String, properties:[String:AnyObject]?) {
+    public static func trackEvent(_ type:String, properties:[String:AnyObject]?) {
         sharedTracker?.trackEvent(type, properties: properties)
     }
     
@@ -100,28 +100,28 @@ public class EventsTracker : NSObject {
         set { _pool.flushLimit = newValue }
     }
     
-    public static var baseURL:NSURL = NSURL(string: "https://events.shopgun.com")!
+    public static var baseURL:URL = URL(string: "https://events.shopgun.com")!
     
     
     
     // MARK: Private (static)
     
-    private static var _sharedTracker:EventsTracker?
+    fileprivate static var _sharedTracker:EventsTracker?
     
     
-    private static let _globalTrackId : String? = {
+    fileprivate static let _globalTrackId : String? = {
         return Utils.fetchInfoPlistValue("TrackId") as? String
     }()
-    private static var _overrideTrackId : String? = nil
+    fileprivate static var _overrideTrackId : String? = nil
     
     
-    private var _currentViewContext:Context.ViewContext?
-    private var _currentCampaignContext:Context.CampaignContext?
+    fileprivate var _currentViewContext:Context.ViewContext?
+    fileprivate var _currentCampaignContext:Context.CampaignContext?
     
     
     
     
-    private static var _pool:EventsPool = {
+    fileprivate static var _pool:EventsPool = {
         let pool = EventsPool(flushTimeout:30, flushLimit:200) { (serializedEvents, completion) in
             
             
@@ -129,7 +129,7 @@ public class EventsTracker : NSObject {
             var modifiedEvents = serializedEvents.map { (event:SerializedEvent) -> SerializedEvent in
                 
                 var modifiedEvent = event
-                modifiedEvent["sentAt"] = Utils.ISO8601_dateFormatter.stringFromDate(NSDate())
+                modifiedEvent["sentAt"] = Utils.ISO8601_dateFormatter.string(from:Date()) as AnyObject?
                 
                 return modifiedEvent
             }
@@ -139,30 +139,29 @@ public class EventsTracker : NSObject {
             // build json dictionary to ship. serializedEvents is in the format that was posted to the pool
             let jsonDict = ["events": modifiedEvents]
             
+            var url = baseURL.appendingPathComponent("track")
             
-            let url:NSURL? = baseURL.URLByAppendingPathComponent("track")
-            
-            let request = NSMutableURLRequest(URL:url!)
-            request.HTTPMethod = "POST"
+            var request = URLRequest(url:url)
+            request.httpMethod = "POST"
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             request.addValue("application/json", forHTTPHeaderField: "Accept")
             
                 
-            if let jsonData = try? NSJSONSerialization.dataWithJSONObject(jsonDict, options:[]) {
-                request.HTTPBody = jsonData
+            if let jsonData = try? JSONSerialization.data(withJSONObject: jsonDict, options:[]) {
+                request.httpBody = jsonData
             } else {
                 // unable to serialize jsonDict... EJECT!
-                completion(shippedEventIds: nil)
+                completion(nil)
                 return
             }
             
             // actually do the shipping of the events
-            let task = networkSession.dataTaskWithRequest(request) {
+            let task = networkSession.dataTask(with: request as URLRequest) {
                 data, response, error in
                 
                 
                 if data != nil,
-                    let jsonData = try? NSJSONSerialization.JSONObjectWithData(data!, options:[]) as? [String:AnyObject],
+                    let jsonData = try? JSONSerialization.jsonObject(with: data!, options:[]) as? [String:AnyObject],
                     let events = jsonData!["events"] as? [[String:AnyObject]] {
                     
                     var shippedEventIds:[String] = []
@@ -182,9 +181,9 @@ public class EventsTracker : NSObject {
                             }
                         }
                     }
-                    completion(shippedEventIds: shippedEventIds)
+                    completion(shippedEventIds)
                 } else {
-                    completion(shippedEventIds: nil)
+                    completion(nil)
                 }
             }
             task.resume()
@@ -194,33 +193,33 @@ public class EventsTracker : NSObject {
     }()
     
     
-    private static let networkSession:NSURLSession = {
-        return NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+    fileprivate static let networkSession:URLSession = {
+        return URLSession(configuration: URLSessionConfiguration.default)
     }()
     
     
     
     // TODO: move this to an Event struct that conforms to serializable protocol?
-    private static func buildSerializedEvent(type:String, trackId:String, properties:[String:AnyObject]? = nil, uuid:String = NSUUID().UUIDString, recordedDate:NSDate = NSDate(), clientId:String = SDKConfig.clientId, viewContext:Context.ViewContext? = nil, campaignContext:Context.CampaignContext? = nil) -> SerializedEvent? {
+    fileprivate static func buildSerializedEvent(_ type:String, trackId:String, properties:[String:AnyObject]? = nil, uuid:String = UUID().uuidString, recordedDate:Date = Date(), clientId:String = SDKConfig.clientId, viewContext:Context.ViewContext? = nil, campaignContext:Context.CampaignContext? = nil) -> SerializedEvent? {
         
         var event = [String:AnyObject]()
         
-        event["version"] = "1.0.0" //Modify this when event's structure changes
-        event["id"] = uuid
-        event["type"] = type
-        event["recordedAt"] = Utils.ISO8601_dateFormatter.stringFromDate(recordedDate)
+        event["version"] = "1.0.0" as AnyObject? //Modify this when event's structure changes
+        event["id"] = uuid as AnyObject?
+        event["type"] = type as AnyObject?
+        event["recordedAt"] = Utils.ISO8601_dateFormatter.string(from: recordedDate) as AnyObject?
         
         // client
         event["client"] = ["id": clientId,
-                           "trackId": trackId]
+                           "trackId": trackId] as AnyObject?
         
         // properties
         if properties != nil {
-            event["properties"] = cleanProperties(properties!)
+            event["properties"] = cleanProperties(properties! as AnyObject)
         }
         
         // context
-        event["context"] = Context.toDictionary(viewContext, campaignContext:campaignContext)
+        event["context"] = Context.toDictionary(viewContext, campaignContext:campaignContext) as AnyObject?
         
         return event
     }
@@ -228,7 +227,7 @@ public class EventsTracker : NSObject {
     
     // given some properties that were passed to the EventsTracker, remove those that cant be converted to JSON values
     // TODO: nicer way?
-    private static func cleanProperties(prop:AnyObject)->AnyObject? {
+    fileprivate static func cleanProperties(_ prop:AnyObject)->AnyObject? {
         
         switch prop {
         case is Int,
@@ -245,7 +244,7 @@ public class EventsTracker : NSObject {
                     result?.append(cleanVal)
                 }
             }
-            return result
+            return result as AnyObject?
         case is Dictionary<String,AnyObject>:
             var result:[String:AnyObject]? = nil
             for (key, val) in (prop as! Dictionary<String,AnyObject>) {
@@ -254,9 +253,9 @@ public class EventsTracker : NSObject {
                     result?[key] = cleanVal
                 }
             }
-            return result
-        case is NSDate:
-            return Utils.ISO8601_dateFormatter.stringFromDate(prop as! NSDate)
+            return result as AnyObject?
+        case is Date:
+            return Utils.ISO8601_dateFormatter.string(from: prop as! Date) as AnyObject?
         default:
             return nil
         }

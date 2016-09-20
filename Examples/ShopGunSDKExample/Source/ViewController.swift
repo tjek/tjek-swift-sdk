@@ -13,7 +13,7 @@ import ShopGunSDK
 
 class ViewController: UIViewController {
     
-    let conn = GraphConnection(baseURL:NSURL(string: "https://graph-staging.shopgun.com")!, timeout:10)
+    let conn = GraphConnection(baseURL:URL(string: "https://graph-staging.shopgun.com")!, timeout:10)
     
     
     override func viewDidLoad() {
@@ -30,18 +30,18 @@ class ViewController: UIViewController {
         
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(ViewController.viewTapped(_:)))
-        tap.requireGestureRecognizerToFail(dblTap)
+        tap.require(toFail: dblTap)
         self.view?.addGestureRecognizer(tap)
         
     }
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
     
-    func viewDblTapped(tap:UITapGestureRecognizer) {
+    func viewDblTapped(_ tap:UITapGestureRecognizer) {
         
     }
-    func viewTapped(tap:UITapGestureRecognizer) {
+    func viewTapped(_ tap:UITapGestureRecognizer) {
         
     }
 }

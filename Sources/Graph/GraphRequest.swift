@@ -10,14 +10,14 @@
 import Foundation
 
 @objc(SGNGraphRequest)
-public class GraphRequest : NSObject {
+open class GraphRequest : NSObject {
     
     // every time a request is constructed, it is given a unique identifier
-    public let identifier: String = NSUUID().UUIDString
+    open let identifier: String = UUID().uuidString
     
-    public let query:String
-    public let operationName:String
-    public let variables:[String:AnyObject]?
+    open let query:String
+    open let operationName:String
+    open let variables:[String:AnyObject]?
     
     public init(query:String, operationName:String, variables:[String:AnyObject]? = nil) {
         self.query = query
@@ -29,7 +29,7 @@ public class GraphRequest : NSObject {
 
 public extension GraphRequest {
     
-    public func start(completion:GraphConnection.RequestCompletionHandler) {
+    public func start(_ completion:@escaping GraphConnection.RequestCompletionHandler) {
         let conn = GraphConnection()
         conn.start(self, completion: completion)
     }

@@ -10,8 +10,8 @@
 import Foundation
 
 @objc(SGNGraphResponse)
-public class GraphResponse : NSObject {
-    private let responseObject: AnyObject?
+open class GraphResponse : NSObject {
+    fileprivate let responseObject: AnyObject?
     
     // responseObject is the post-parsing data out of the server.
     // eg. Dictionary/Array
@@ -20,15 +20,15 @@ public class GraphResponse : NSObject {
     }
 
     
-    public var dictionaryValue: [String : AnyObject]? {
+    open var dictionaryValue: [String : AnyObject]? {
         return responseObject as? [String : AnyObject]
     }
     
-    public var arrayValue: [AnyObject]? {
+    open var arrayValue: [AnyObject]? {
         return responseObject as? [AnyObject]
     }
     
-    public var stringValue: String? {
+    open var stringValue: String? {
         return responseObject as? String
     }
 }

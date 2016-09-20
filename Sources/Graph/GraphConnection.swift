@@ -12,61 +12,59 @@ import Foundation
 @objc(SGNGraphConnection)
 public class GraphConnection : NSObject {
     
-    let timeout:NSTimeInterval
-    let baseURL:NSURL
+    let timeout:TimeInterval
+    let baseURL:URL
 
     public convenience override init() {
         self.init(baseURL:GraphConnection.defaultBaseURL, timeout:GraphConnection.defaultTimeout)
     }
-    public convenience init(baseURL:NSURL) {
+    public convenience init(baseURL:URL) {
         self.init(baseURL:baseURL, timeout:GraphConnection.defaultTimeout)
     }
-    public convenience init(timeout:NSTimeInterval) {
+    public convenience init(timeout:TimeInterval) {
         self.init(baseURL:GraphConnection.defaultBaseURL, timeout:timeout)
     }
-    public init(baseURL:NSURL, timeout:NSTimeInterval) {
+    public init(baseURL:URL, timeout:TimeInterval) {
         self.timeout = timeout
         self.baseURL = baseURL
     }
     
     
-    public typealias RequestCompletionHandler = (graphResponse:GraphResponse?, urlResponse:NSHTTPURLResponse?, error:NSError?) -> Void
-    public func start(request:GraphRequest, completion:RequestCompletionHandler?) {
+    public typealias RequestCompletionHandler = (_ graphResponse:GraphResponse?, _ urlResponse:HTTPURLResponse?, _ error:Error?) -> Void
+    public func start(_ request:GraphRequest, completion:RequestCompletionHandler?) {
 
         // build the network session for this connection (if not already built)
         if networkSession == nil {
-            let config = NSURLSessionConfiguration.defaultSessionConfiguration()
+            let config = URLSessionConfiguration.default
             config.timeoutIntervalForRequest = timeout
-            networkSession = NSURLSession(configuration: config)
+            networkSession = URLSession(configuration: config)
         }
 
         // build the request data
         var jsonDict = [String:AnyObject]()
         
-        jsonDict["query"] = request.query
-        jsonDict["operationName"] = request.operationName
-        jsonDict["variables"] = request.variables
+        jsonDict["query"] = request.query as AnyObject?
+        jsonDict["operationName"] = request.operationName as AnyObject?
+        jsonDict["variables"] = request.variables as AnyObject?
         
         // TODO: clean variables to avoid JSONSerialization crash?
         
         // serialize the data (try to)
-        if let jsonData = try? NSJSONSerialization.dataWithJSONObject(jsonDict, options:[]) {
+        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonDict, options:[]) {
             
             
             // build the url request
-            let url:NSURL? = baseURL
-            
-            let urlRequest = NSMutableURLRequest(URL:url!)
-            urlRequest.HTTPMethod = "POST"
+            var urlRequest = URLRequest(url:baseURL)
+            urlRequest.httpMethod = "POST"
             urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
             urlRequest.addValue("application/json", forHTTPHeaderField: "Accept")
             
-            urlRequest.HTTPBody = jsonData
+            urlRequest.httpBody = jsonData
             
             
             // `self` is strongly captured in this completion handler.
             // if no-one else is holding onto this connection, it will be deinit'd after completion is called
-            let taskCompletion:(NSData?, NSURLResponse?, NSError?) -> (Void) = { (data, urlResponse, networkError) in
+            let taskCompletion:(Data?, URLResponse?, Error?) -> (Void) = { (data, urlResponse, networkError) in
                 
                 // remove completed active task
                 self.activeRequestTasks[request.identifier] = nil
@@ -81,12 +79,12 @@ public class GraphConnection : NSObject {
                 
                 // some response data, and it's parseable as JSON
                 if data != nil,
-                    let jsonObj = try? NSJSONSerialization.JSONObjectWithData(data!, options: []) {
+                    let jsonObj = try? JSONSerialization.jsonObject(with: data!, options: []) {
                     
                     // TODO: check status code - if jsonObj contains error data then convert to Error
                     
                     
-                    graphResponse = GraphResponse(responseObject: jsonObj)
+                    graphResponse = GraphResponse(responseObject: jsonObj as AnyObject?)
                 }
                 else {
                     // no known data - ERROR!
@@ -94,15 +92,14 @@ public class GraphConnection : NSObject {
                 }
                 
                 
-                dispatch_async(dispatch_get_main_queue()) {
-                    completion?(graphResponse:graphResponse, urlResponse:(urlResponse as? NSHTTPURLResponse), error:error)
+                DispatchQueue.main.async {
+                    completion?(graphResponse, (urlResponse as? HTTPURLResponse), error)
                 }
             }
             
             
-            
             // create a dataTask for this urlRequest
-            if let dataTask = networkSession?.dataTaskWithRequest(urlRequest, completionHandler: taskCompletion) {
+            if let dataTask = networkSession?.dataTask(with: urlRequest, completionHandler: taskCompletion) {
                 
                 // save the request, keyed by the task Id
                 self.activeRequestTasks[request.identifier] = dataTask
@@ -114,9 +111,9 @@ public class GraphConnection : NSObject {
         }
     }
 
-    public func cancel(requestIdentifier:String? = nil) {
+    public func cancel(_ requestIdentifier:String? = nil) {
         if requestIdentifier != nil {
-            if let task:NSURLSessionTask = self.activeRequestTasks[requestIdentifier!] {
+            if let task:URLSessionTask = self.activeRequestTasks[requestIdentifier!] {
                 self.activeRequestTasks[requestIdentifier!] = nil
                 task.cancel()
             }
@@ -130,15 +127,15 @@ public class GraphConnection : NSObject {
     }
     
     
-    public static var defaultBaseURL:NSURL = NSURL(string: "https://graph.shopgun.com")!
-    public static var defaultTimeout:NSTimeInterval = 60
+    public static var defaultBaseURL:URL = URL(string: "https://graph.shopgun.com")!
+    public static var defaultTimeout:TimeInterval = 60
     
     
     
     
     // MARK: Private
     
-    private var activeRequestTasks:[String:NSURLSessionTask] = [:]
-    private var networkSession:NSURLSession?
+    fileprivate var activeRequestTasks:[String:URLSessionTask] = [:]
+    fileprivate var networkSession:URLSession?
 }
 

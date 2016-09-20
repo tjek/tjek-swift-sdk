@@ -21,27 +21,27 @@ extension EventsTracker {
     
     struct Context {
         
-        static func toDictionary(viewContext:ViewContext?, campaignContext:CampaignContext?) -> [String:AnyObject]? {
+        static func toDictionary(_ viewContext:ViewContext?, campaignContext:CampaignContext?) -> [String:AnyObject]? {
             var dict = [String:AnyObject]()
             
-            dict["application"] = ApplicationContext.toDictionary()
-            dict["device"] = DeviceContext.toDictionary()
-            dict["os"] = OperatingSystemContext.toDictionary()
-            dict["location"] = LocationContext.toDictionary()
-            dict["locale"] = locale
-            dict["timezone"] = TimeZoneContext.toDictionary()
-            dict["userAgent"] = userAgent
+            dict["application"] = ApplicationContext.toDictionary() as AnyObject?
+            dict["device"] = DeviceContext.toDictionary() as AnyObject?
+            dict["os"] = OperatingSystemContext.toDictionary() as AnyObject?
+            dict["location"] = LocationContext.toDictionary() as AnyObject?
+            dict["locale"] = locale as AnyObject?
+            dict["timezone"] = TimeZoneContext.toDictionary() as AnyObject?
+            dict["userAgent"] = userAgent as AnyObject?
             
-            dict["session"] = ["id": SDKConfig.sessionId]
-            dict["view"] = viewContext?.toDictionary()
-            dict["campaign"] = campaignContext?.toDictionary()
+            dict["session"] = ["id": SDKConfig.sessionId] as AnyObject?
+            dict["view"] = viewContext?.toDictionary() as AnyObject?
+            dict["campaign"] = campaignContext?.toDictionary() as AnyObject?
             
             return dict
         }
         
         
         static var locale:String {
-            return NSLocale.autoupdatingCurrentLocale().localeIdentifier
+            return Locale.autoupdatingCurrent.identifier
         }
         
         static let userAgent:String = {
@@ -49,16 +49,16 @@ extension EventsTracker {
             
             var userAgent = sdkBundleId
             
-            if let sdkVersion = NSBundle(identifier: sdkBundleId)?.infoDictionary!["CFBundleShortVersionString"] as? String {
-                userAgent = userAgent.stringByAppendingFormat("/%@", sdkVersion)
+            if let sdkVersion = Bundle(identifier: sdkBundleId)?.infoDictionary!["CFBundleShortVersionString"] as? String {
+                userAgent = userAgent.appendingFormat("/%@", sdkVersion)
             }
             
-            if let appBundleId = NSBundle.mainBundle().bundleIdentifier {
-                userAgent = userAgent.stringByAppendingFormat("(%@", appBundleId)
+            if let appBundleId = Bundle.main.bundleIdentifier {
+                userAgent = userAgent.appendingFormat("(%@", appBundleId)
                 if let appVersion = ApplicationContext.version {
-                    userAgent = userAgent.stringByAppendingFormat("/%@", appVersion)
+                    userAgent = userAgent.appendingFormat("/%@", appVersion)
                 }
-                userAgent = userAgent.stringByAppendingString(")")
+                userAgent = userAgent + ")"
             }
             
             return userAgent
@@ -76,9 +76,9 @@ extension EventsTracker {
                 }
                 
                 var dict = [String:AnyObject]()
-                dict["path"]  = path
-                dict["previousPath"] = previousPath
-                dict["uri"] = uri
+                dict["path"]  = path as AnyObject?
+                dict["previousPath"] = previousPath as AnyObject?
+                dict["uri"] = uri as AnyObject?
                 return dict.count > 0 ? dict : nil
             }
         }
@@ -92,11 +92,11 @@ extension EventsTracker {
             
             func toDictionary() -> [String:AnyObject]? {
                 var dict = [String:AnyObject]()
-                dict["name"]  = name
-                dict["source"] = source
-                dict["medium"] = medium
-                dict["term"] = term
-                dict["content"] = content
+                dict["name"]  = name as AnyObject?
+                dict["source"] = source as AnyObject?
+                dict["medium"] = medium as AnyObject?
+                dict["term"] = term as AnyObject?
+                dict["content"] = content as AnyObject?
                 return dict.count > 0 ? dict : nil
             }
         }
@@ -105,15 +105,15 @@ extension EventsTracker {
         
         struct ApplicationContext : SerializableContext {
             static let name:String? = {
-                let bundle = NSBundle.mainBundle()
+                let bundle = Bundle.main
                 
-                if let name = bundle.objectForInfoDictionaryKey("CFBundleDisplayName") as? String {
+                if let name = bundle.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String {
                     return name
                 }
-                else if let name = bundle.objectForInfoDictionaryKey("CFBundleName") as? String {
+                else if let name = bundle.object(forInfoDictionaryKey: "CFBundleName") as? String {
                     return name
                 }
-                else if let name = bundle.objectForInfoDictionaryKey("CFBundleExecutable") as? String {
+                else if let name = bundle.object(forInfoDictionaryKey: "CFBundleExecutable") as? String {
                     return name
                 }
                 else {
@@ -122,19 +122,19 @@ extension EventsTracker {
             }()
             
             static let version:String? = {
-                return NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as? String
+                return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
             }()
             
             static let build:String? = {
-                return NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as? String
+                return Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
             }()
             
             
             static func toDictionary() -> [String:AnyObject]? {
                 var dict = [String:AnyObject]()
-                dict["name"]  = name
-                dict["version"] = version
-                dict["build"] = build
+                dict["name"]  = name as AnyObject?
+                dict["version"] = version as AnyObject?
+                dict["build"] = build as AnyObject?
                 return dict.count > 0 ? dict : nil
             }
         }
@@ -144,19 +144,19 @@ extension EventsTracker {
             
             /// eg. "iPhone7,2"
             static let model:String? = {
-                return UIDevice.currentDevice().model
+                return UIDevice.current.model
             }()
             // The _native_ size, in absolute px. Always portrait.
             static var screenSize:CGSize {
-                return UIScreen.mainScreen().nativeBounds.size
+                return UIScreen.main.nativeBounds.size
             }
             
             static func toDictionary() -> [String:AnyObject]? {
                 var dict = [String:AnyObject]()
-                dict["manufacturer"]  = manufacturer
-                dict["model"] = model
+                dict["manufacturer"]  = manufacturer as AnyObject?
+                dict["model"] = model as AnyObject?
                 dict["screen"] = ["height":screenSize.height,
-                                  "width":screenSize.width]
+                                  "width":screenSize.width] as AnyObject?
                 
                 return dict
             }
@@ -182,13 +182,13 @@ extension EventsTracker {
             }()
             
             static let version:String = {
-                return UIDevice.currentDevice().systemVersion
+                return UIDevice.current.systemVersion
             }()
             
             static func toDictionary() -> [String:AnyObject]? {
                 var dict = [String:AnyObject]()
-                dict["name"]  = name
-                dict["version"] = version
+                dict["name"]  = name as AnyObject?
+                dict["version"] = version as AnyObject?
                 return dict
             }
         }
@@ -197,12 +197,12 @@ extension EventsTracker {
         struct TimeZoneContext : SerializableContext {
             
             static var utcOffsetSeconds:Int {
-                return NSTimeZone.localTimeZone().secondsFromGMT
+                return NSTimeZone.local.secondsFromGMT()
             }
             
             static func toDictionary() -> [String:AnyObject]? {
                 var dict = [String:AnyObject]()
-                dict["utcOffsetSeconds"]  = utcOffsetSeconds
+                dict["utcOffsetSeconds"]  = utcOffsetSeconds as AnyObject?
                 return dict
             }
         }
@@ -210,7 +210,7 @@ extension EventsTracker {
         struct LocationContext : SerializableContext {
             static var location:CLLocation? {
                 let authStatus = CLLocationManager.authorizationStatus()
-                guard (authStatus == .AuthorizedWhenInUse || authStatus == .AuthorizedAlways) else {
+                guard (authStatus == .authorizedWhenInUse || authStatus == .authorizedAlways) else {
                     return nil
                 }
                 
@@ -223,14 +223,14 @@ extension EventsTracker {
                     
                     var dict = [String:AnyObject]()
                     
-                    dict["determinedAt"]  = Utils.ISO8601_dateFormatter.stringFromDate(location.timestamp)
-                    dict["latitude"] = location.coordinate.latitude
-                    dict["longitude"] = location.coordinate.longitude
-                    dict["altitude"] = location.altitude
-                    dict["speed"] = location.speed
+                    dict["determinedAt"]  = Utils.ISO8601_dateFormatter.string(from: location.timestamp) as AnyObject?
+                    dict["latitude"] = location.coordinate.latitude as AnyObject?
+                    dict["longitude"] = location.coordinate.longitude as AnyObject?
+                    dict["altitude"] = location.altitude as AnyObject?
+                    dict["speed"] = location.speed as AnyObject?
                     dict["accuracy"] = ["horizontal":location.horizontalAccuracy,
-                                        "vertical":location.verticalAccuracy]
-                    dict["floor"] = location.floor?.level
+                                        "vertical":location.verticalAccuracy] as AnyObject?
+                    dict["floor"] = location.floor?.level as AnyObject?
                     
                     return dict
                 } else {

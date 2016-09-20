@@ -1,12 +1,9 @@
-[submodule "Carthage/Checkouts/Alamofire"]
-	path = Carthage/Checkouts/Alamofire
-	url = https://github.com/Alamofire/Alamofire.git
-[submodule "Carthage/Checkouts/AlamofireImage"]
-	path = Carthage/Checkouts/AlamofireImage
-	url = https://github.com/Alamofire/AlamofireImage.git
 [submodule "Carthage/Checkouts/Valet"]
 	path = Carthage/Checkouts/Valet
 	url = https://github.com/square/Valet.git
 [submodule "Carthage/Checkouts/Verso-ios"]
 	path = Carthage/Checkouts/Verso-ios
 	url = https://github.com/ShopGun/Verso-ios.git
+[submodule "Carthage/Checkouts/Kingfisher"]
+	path = Carthage/Checkouts/Kingfisher
+	url = https://github.com/onevcat/Kingfisher.git

@@ -10,20 +10,20 @@
 import UIKit
 
 import Verso
-import AlamofireImage
+import Kingfisher
 
 
 @objc
 public protocol PagedPublicationPageViewDelegate : class {
     
-    optional func didConfigure(pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol)
+    @objc optional func didConfigure(_ pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol)
     
-    optional func didFinishLoadingImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)
-    optional func didFinishLoadingZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool)
+    @objc optional func didFinishLoadingImage(_ pageView:PagedPublicationPageView, imageURL:URL, fromCache:Bool)
+    @objc optional func didFinishLoadingZoomImage(_ pageView:PagedPublicationPageView, imageURL:URL, fromCache:Bool)
     
 }
 
-public class LabelledVersoPageView : VersoPageView {
+open class LabelledVersoPageView : VersoPageView {
     
     public required init(frame: CGRect) {
         super.init(frame: frame)
@@ -37,18 +37,18 @@ public class LabelledVersoPageView : VersoPageView {
     public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
     
-    public var pageLabel:UILabel = {
+    open var pageLabel:UILabel = {
         
-        let view = UILabel(frame: CGRectZero)
-        view.font = UIFont.boldSystemFontOfSize(24)
+        let view = UILabel(frame: CGRect.zero)
+        view.font = UIFont.boldSystemFont(ofSize: 24)
         view.textColor = UIColor(white: 0, alpha: 0.8)
-        view.textAlignment = .Center
+        view.textAlignment = .center
         
         return view
     }()
     
     
-    override public func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
         
         // position label in the middle
@@ -62,20 +62,20 @@ public class LabelledVersoPageView : VersoPageView {
 }
 
 
-public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizerDelegate {
+open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizerDelegate {
 
     public enum ImageLoadState {
-        case NotLoaded
-        case Loading
-        case Loaded
-        case Failed
+        case notLoaded
+        case loading
+        case loaded
+        case failed
     }
     
     public required init(frame: CGRect) {
         super.init(frame: frame)
         
         // listen for memory warnings and clear the zoomimage
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PagedPublicationPageView.memoryWarningNotification(_:)), name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(PagedPublicationPageView.memoryWarningNotification(_:)), name: NSNotification.Name.UIApplicationDidReceiveMemoryWarning, object: nil)
         
         
         // add subviews
@@ -88,7 +88,7 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
     public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidReceiveMemoryWarning, object: nil)
     }
     
     
@@ -97,64 +97,60 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
     
     // MARK: - Public
     
-    weak public var delegate:PagedPublicationPageViewDelegate?
+    weak open var delegate:PagedPublicationPageViewDelegate?
     
-    public private(set) var imageLoadState:ImageLoadState = .NotLoaded
-    public private(set) var zoomImageLoadState:ImageLoadState = .NotLoaded
+    open fileprivate(set) var imageLoadState:ImageLoadState = .notLoaded
+    open fileprivate(set) var zoomImageLoadState:ImageLoadState = .notLoaded
     
     
-    public func startLoadingZoomImageFromURL(zoomImageURL:NSURL) {
+    open func startLoadingZoomImageFromURL(_ zoomImageURL:URL) {
         
-        zoomImageLoadState = .Loading
+        zoomImageLoadState = .loading
         zoomImageView.image = nil
-        zoomImageView.hidden = false
-        
-        zoomImageView.af_setImageWithURL(zoomImageURL, imageTransition: .CrossDissolve(0.3), runImageTransitionIfCached: true) { [weak self] response in
+        zoomImageView.isHidden = false
+        zoomImageView.kf_setImage(with: zoomImageURL, placeholder: nil, options: [.transition(.fade(0.3)), .forceTransition], progressBlock: nil) {  [weak self] (image, error, cacheType, url) in
             guard self != nil else {
                 return
             }
             
-            if response.result.isSuccess {
+            if image != nil {
                 
-                self!.zoomImageLoadState = .Loaded
+                self!.zoomImageLoadState = .loaded
                 
-                self!.delegate?.didFinishLoadingZoomImage?(self!, imageURL:zoomImageURL, fromCache:(response.response == nil))
+                self!.delegate?.didFinishLoadingZoomImage?(self!, imageURL:zoomImageURL, fromCache:cacheType != .none)
             }
             else {
-                self!.zoomImageView.hidden = true
+                self!.zoomImageView.isHidden = true
                 
-                if let error = response.result.error {
-                    if error.code == NSURLErrorCancelled {
-                        self!.zoomImageLoadState = .NotLoaded
-                        return // image load cancelled
-                    }
+                if let errorCode = error?.code, errorCode == NSURLErrorCancelled {
+                    self!.zoomImageLoadState = .notLoaded
+                    return // image load cancelled
                 }
+                
                 // TODO: handle failed image load
                 // tell delegate? show error? retry?
                 // maybe cache failed image urls to re-fail quickly?
-                self!.zoomImageLoadState = .Failed
+                self!.zoomImageLoadState = .failed
             }
         }
     }
     
-    public func startLoadingImageFromURL(imageURL:NSURL) {
+    open func startLoadingImageFromURL(_ imageURL:URL) {
         
-        imageLoadState = .Loading
+        imageLoadState = .loading
         
         // load the image from the url
         // TODO: allow for non-AlamoFire image loader
         // TODO: move image-loading to Publication?
-        imageView.af_setImageWithURL(imageURL, imageTransition: .CrossDissolve(0.1), runImageTransitionIfCached: false) { [weak self] response in
+        imageView.kf_setImage(with: imageURL, placeholder: nil, options: [.transition(.fade(0.1))], progressBlock: nil) {  [weak self] (image, error, cacheType, url) in
             guard self != nil else {
                 return
             }
             
-            if response.result.isSuccess {
-                // Update the aspect ratio based on the actual loaded image.
-                if let image = response.result.value
-                    where image.size.width > 0 && image.size.height > 0 {
+            if let newImage = image {
+                if newImage.size.width > 0 && newImage.size.height > 0 {
                     
-                    let newAspectRatio = image.size.width / image.size.height
+                    let newAspectRatio = newImage.size.width / newImage.size.height
                     
                     if newAspectRatio != self!.aspectRatio {
                         self!.aspectRatio = newAspectRatio
@@ -162,45 +158,45 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
                     }
                 }
                 
-                self!.imageLoadState = .Loaded
+                self!.imageLoadState = .loaded
                 
-                self!.delegate?.didFinishLoadingImage?(self!, imageURL:imageURL, fromCache:(response.response == nil))
+                self!.delegate?.didFinishLoadingImage?(self!, imageURL:imageURL, fromCache:cacheType != .none)
             }
             else {
                 
-                if let error = response.result.error {
-                    if error.code == NSURLErrorCancelled {
-                        self!.imageLoadState = .NotLoaded
-                        return // image load cancelled
-                    }
+                if let errorCode = error?.code, errorCode == NSURLErrorCancelled {
+                    self!.imageLoadState = .notLoaded
+                    return // image load cancelled
                 }
+                
                 // TODO: handle failed image load
                 // tell delegate? show error? retry?
                 // maybe cache failed image urls to re-fail quickly?
-                print("image load failed", response.result.error?.localizedDescription, response.result.error?.code)
+                print("image load failed", error?.localizedDescription, error?.code)
                 
-                self!.imageLoadState = .Failed
+                self!.imageLoadState = .failed
             }
         }
     }
     
-    public func clearZoomImage(animated animated:Bool) {
-        zoomImageView.af_cancelImageRequest()
-        zoomImageLoadState = .NotLoaded
+    open func clearZoomImage(animated:Bool) {
+        
+        zoomImageView.kf_cancelDownloadTask()
+        zoomImageLoadState = .notLoaded
         
         if animated {
-            UIView.transitionWithView(zoomImageView, duration: 0.3, options: [.TransitionCrossDissolve], animations: { [weak self] in
+            UIView.transition(with: zoomImageView, duration: 0.3, options: [.transitionCrossDissolve], animations: { [weak self] in
                 self?.zoomImageView.image = nil
-                self?.zoomImageView.hidden = true
+                self?.zoomImageView.isHidden = true
                 }, completion: nil)
         }
         else {
             zoomImageView.image = nil
-            zoomImageView.hidden = true
+            zoomImageView.isHidden = true
         }
     }
     
-    public func configure(viewModel: PagedPublicationPageViewModelProtocol) {
+    open func configure(_ viewModel: PagedPublicationPageViewModelProtocol) {
         
         reset()
         
@@ -212,7 +208,7 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
         
         
         if let imageURL = viewModel.defaultImageURL {
-            startLoadingImageFromURL(imageURL)
+            startLoadingImageFromURL(imageURL as URL)
         }
         
         delegate?.didConfigure?(self, viewModel: viewModel)
@@ -222,17 +218,18 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
     
     // MARK: - Private
     
-    private var aspectRatio:CGFloat = 0
+    fileprivate var aspectRatio:CGFloat = 0
 
-    private func reset() {
-        imageView.af_cancelImageRequest()
-        imageView.image = nil
-        imageLoadState = .NotLoaded
+    fileprivate func reset() {
         
-        zoomImageView.af_cancelImageRequest()
+        imageView.kf_cancelDownloadTask()
+        imageView.image = nil
+        imageLoadState = .notLoaded
+        
+        zoomImageView.kf_cancelDownloadTask()
         zoomImageView.image = nil
-        zoomImageView.hidden = true
-        zoomImageLoadState = .NotLoaded
+        zoomImageView.isHidden = true
+        zoomImageLoadState = .notLoaded
         
         pageLabel.text = nil
         aspectRatio = 0
@@ -243,20 +240,20 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
     
     // MARK: - Subviews
     
-    private var imageView:UIImageView = {
-        let view = UIImageView(frame: CGRectZero)
+    fileprivate var imageView:UIImageView = {
+        let view = UIImageView(frame: CGRect.zero)
         
-        view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-        view.contentMode = .ScaleAspectFit
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.contentMode = .scaleAspectFit
         
         return view
     }()
     
-    private var zoomImageView:UIImageView = {
-        let view = UIImageView(frame: CGRectZero)
+    fileprivate var zoomImageView:UIImageView = {
+        let view = UIImageView(frame: CGRect.zero)
         
-        view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-        view.contentMode = .ScaleAspectFit
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.contentMode = .scaleAspectFit
         
         return view
     }()
@@ -267,7 +264,7 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
     // MARK: - UIView subclass
     
     // size based on aspect ratio
-    override public func sizeThatFits(size: CGSize) -> CGSize {
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
         guard size.width > 0 && size.height > 0 else {
             return size
         }
@@ -286,7 +283,7 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
         return newSize
     }
     
-    override public func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
         
         // position label in the middle
@@ -304,7 +301,7 @@ public class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecogniz
     
     // MARK: - Notifications
     
-    func memoryWarningNotification(notification:NSNotification) {
+    func memoryWarningNotification(_ notification:Notification) {
         clearZoomImage(animated:true)
     }
 }

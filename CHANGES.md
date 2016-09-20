@@ -1,6 +1,10 @@
 # Change Log
 
 
+## v4
+
+
+
 ## v3.1.0
 
 ##### Now requires iOS 7 and up

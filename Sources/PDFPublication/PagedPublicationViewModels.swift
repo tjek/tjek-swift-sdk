@@ -38,9 +38,9 @@ public protocol PagedPublicationPageViewModelProtocol {
     
     var aspectRatio:CGFloat { get }
     
-    var defaultImageURL:NSURL? { get }
+    var defaultImageURL:URL? { get }
     
-    var zoomImageURL:NSURL? { get }
+    var zoomImageURL:URL? { get }
 }
 
 
@@ -75,12 +75,12 @@ public class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewM
     public var aspectRatio: CGFloat = 0
     
     public var defaultImage:UIImage?
-    public var defaultImageURL:NSURL?
+    public var defaultImageURL:URL?
     
-    public var zoomImageURL:NSURL?
+    public var zoomImageURL:URL?
     public var zoomImage:UIImage?
     
-    public init(pageIndex:Int, pageTitle:String?, aspectRatio:CGFloat = 0, imageURL:NSURL? = nil, zoomImageURL:NSURL? = nil) {
+    public init(pageIndex:Int, pageTitle:String?, aspectRatio:CGFloat = 0, imageURL:URL? = nil, zoomImageURL:URL? = nil) {
         self.pageIndex = pageIndex
         self.pageTitle = pageTitle
         self.aspectRatio = aspectRatio

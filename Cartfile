@@ -3,4 +3,4 @@ github "square/Valet" ~> 2.2.2
 
 github "ShopGun/Verso-ios" "develop"
 
-github "Alamofire/AlamofireImage" ~> 2.5.0
+github "onevcat/Kingfisher" ~> 3.0.1

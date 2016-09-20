@@ -53,30 +53,30 @@ extension PagedPublicationView {
         func properties() -> [String:AnyObject]? {
             switch self {
             case let .pageAppeared(pageNum):
-                return ["pageNumber":pageNum]
+                return ["pageNumber":pageNum as AnyObject]
             case let .pageLoaded(pageNum):
-                return ["pageNumber":pageNum]
+                return ["pageNumber":pageNum as AnyObject]
             case let .pageDisappeared(pageNum):
-                return ["pageNumber":pageNum]
+                return ["pageNumber":pageNum as AnyObject]
             case let .pageSpreadChanged(newPageNums, oldPageNums):
-                return ["newPageNumbers":newPageNums,
-                        "oldPageNumbers":oldPageNums]
+                return ["newPageNumbers":newPageNums as AnyObject,
+                        "oldPageNumbers":oldPageNums as AnyObject]
             case let .pageSpreadZoomedIn(pageNum):
-                return ["pageNumber":pageNum]
+                return ["pageNumber":pageNum as AnyObject]
             case let .pageSpreadZoomedOut(pageNum):
-                return ["pageNumber":pageNum]
+                return ["pageNumber":pageNum as AnyObject]
             case let .pageTapped(pageNum, location):
-                return ["pageNumber":pageNum,
-                        "x":location.x,
-                        "y":location.y]
+                return ["pageNumber":pageNum as AnyObject,
+                        "x":location.x as AnyObject,
+                        "y":location.y as AnyObject]
             case let .pageDoubleTapped(pageNum, location):
-                return ["pageNumber":pageNum,
-                        "x":location.x,
-                        "y":location.y]
+                return ["pageNumber":pageNum as AnyObject,
+                        "x":location.x as AnyObject,
+                        "y":location.y as AnyObject]
             case let .pageLongPressed(pageNum, location):
-                return ["pageNumber":pageNum,
-                        "x":location.x,
-                        "y":location.y]
+                return ["pageNumber":pageNum as AnyObject,
+                        "x":location.x as AnyObject,
+                        "y":location.y as AnyObject]
             }
         }
         
@@ -91,18 +91,18 @@ extension PagedPublicationView {
     
     
     
-    func triggerEvent_PageAppeared(pageIndex:Int) {
+    func triggerEvent_PageAppeared(_ pageIndex:Int) {
         Events.pageAppeared(pageNum:pageIndex+1).trackEvent()
     }
-    func triggerEvent_PageLoaded(pageIndex:Int,fromCache:Bool) {
+    func triggerEvent_PageLoaded(_ pageIndex:Int,fromCache:Bool) {
         Events.pageLoaded(pageNum:pageIndex+1).trackEvent()
     }
-    func triggerEvent_PageDisappeared(pageIndex:Int) {
+    func triggerEvent_PageDisappeared(_ pageIndex:Int) {
         Events.pageDisappeared(pageNum:pageIndex+1).trackEvent()
     }
 
     
-    func triggerEvent_PageSpreadChanged(oldPageIndexes:NSIndexSet, newPageIndexes:NSIndexSet) {
+    func triggerEvent_PageSpreadChanged(_ oldPageIndexes:IndexSet, newPageIndexes:IndexSet) {
         let newPageNums:[Int] = newPageIndexes.map { (pageIndex) -> Int in
             return pageIndex + 1
         }
@@ -115,13 +115,13 @@ extension PagedPublicationView {
     }
     
     
-    func triggerEvent_PageSpreadZoomedIn(pageIndexes:NSIndexSet) {
+    func triggerEvent_PageSpreadZoomedIn(_ pageIndexes:IndexSet) {
         let pageNums:[Int] = pageIndexes.map { (pageIndex) -> Int in
             return pageIndex + 1
         }
         Events.pageSpreadZoomedIn(pageNums: pageNums).trackEvent()
     }
-    func triggerEvent_PageSpreadZoomedOut(pageIndexes:NSIndexSet) {
+    func triggerEvent_PageSpreadZoomedOut(_ pageIndexes:IndexSet) {
         let pageNums:[Int] = pageIndexes.map { (pageIndex) -> Int in
             return pageIndex + 1
         }
@@ -129,14 +129,14 @@ extension PagedPublicationView {
     }
     
     
-    func triggerEvent_PageTapped(pageIndex:Int, location:CGPoint) {
+    func triggerEvent_PageTapped(_ pageIndex:Int, location:CGPoint) {
         Events.pageTapped(pageNum: pageIndex+1, location: location).trackEvent()
     }
-    func triggerEvent_PageDoubleTapped(pageIndex:Int, location:CGPoint) {
+    func triggerEvent_PageDoubleTapped(_ pageIndex:Int, location:CGPoint) {
         // TODO: not triggered yet
         Events.pageDoubleTapped(pageNum: pageIndex+1, location: location).trackEvent()
     }
-    func triggerEvent_PageLongPressed(pageIndex:Int, location:CGPoint) {
+    func triggerEvent_PageLongPressed(_ pageIndex:Int, location:CGPoint) {
         Events.pageLongPressed(pageNum: pageIndex+1, location: location).trackEvent()
     }
 }

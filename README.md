@@ -1,17 +1,34 @@
 ShopGunSDK
 ==========
 
-[![Platform](https://cocoapod-badges.herokuapp.com/p/ShopGunSDK/badge.png)](http://cocoadocs.org/docsets/ShopGunSDK)
-[![Version](https://cocoapod-badges.herokuapp.com/v/ShopGunSDK/badge.png)](http://cocoadocs.org/docsets/ShopGunSDK) 
+[![Version](https://img.shields.io/cocoapods/v/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![License](https://img.shields.io/cocoapods/l/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
+[![Platform](https://img.shields.io/cocoapods/p/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
 
+A framework for interacting with the ShopGun APIs from within your own apps. The SDK has been split into multiple components:
 
-A framework for interacting with the ShopGun APIs from within your own apps.
-
-Functionality includes:
-
+- `Core`: Used by all other components. Handles basic configuration of the SDK.
 - `GraphKit`: An interface for easily making requests to ShopGun's graph API.
 - `EventsKit`: An events tracker for efficiently sending events to the ShopGun API.
+- `PagedPublication`: A view for fetching and rendering a paged publication.
+
+## Requirements
+
+- iOS 8.0+
+- Xcode 8.0+
+- Swift 3.0+
+
+
+## Dependencies
+
+- Core:
+	- [Valet (2.2.2)](https://github.com/Square/Valet) - for easy communication with the KeyChain.
+
+
+- PagedPublication:
+	- [Verso (1.0)](https://github.com/ShopGun/Verso) - a layout engine for presenting book-like views.
+	- [Kingfisher (3.0.1)](https://github.com/onevcat/Kingfisher) - a light-weight library for downloading and caching images.
 
 
 
@@ -33,6 +50,9 @@ pod 'ShopGunSDK/Graph'
 
 # just include the event tracking code:
 pod 'ShopGunSDK/Events'
+
+# just include the paged publication view code:
+pod 'ShopGunSDK/PagedPublication'
 ```
 
 For further details see the [CocoaPods Guides](https://guides.cocoapods.org/).
@@ -49,11 +69,9 @@ github 'shopgun/shopgun-ios-sdk'
 
 Unlike CocoaPods, with Carthage you will not be able to choose which subsets of the functionality you include in your app - it's all or nothing.
 
-For further details see the [Carhage Readme](https://guides.cocoapods.org/)
+For further details see the [Carthage Readme](https://guides.cocoapods.org/)
 
-Furthermore, you will need to manually embed the `Valet.framework` into your app.
-
-**TODO: Write how to do this**
+Furthermore, although the dependencies will be downloaded and built for you, you will need to manually embed the `.framework`s into your app.
 
 
 ## Usage
