@@ -12,7 +12,7 @@ import Valet
 
 struct Utils {
 
-    static func fetchInfoPlistValue(key:String) -> AnyObject? {
+    static func fetchInfoPlistValue(_ key:String) -> AnyObject? {
         if let configDict = Bundle.main.object(forInfoDictionaryKey: "ShopGunSDK") as? [String:AnyObject] {
             return configDict[key]
         }
