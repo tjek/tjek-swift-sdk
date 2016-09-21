@@ -22,6 +22,8 @@ public protocol PagedPublicationViewDataSourceOptional : class {
     func configureOutroView(pagedPublicationView:PagedPublicationView, outroView:OutroView)
     func outroViewWidth(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat
     func outroViewMaxZoom(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat
+
+    func textForPageNumberLabel(pagedPublicationView:PagedPublicationView, pageIndexes:IndexSet, pageCount:Int) -> String?
 }
 
 // Default values for datasource
@@ -31,10 +33,19 @@ public extension PagedPublicationViewDataSourceOptional {
         return nil
     }
     func outroViewWidth(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat {
-        return 0.8
+        return 0.9
     }
     func outroViewMaxZoom(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat {
         return 1.0
+    }
+    func textForPageNumberLabel(pagedPublicationView:PagedPublicationView, pageIndexes:IndexSet, pageCount:Int) -> String? {
+        if pageIndexes.count == 1 {
+            return "\(pageIndexes.first!+1) / \(pageCount)"
+        }
+        else if pageIndexes.count > 1 {
+            return "\(pageIndexes.first!+1)-\(pageIndexes.last!+1) / \(pageCount)"
+        }
+        return nil
     }
 }
 /// Have PagedPublicationView as the source of the default optional values, for when dataSource is nil.
@@ -57,9 +68,10 @@ open class PagedPublicationView : UIView {
         backgroundColor = UIColor.white
         
         verso.frame = frame
-        verso.clipsToBounds = false
         verso.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(verso)
+        
+        addSubview(pageNumberLabel)
     }
     required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
@@ -71,6 +83,8 @@ open class PagedPublicationView : UIView {
         super.layoutSubviews()
         
         verso.frame = bounds
+        
+        layoutPageNumberLabel()
     }
     
     
@@ -198,6 +212,102 @@ open class PagedPublicationView : UIView {
         verso.delegate = self
         return verso
     }()
+    
+    
+    fileprivate var pageNumberLabel:PageNumberLabel = PageNumberLabel()
+    class PageNumberLabel : UILabel {
+        
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            
+            layer.cornerRadius = 6
+            layer.masksToBounds = true
+            textColor = UIColor.white
+            backgroundColor = UIColor(white: 0, alpha: 0.3)
+            
+            textAlignment = .center
+            font = UIFont.boldSystemFont(ofSize: 18) //TODO: dynamic font size
+            
+//            adjustsFontSizeToFitWidth = true
+//            minimumScaleFactor = 0.5
+            numberOfLines = 1
+        }
+        
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        // MARK: Edge Insets
+        var labelEdgeInsets:UIEdgeInsets = UIEdgeInsetsMake(4, 22, 4, 22)
+        
+        override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
+            var rect = super.textRect(forBounds: UIEdgeInsetsInsetRect(bounds, labelEdgeInsets), limitedToNumberOfLines: numberOfLines)
+            
+            rect.origin.x -= labelEdgeInsets.left
+            rect.origin.y -= labelEdgeInsets.top
+            rect.size.width += labelEdgeInsets.left + labelEdgeInsets.right
+            rect.size.height += labelEdgeInsets.top + labelEdgeInsets.bottom
+            
+            return rect
+        }
+        override func drawText(in rect: CGRect) {
+            super.drawText(in: UIEdgeInsetsInsetRect(rect, labelEdgeInsets))
+        }
+    }
+    
+    fileprivate func layoutPageNumberLabel() {
+        
+        // layout page number label
+        var lblFrame = pageNumberLabel.frame
+        lblFrame.size = pageNumberLabel.sizeThatFits(bounds.size)
+        lblFrame.origin.x = round(bounds.midX - (lblFrame.width / 2))
+        lblFrame.origin.y = round(bounds.maxY - 11 - lblFrame.height)
+        pageNumberLabel.frame = lblFrame
+    }
+    
+    @objc
+    fileprivate func hidePageNumberLabel() {
+        UIView.animate(withDuration: 1.0, delay: 0, options: [.beginFromCurrentState], animations: { 
+            self.pageNumberLabel.alpha = 0.2
+            }, completion: nil)
+    }
+    
+    fileprivate func showPageNumberLabel() {
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(PagedPublicationView.hidePageNumberLabel), object: nil)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, options: [.beginFromCurrentState], animations: {
+            self.pageNumberLabel.alpha = 1.0
+            }, completion: nil)
+        
+        self.perform(#selector(PagedPublicationView.hidePageNumberLabel), with: nil, afterDelay: 1.0)
+    }
+    
+    fileprivate func updatePageNumberLabel(withText text:String?) {
+        if text == nil {
+            UIView.animate(withDuration: 0.2, delay: 0, options: [.beginFromCurrentState], animations: {
+                self.pageNumberLabel.alpha = 0
+            }) { (finished) in
+                if finished {
+                    self.pageNumberLabel.text = nil
+                }
+            }
+        }
+        else {
+            if pageNumberLabel.text == nil {
+                pageNumberLabel.text = text
+                layoutPageNumberLabel()
+            } else {
+                UIView.transition(with: pageNumberLabel, duration: 0.15, options: [.transitionCrossDissolve, .beginFromCurrentState], animations: {
+                    self.pageNumberLabel.text = text
+                    self.layoutPageNumberLabel()
+                })
+            }
+            
+            showPageNumberLabel()
+        }
+    }
+    
+    
     
     
     
@@ -434,7 +544,7 @@ extension PagedPublicationView : VersoViewDataSource {
 
 extension PagedPublicationView : VersoViewDelegate {
     
-    public func currentPageIndexesChanged(verso: VersoView, pageIndexes: IndexSet, added: IndexSet, removed: IndexSet) {
+    public func currentPageIndexesFinishedChanging(verso: VersoView, pageIndexes: IndexSet, added: IndexSet, removed: IndexSet) {
 
         // pages changed while we were zoomed in - trigger a zoom-out event
         if zoomedPageIndexes.count > 0 && pageIndexes != zoomedPageIndexes {
@@ -460,9 +570,28 @@ extension PagedPublicationView : VersoViewDelegate {
         }
         
 //        print ("current pages changed: \(pageIndexes.arrayOfAllIndexes())")
+        
     }
-    
+    public func currentPageIndexesChanged(verso:VersoView, pageIndexes:IndexSet, added:IndexSet, removed:IndexSet) {
+        DispatchQueue.main.async { [weak self] in
+            guard self != nil else { return }
+            
+            // update the page number label's text and fade in, then out
+            let newLabelText:String?
+            
+            if let outroIndex = self?.outroPageIndex, pageIndexes.contains(outroIndex) {
+                newLabelText = nil
+            }
+            else {
+                newLabelText = self!.dataSourceOptional.textForPageNumberLabel(pagedPublicationView: self!, pageIndexes: pageIndexes, pageCount: self!.pageCount)
+            }
+            
+            self!.updatePageNumberLabel(withText: newLabelText)
+        }
+    }
+
     public func visiblePageIndexesChanged(verso: VersoView, pageIndexes: IndexSet, added: IndexSet, removed: IndexSet) {
+        
 //        print ("visible pages changed: \(pageIndexes.arrayOfAllIndexes())")
     }
     

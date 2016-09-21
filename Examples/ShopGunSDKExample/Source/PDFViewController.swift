@@ -49,33 +49,6 @@ class PDFViewController : UIViewController {
         fetchPublicationPageData("efbbJc3", delay:0.5) { [weak self] (viewModels) in
             self?.publicationView.update(pages:viewModels)
         }
-        
-//        let aspectRatio:Double = 647/962
-//        let bgColor = UIColor(red:0.93, green:0.93, blue:0.93, alpha:1.00)
-//        let pageCount = 22
-//        let pubId = "902a2e3"
-//        
-//        
-//        let viewModel = PagedPublicationViewModel(bgColor:bgColor, pageCount:pageCount, aspectRatio:aspectRatio)
-//        publicationView.updateWithPublicationViewModel(viewModel)
-//        
-//        var pageModels = [PagedPublicationPageViewModel]()
-//        for index in 0..<pageCount {
-//            
-////            let defaultUrl:NSURL? = nil
-////            let zoomUrl:NSURL? = nil
-//            
-//            let defaultUrl = NSURL(string:"https://akamai.shopgun.com/img/catalog/view/\(pubId)-\(index+1).jpg")
-//            let zoomUrl = NSURL(string:"https://akamai.shopgun.com/img/catalog/zoom/\(pubId)-\(index+1).jpg")
-//            
-//            let pageModel = PagedPublicationPageViewModel(pageIndex:index, pageTitle: "Page "+String(index), aspectRatio: aspectRatio, imageURL: defaultUrl, zoomImageURL: zoomUrl, hotspots: nil)
-//            pageModels.append(pageModel)
-//        }
-//        
-//        publicationView.updatePages(pageModels)
-//        
-        
-        
     }
     
     
@@ -228,9 +201,9 @@ class PDFViewController : UIViewController {
 }
 
 extension PDFViewController : PagedPublicationViewDataSource {
-//    func outroViewClass(pagedPublicationView: PagedPublicationView, size: CGSize) -> (OutroView.Type)? {
-//        return ExampleOutroView.self
-//    }
+    func outroViewClass(pagedPublicationView: PagedPublicationView, size: CGSize) -> (OutroView.Type)? {
+        return ExampleOutroView.self
+    }
 //    func outroViewWidth(pagedPublicationView: PagedPublicationView, size: CGSize) -> CGFloat {
 //        return size.width > size.height ? 0.7 : 0.8
 //    }
@@ -242,6 +215,10 @@ extension PDFViewController : PagedPublicationViewDataSource {
         outro.layer.borderColor = UIColor.red.cgColor
         outro.layer.borderWidth = 1
     }
+    
+//    func textForPageNumberLabel(pagedPublicationView: PagedPublicationView, pageIndexes: IndexSet, pageCount: Int) -> String? {
+//        return nil
+//    }
 }
 
 
