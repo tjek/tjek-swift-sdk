@@ -11,8 +11,20 @@ import UIKit
 
 import Verso
 
-public protocol PagedPublicationViewDataSource : PagedPublicationViewDataSourceOptional {
+public protocol PagedPublicationViewDelegate : class {
     
+    
+    func didTapPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol])
+    func didLongPressPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol])
+}
+
+// default no-op
+public extension PagedPublicationViewDelegate {
+    func didTapPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol]) {}
+    func didLongPressPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol]) {}
+}
+
+public protocol PagedPublicationViewDataSource : PagedPublicationViewDataSourceOptional {
 }
 
 public typealias OutroView = VersoPageView
@@ -93,26 +105,34 @@ open class PagedPublicationView : UIView {
     // MARK: - Public
     open weak var dataSource:PagedPublicationViewDataSource?
     
+    open weak var delegate:PagedPublicationViewDelegate?
+    
+    public fileprivate(set) var pageCount:Int = 0
+    
+    
     // TODO: setting this will trigger changes
-    open func update(publication viewModel:PagedPublicationViewModelProtocol?) {
-        
-        publicationViewModel = viewModel
-        
-        pageCount = publicationViewModel?.pageCount ?? 0
-        
-        verso.backgroundColor = viewModel?.bgColor
-        
-        // TODO: do we clear the pageviewmodels if this is updated again?
-        
-        // force a re-fetch of the pageCount
-        verso.reloadPages()
+    open func update(publication viewModel:PagedPublicationViewModelProtocol?, targetPageIndex:Int = 0) {
+        DispatchQueue.main.async { [weak self] in
+            guard let s = self else { return }
+            
+            
+            s.publicationViewModel = viewModel
+            
+            s.pageCount = s.publicationViewModel?.pageCount ?? 0
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                s.backgroundColor = viewModel?.bgColor
+            })
+            // TODO: do we clear the pageviewmodels if this is updated again?
+            
+            // force a re-fetch of the pageCount
+            s.verso.reloadPages(targetPageIndex:targetPageIndex)
+        }
     }
     
     open func update(pages viewModels:[PagedPublicationPageViewModel]?) {
         
-        let publicationAspectRatio = publicationViewModel?.aspectRatio ?? 1.0
-        
-        if viewModels != nil {
+        if viewModels != nil, let publicationAspectRatio = publicationViewModel?.aspectRatio {
             for viewModel in viewModels! {
                 if viewModel.aspectRatio <= 0 {
                     viewModel.aspectRatio = publicationAspectRatio
@@ -191,9 +211,6 @@ open class PagedPublicationView : UIView {
     fileprivate var dataSourceOptional: PagedPublicationViewDataSourceOptional {
         return dataSource ?? self
     }
-    
-    fileprivate var pageCount:Int = 0
-    
     
     fileprivate var outroViewProperties:(viewClass:(OutroView.Type)?, width:CGFloat, maxZoom:CGFloat) = (nil, 1.0, 1.0)
     fileprivate var outroPageIndex:Int? {
@@ -544,7 +561,30 @@ extension PagedPublicationView : VersoViewDataSource {
 
 extension PagedPublicationView : VersoViewDelegate {
     
+    public func currentPageIndexesChanged(verso:VersoView, pageIndexes:IndexSet, added:IndexSet, removed:IndexSet) {
+        
+//        print ("current pages changed: \(pageIndexes.arrayOfAllIndexes())")
+        
+        DispatchQueue.main.async { [weak self] in
+            guard self != nil else { return }
+            
+            // update the page number label's text and fade in, then out
+            let newLabelText:String?
+            
+            if let outroIndex = self?.outroPageIndex, pageIndexes.contains(outroIndex) {
+                newLabelText = nil
+            }
+            else {
+                newLabelText = self!.dataSourceOptional.textForPageNumberLabel(pagedPublicationView: self!, pageIndexes: pageIndexes, pageCount: self!.pageCount)
+            }
+            
+            self!.updatePageNumberLabel(withText: newLabelText)
+            
+        }
+    }
     public func currentPageIndexesFinishedChanging(verso: VersoView, pageIndexes: IndexSet, added: IndexSet, removed: IndexSet) {
+        
+//        print ("current pages finished changing: \(pageIndexes.arrayOfAllIndexes())")
 
         // pages changed while we were zoomed in - trigger a zoom-out event
         if zoomedPageIndexes.count > 0 && pageIndexes != zoomedPageIndexes {
@@ -569,25 +609,6 @@ extension PagedPublicationView : VersoViewDelegate {
             _pageDidDisappear(pageIndex)
         }
         
-//        print ("current pages changed: \(pageIndexes.arrayOfAllIndexes())")
-        
-    }
-    public func currentPageIndexesChanged(verso:VersoView, pageIndexes:IndexSet, added:IndexSet, removed:IndexSet) {
-        DispatchQueue.main.async { [weak self] in
-            guard self != nil else { return }
-            
-            // update the page number label's text and fade in, then out
-            let newLabelText:String?
-            
-            if let outroIndex = self?.outroPageIndex, pageIndexes.contains(outroIndex) {
-                newLabelText = nil
-            }
-            else {
-                newLabelText = self!.dataSourceOptional.textForPageNumberLabel(pagedPublicationView: self!, pageIndexes: pageIndexes, pageCount: self!.pageCount)
-            }
-            
-            self!.updatePageNumberLabel(withText: newLabelText)
-        }
     }
 
     public func visiblePageIndexesChanged(verso: VersoView, pageIndexes: IndexSet, added: IndexSet, removed: IndexSet) {
@@ -689,18 +710,13 @@ extension PagedPublicationView : HotspotOverlayViewDelegate {
         
         triggerEvent_PageTapped(pageIndex, location: locationInPage)
         
+        delegate?.didTapPage(pagedPublicationView: self, pageIndex: pageIndex, locationInPage: locationInPage, hotspots: hotspots)
     }
     func didLongPressHotspot(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {
         
         triggerEvent_PageLongPressed(pageIndex, location: locationInPage)
-        
-        
-        // debug page-jump when long-pressing
-        var target = pageIndex + 10
-        if target > pageCount {
-            target = 0
-        }
-        verso.jump(toPageIndex: target, animated: true)
+                
+        delegate?.didLongPressPage(pagedPublicationView: self, pageIndex: pageIndex, locationInPage: locationInPage, hotspots: hotspots)
     }
 }
 
