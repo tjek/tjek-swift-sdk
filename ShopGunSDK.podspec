@@ -54,9 +54,10 @@ Pod::Spec.new do |s|
     ss.source_files = 'Source/PagedPublication/**/*.swift'
     ss.frameworks   = 'Foundation', 'UIKit'
 
+    ss.dependency 'ShopGunSDK/Events'
     ss.dependency 'ShopGunSDK/Core'
     ss.dependency 'Verso', '~> 1.0.0'
-    ss.dependency 'Kingfisher', '~> 3.0.1'
+    ss.dependency 'Kingfisher', '~> 3.1.0'
 
   end
 

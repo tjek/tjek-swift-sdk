@@ -108,7 +108,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         zoomImageLoadState = .loading
         zoomImageView.image = nil
         zoomImageView.isHidden = false
-        zoomImageView.kf_setImage(with: zoomImageURL, placeholder: nil, options: [.transition(.fade(0.3)), .forceTransition], progressBlock: nil) {  [weak self] (image, error, cacheType, url) in
+        zoomImageView.kf.setImage(with: zoomImageURL, placeholder: nil, options: [.transition(.fade(0.3)), .forceTransition], progressBlock: nil) {  [weak self] (image, error, cacheType, url) in
             guard self != nil else {
                 return
             }
@@ -142,7 +142,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         // load the image from the url
         // TODO: allow for non-AlamoFire image loader
         // TODO: move image-loading to Publication?
-        imageView.kf_setImage(with: imageURL, placeholder: nil, options: [.transition(.fade(0.1))], progressBlock: nil) {  [weak self] (image, error, cacheType, url) in
+        imageView.kf.setImage(with: imageURL, placeholder: nil, options: [.transition(.fade(0.1))], progressBlock: nil) {  [weak self] (image, error, cacheType, url) in
             guard self != nil else {
                 return
             }
@@ -181,7 +181,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
     
     open func clearZoomImage(animated:Bool) {
         
-        zoomImageView.kf_cancelDownloadTask()
+        zoomImageView.kf.cancelDownloadTask()
         zoomImageLoadState = .notLoaded
         
         if animated {
@@ -222,11 +222,11 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
 
     fileprivate func reset() {
         
-        imageView.kf_cancelDownloadTask()
+        imageView.kf.cancelDownloadTask()
         imageView.image = nil
         imageLoadState = .notLoaded
         
-        zoomImageView.kf_cancelDownloadTask()
+        zoomImageView.kf.cancelDownloadTask()
         zoomImageView.image = nil
         zoomImageView.isHidden = true
         zoomImageLoadState = .notLoaded
