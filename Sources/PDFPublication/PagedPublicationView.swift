@@ -84,6 +84,7 @@ open class PagedPublicationView : UIView {
         addSubview(verso)
         
         addSubview(pageNumberLabel)
+        pageNumberLabel.alpha = 0
     }
     required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
@@ -219,9 +220,9 @@ open class PagedPublicationView : UIView {
         }
     }
     
-    fileprivate var publicationViewModel:PagedPublicationViewModelProtocol?
-    fileprivate var pageViewModels:[PagedPublicationPageViewModel]?
-    fileprivate var hotspotsByPageIndex:[Int:[PagedPublicationHotspotViewModel]] = [:]
+    public fileprivate(set) var publicationViewModel:PagedPublicationViewModelProtocol?
+    public fileprivate(set) var pageViewModels:[PagedPublicationPageViewModel]?
+    public fileprivate(set) var hotspotsByPageIndex:[Int:[PagedPublicationHotspotViewModel]] = [:]
     
     lazy fileprivate var verso:VersoView = {
         let verso = VersoView()
@@ -244,9 +245,7 @@ open class PagedPublicationView : UIView {
             
             textAlignment = .center
             font = UIFont.boldSystemFont(ofSize: 18) //TODO: dynamic font size
-            
-//            adjustsFontSizeToFitWidth = true
-//            minimumScaleFactor = 0.5
+
             numberOfLines = 1
         }
         
@@ -435,10 +434,16 @@ extension PagedPublicationView : VersoViewDataSource {
             
             pubPage.delegate = self
             
+            var whiteComponent:CGFloat = 1.0
+            publicationViewModel?.bgColor.getWhite(&whiteComponent, alpha: nil)
+            
+            // TODO: use cuttlefish?
+            let bgIsDark = whiteComponent > 0.6 ? false : true
+            
             if let viewModel = pageViewModels?[sgn_safe:Int(pageIndex)] {
                 
                 // valid view model
-                pubPage.configure(viewModel)
+                pubPage.configure(viewModel, darkBG:bgIsDark)
             }                
             else
             {
@@ -447,7 +452,7 @@ extension PagedPublicationView : VersoViewDataSource {
                 // build blank view model
                 let viewModel = PagedPublicationPageViewModel(pageIndex:pageIndex, pageTitle:String(pageIndex+1), aspectRatio: aspectRatio)
                 
-                pubPage.configure(viewModel)
+                pubPage.configure(viewModel, darkBG:bgIsDark)
             }
         }
         else if type(of: pageView) === self.outroViewProperties.viewClass {

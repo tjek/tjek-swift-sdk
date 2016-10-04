@@ -28,35 +28,46 @@ open class LabelledVersoPageView : VersoPageView {
     public required init(frame: CGRect) {
         super.init(frame: frame)
         
+        isUserInteractionEnabled = false
+        
         // add subviews
         addSubview(pageLabel)
         
         backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1.0)
+        
+        // must be started on non-main run loop to avoid interfering with scrolling
+        self.perform(#selector(startPulsingNumberAnimation), with: nil, afterDelay:0, inModes: [RunLoopMode.commonModes])
     }
     
     public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
+    @objc
+    fileprivate func startPulsingNumberAnimation() {
+        UIView.animate(withDuration: 1, delay: 0, options: [.allowUserInteraction, .repeat, .autoreverse, .curveEaseIn], animations: {
+            self.pageLabel.alpha = 0.2
+            }, completion: nil)
+    }
     
     open var pageLabel:UILabel = {
         
         let view = UILabel(frame: CGRect.zero)
-        view.font = UIFont.boldSystemFont(ofSize: 24)
         view.textColor = UIColor(white: 0, alpha: 0.8)
         view.textAlignment = .center
-        
+        view.baselineAdjustment = .alignCenters
         return view
     }()
     
     
     override open func layoutSubviews() {
+        
         super.layoutSubviews()
         
-        // position label in the middle
-        var labelFrame = pageLabel.frame
-        labelFrame.size = pageLabel.sizeThatFits(frame.size)
-        labelFrame.origin = CGPoint(x:round(bounds.size.width/2 - labelFrame.size.width/2), y:round(bounds.size.height/2 - labelFrame.size.height/2))
+        let fontSize = round(max(bounds.height, bounds.width) / 10)
+        if pageLabel.font.pointSize != fontSize {
+            pageLabel.font = UIFont.boldSystemFont(ofSize: fontSize)
+        }
         
-        pageLabel.frame = labelFrame
+        pageLabel.frame = bounds
     }
     
 }
@@ -196,16 +207,16 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         }
     }
     
-    open func configure(_ viewModel: PagedPublicationPageViewModelProtocol) {
+    open func configure(_ viewModel: PagedPublicationPageViewModelProtocol, darkBG:Bool) {
         
         reset()
-        
-        // cancel any previous image loads
         
         aspectRatio = CGFloat(viewModel.aspectRatio)
         
         pageLabel.text = viewModel.pageTitle
+        pageLabel.textColor = darkBG ? UIColor.white : UIColor(white: 0, alpha: 0.7)
         
+        backgroundColor = darkBG ? UIColor(white: 1, alpha: 0.1) : UIColor(white: 0.8, alpha: 0.15)
         
         if let imageURL = viewModel.defaultImageURL {
             startLoadingImageFromURL(imageURL as URL)
@@ -285,13 +296,6 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
     
     override open func layoutSubviews() {
         super.layoutSubviews()
-        
-        // position label in the middle
-        var labelFrame = pageLabel.frame
-        labelFrame.size = pageLabel.sizeThatFits(frame.size)
-        labelFrame.origin = CGPoint(x:round(bounds.size.width/2 - labelFrame.size.width/2), y:round(bounds.size.height/2 - labelFrame.size.height/2))
-        
-        pageLabel.frame = labelFrame
         
         imageView.frame = bounds
         zoomImageView.frame = bounds

@@ -41,6 +41,8 @@ public protocol PagedPublicationPageViewModelProtocol {
     var defaultImageURL:URL? { get }
     
     var zoomImageURL:URL? { get }
+    
+    var thumbImageURL:URL? { get }
 }
 
 
@@ -80,12 +82,16 @@ public class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewM
     public var zoomImageURL:URL?
     public var zoomImage:UIImage?
     
-    public init(pageIndex:Int, pageTitle:String?, aspectRatio:CGFloat = 0, imageURL:URL? = nil, zoomImageURL:URL? = nil) {
+    public var thumbImageURL:URL?
+    public var thumbImage:UIImage?
+    
+    public init(pageIndex:Int, pageTitle:String?, aspectRatio:CGFloat = 0, imageURL:URL? = nil, zoomImageURL:URL? = nil, thumbImageURL:URL? = nil) {
         self.pageIndex = pageIndex
         self.pageTitle = pageTitle
         self.aspectRatio = aspectRatio
         self.defaultImageURL = imageURL
         self.zoomImageURL = zoomImageURL
+        self.thumbImageURL = thumbImageURL
     }
 }
 
