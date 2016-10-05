@@ -16,7 +16,7 @@ import Kingfisher
 @objc
 public protocol PagedPublicationPageViewDelegate : class {
     
-    @objc optional func didConfigure(_ pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol)
+    @objc optional func didConfigure(_ pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModel)
     
     @objc optional func didFinishLoadingImage(_ pageView:PagedPublicationPageView, imageURL:URL, fromCache:Bool)
     @objc optional func didFinishLoadingZoomImage(_ pageView:PagedPublicationPageView, imageURL:URL, fromCache:Bool)
@@ -207,7 +207,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         }
     }
     
-    open func configure(_ viewModel: PagedPublicationPageViewModelProtocol, darkBG:Bool) {
+    open func configure(_ viewModel: PagedPublicationPageViewModel, darkBG:Bool) {
         
         reset()
         

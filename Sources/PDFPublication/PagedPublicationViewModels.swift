@@ -9,68 +9,33 @@
 
 import UIKit
 
-
-
-// All properties needed to render a publication view
-@objc
-public protocol PagedPublicationViewModelProtocol {
-    
-    // the background brand color of the publication
-    var bgColor:UIColor { get }
-    
-    // expected total number of pages. 0 if unknown
-    var pageCount:Int { get }
-    
-    // width/height ratio of pages in this publication. 0 if unknown
-    var aspectRatio:CGFloat { get }
-    
-    
-    var isFetching:Bool { get }
-}
-
-
-@objc
-public protocol PagedPublicationPageViewModelProtocol {
-    
-    var pageIndex:Int { get }
-    
-    var pageTitle:String? { get }
-    
-    var aspectRatio:CGFloat { get }
-    
-    var defaultImageURL:URL? { get }
-    
-    var zoomImageURL:URL? { get }
-    
-    var thumbImageURL:URL? { get }
-}
-
-
-
-
-// MARK: Concrete View Models
-
-
 @objc (SGNPagedPublicationViewModel)
-public class PagedPublicationViewModel : NSObject, PagedPublicationViewModelProtocol {
-    public var bgColor: UIColor
-    public var pageCount: Int = 0
-    public var aspectRatio: CGFloat = 0
+public class PagedPublicationViewModel : NSObject {
+    public private(set) var uuid: String?
     
-    public var isFetching: Bool
+    /// the background brand color of the publication
+    public private(set) var bgColor: UIColor
     
+    /// expected total number of pages. 0 if unknown
+    public private(set) var pageCount: Int = 0
     
-    public init(bgColor:UIColor, pageCount:Int = 0, aspectRatio:CGFloat = 0) {
+    /// width/height ratio of pages in this publication. 0 if unknown
+    public private(set) var aspectRatio: CGFloat = 0
+    
+    /// The date that this catalog expires.
+    public private(set) var runTillDate: Date?
+    
+    public init(id:String? = nil, bgColor:UIColor, pageCount:Int = 0, aspectRatio:CGFloat = 0, runTillDate:Date? = nil) {
+        self.uuid = id
         self.bgColor = bgColor
         self.pageCount = pageCount
         self.aspectRatio = aspectRatio
-        
-        self.isFetching = false
+        self.runTillDate = runTillDate
     }
 }
 
 @objc (SGNPagedPublicationPageViewModel)
-public class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewModelProtocol {
+public class PagedPublicationPageViewModel : NSObject {
     public var pageIndex: Int
     
     public var pageTitle:String?

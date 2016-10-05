@@ -10,7 +10,7 @@
 import Foundation
 import Valet
 
-struct Utils {
+public struct Utils {
 
     static func fetchInfoPlistValue(_ key:String) -> AnyObject? {
         if let configDict = Bundle.main.object(forInfoDictionaryKey: "ShopGunSDK") as? [String:AnyObject] {
@@ -19,7 +19,7 @@ struct Utils {
         return nil
     }
     
-    static let ISO8601_dateFormatter:DateFormatter = {
+    public static let ISO8601_dateFormatter:DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"

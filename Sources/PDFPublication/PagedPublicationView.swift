@@ -13,6 +13,8 @@ import Verso
 
 public protocol PagedPublicationViewDelegate : class {
     
+    func currentPageIndexesFinishedChanging(pagedPublicationView:PagedPublicationView, pageIndexes: IndexSet, previousPageIndexes: IndexSet)
+    
     
     func didTapPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol])
     func didLongPressPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol])
@@ -20,6 +22,7 @@ public protocol PagedPublicationViewDelegate : class {
 
 // default no-op
 public extension PagedPublicationViewDelegate {
+    func currentPageIndexesFinishedChanging(pagedPublicationView:PagedPublicationView, pageIndexes: IndexSet, previousPageIndexes: IndexSet) {}
     func didTapPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol]) {}
     func didLongPressPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol]) {}
 }
@@ -112,7 +115,7 @@ open class PagedPublicationView : UIView {
     
     
     // TODO: setting this will trigger changes
-    open func update(publication viewModel:PagedPublicationViewModelProtocol?, targetPageIndex:Int = 0) {
+    open func update(publication viewModel:PagedPublicationViewModel?, targetPageIndex:Int = 0) {
         DispatchQueue.main.async { [weak self] in
             guard let s = self else { return }
             
@@ -220,7 +223,7 @@ open class PagedPublicationView : UIView {
         }
     }
     
-    public fileprivate(set) var publicationViewModel:PagedPublicationViewModelProtocol?
+    public fileprivate(set) var publicationViewModel:PagedPublicationViewModel?
     public fileprivate(set) var pageViewModels:[PagedPublicationPageViewModel]?
     public fileprivate(set) var hotspotsByPageIndex:[Int:[PagedPublicationHotspotViewModel]] = [:]
     
@@ -614,6 +617,7 @@ extension PagedPublicationView : VersoViewDelegate {
             _pageDidDisappear(pageIndex)
         }
         
+        delegate?.currentPageIndexesFinishedChanging(pagedPublicationView: self, pageIndexes: pageIndexes, previousPageIndexes: oldPageIndexes)
     }
 
     public func visiblePageIndexesChanged(verso: VersoView, pageIndexes: IndexSet, added: IndexSet, removed: IndexSet) {
@@ -701,7 +705,7 @@ extension PagedPublicationView : PagedPublicationPageViewDelegate {
 //    
 //    }
     
-//    public func didConfigure(pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol) {
+//    public func didConfigure(pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModel) {
 //
 //    }
 }
