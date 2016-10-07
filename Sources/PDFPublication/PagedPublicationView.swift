@@ -146,6 +146,8 @@ open class PagedPublicationView : UIView {
         
         pageViewModels = viewModels
         
+        hotspotOverlayView.isHidden = (pageViewModels?.count ?? 0) == 0
+        
         let newPageCount = pageViewModels?.count ?? 0
         if newPageCount != pageCount {
             pageCount = newPageCount
@@ -529,6 +531,7 @@ extension PagedPublicationView : VersoViewDataSource {
             return nil
         }
         
+        hotspotOverlayView.isHidden = (self.pageViewModels?.count ?? 0) == 0
         hotspotOverlayView.delegate = self
         hotspotOverlayView.frame.size = overlaySize
         hotspotOverlayView.updateWithHotspots(spreadHotspots, pageFrames: pageFrames)        
