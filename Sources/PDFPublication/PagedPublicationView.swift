@@ -13,18 +13,25 @@ import Verso
 
 public protocol PagedPublicationViewDelegate : class {
     
+    func currentPageIndexesChanged(pagedPublicationView:PagedPublicationView, pageIndexes:IndexSet, added:IndexSet, removed:IndexSet)
     func currentPageIndexesFinishedChanging(pagedPublicationView:PagedPublicationView, pageIndexes: IndexSet, previousPageIndexes: IndexSet)
-    
     
     func didTapPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol])
     func didLongPressPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol])
+    
+    func outroDidAppear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView)
+    func outroDidDisappear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView)
 }
 
 // default no-op
 public extension PagedPublicationViewDelegate {
+    func currentPageIndexesChanged(pagedPublicationView:PagedPublicationView, pageIndexes:IndexSet, added:IndexSet, removed:IndexSet) {}
     func currentPageIndexesFinishedChanging(pagedPublicationView:PagedPublicationView, pageIndexes: IndexSet, previousPageIndexes: IndexSet) {}
     func didTapPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol]) {}
     func didLongPressPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol]) {}
+    
+    func outroDidAppear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView) {}
+    func outroDidDisappear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView) {}
 }
 
 public protocol PagedPublicationViewDataSource : PagedPublicationViewDataSourceOptional {
@@ -276,6 +283,16 @@ open class PagedPublicationView : UIView {
         }
     }
     
+    /// This will only return the outro view only after it has been configured.
+    /// It is configured once the user has scrolled within a certain distance of the outro page (currently 10 pages).
+    var outroView:OutroView? {
+        guard let outroIndex = outroPageIndex else {
+            return nil
+        }
+        return verso.getPageViewIfLoaded(outroIndex)
+    }
+    
+    
     fileprivate func layoutPageNumberLabel() {
         
         // layout page number label
@@ -287,24 +304,26 @@ open class PagedPublicationView : UIView {
     }
     
     @objc
-    fileprivate func hidePageNumberLabel() {
+    fileprivate func dimPageNumberLabel() {
         UIView.animate(withDuration: 1.0, delay: 0, options: [.beginFromCurrentState], animations: { 
             self.pageNumberLabel.alpha = 0.2
             }, completion: nil)
     }
     
     fileprivate func showPageNumberLabel() {
-        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(PagedPublicationView.hidePageNumberLabel), object: nil)
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(PagedPublicationView.dimPageNumberLabel), object: nil)
         
         UIView.animate(withDuration: 0.5, delay: 0, options: [.beginFromCurrentState], animations: {
             self.pageNumberLabel.alpha = 1.0
             }, completion: nil)
         
-        self.perform(#selector(PagedPublicationView.hidePageNumberLabel), with: nil, afterDelay: 1.0)
+        self.perform(#selector(PagedPublicationView.dimPageNumberLabel), with: nil, afterDelay: 1.0)
     }
     
     fileprivate func updatePageNumberLabel(withText text:String?) {
         if text == nil {
+            NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(PagedPublicationView.dimPageNumberLabel), object: nil)
+
             UIView.animate(withDuration: 0.2, delay: 0, options: [.beginFromCurrentState], animations: {
                 self.pageNumberLabel.alpha = 0
             }) { (finished) in
@@ -553,6 +572,7 @@ extension PagedPublicationView : VersoViewDataSource {
         
         // add outro to preload page indexes if we have scrolled close to it
         let distToOutro = realOutroPageIndex - visiblePageIndexes.last!
+        // TODO: use datasource to define this value
         if distToOutro < 10 {
             var adjustedPreloadPages = preloadPageIndexes
             adjustedPreloadPages.insert(realOutroPageIndex)
@@ -591,6 +611,16 @@ extension PagedPublicationView : VersoViewDelegate {
             
             self!.updatePageNumberLabel(withText: newLabelText)
             
+        }
+        
+        delegate?.currentPageIndexesChanged(pagedPublicationView: self, pageIndexes: pageIndexes, added: added, removed: removed)
+        
+        if let outroIndex = outroPageIndex, let outroView = verso.getPageViewIfLoaded(outroIndex) {
+            if added.contains(outroIndex) {
+                delegate?.outroDidAppear(outroView, in: self)
+            } else if removed.contains(outroIndex) {
+                delegate?.outroDidDisappear(outroView, in: self)
+            }
         }
     }
     public func currentPageIndexesFinishedChanging(verso: VersoView, pageIndexes: IndexSet, added: IndexSet, removed: IndexSet) {
