@@ -45,7 +45,7 @@ public struct Utils {
 extension Collection {
     /// Returns the element at the specified index if it is within bounds, otherwise nil.
 
-    subscript (sgn_safe index: Index) -> Iterator.Element? {
+    public subscript (sgn_safe index: Index) -> Iterator.Element? {
         return index >= startIndex && index < endIndex ? self[index] : nil
     }
 }

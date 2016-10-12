@@ -285,7 +285,7 @@ open class PagedPublicationView : UIView {
     
     /// This will only return the outro view only after it has been configured.
     /// It is configured once the user has scrolled within a certain distance of the outro page (currently 10 pages).
-    var outroView:OutroView? {
+    public var outroView:OutroView? {
         guard let outroIndex = outroPageIndex else {
             return nil
         }

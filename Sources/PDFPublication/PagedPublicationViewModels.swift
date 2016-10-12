@@ -22,15 +22,27 @@ public class PagedPublicationViewModel : NSObject {
     /// width/height ratio of pages in this publication. 0 if unknown
     public private(set) var aspectRatio: CGFloat = 0
     
-    /// The date that this catalog expires.
+    /// The date the publication becomes available
+    public private(set) var runFromDate: Date?
+    
+    /// The date that this publication expires.
     public private(set) var runTillDate: Date?
     
-    public init(id:String? = nil, bgColor:UIColor, pageCount:Int = 0, aspectRatio:CGFloat = 0, runTillDate:Date? = nil) {
+    public private(set) var coverThumbImage:URL?
+    
+    public private(set) var dealerId: String?
+    public private(set) var dealerName: String?
+    
+    public init(id:String? = nil, bgColor:UIColor, pageCount:Int = 0, aspectRatio:CGFloat = 0, runFromDate:Date? = nil, runTillDate:Date? = nil, coverThumbImage:URL? = nil, dealerId:String? = nil, dealerName:String? = nil) {
         self.uuid = id
         self.bgColor = bgColor
         self.pageCount = pageCount
         self.aspectRatio = aspectRatio
+        self.runFromDate = runFromDate
         self.runTillDate = runTillDate
+        self.coverThumbImage = coverThumbImage
+        self.dealerId = dealerId
+        self.dealerName = dealerName
     }
 }
 
