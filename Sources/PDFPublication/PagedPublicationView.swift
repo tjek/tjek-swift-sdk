@@ -120,6 +120,17 @@ open class PagedPublicationView : UIView {
     
     public fileprivate(set) var pageCount:Int = 0
     
+    /// The page indexes of the spread that was centered when scrolling animations last ended
+    public var currentPageIndexes:IndexSet {
+        return verso.currentPageIndexes
+    }
+    
+    /// The page indexes of all the pageViews that are currently visible
+    public var visiblePageIndexes:IndexSet {
+        return verso.visiblePageIndexes
+    }
+    
+    
     
     // TODO: setting this will trigger changes
     open func update(publication viewModel:PagedPublicationViewModel?, targetPageIndex:Int = 0) {
