@@ -1,0 +1,14 @@
+//
+//  _____ _           _____
+// |   __| |_ ___ ___|   __|_ _ ___
+// |__   |   | . | . |  |  | | |   |
+// |_____|_|_|___|  _|_____|___|_|_|
+//               |_|
+//
+//  Copyright (c) 2016 ShopGun. All rights reserved.
+
+#include "Shared/Project/Release.xcconfig"
+
+// Use fast optimization rather than whole-module, as it is causing a problem.
+// The issue is a linker error saying "Undefined symbols" &  "Verso.VersoPageView.pageIndex.getter : Swift.Int" when subclassing VersoPageView & building with whole-module-optimization. Gah.
+SWIFT_OPTIMIZATION_LEVEL = -O

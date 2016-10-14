@@ -7,3 +7,6 @@
 [submodule "Carthage/Checkouts/Kingfisher"]
 	path = Carthage/Checkouts/Kingfisher
 	url = https://github.com/onevcat/Kingfisher.git
+[submodule "External/xctoolchain"]
+	path = External/xctoolchain
+	url = https://github.com/ParsePlatform/xctoolchain.git

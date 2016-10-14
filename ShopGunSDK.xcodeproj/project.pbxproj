@@ -71,13 +71,29 @@
 
 /* Begin PBXFileReference section */
 		AE06BFF01D3E9BB100BC8D47 /* ShopGunSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AE06BFF81D3E9BD500BC8D47 /* ShopGunSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ShopGunSDK.xcconfig; sourceTree = "<group>"; };
 		AE06C01F1D3F7D3C00BC8D47 /* ShopGunSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShopGunSDK.h; sourceTree = "<group>"; };
 		AE06C04C1D40EB1200BC8D47 /* EventsPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsPool.swift; sourceTree = "<group>"; };
 		AE06E3381D52268300C84762 /* GraphConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphConnection.swift; sourceTree = "<group>"; };
 		AE06E34C1D53532900C84762 /* GraphResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphResponse.swift; sourceTree = "<group>"; };
 		AE12AAEB1D59D44700BBEFFC /* PagedPublicationPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PagedPublicationPageView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		AE2312AC1D6C84B7006B84BA /* PagedPublicationViewModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagedPublicationViewModels.swift; sourceTree = "<group>"; };
+		AE4CC9871DB0F6D70087819C /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
+		AE4CC9891DB0F6D70087819C /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
+		AE4CC98A1DB0F6D70087819C /* macOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = macOS.xcconfig; sourceTree = "<group>"; };
+		AE4CC98B1DB0F6D70087819C /* tvOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = tvOS.xcconfig; sourceTree = "<group>"; };
+		AE4CC98C1DB0F6D70087819C /* watchOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = watchOS.xcconfig; sourceTree = "<group>"; };
+		AE4CC98E1DB0F6D70087819C /* Application.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Application.xcconfig; sourceTree = "<group>"; };
+		AE4CC98F1DB0F6D70087819C /* DynamicFramework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = DynamicFramework.xcconfig; sourceTree = "<group>"; };
+		AE4CC9901DB0F6D70087819C /* LogicTests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = LogicTests.xcconfig; sourceTree = "<group>"; };
+		AE4CC9911DB0F6D70087819C /* StaticFramework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = StaticFramework.xcconfig; sourceTree = "<group>"; };
+		AE4CC9931DB0F6D70087819C /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		AE4CC9941DB0F6D70087819C /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		AE4CC9951DB0F6D70087819C /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
+		AE4CC9961DB0F6D70087819C /* ShopGunSDK-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Debug.xcconfig"; sourceTree = "<group>"; };
+		AE4CC9971DB0F6D70087819C /* ShopGunSDK-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Framework.xcconfig"; sourceTree = "<group>"; };
+		AE4CC9981DB0F6D70087819C /* ShopGunSDK-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Release.xcconfig"; sourceTree = "<group>"; };
+		AE4CC9991DB0F6D70087819C /* ShopGunSDK-Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Tests.xcconfig"; sourceTree = "<group>"; };
+		AE4CC99A1DB0F6D70087819C /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		AE58EDC61D537AE6002BC38A /* PagedPublicationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PagedPublicationView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		AE62408A1D50A4560062CAD4 /* EventsTracker.Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTracker.Context.swift; sourceTree = "<group>"; };
 		AE6B71771D3E22F8006A8225 /* ShopGunSDK.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = ShopGunSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -87,12 +103,8 @@
 		AEA5AA2A1D3CB52500DC5EA3 /* SDKConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDKConfig.swift; sourceTree = "<group>"; };
 		AEA5AA321D3CB64A00DC5EA3 /* ShopGunSDK-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunSDK-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEA5AA4D1D3CBEF100DC5EA3 /* EventsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTracker.swift; sourceTree = "<group>"; };
-		AEA5AA581D3CC52400DC5EA3 /* ShopGunSDK-Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Tests.xcconfig"; sourceTree = "<group>"; };
 		AEA5AA5A1D3CC5C900DC5EA3 /* ShopGunEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopGunEventsTests.swift; sourceTree = "<group>"; };
 		AEA5AA5B1D3CC5C900DC5EA3 /* ShopGunEventsTests_ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShopGunEventsTests_ObjC.m; sourceTree = "<group>"; };
-		AEA5AA5D1D3CC62300DC5EA3 /* SDKVersion.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SDKVersion.xcconfig; sourceTree = "<group>"; };
-		AEA5AA5E1D3CC62300DC5EA3 /* SharedFramework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SharedFramework.xcconfig; sourceTree = "<group>"; };
-		AEA5AA5F1D3CC74600DC5EA3 /* SharedTest.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SharedTest.xcconfig; sourceTree = "<group>"; };
 		AEA5AAC31D3CE60C00DC5EA3 /* ShopGunGraphTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopGunGraphTests.swift; sourceTree = "<group>"; };
 		AEA5AAC41D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShopGunGraphTests_ObjC.m; sourceTree = "<group>"; };
 		AEA5AAD11D3CE6C800DC5EA3 /* GraphRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphRequest.swift; sourceTree = "<group>"; };
@@ -130,6 +142,62 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AE4CC9851DB0F6D70087819C /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				AE4CC99A1DB0F6D70087819C /* Version.xcconfig */,
+				AE4CC9971DB0F6D70087819C /* ShopGunSDK-Framework.xcconfig */,
+				AE4CC9991DB0F6D70087819C /* ShopGunSDK-Tests.xcconfig */,
+				AE4CC9981DB0F6D70087819C /* ShopGunSDK-Release.xcconfig */,
+				AE4CC9961DB0F6D70087819C /* ShopGunSDK-Debug.xcconfig */,
+				AE4CC9861DB0F6D70087819C /* Shared */,
+			);
+			path = Configurations;
+			sourceTree = "<group>";
+		};
+		AE4CC9861DB0F6D70087819C /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				AE4CC9871DB0F6D70087819C /* Common.xcconfig */,
+				AE4CC9881DB0F6D70087819C /* Platform */,
+				AE4CC98D1DB0F6D70087819C /* Product */,
+				AE4CC9921DB0F6D70087819C /* Project */,
+				AE4CC9951DB0F6D70087819C /* Warnings.xcconfig */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		AE4CC9881DB0F6D70087819C /* Platform */ = {
+			isa = PBXGroup;
+			children = (
+				AE4CC9891DB0F6D70087819C /* iOS.xcconfig */,
+				AE4CC98A1DB0F6D70087819C /* macOS.xcconfig */,
+				AE4CC98B1DB0F6D70087819C /* tvOS.xcconfig */,
+				AE4CC98C1DB0F6D70087819C /* watchOS.xcconfig */,
+			);
+			path = Platform;
+			sourceTree = "<group>";
+		};
+		AE4CC98D1DB0F6D70087819C /* Product */ = {
+			isa = PBXGroup;
+			children = (
+				AE4CC98E1DB0F6D70087819C /* Application.xcconfig */,
+				AE4CC98F1DB0F6D70087819C /* DynamicFramework.xcconfig */,
+				AE4CC9901DB0F6D70087819C /* LogicTests.xcconfig */,
+				AE4CC9911DB0F6D70087819C /* StaticFramework.xcconfig */,
+			);
+			path = Product;
+			sourceTree = "<group>";
+		};
+		AE4CC9921DB0F6D70087819C /* Project */ = {
+			isa = PBXGroup;
+			children = (
+				AE4CC9931DB0F6D70087819C /* Debug.xcconfig */,
+				AE4CC9941DB0F6D70087819C /* Release.xcconfig */,
+			);
+			path = Project;
+			sourceTree = "<group>";
+		};
 		AE58EDC51D537AC7002BC38A /* PagedPublication */ = {
 			isa = PBXGroup;
 			children = (
@@ -160,8 +228,8 @@
 				AECC50E51D8966C20017B16A /* Cartfile */,
 				AEED784F1D9145A5003A9E92 /* Docs */,
 				AEA5A9E81D3CB1B000DC5EA3 /* Sources */,
-				AEA5AA4F1D3CBFAB00DC5EA3 /* Configurations */,
 				AEA5A9F21D3CB1DF00DC5EA3 /* Resources */,
+				AE4CC9851DB0F6D70087819C /* Configurations */,
 				AEA5A9EE1D3CB1BF00DC5EA3 /* Tests */,
 				AE7D782B1D50D88E00B414CE /* Frameworks */,
 				AEA5A9CF1D3CB11A00DC5EA3 /* Products */,
@@ -245,16 +313,6 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		AEA5AA4F1D3CBFAB00DC5EA3 /* Configurations */ = {
-			isa = PBXGroup;
-			children = (
-				AE06BFF81D3E9BD500BC8D47 /* ShopGunSDK.xcconfig */,
-				AEA5AA581D3CC52400DC5EA3 /* ShopGunSDK-Tests.xcconfig */,
-				AEA5AA5C1D3CC62300DC5EA3 /* Common */,
-			);
-			path = Configurations;
-			sourceTree = "<group>";
-		};
 		AEA5AA591D3CC5C900DC5EA3 /* Events */ = {
 			isa = PBXGroup;
 			children = (
@@ -262,16 +320,6 @@
 				AEA5AA5B1D3CC5C900DC5EA3 /* ShopGunEventsTests_ObjC.m */,
 			);
 			path = Events;
-			sourceTree = "<group>";
-		};
-		AEA5AA5C1D3CC62300DC5EA3 /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				AEA5AA5D1D3CC62300DC5EA3 /* SDKVersion.xcconfig */,
-				AEA5AA5E1D3CC62300DC5EA3 /* SharedFramework.xcconfig */,
-				AEA5AA5F1D3CC74600DC5EA3 /* SharedTest.xcconfig */,
-			);
-			path = Common;
 			sourceTree = "<group>";
 		};
 		AEA5AAC21D3CE60B00DC5EA3 /* Graph */ = {
@@ -476,146 +524,43 @@
 /* Begin XCBuildConfiguration section */
 		AE06BFF61D3E9BB100BC8D47 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE06BFF81D3E9BD500BC8D47 /* ShopGunSDK.xcconfig */;
+			baseConfigurationReference = AE4CC9971DB0F6D70087819C /* ShopGunSDK-Framework.xcconfig */;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		AE06BFF71D3E9BB100BC8D47 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE06BFF81D3E9BD500BC8D47 /* ShopGunSDK.xcconfig */;
+			baseConfigurationReference = AE4CC9971DB0F6D70087819C /* ShopGunSDK-Framework.xcconfig */;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
 		AEA5A9E01D3CB11A00DC5EA3 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AE4CC9961DB0F6D70087819C /* ShopGunSDK-Debug.xcconfig */;
 			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
 		AEA5A9E11D3CB11A00DC5EA3 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AE4CC9981DB0F6D70087819C /* ShopGunSDK-Release.xcconfig */;
 			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
 		AEA5AA3B1D3CB64A00DC5EA3 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA581D3CC52400DC5EA3 /* ShopGunSDK-Tests.xcconfig */;
+			baseConfigurationReference = AE4CC9991DB0F6D70087819C /* ShopGunSDK-Tests.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
 			};
 			name = Debug;
 		};
 		AEA5AA3C1D3CB64A00DC5EA3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEA5AA581D3CC52400DC5EA3 /* ShopGunSDK-Tests.xcconfig */;
+			baseConfigurationReference = AE4CC9991DB0F6D70087819C /* ShopGunSDK-Tests.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};

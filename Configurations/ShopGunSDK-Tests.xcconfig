@@ -7,8 +7,9 @@
 //
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
-#include "Common/SharedTest.xcconfig"
-#include "Common/SDKVersion.xcconfig"
+#include "Shared/Platform/iOS.xcconfig"
+#include "Shared/Target/LogicTests.xcconfig"
+#include "Version.xcconfig"
 
 PRODUCT_NAME = ShopGunSDK-Tests
 PRODUCT_BUNDLE_IDENTIFIER = com.shopgun.ios.sdk.tests

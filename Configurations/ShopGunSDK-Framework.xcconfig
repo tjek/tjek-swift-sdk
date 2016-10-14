@@ -7,8 +7,9 @@
 //
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
-#include "Common/SharedFramework.xcconfig"
-#include "Common/SDKVersion.xcconfig"
+#include "Shared/Platform/iOS.xcconfig"
+#include "Shared/Product/DynamicFramework.xcconfig"
+#include "Version.xcconfig"
 
 PRODUCT_NAME = ShopGunSDK
 PRODUCT_BUNDLE_IDENTIFIER = com.shopgun.ios.sdk
@@ -21,3 +22,6 @@ INFOPLIST_FILE = $(SRCROOT)/Resources/Info.plist
 
 // Enable testability to make internal things visible with @testable import
 ENABLE_TESTABILITY = YES
+
+// Search in carthage build folder
+FRAMEWORK_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)/Carthage/Build/iOS
