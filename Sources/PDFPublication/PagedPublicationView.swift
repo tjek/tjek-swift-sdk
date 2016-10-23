@@ -130,6 +130,10 @@ open class PagedPublicationView : UIView {
         return verso.visiblePageIndexes
     }
     
+    public var panGestureRecognizer:UIPanGestureRecognizer {
+        return verso.panGestureRecognizer
+    }
+
     
     
     // TODO: setting this will trigger changes
