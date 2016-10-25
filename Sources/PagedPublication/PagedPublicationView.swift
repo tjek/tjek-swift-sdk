@@ -993,9 +993,9 @@ extension PagedPublicationView : VersoViewDelegate {
 // MARK: - PagedPublicationPage delegate
 
 extension PagedPublicationView : PagedPublicationPageViewDelegate {
-    
-    public func didFinishLoadingImage(_ pageView:PagedPublicationPageView, imageURL:URL, fromCache:Bool) {
-        
+//    public func didConfigure(pageView: PagedPublicationPageView, with viewModel: PagedPublicationPageViewModelProtocol) {
+//    }
+    public func didFinishLoading(viewImage imageURL:URL, fromCache:Bool, in pageView:PagedPublicationPageView) {
         let pageIndex = pageView.pageIndex
         
         if activePageIndexesWithPendingLoadEvents.contains(pageIndex),
@@ -1014,12 +1014,8 @@ extension PagedPublicationView : PagedPublicationPageViewDelegate {
         
         delegate?.didFinishLoadingPageImage(imageURL: imageURL, pageIndex: pageIndex, in: self)
     }
-//    public func didFinishLoadingZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool) {
-//    
-//    }
     
-//    public func didConfigure(pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModel) {
-//
+//    public func didFinishLoading(zoomImage imageURL:URL, fromCache:Bool, in pageView:PagedPublicationPageView) {
 //    }
 }
 

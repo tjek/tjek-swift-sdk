@@ -13,15 +13,22 @@ import Verso
 import Kingfisher
 
 
-@objc
 public protocol PagedPublicationPageViewDelegate : class {
     
-    @objc optional func didConfigure(_ pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol)
+    func didConfigure(pageView:PagedPublicationPageView, with viewModel:PagedPublicationPageViewModelProtocol)
     
-    @objc optional func didFinishLoadingImage(_ pageView:PagedPublicationPageView, imageURL:URL, fromCache:Bool)
-    @objc optional func didFinishLoadingZoomImage(_ pageView:PagedPublicationPageView, imageURL:URL, fromCache:Bool)
+    func didFinishLoading(viewImage imageURL:URL, fromCache:Bool, in pageView:PagedPublicationPageView)
+    func didFinishLoading(zoomImage imageURL:URL, fromCache:Bool, in pageView:PagedPublicationPageView)
     
 }
+
+/// Make delegate methods optional
+extension PagedPublicationPageViewDelegate {
+    public func didConfigure(pageView:PagedPublicationPageView, with viewModel:PagedPublicationPageViewModelProtocol) {}
+    public func didFinishLoading(viewImage imageURL:URL, fromCache:Bool, in pageView:PagedPublicationPageView) {}
+    public func didFinishLoading(zoomImage imageURL:URL, fromCache:Bool, in pageView:PagedPublicationPageView) {}
+}
+
 
 open class LabelledVersoPageView : VersoPageView {
     
@@ -128,7 +135,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
                 
                 self!.zoomImageLoadState = .loaded
                 
-                self!.delegate?.didFinishLoadingZoomImage?(self!, imageURL:zoomImageURL, fromCache:cacheType != .none)
+                self!.delegate?.didFinishLoading(zoomImage:zoomImageURL, fromCache:cacheType != .none, in:self!)
             }
             else {
                 self!.zoomImageView.isHidden = true
@@ -172,7 +179,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
                 
                 self!.imageLoadState = .loaded
                 
-                self!.delegate?.didFinishLoadingImage?(self!, imageURL:imageURL, fromCache:cacheType != .none)
+                self!.delegate?.didFinishLoading(viewImage:imageURL, fromCache:cacheType != .none, in:self!)
             }
             else {
                 
@@ -224,7 +231,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
             startLoadingImageFromURL(imageURL)
         }
         
-        delegate?.didConfigure?(self, viewModel: viewModel)
+        delegate?.didConfigure(pageView: self, with: viewModel)
     }
 
     
