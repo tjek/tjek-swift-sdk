@@ -10,28 +10,41 @@
 import UIKit
 
 @objc(SGNPagedPublicationGraphLoader)
-class PagedPublicationGraphLoader : NSObject, PagedPublicationLoaderProtocol {
-
+public class PagedPublicationGraphLoader : NSObject, PagedPublicationLoaderProtocol {
+    
     public var publicationId: String
-    public var preloadedBackgroundColor:UIColor?
-    public var preloadedPageCount:Int = 0
+    public var preloadedPublication:PagedPublicationViewModelProtocol?
     
     
     convenience init(publicationId:String) {
-        self.init(publicationId: publicationId, preloadedBackgroundColor:nil, preloadedPageCount:0)
+        self.init(publicationId: publicationId, preloaded:nil)
     }
-    init(publicationId:String, preloadedBackgroundColor:UIColor?, preloadedPageCount:Int) {
+    convenience init(preloaded viewModel:PagedPublicationViewModelProtocol) {
+        self.init(publicationId: viewModel.uuid, preloaded:viewModel)
+    }
+    convenience init(publicationId:String, bgColor:UIColor?, pageCount:Int, aspectRatio:CGFloat) {
+        let preloadedVM = PagedPublicationViewModel(uuid: publicationId, bgColor: bgColor ?? UIColor.white, pageCount: pageCount, aspectRatio: aspectRatio)
+        self.init(publicationId: publicationId, preloaded:preloadedVM)
+    }
+    init(publicationId:String, preloaded viewModel:PagedPublicationViewModelProtocol?) {
         self.publicationId = publicationId
-        self.preloadedBackgroundColor = preloadedBackgroundColor
-        self.preloadedPageCount = preloadedPageCount
+        self.preloadedPublication = viewModel
     }
     
-    
-    func load(publicationLoaded:@escaping PagedPublicationLoaderProtocol.PublicationLoadedHandler,
+    public func load(publicationLoaded:@escaping PagedPublicationLoaderProtocol.PublicationLoadedHandler,
               pagesLoaded:@escaping PagedPublicationLoaderProtocol.PagesLoadedHandler,
               hotspotsLoaded:@escaping PagedPublicationLoaderProtocol.HotspotsLoadedHandler) {
         
         // FIXME: do graph fetching
     }
     
+}
+
+extension PagedPublicationView {    
+    public func reload(fromGraph publicationId:String, jumpTo pageIndex:Int = 0) {
+        
+        let loader = PagedPublicationGraphLoader(publicationId:publicationId)
+        
+        reload(with:loader, jumpTo:pageIndex)
+    }
 }

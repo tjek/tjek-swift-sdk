@@ -17,14 +17,9 @@ public protocol PagedPublicationLoaderProtocol {
     /// the publication that is being loaded
     var publicationId:String { get }
     
-    /// an optional background color that may be used before any data is loaded
-    @objc optional var preloadedBackgroundColor:UIColor? { get }
-    
-    /// an optional page count (use 0 if unknown) to be used before data is loaded
-    @objc optional var preloadedPageCount:Int { get }
+    /// An optional view model that is used to configure the publication before any loading begins
+    var preloadedPublication:PagedPublicationViewModelProtocol? { get }
 
-    
-    
     typealias PublicationLoadedHandler = ((PagedPublicationViewModelProtocol?, Error?)->Void)
     typealias PagesLoadedHandler = (([PagedPublicationPageViewModelProtocol]?, Error?)->Void)
     typealias HotspotsLoadedHandler = (([PagedPublicationHotspotViewModelProtocol]?, Error?)->Void)
@@ -73,7 +68,6 @@ public extension PagedPublicationViewDelegate {
     func didLoad(publication publicationViewModel:PagedPublicationViewModelProtocol, in pagedPublicationView:PagedPublicationView) {}
     func didLoad(pages pageViewModels:[PagedPublicationPageViewModelProtocol], in pagedPublicationView:PagedPublicationView) {}
     func didLoad(hotspots hotspotViewModels:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView) {}
-
 }
 
 public protocol PagedPublicationViewDataSource : PagedPublicationViewDataSourceOptional { }
@@ -138,9 +132,7 @@ open class PagedPublicationView : UIView {
         
         
         addSubview(loadingSpinnerView)
-        
-        backgroundColor = UIColor.white
-
+        addSubview(errorViewContainer)
         
         verso.frame = frame
         verso.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -148,6 +140,8 @@ open class PagedPublicationView : UIView {
         
         addSubview(pageNumberLabel)
         pageNumberLabel.alpha = 0
+        
+        backgroundColor = UIColor.white
     }
     required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
@@ -161,6 +155,7 @@ open class PagedPublicationView : UIView {
         verso.frame = bounds
         
         loadingSpinnerView.center = verso.center
+        errorViewContainer.frame = bounds
         
         layoutPageNumberLabel()
     }
@@ -181,6 +176,10 @@ open class PagedPublicationView : UIView {
     
     /// The number of pages in the publication. This may be set before all the page images are loaded.
     public fileprivate(set) var pageCount:Int = 0
+    
+    /// The aspect ratio of all pages in the publication.
+    /// This is only used when page model views are not yet loaded or contain no aspect ratio.
+    public fileprivate(set) var publicationAspectRatio:CGFloat = 0
     
     
     
@@ -242,40 +241,36 @@ open class PagedPublicationView : UIView {
     }
     
     
-    // FIXME: move to Init?
-    open func reload(publicationId:String, targetPageIndex:Int = 0) {
-        
-        // build a default graph loader
-        let loader = PagedPublicationGraphLoader(publicationId:publicationId)
-        
-        reload(with:loader, targetPageIndex:targetPageIndex)
-    }
+    fileprivate var reloadId:Int = 0
     
-    open func reload(with loader:PagedPublicationLoaderProtocol, targetPageIndex:Int = 0) {
+    open func reload(with loader:PagedPublicationLoaderProtocol, jumpTo pageIndex:Int = 0) {
         DispatchQueue.main.async { [weak self] in
             guard let s = self else { return }
             
-            // TODO: what if we have already started reloading?
+            // keep track of current reload, so that we can ignore callbacks if there has been a future reload
+            s.reloadId += 1
+            let activeReloadId = s.reloadId
+            
+            
             
             s.publicationId = loader.publicationId
             
-            
             // where to go to after configuration ends
-            s.postConfigureTargetPageIndex = targetPageIndex
+            s.postReloadPageIndex = pageIndex
             
             // reset model properties
             s.publicationViewModel = nil
             s.pageViewModels = nil
             s.hotspotsByPageIndex = nil
             s.hotspotOverlayView.isHidden = true
-            s.publicationAspectRatio = 0
             
-            
+            s.clearErrorView()
             
             // this shows the loading spinner if we dont have a pagecount
-            s.configureBasics(backgroundColor: loader.preloadedBackgroundColor ?? nil,
-                              pageCount:  loader.preloadedPageCount ?? 0,
-                              targetPageIndex: targetPageIndex)
+            s.configureBasics(backgroundColor: loader.preloadedPublication?.bgColor ?? nil,
+                              pageCount:  loader.preloadedPublication?.pageCount ?? 0,
+                              aspectRatio: loader.preloadedPublication?.aspectRatio ?? 0,
+                              jumpTo: pageIndex)
             
             
             
@@ -286,16 +281,27 @@ open class PagedPublicationView : UIView {
                 DispatchQueue.main.async { [weak self] in
                     guard let s = self else { return }
                     
+                    // make sure we havnt reloaded since this started
+                    guard s.reloadId == activeReloadId else {
+                        return
+                    }
+
+                    // dont update publication even if it loaded successfully if we got an error loading the pages
+                    guard s.showingError == false else {
+                        return
+                    }
+                    
+                    
+
                     if let pubVM = loadedPublicationViewModel {
                         
                         s.publicationViewModel = pubVM
                         
-                        s.publicationAspectRatio = pubVM.aspectRatio
-                        
                         // use the viewmodel to update the basics
                         s.configureBasics(backgroundColor: pubVM.bgColor,
-                                              pageCount: pubVM.pageCount,
-                                              targetPageIndex: s.postConfigureTargetPageIndex)
+                                          pageCount: pubVM.pageCount,
+                                          aspectRatio: pubVM.aspectRatio,
+                                          jumpTo: s.postReloadPageIndex)
                         
                         s.delegate?.didLoad(publication: pubVM, in: s)
                     }
@@ -307,12 +313,23 @@ open class PagedPublicationView : UIView {
             
             // The callback when the pages are loaded
             let pagesLoaded:PagedPublicationLoaderProtocol.PagesLoadedHandler = { (loadedPageViewModels, error) in
+                
                 DispatchQueue.main.async { [weak self] in
                     guard let s = self else { return }
-
+                    
+                    // make sure we havnt reloaded since this started
+                    guard s.reloadId == activeReloadId else {
+                        return
+                    }
+                    
+                    // dont show pages even if they are loaded successfully if we got an error loading the publication
+                    guard s.showingError == false else {
+                        return
+                    }
+                    
                     if let pageVMs = loadedPageViewModels {
                         s.configurePages(with: pageVMs,
-                                             targetPageIndex: s.postConfigureTargetPageIndex)
+                                         targetPageIndex: s.postReloadPageIndex)
                         
                         s.delegate?.didLoad(pages: pageVMs, in: s)
                     }
@@ -325,7 +342,12 @@ open class PagedPublicationView : UIView {
             let hotspotsLoaded:PagedPublicationLoaderProtocol.HotspotsLoadedHandler = { (loadedHotspotViewModels, error) in
                 DispatchQueue.main.async { [weak self] in
                     guard let s = self else { return }
-
+                    
+                    // make sure we havnt reloaded since this started
+                    guard s.reloadId == activeReloadId else {
+                        return
+                    }
+                    
                     if let hotspotVMs = loadedHotspotViewModels {
                         s.configureHotspots(with: hotspotVMs)
                         
@@ -398,13 +420,6 @@ open class PagedPublicationView : UIView {
     }()
     
     
-    
-    
-    
-    // MARK: Loading and Configuring
-    
-    fileprivate var postConfigureTargetPageIndex:Int?
-    
     fileprivate lazy var loadingSpinnerView:UIActivityIndicatorView = {
         let view = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
         view.color = UIColor(white:0, alpha:0.7)
@@ -412,31 +427,34 @@ open class PagedPublicationView : UIView {
         return view
     }()
     
+
     
-    /// The aspect ratio of all pages in the publication.
-    /// This is only used when page model views are not yet loaded or contain no aspect ratio.
-    fileprivate var publicationAspectRatio:CGFloat = 0
     
+    
+    // MARK: Loading and Configuring
+    
+    /// If we are in the process of reloading a publication this may be non-nil
+    public fileprivate(set) var postReloadPageIndex:Int?
     
     
         // use the properties of the viewModel to reconfigure the view
-    fileprivate func configureBasics(backgroundColor:UIColor?, pageCount:Int = 0, targetPageIndex:Int? = nil) {
+    fileprivate func configureBasics(backgroundColor:UIColor?, pageCount:Int = 0, aspectRatio:CGFloat = 0, jumpTo pageIndex:Int? = nil) {
         
         self.backgroundColor = backgroundColor
         self.pageCount = max(pageCount, 0)
+        self.publicationAspectRatio = aspectRatio
         
         // show/hide spinner based on page count
         if pageCount > 0 {
             verso.alpha = 1.0
             loadingSpinnerView.stopAnimating()
         } else {
-            // TODO: what if error?
             loadingSpinnerView.startAnimating()
             verso.alpha = 0.0
         }
         
         // force a re-fetch of the pageCount
-        verso.reloadPages(targetPageIndex:targetPageIndex)
+        verso.reloadPages(targetPageIndex:pageIndex)
     }
     
     fileprivate func configurePages(with viewModels:[PagedPublicationPageViewModelProtocol], targetPageIndex:Int? = nil) {
@@ -456,7 +474,6 @@ open class PagedPublicationView : UIView {
             loadingSpinnerView.stopAnimating()
         }
         else {
-            // TODO: what if error?
             loadingSpinnerView.startAnimating()
             verso.alpha = 0.0
         }
@@ -498,18 +515,76 @@ open class PagedPublicationView : UIView {
         }
     }
     
+    
+    
+    // MARK: Error handling
+    
+    fileprivate lazy var errorViewContainer = UIView()
+    
+    /// Whether we are showing an error
+    fileprivate var showingError:Bool = false
+    
     fileprivate func configureError(with error:Error?) {
+        
+        guard showingError == false else {
+            return
+        }
+        
+        // clear out any old error views
+        for preSubview in errorViewContainer.subviews {
+            preSubview.removeFromSuperview()
+        }
+        
         if let errorView = dataSource?.errorView(with: error, for: self) {
             
-            insertSubview(errorView, belowSubview: verso)
+            showingError = true
             
-            errorView.center = verso.center
+            // add the new error view
+            errorViewContainer.addSubview(errorView)
             
-            verso.alpha = 0.0
-            loadingSpinnerView.stopAnimating()
+            // Constrain and center the errorView within the errorViewContainer
+            errorView.translatesAutoresizingMaskIntoConstraints = false
+            
+            let leftCnst = NSLayoutConstraint(item:errorView, attribute:.left, relatedBy:.greaterThanOrEqual, toItem:errorViewContainer, attribute:.leftMargin, multiplier:1, constant:0)
+            leftCnst.priority = UILayoutPriorityRequired
+            
+            let rightCnst = NSLayoutConstraint(item:errorView, attribute:.right, relatedBy:.lessThanOrEqual, toItem:errorViewContainer, attribute:.rightMargin, multiplier:1, constant:0)
+            rightCnst.priority = UILayoutPriorityRequired
+            
+            let topCnst = NSLayoutConstraint(item:errorView, attribute:.top, relatedBy:.greaterThanOrEqual, toItem:errorViewContainer, attribute:.topMargin, multiplier:1, constant:0)
+            topCnst.priority = UILayoutPriorityRequired
+            
+            let bottomCnst = NSLayoutConstraint(item:errorView, attribute:.bottom, relatedBy:.lessThanOrEqual, toItem:errorViewContainer, attribute:.bottomMargin, multiplier:1, constant:0)
+            bottomCnst.priority = UILayoutPriorityRequired
+            
+            let centerXCnst = NSLayoutConstraint(item:errorView, attribute:.centerX, relatedBy:.equal, toItem:errorViewContainer, attribute:.centerXWithinMargins, multiplier:1, constant:0)
+            let centerYCnst = NSLayoutConstraint(item:errorView, attribute:.centerY, relatedBy:.equal, toItem:errorViewContainer, attribute:.centerYWithinMargins, multiplier:1, constant:0)
+            
+            NSLayoutConstraint.activate([leftCnst, rightCnst, topCnst, bottomCnst, centerXCnst, centerYCnst])
+            
+            // show the error container
+            UIView.animate(withDuration:0.2) {
+                // show error and hide spinner/verso
+                self.errorViewContainer.alpha = 1.0
+                self.verso.alpha = 0.0
+                self.pageNumberLabel.isHidden = true
+                self.loadingSpinnerView.stopAnimating()
+            }
         }
         else {
             // TODO: default error view
+        }
+    }
+    
+    fileprivate func clearErrorView() {
+        
+        showingError = false
+        
+        UIView.animate(withDuration:0.2) {
+            // show error and hide spinner/verso
+            self.errorViewContainer.alpha = 0.0
+            self.verso.alpha = 1.0
+            self.pageNumberLabel.isHidden = false
         }
     }
     

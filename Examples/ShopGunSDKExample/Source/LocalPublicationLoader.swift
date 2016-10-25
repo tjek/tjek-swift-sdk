@@ -30,6 +30,9 @@ class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
     public var preloadedBackgroundColor:UIColor?
     public var preloadedPageCount:Int = 0
     
+    public var failPublicationRequest:Bool = false
+    public var failPageRequest:Bool = false
+    
     
     convenience init(publicationId:String) {
         self.init(publicationId: publicationId, preloadedBackgroundColor:nil, preloadedPageCount:0)
@@ -47,8 +50,16 @@ class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
         
         
         let publicationIdToFetch = self.publicationId
+        let failPublication = self.failPublicationRequest
+        let failPage = self.failPageRequest
         
-        LocalPublicationLoader.fetchPublicationData(publicationIdToFetch, delay:1.2) { (loadedPublication) in
+        LocalPublicationLoader.fetchPublicationData(publicationIdToFetch, delay:1.2) {(loadedPublication) in
+            
+            if failPublication {
+                publicationLoaded(nil, nil)
+                return
+            }
+            
             
             publicationLoaded(loadedPublication, nil)
             
@@ -61,7 +72,13 @@ class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
         }
         
         
-        LocalPublicationLoader.fetchPublicationPageData(publicationIdToFetch, delay:2.5) { (loadedPages) in
+        LocalPublicationLoader.fetchPublicationPageData(publicationIdToFetch, delay:5.5) { (loadedPages) in
+            
+            if failPage {
+                pagesLoaded(nil, nil)
+                return
+            }
+            
             pagesLoaded(loadedPages, nil)
         }
     }

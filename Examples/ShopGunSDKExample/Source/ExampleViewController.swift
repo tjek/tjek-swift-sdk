@@ -35,16 +35,7 @@ class ExampleViewController : UIViewController {
         publicationView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(publicationView)
         
-        let publicationId = "efbbJc3"
-        let bgColor:UIColor? = UIColor(red:0.01, green:0.18, blue:0.36, alpha:1.00)
-        let pageCount:Int = 0
-        let targetPageIndex:Int = 42
-        
-//        publicationView.reload(publicationId:publicationId)
-        publicationView.reload(with:LocalPublicationLoader(publicationId:publicationId,
-                                                           preloadedBackgroundColor:bgColor,
-                                                           preloadedPageCount:pageCount),
-                               targetPageIndex:targetPageIndex)
+        reloadPublication(failPubRequest: true, failPageRequest: true)
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -55,6 +46,23 @@ class ExampleViewController : UIViewController {
             bgColor.getWhite(&white, alpha: nil)
             return white > 0.6 ? .default : .lightContent
         }
+    }
+    
+    func reloadPublication(failPubRequest:Bool = false, failPageRequest:Bool = false) {
+        let publicationId = "efbbJc3"
+        let bgColor:UIColor? = UIColor(red:0.01, green:0.18, blue:0.36, alpha:1.00)
+        let pageCount:Int = 0
+        let targetPageIndex:Int = 42
+        
+        let loader = LocalPublicationLoader(publicationId:publicationId,
+                                            preloadedBackgroundColor:bgColor,
+                                            preloadedPageCount:pageCount)
+        
+        loader.failPublicationRequest = failPubRequest
+        loader.failPageRequest = failPageRequest
+        
+        //        publicationView.reload(fromGraph:publicationId)
+        publicationView.reload(with:loader, targetPageIndex:targetPageIndex)
     }
     
 }
@@ -82,13 +90,20 @@ extension ExampleViewController : PagedPublicationViewDataSource {
 //    }
     
     func errorView(with error:Error?, for pagedPublicationView:PagedPublicationView) -> UIView? {
-        let errorView = UIView()
-        errorView.frame = CGRect(origin:CGPoint.zero, size:CGSize(width: 200, height: 200))
+        let errorView = ExampleErrorView()
+        
+        errorView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapErrorView(tap:))))
+        
         errorView.backgroundColor = UIColor.red
         
         return errorView
     }
 
+    public func didTapErrorView(tap:UITapGestureRecognizer) {
+        reloadPublication()
+//        reloadPublication(failPubRequest: true, failPageRequest: false)
+//        reloadPublication(failPubRequest: false, failPageRequest: true)
+    }
 }
 
 extension ExampleViewController : PagedPublicationViewDelegate {
@@ -122,5 +137,12 @@ class ExampleOutroView : OutroView {
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+class ExampleErrorView : UIView {
+    
+    override open var intrinsicContentSize: CGSize {
+        return CGSize(width:200, height:200)
     }
 }
