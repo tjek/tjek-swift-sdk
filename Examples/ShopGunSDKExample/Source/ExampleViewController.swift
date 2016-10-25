@@ -52,17 +52,19 @@ class ExampleViewController : UIViewController {
         let publicationId = "efbbJc3"
         let bgColor:UIColor? = UIColor(red:0.01, green:0.18, blue:0.36, alpha:1.00)
         let pageCount:Int = 0
+        let aspectRatio:CGFloat = 0
         let targetPageIndex:Int = 42
         
         let loader = LocalPublicationLoader(publicationId:publicationId,
-                                            preloadedBackgroundColor:bgColor,
-                                            preloadedPageCount:pageCount)
+                                            bgColor:bgColor,
+                                            pageCount:pageCount,
+                                            aspectRatio:aspectRatio)
         
         loader.failPublicationRequest = failPubRequest
         loader.failPageRequest = failPageRequest
         
         //        publicationView.reload(fromGraph:publicationId)
-        publicationView.reload(with:loader, targetPageIndex:targetPageIndex)
+        publicationView.reload(with:loader, jumpTo:targetPageIndex)
     }
     
 }
