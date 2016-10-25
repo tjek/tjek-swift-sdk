@@ -10,42 +10,6 @@
 import UIKit
 
 
-@objc
-public protocol PagedPublicationHotspotViewModelProtocol {
-    var data:AnyObject? { get }
-    
-    /// return CGRectNull if the hotspot isnt in that page
-    func getLocationForPageIndex(_ pageIndex:Int)->CGRect
-    
-    func getPageIndexes()->IndexSet
-}
-
-
-@objc (SGNPagedPublicationHotspotViewModel)
-open class PagedPublicationHotspotViewModel : NSObject, PagedPublicationHotspotViewModelProtocol {
-    
-    open var data:AnyObject? = nil // TODO: cast as Offer obj?
-    
-    open func getLocationForPageIndex(_ pageIndex:Int) -> CGRect {
-        return pageLocations[pageIndex] ?? CGRect.null
-    }
-    open func getPageIndexes()->IndexSet {
-        let pageIndexes = NSMutableIndexSet()
-        for (pageIndex, _) in pageLocations {
-            pageIndexes.add(pageIndex)
-        }
-        return pageIndexes as IndexSet
-    }
-    
-    
-    fileprivate var pageLocations:[Int:CGRect]
-    
-    public init(pageLocations:[Int:CGRect], data:AnyObject? = nil) {
-        self.pageLocations = pageLocations
-        self.data = data
-    }
-}
-
 
 protocol HotspotOverlayViewDelegate : class {
     
@@ -269,11 +233,11 @@ extension PagedPublicationView {
         // MARK: Hotspot views
         
         
-        fileprivate var hotspotModels:[PagedPublicationHotspotViewModel] = []
+        fileprivate var hotspotModels:[PagedPublicationHotspotViewModelProtocol] = []
         fileprivate var hotspotViews:[UIView] = []
         fileprivate var pageViews:[Int:UIView] = [:]
         
-        func updateWithHotspots(_ hotspots:[PagedPublicationHotspotViewModel], pageFrames:[Int:CGRect]) {
+        func updateWithHotspots(_ hotspots:[PagedPublicationHotspotViewModelProtocol], pageFrames:[Int:CGRect]) {
             
             // update pageViews (simply used for their frames & autoresizing powers)
             for (_, pageView) in pageViews {
@@ -297,7 +261,7 @@ extension PagedPublicationView {
             for hotspotView in hotspotViews {
                 hotspotView.removeFromSuperview()
             }
-            var newHotspotModels:[PagedPublicationHotspotViewModel] = []
+            var newHotspotModels:[PagedPublicationHotspotViewModelProtocol] = []
             var newHotspotViews:[UIView] = []
             for hotspot in hotspots {
                 if let hotspotFrame = _frameForHotspot(hotspot), hotspotFrame.isEmpty == false && hotspotFrame.width > minSize.width && hotspotFrame.height > minSize.height {
@@ -323,7 +287,7 @@ extension PagedPublicationView {
         
         
         
-        fileprivate func _frameForHotspot(_ hotspot:PagedPublicationHotspotViewModel) -> CGRect? {
+        fileprivate func _frameForHotspot(_ hotspot:PagedPublicationHotspotViewModelProtocol) -> CGRect? {
             
             var combinedHotspotFrame:CGRect?
             

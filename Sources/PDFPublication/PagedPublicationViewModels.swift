@@ -9,68 +9,142 @@
 
 import UIKit
 
-@objc (SGNPagedPublicationViewModel)
-public class PagedPublicationViewModel : NSObject {
-    public private(set) var uuid: String?
+
+/// This protocol defines all the properties needed to render the background of the publication.
+@objc (SGNPagedPublicationViewModelProtocol)
+public protocol PagedPublicationViewModelProtocol {
+    
+    /// The identifier of the publication
+    var uuid:String { get }
     
     /// the background brand color of the publication
-    public private(set) var bgColor: UIColor
+    var bgColor:UIColor { get }
     
-    /// expected total number of pages. 0 if unknown
-    public private(set) var pageCount: Int = 0
+    /// expected total number of pages. Should be ≤0 if unknown.
+    var pageCount:Int { get }
     
-    /// width/height ratio of pages in this publication. 0 if unknown
-    public private(set) var aspectRatio: CGFloat = 0
+    /// width/height ratio of pages in this publication. Should be ≤0 if unknown.
+    var aspectRatio:CGFloat { get }
     
-    /// The date the publication becomes available
-    public private(set) var runFromDate: Date?
+}
+
+
+/// A concrete instance of the PagedPublicationViewModel protocol
+@objc (SGNPagedPublicationViewModel)
+open class PagedPublicationViewModel : NSObject, PagedPublicationViewModelProtocol {
     
-    /// The date that this publication expires.
-    public private(set) var runTillDate: Date?
+    public var uuid:String
     
-    public private(set) var coverThumbImage:URL?
+    /// the background brand color of the publication
+    public var bgColor:UIColor
     
-    public private(set) var dealerId: String?
-    public private(set) var dealerName: String?
+    /// expected total number of pages. Should be ≤0 if unknown.
+    public var pageCount:Int
     
-    public init(id:String? = nil, bgColor:UIColor, pageCount:Int = 0, aspectRatio:CGFloat = 0, runFromDate:Date? = nil, runTillDate:Date? = nil, coverThumbImage:URL? = nil, dealerId:String? = nil, dealerName:String? = nil) {
-        self.uuid = id
+    /// width/height ratio of pages in this publication. Should be ≤0 if unknown.
+    public var aspectRatio:CGFloat = 0
+    
+    public init(uuid:String, bgColor:UIColor, pageCount:Int, aspectRatio:CGFloat) {
+        self.uuid = uuid
         self.bgColor = bgColor
         self.pageCount = pageCount
         self.aspectRatio = aspectRatio
-        self.runFromDate = runFromDate
-        self.runTillDate = runTillDate
-        self.coverThumbImage = coverThumbImage
-        self.dealerId = dealerId
-        self.dealerName = dealerName
     }
 }
 
+
+
+//@objc (SGNPagedPublicationPageViewModelProtocol)
+//public protocol PagedPublicationPageViewModelProtocol {
+//    var pageIndex: Int { get }
+//    
+//    var pageTitle:String? { get }
+//    var aspectRatio:CGFloat{ get }
+//    
+//    var defaultImageURL:URL? { get }
+//    
+//    var zoomImageURL:URL? { get }
+//    
+//    var thumbImageURL:URL? { get }
+//}
+
+
+
+
+
+/// This protocol defines all the properties we need to show a hotspot
+@objc (SGNPagedPublicationHotspotViewModelProtocol)
+public protocol PagedPublicationHotspotViewModelProtocol : class {
+    
+    /// return CGRectNull if the hotspot isnt in that page
+    func getLocationForPageIndex(_ pageIndex:Int)->CGRect
+    
+    func getPageIndexes()->IndexSet
+}
+
+/// This concrete implementation of a hotspot contains no data, so is designed for subclassing.
+@objc(SGNPagedPublicationEmptyHotspotViewModel)
+open class PagedPublicationEmptyHotspotViewModel : NSObject, PagedPublicationHotspotViewModelProtocol {
+    
+    fileprivate var pageLocations:[Int:CGRect]
+    
+    open func getLocationForPageIndex(_ pageIndex:Int) -> CGRect {
+        return pageLocations[pageIndex] ?? CGRect.null
+    }
+    open func getPageIndexes()->IndexSet {
+        let pageIndexes = NSMutableIndexSet()
+        for (pageIndex, _) in pageLocations {
+            pageIndexes.add(pageIndex)
+        }
+        return pageIndexes as IndexSet
+    }
+    
+    public init(pageLocations:[Int:CGRect]) {
+        self.pageLocations = pageLocations
+    }
+}
+
+
+
+
+
+
+@objc (SGNPagedPublicationPageViewModelProtocol)
+public protocol PagedPublicationPageViewModelProtocol {
+    
+    var pageIndex:Int { get }
+    
+    var pageTitle:String? { get }
+    
+    var aspectRatio:CGFloat { get }
+    
+    var viewImageURL:URL? { get }
+    
+    var zoomImageURL:URL? { get }
+}
+
+
+
 @objc (SGNPagedPublicationPageViewModel)
-public class PagedPublicationPageViewModel : NSObject {
+open class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewModelProtocol {
+    
     public var pageIndex: Int
     
-    public var pageTitle:String?
     public var aspectRatio: CGFloat = 0
     
-    public var defaultImage:UIImage?
-    public var defaultImageURL:URL?
+    public var pageTitle: String?
+    
+    public var viewImageURL:URL?
     
     public var zoomImageURL:URL?
-    public var zoomImage:UIImage?
     
-    public var thumbImageURL:URL?
-    public var thumbImage:UIImage?
     
-    public init(pageIndex:Int, pageTitle:String?, aspectRatio:CGFloat = 0, imageURL:URL? = nil, zoomImageURL:URL? = nil, thumbImageURL:URL? = nil) {
+    public init(pageIndex:Int, pageTitle:String?, aspectRatio:CGFloat = 0, viewImageURL:URL? = nil, zoomImageURL:URL? = nil) {
         self.pageIndex = pageIndex
         self.pageTitle = pageTitle
         self.aspectRatio = aspectRatio
-        self.defaultImageURL = imageURL
+        self.viewImageURL = viewImageURL
         self.zoomImageURL = zoomImageURL
-        self.thumbImageURL = thumbImageURL
     }
 }
-
-
 

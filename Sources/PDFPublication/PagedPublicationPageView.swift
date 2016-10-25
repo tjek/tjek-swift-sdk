@@ -16,7 +16,7 @@ import Kingfisher
 @objc
 public protocol PagedPublicationPageViewDelegate : class {
     
-    @objc optional func didConfigure(_ pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModel)
+    @objc optional func didConfigure(_ pageView:PagedPublicationPageView, viewModel:PagedPublicationPageViewModelProtocol)
     
     @objc optional func didFinishLoadingImage(_ pageView:PagedPublicationPageView, imageURL:URL, fromCache:Bool)
     @objc optional func didFinishLoadingZoomImage(_ pageView:PagedPublicationPageView, imageURL:URL, fromCache:Bool)
@@ -165,6 +165,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
                     
                     if newAspectRatio != self!.aspectRatio {
                         self!.aspectRatio = newAspectRatio
+                        
                         // TODO: this will only affect future uses of this page. Somehow trigger a re-layout from the verso. Maybe in the delegate?
                     }
                 }
@@ -207,19 +208,20 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         }
     }
     
-    open func configure(_ viewModel: PagedPublicationPageViewModel, darkBG:Bool) {
+    open func configure(_ viewModel: PagedPublicationPageViewModelProtocol, publicationAspectRatio:CGFloat, darkBG:Bool) {
         
         reset()
         
-        aspectRatio = CGFloat(viewModel.aspectRatio)
+        aspectRatio = viewModel.aspectRatio > 0 ? viewModel.aspectRatio : (publicationAspectRatio > 0 ? publicationAspectRatio : 1)
+        
         
         pageLabel.text = viewModel.pageTitle
         pageLabel.textColor = darkBG ? UIColor.white : UIColor(white: 0, alpha: 0.7)
         
         backgroundColor = darkBG ? UIColor(white: 1, alpha: 0.1) : UIColor(white: 0.8, alpha: 0.15)
         
-        if let imageURL = viewModel.defaultImageURL {
-            startLoadingImageFromURL(imageURL as URL)
+        if let imageURL = viewModel.viewImageURL {
+            startLoadingImageFromURL(imageURL)
         }
         
         delegate?.didConfigure?(self, viewModel: viewModel)

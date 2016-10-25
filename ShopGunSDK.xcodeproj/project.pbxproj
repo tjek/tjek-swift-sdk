@@ -31,6 +31,7 @@
 		AED8A9E41D88132300C92ED5 /* PagedPublicationView.Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED8A9E31D88132300C92ED5 /* PagedPublicationView.Events.swift */; };
 		AEED783D1D9142A1003A9E92 /* Kingfisher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEED783B1D9142A1003A9E92 /* Kingfisher.framework */; };
 		AEED783E1D9142A1003A9E92 /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEED783C1D9142A1003A9E92 /* Valet.framework */; };
+		AEEF1F9B1DBDD8C5005D6CD3 /* PagedPublicationGraphLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEF1F9A1DBDD8C5005D6CD3 /* PagedPublicationGraphLoader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +119,7 @@
 		AEED78501D9145B9003A9E92 /* CHANGES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGES.md; sourceTree = "<group>"; };
 		AEED78511D9145B9003A9E92 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		AEED78521D9145B9003A9E92 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		AEEF1F9A1DBDD8C5005D6CD3 /* PagedPublicationGraphLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagedPublicationGraphLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				AE58EDC61D537AE6002BC38A /* PagedPublicationView.swift */,
+				AEEF1F9A1DBDD8C5005D6CD3 /* PagedPublicationGraphLoader.swift */,
 				AED8A9E31D88132300C92ED5 /* PagedPublicationView.Events.swift */,
 				AE12AAEB1D59D44700BBEFFC /* PagedPublicationPageView.swift */,
 				AED8A9B11D81496A00C92ED5 /* PagedPublicationHotspotOverlayView.swift */,
@@ -487,6 +490,7 @@
 				AED8A9B21D81496A00C92ED5 /* PagedPublicationHotspotOverlayView.swift in Sources */,
 				AE2312AD1D6C84B7006B84BA /* PagedPublicationViewModels.swift in Sources */,
 				AE06C03E1D3FA70000BC8D47 /* EventsTracker.swift in Sources */,
+				AEEF1F9B1DBDD8C5005D6CD3 /* PagedPublicationGraphLoader.swift in Sources */,
 				AE06C03D1D3FA70000BC8D47 /* Utils.swift in Sources */,
 				AE06E34D1D53532900C84762 /* GraphResponse.swift in Sources */,
 				AED8A9E41D88132300C92ED5 /* PagedPublicationView.Events.swift in Sources */,

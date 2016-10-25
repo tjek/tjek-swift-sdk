@@ -11,31 +11,71 @@ import UIKit
 
 import Verso
 
+@objc(SGNPagedPublicationLoaderProtocol)
+public protocol PagedPublicationLoaderProtocol {
+    
+    /// the publication that is being loaded
+    var publicationId:String { get }
+    
+    /// an optional background color that may be used before any data is loaded
+    @objc optional var preloadedBackgroundColor:UIColor? { get }
+    
+    /// an optional page count (use 0 if unknown) to be used before data is loaded
+    @objc optional var preloadedPageCount:Int { get }
+
+    
+    
+    typealias PublicationLoadedHandler = ((PagedPublicationViewModelProtocol?, Error?)->Void)
+    typealias PagesLoadedHandler = (([PagedPublicationPageViewModelProtocol]?, Error?)->Void)
+    typealias HotspotsLoadedHandler = (([PagedPublicationHotspotViewModelProtocol]?, Error?)->Void)
+
+    func load(publicationLoaded:@escaping PublicationLoadedHandler,
+              pagesLoaded:@escaping PagesLoadedHandler,
+              hotspotsLoaded:@escaping HotspotsLoadedHandler)
+}
+
+
+
 public protocol PagedPublicationViewDelegate : class {
     
-    func currentPageIndexesChanged(pagedPublicationView:PagedPublicationView, pageIndexes:IndexSet, added:IndexSet, removed:IndexSet)
-    func currentPageIndexesFinishedChanging(pagedPublicationView:PagedPublicationView, pageIndexes: IndexSet, previousPageIndexes: IndexSet)
+    func pageIndexesChanged(current currentPageIndexes:IndexSet, previous oldPageIndexes:IndexSet, in pagedPublicationView:PagedPublicationView)
+    func pageIndexesFinishedChanging(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in pagedPublicationView:PagedPublicationView)
     
-    func didTapPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol])
-    func didLongPressPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol])
+    func didTap(pageIndex:Int, locationInPage:CGPoint, hittingHotspots:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView)
+    func didLongPress(pageIndex:Int, locationInPage:CGPoint, hittingHotspots:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView)
+    
+    func didFinishLoadingPageImage(imageURL:URL, pageIndex:Int, in pagedPublicationView:PagedPublicationView)
     
     func outroDidAppear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView)
     func outroDidDisappear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView)
+    
+    func didLoad(publication publicationViewModel:PagedPublicationViewModelProtocol, in pagedPublicationView:PagedPublicationView)
+    func didLoad(pages pageViewModels:[PagedPublicationPageViewModelProtocol], in pagedPublicationView:PagedPublicationView)
+    func didLoad(hotspots hotspotViewModels:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView)
 }
+
 
 // default no-op
 public extension PagedPublicationViewDelegate {
-    func currentPageIndexesChanged(pagedPublicationView:PagedPublicationView, pageIndexes:IndexSet, added:IndexSet, removed:IndexSet) {}
-    func currentPageIndexesFinishedChanging(pagedPublicationView:PagedPublicationView, pageIndexes: IndexSet, previousPageIndexes: IndexSet) {}
-    func didTapPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol]) {}
-    func didLongPressPage(pagedPublicationView:PagedPublicationView, pageIndex:Int, locationInPage:CGPoint, hotspots:[PagedPublicationHotspotViewModelProtocol]) {}
+    func pageIndexesChanged(current currentPageIndexes:IndexSet, previous oldPageIndexes:IndexSet, in pagedPublicationView:PagedPublicationView) {}
+    func pageIndexesFinishedChanging(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in pagedPublicationView:PagedPublicationView) {}
+    
+    func didTap(pageIndex:Int, locationInPage:CGPoint, hittingHotspots:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView) {}
+    func didLongPress(pageIndex:Int, locationInPage:CGPoint, hittingHotspots:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView) {}
+    
+    func didFinishLoadingPageImage(imageURL:URL, pageIndex:Int, in pagedPublicationView:PagedPublicationView) {}
     
     func outroDidAppear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView) {}
     func outroDidDisappear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView) {}
+    
+    func didLoad(publication publicationViewModel:PagedPublicationViewModelProtocol, in pagedPublicationView:PagedPublicationView) {}
+    func didLoad(pages pageViewModels:[PagedPublicationPageViewModelProtocol], in pagedPublicationView:PagedPublicationView) {}
+    func didLoad(hotspots hotspotViewModels:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView) {}
+
 }
 
-public protocol PagedPublicationViewDataSource : PagedPublicationViewDataSourceOptional {
-}
+public protocol PagedPublicationViewDataSource : PagedPublicationViewDataSourceOptional { }
+
 
 public typealias OutroView = VersoPageView
 public protocol PagedPublicationViewDataSourceOptional : class {
@@ -46,6 +86,8 @@ public protocol PagedPublicationViewDataSourceOptional : class {
     func outroViewMaxZoom(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat
 
     func textForPageNumberLabel(pagedPublicationView:PagedPublicationView, pageIndexes:IndexSet, pageCount:Int) -> String?
+    
+    func errorView(for error:Error?, in pagedPublicationView:PagedPublicationView) -> UIView?
 }
 
 // Default values for datasource
@@ -69,6 +111,9 @@ public extension PagedPublicationViewDataSourceOptional {
         }
         return nil
     }
+    func errorView(for error:Error?, in pagedPublicationView:PagedPublicationView) -> UIView? {
+        return nil
+    }
 }
 /// Have PagedPublicationView as the source of the default optional values, for when dataSource is nil.
 extension PagedPublicationView : PagedPublicationViewDataSourceOptional {}
@@ -87,7 +132,10 @@ open class PagedPublicationView : UIView {
         NotificationCenter.default.addObserver(self, selector: #selector(PagedPublicationView._willEnterForegroundNotification(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         
         
+        addSubview(loadingSpinnerView)
+        
         backgroundColor = UIColor.white
+
         
         verso.frame = frame
         verso.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -107,18 +155,41 @@ open class PagedPublicationView : UIView {
         
         verso.frame = bounds
         
+        loadingSpinnerView.center = verso.center
+        
         layoutPageNumberLabel()
     }
     
     
     
     
+    
     // MARK: - Public
+    
     open weak var dataSource:PagedPublicationViewDataSource?
     
     open weak var delegate:PagedPublicationViewDelegate?
     
+    
+    /// The publication Id that is being or has been loaded. This is nil until loading begins.
+    public fileprivate(set) var publicationId:String?
+    
+    /// The number of pages in the publication. This may be set before all the page images are loaded.
     public fileprivate(set) var pageCount:Int = 0
+    
+    
+    
+    /// The viewmodel of the publication, or nil if it hasnt been loaded yet
+    public fileprivate(set) var publicationViewModel:PagedPublicationViewModelProtocol?
+    
+    /// The page view models for this publication, or nil if they havnt been loaded yet
+    public fileprivate(set) var pageViewModels:[PagedPublicationPageViewModelProtocol]?
+    
+    /// The hotspot view models, keyed by their page index, or nil if not loaded yet
+    public fileprivate(set) var hotspotsByPageIndex:[Int:[PagedPublicationHotspotViewModelProtocol]]?
+
+    
+    
     
     /// The page indexes of the spread that was centered when scrolling animations last ended
     public var currentPageIndexes:IndexSet {
@@ -130,81 +201,141 @@ open class PagedPublicationView : UIView {
         return verso.visiblePageIndexes
     }
     
+    /// The pan gesture used to change the pages
     public var panGestureRecognizer:UIPanGestureRecognizer {
         return verso.panGestureRecognizer
     }
+    
+    /// This will only return the outro view only after it has been configured.
+    /// It is configured once the user has scrolled within a certain distance of the outro page (currently 10 pages).
+    public var outroView:OutroView? {
+        guard let outroIndex = outroPageIndex else {
+            return nil
+        }
+        return verso.getPageViewIfLoaded(outroIndex)
+    }
+    
+    /// Returns the pageview for the pageIndex, or nil if it hasnt been loaded yet
+    public func getPageViewIfLoaded(_ pageIndex:Int) -> PagedPublicationPageView? {
+        return verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView
+    }
+    
+    
 
     
+    override open var backgroundColor: UIColor? {
+        didSet {
+            // update spinner color
+            self.loadingSpinnerView.color = alternateColor
+        }
+    }
+    public var alternateColor:UIColor {
+        // get the alternate color for the bg color
+        var whiteComponent:CGFloat = 1.0
+        backgroundColor?.getWhite(&whiteComponent, alpha: nil)
+        return (whiteComponent > 0.6) ? UIColor(white:0, alpha:0.7) : UIColor.white
+    }
     
-    // TODO: setting this will trigger changes
-    open func update(publication viewModel:PagedPublicationViewModel?, targetPageIndex:Int = 0) {
+    
+    // FIXME: move to Init?
+    open func reload(publicationId:String, targetPageIndex:Int = 0) {
+        
+        // build a default graph loader
+        let loader = PagedPublicationGraphLoader(publicationId:publicationId)
+        
+        reload(with:loader, targetPageIndex:targetPageIndex)
+    }
+    
+    open func reload(with loader:PagedPublicationLoaderProtocol, targetPageIndex:Int = 0) {
         DispatchQueue.main.async { [weak self] in
-            guard let s = self else { return }
+            
+            self?.publicationId = loader.publicationId
             
             
-            s.publicationViewModel = viewModel
+            // where to go to after configuration ends
+            self?.postConfigureTargetPageIndex = targetPageIndex
             
-            s.pageCount = s.publicationViewModel?.pageCount ?? 0
+            // reset model properties
+            self?.publicationViewModel = nil
+            self?.pageViewModels = nil
+            self?.hotspotsByPageIndex = nil
+            self?.hotspotOverlayView.isHidden = true
+            self?.publicationAspectRatio = 0
             
-            UIView.animate(withDuration: 0.2, animations: {
-                s.backgroundColor = viewModel?.bgColor
-            })
-            // TODO: do we clear the pageviewmodels if this is updated again?
             
-            // force a re-fetch of the pageCount
-            s.verso.reloadPages(targetPageIndex:targetPageIndex)
-        }
-    }
-    
-    open func update(pages viewModels:[PagedPublicationPageViewModel]?) {
-        
-        if viewModels != nil, let publicationAspectRatio = publicationViewModel?.aspectRatio {
-            for viewModel in viewModels! {
-                if viewModel.aspectRatio <= 0 {
-                    viewModel.aspectRatio = publicationAspectRatio
+            
+            // this shows the loading spinner if we dont have a pagecount
+            self?.configureBasics(backgroundColor: loader.preloadedBackgroundColor ?? nil,
+                                  pageCount:  loader.preloadedPageCount ?? 0,
+                                  targetPageIndex: targetPageIndex)
+            
+            
+            // The callback when the basic publication details are loaded
+            let publicationLoaded:PagedPublicationLoaderProtocol.PublicationLoadedHandler = { (loadedPublicationViewModel, error) in
+                DispatchQueue.main.async { [weak self] in
+                    guard let s = self else { return }
+                    
+                    if let pubVM = loadedPublicationViewModel {
+                        
+                        s.publicationViewModel = pubVM
+                        
+                        s.publicationAspectRatio = pubVM.aspectRatio
+                        
+                        // use the viewmodel to update the basics
+                        s.configureBasics(backgroundColor: pubVM.bgColor,
+                                              pageCount: pubVM.pageCount,
+                                              targetPageIndex: s.postConfigureTargetPageIndex)
+                        
+                        s.delegate?.didLoad(publication: pubVM, in: s)
+                    }
+                    else {
+                        s.configureError(with:error)
+                    }
                 }
             }
-        }
-        
-        pageViewModels = viewModels
-        
-        hotspotOverlayView.isHidden = (pageViewModels?.count ?? 0) == 0
-        
-        let newPageCount = pageViewModels?.count ?? 0
-        if newPageCount != pageCount {
-            pageCount = newPageCount
             
-            // force a re-fetch of the pageCount
-            verso.reloadPages()
-        }
-        else {
-            // just re-config the visible pages if pagecount didnt change
-            verso.reconfigureVisiblePages()
-        }
-    }
-    
-    
-    open func update(hotspots viewModels:[PagedPublicationHotspotViewModel]?) {
-        
-        var newHotspotsByPageIndex:[Int:[PagedPublicationHotspotViewModel]] = [:]
-        
-        if viewModels != nil {
-            for hotspotModel in viewModels! {
-                let hotspotPageIndexes = hotspotModel.getPageIndexes()
-                
-                for pageIndex in hotspotPageIndexes {
-                    var hotspotsForPage = newHotspotsByPageIndex[pageIndex] ?? []
-                    hotspotsForPage.append(hotspotModel)
-                    newHotspotsByPageIndex[pageIndex] = hotspotsForPage
+            // The callback when the pages are loaded
+            let pagesLoaded:PagedPublicationLoaderProtocol.PagesLoadedHandler = { (loadedPageViewModels, error) in
+                DispatchQueue.main.async { [weak self] in
+                    guard let s = self else { return }
+
+                    if let pageVMs = loadedPageViewModels {
+                        s.configurePages(with: pageVMs,
+                                             targetPageIndex: s.postConfigureTargetPageIndex)
+                        
+                        s.delegate?.didLoad(pages: pageVMs, in: s)
+                    }
+                    else {
+                        s.configureError(with:error)
+                    }
                 }
             }
+            // The callback when the hotspots are loaded
+            let hotspotsLoaded:PagedPublicationLoaderProtocol.HotspotsLoadedHandler = { (loadedHotspotViewModels, error) in
+                DispatchQueue.main.async { [weak self] in
+                    guard let s = self else { return }
+
+                    if let hotspotVMs = loadedHotspotViewModels {
+                        s.configureHotspots(with: hotspotVMs)
+                        
+                        s.delegate?.didLoad(hotspots: hotspotVMs, in: s)
+                    }
+                }
+            }
+            
+            // start the loader
+            loader.load(publicationLoaded: publicationLoaded,
+                        pagesLoaded: pagesLoaded,
+                        hotspotsLoaded: hotspotsLoaded)
         }
-        hotspotsByPageIndex = newHotspotsByPageIndex
-        
-        verso.reconfigureSpreadOverlay()
     }
+    
+    
     
     public func jump(toPageIndex pageIndex:Int, animated:Bool) {
+        
+        // FIXME: if loading then save pageIndex for after load finished
+        
         verso.jump(toPageIndex: pageIndex, animated: animated)
     }
     
@@ -247,9 +378,6 @@ open class PagedPublicationView : UIView {
         }
     }
     
-    public fileprivate(set) var publicationViewModel:PagedPublicationViewModel?
-    public fileprivate(set) var pageViewModels:[PagedPublicationPageViewModel]?
-    public fileprivate(set) var hotspotsByPageIndex:[Int:[PagedPublicationHotspotViewModel]] = [:]
     
     lazy fileprivate var verso:VersoView = {
         let verso = VersoView()
@@ -259,7 +387,130 @@ open class PagedPublicationView : UIView {
     }()
     
     
+    
+    
+    
+    // MARK: Loading and Configuring
+    
+    fileprivate var postConfigureTargetPageIndex:Int?
+    
+    fileprivate lazy var loadingSpinnerView:UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+        view.color = UIColor(white:0, alpha:0.7)
+        view.hidesWhenStopped = true
+        return view
+    }()
+    
+    
+    /// The aspect ratio of all pages in the publication.
+    /// This is only used when page model views are not yet loaded or contain no aspect ratio.
+    fileprivate var publicationAspectRatio:CGFloat = 0
+    
+    
+    
+        // use the properties of the viewModel to reconfigure the view
+    fileprivate func configureBasics(backgroundColor:UIColor?, pageCount:Int = 0, targetPageIndex:Int? = nil) {
+        
+        self.backgroundColor = backgroundColor
+        self.pageCount = max(pageCount, 0)
+        
+        // show/hide spinner based on page count
+        if pageCount > 0 {
+            verso.alpha = 1.0
+            loadingSpinnerView.stopAnimating()
+        } else {
+            // TODO: what if error?
+            loadingSpinnerView.startAnimating()
+            verso.alpha = 0.0
+        }
+        
+        // force a re-fetch of the pageCount
+        verso.reloadPages(targetPageIndex:targetPageIndex)
+    }
+    
+    fileprivate func configurePages(with viewModels:[PagedPublicationPageViewModelProtocol], targetPageIndex:Int? = nil) {
+        
+        self.pageViewModels = viewModels
+        
+        let oldPageCount = pageCount
+        pageCount = viewModels.count
+        
+        // hide overlay view if we have no pages
+        self.hotspotOverlayView.isHidden = (pageCount == 0)
+        
+        
+        // show/hide spinner based on page count
+        if pageCount > 0 {
+            verso.alpha = 1.0
+            loadingSpinnerView.stopAnimating()
+        }
+        else {
+            // TODO: what if error?
+            loadingSpinnerView.startAnimating()
+            verso.alpha = 0.0
+        }
+        
+        
+        if pageCount != oldPageCount {
+            // force a re-fetch of the pageCount
+            verso.reloadPages(targetPageIndex: targetPageIndex)
+        }
+        else {
+            // just re-config the visible pages if pagecount didnt change
+            verso.reconfigureVisiblePages()
+        }
+    }
+    
+    fileprivate func configureHotspots(with viewModels:[PagedPublicationHotspotViewModelProtocol]) {
+        // configure hotspots in the background
+        DispatchQueue.global().async {
+            
+            var newHotspotsByPageIndex:[Int:[PagedPublicationHotspotViewModelProtocol]] = [:]
+            
+            // split the hotspots by pageIndex
+            for hotspotModel in viewModels {
+                let hotspotPageIndexes = hotspotModel.getPageIndexes()
+                
+                for pageIndex in hotspotPageIndexes {
+                    var hotspotsForPage = newHotspotsByPageIndex[pageIndex] ?? []
+                    hotspotsForPage.append(hotspotModel)
+                    newHotspotsByPageIndex[pageIndex] = hotspotsForPage
+                }
+            }
+            
+            // drop back to main for updating hotspots
+            DispatchQueue.main.async { [weak self] in
+                self?.hotspotsByPageIndex = newHotspotsByPageIndex
+                
+                self?.verso.reconfigureSpreadOverlay()
+            }
+        }
+    }
+    
+    fileprivate func configureError(with error:Error?) {
+        if let errorView = dataSource?.errorView(for: error, in: self) {
+            
+            insertSubview(errorView, belowSubview: verso)
+            
+            errorView.center = verso.center
+            
+            verso.alpha = 0.0
+            loadingSpinnerView.stopAnimating()
+        }
+        else {
+            // TODO: default error view
+        }
+    }
+    
+
+    
+    
+    
+    
+    // MARK: Page Number Label
+    
     fileprivate var pageNumberLabel:PageNumberLabel = PageNumberLabel()
+    
     class PageNumberLabel : UILabel {
         
         override init(frame: CGRect) {
@@ -272,7 +523,7 @@ open class PagedPublicationView : UIView {
             
             textAlignment = .center
             font = UIFont.boldSystemFont(ofSize: 18) //TODO: dynamic font size
-
+            
             numberOfLines = 1
         }
         
@@ -298,16 +549,7 @@ open class PagedPublicationView : UIView {
         }
     }
     
-    /// This will only return the outro view only after it has been configured.
-    /// It is configured once the user has scrolled within a certain distance of the outro page (currently 10 pages).
-    public var outroView:OutroView? {
-        guard let outroIndex = outroPageIndex else {
-            return nil
-        }
-        return verso.getPageViewIfLoaded(outroIndex)
-    }
-    
-    
+
     fileprivate func layoutPageNumberLabel() {
         
         // layout page number label
@@ -371,9 +613,15 @@ open class PagedPublicationView : UIView {
     
     
     
+    
+    
     /// The indexes of active pages that havnt been loaded yet. This set changes when pages are activated and deactivated, and when images are loaded
     /// Used by the PagedPublicationPageViewDelegate methods
     fileprivate var activePageIndexesWithPendingLoadEvents = NSMutableIndexSet()
+    
+    
+    
+    
     
     
     
@@ -461,6 +709,9 @@ open class PagedPublicationView : UIView {
 
 
 
+
+
+
 // MARK: - VersoView DataSource
 
 extension PagedPublicationView : VersoViewDataSource {
@@ -474,7 +725,7 @@ extension PagedPublicationView : VersoViewDataSource {
             pubPage.delegate = self
             
             var whiteComponent:CGFloat = 1.0
-            publicationViewModel?.bgColor.getWhite(&whiteComponent, alpha: nil)
+            backgroundColor?.getWhite(&whiteComponent, alpha: nil)
             
             // TODO: use cuttlefish?
             let bgIsDark = whiteComponent > 0.6 ? false : true
@@ -482,16 +733,14 @@ extension PagedPublicationView : VersoViewDataSource {
             if let viewModel = pageViewModels?[sgn_safe:Int(pageIndex)] {
                 
                 // valid view model
-                pubPage.configure(viewModel, darkBG:bgIsDark)
+                pubPage.configure(viewModel, publicationAspectRatio:publicationAspectRatio, darkBG:bgIsDark)
             }                
             else
             {
-                let aspectRatio = publicationViewModel?.aspectRatio ?? 1.0
-                
                 // build blank view model
-                let viewModel = PagedPublicationPageViewModel(pageIndex:pageIndex, pageTitle:String(pageIndex+1), aspectRatio: aspectRatio)
+                let viewModel = PagedPublicationPageViewModel(pageIndex:pageIndex, pageTitle:String(pageIndex+1))
                 
-                pubPage.configure(viewModel, darkBG:bgIsDark)
+                pubPage.configure(viewModel, publicationAspectRatio:publicationAspectRatio, darkBG:bgIsDark)
             }
         }
         else if type(of: pageView) === self.outroViewProperties.viewClass {
@@ -546,16 +795,21 @@ extension PagedPublicationView : VersoViewDataSource {
     public func spreadOverlayView(verso: VersoView, overlaySize: CGSize, pageFrames: [Int : CGRect]) -> UIView? {
         
         // no overlay for outro
-        if outroPageIndex != nil && pageFrames[outroPageIndex!] != nil {
+        guard (outroPageIndex != nil && pageFrames[outroPageIndex!] != nil) == false else {
             return nil
         }
         
-        // configure the overlay
-        var spreadHotspots:[PagedPublicationHotspotViewModel] = []
+        // no hotspots to show
+        guard hotspotsByPageIndex != nil else {
+            return nil
+        }
+        
+        // get the hotspots for this spread - dont add hotspots more than once
+        var spreadHotspots:[PagedPublicationHotspotViewModelProtocol] = []
         for (pageIndex, _) in pageFrames {
-            if let hotspots = hotspotsByPageIndex[pageIndex] {
-                for hotspot in hotspots {
-                    if spreadHotspots.contains(hotspot) == false {
+            if let hotspots = hotspotsByPageIndex![pageIndex] {
+                for hotspot in hotspots {                    
+                    if spreadHotspots.contains(where:{ $0 === hotspot }) == false {
                         spreadHotspots.append(hotspot)
                     }
                 }
@@ -565,6 +819,7 @@ extension PagedPublicationView : VersoViewDataSource {
             return nil
         }
         
+        // configure the overlay
         hotspotOverlayView.isHidden = (self.pageViewModels?.count ?? 0) == 0
         hotspotOverlayView.delegate = self
         hotspotOverlayView.frame.size = overlaySize
@@ -603,13 +858,14 @@ extension PagedPublicationView : VersoViewDataSource {
 
 
 
+
+
+
 // MARK: - VersoView Delegate
 
 extension PagedPublicationView : VersoViewDelegate {
     
     public func currentPageIndexesChanged(verso:VersoView, pageIndexes:IndexSet, added:IndexSet, removed:IndexSet) {
-        
-//        print ("current pages changed: \(pageIndexes.arrayOfAllIndexes())")
         
         DispatchQueue.main.async { [weak self] in
             guard self != nil else { return }
@@ -625,10 +881,11 @@ extension PagedPublicationView : VersoViewDelegate {
             }
             
             self!.updatePageNumberLabel(withText: newLabelText)
-            
         }
         
-        delegate?.currentPageIndexesChanged(pagedPublicationView: self, pageIndexes: pageIndexes, added: added, removed: removed)
+        let oldPageIndexes = pageIndexes.subtracting(added).union(removed)
+
+        delegate?.pageIndexesChanged(current: pageIndexes, previous: oldPageIndexes, in: self)
         
         if let outroIndex = outroPageIndex, let outroView = verso.getPageViewIfLoaded(outroIndex) {
             if added.contains(outroIndex) {
@@ -639,8 +896,6 @@ extension PagedPublicationView : VersoViewDelegate {
         }
     }
     public func currentPageIndexesFinishedChanging(verso: VersoView, pageIndexes: IndexSet, added: IndexSet, removed: IndexSet) {
-        
-//        print ("current pages finished changing: \(pageIndexes.arrayOfAllIndexes())")
 
         // pages changed while we were zoomed in - trigger a zoom-out event
         if zoomedPageIndexes.count > 0 && pageIndexes != zoomedPageIndexes {
@@ -665,21 +920,18 @@ extension PagedPublicationView : VersoViewDelegate {
             _pageDidDisappear(pageIndex)
         }
         
-        delegate?.currentPageIndexesFinishedChanging(pagedPublicationView: self, pageIndexes: pageIndexes, previousPageIndexes: oldPageIndexes)
+        delegate?.pageIndexesFinishedChanging(current: pageIndexes, previous: oldPageIndexes, in: self)
     }
 
     public func visiblePageIndexesChanged(verso: VersoView, pageIndexes: IndexSet, added: IndexSet, removed: IndexSet) {
         
-//        print ("visible pages changed: \(pageIndexes.arrayOfAllIndexes())")
     }
     
     
     public func didStartZoomingPages(verso: VersoView, zoomingPageIndexes: IndexSet, zoomScale: CGFloat) {
-//        print ("did start zooming \(zoomScale) \(zoomingPageIndexes.arrayOfAllIndexes())")
     }
     
     public func didZoomPages(verso: VersoView, zoomingPageIndexes: IndexSet, zoomScale: CGFloat) {
-//        print ("did zoom \(zoomScale) \(zoomingPageIndexes.arrayOfAllIndexes())")
     }
     
     public func didEndZoomingPages(verso: VersoView, zoomingPageIndexes: IndexSet, zoomScale: CGFloat) {
@@ -731,12 +983,12 @@ extension PagedPublicationView : VersoViewDelegate {
 
 extension PagedPublicationView : PagedPublicationPageViewDelegate {
     
-    public func didFinishLoadingImage(pageView:PagedPublicationPageView, imageURL:URL, fromCache:Bool) {
+    public func didFinishLoadingImage(_ pageView:PagedPublicationPageView, imageURL:URL, fromCache:Bool) {
         
         let pageIndex = pageView.pageIndex
         
         if activePageIndexesWithPendingLoadEvents.contains(pageIndex),
-            let viewModel = pageViewModels?[sgn_safe:pageIndex] , viewModel.defaultImageURL == imageURL {
+            let viewModel = pageViewModels?[sgn_safe:pageIndex] , viewModel.viewImageURL == imageURL {
             
             // the page is active, and has not yet had its image loaded.
             // and the image url is the same as that of the viewModel at that page Index (view model hasnt changed since)
@@ -748,6 +1000,8 @@ extension PagedPublicationView : PagedPublicationPageViewDelegate {
             
             activePageIndexesWithPendingLoadEvents.remove(Int(pageIndex))
         }
+        
+        delegate?.didFinishLoadingPageImage(imageURL: imageURL, pageIndex: pageIndex, in: self)
     }
 //    public func didFinishLoadingZoomImage(pageView:PagedPublicationPageView, imageURL:NSURL, fromCache:Bool) {
 //    
@@ -767,33 +1021,13 @@ extension PagedPublicationView : HotspotOverlayViewDelegate {
         
         triggerEvent_PageTapped(pageIndex, location: locationInPage)
         
-        delegate?.didTapPage(pagedPublicationView: self, pageIndex: pageIndex, locationInPage: locationInPage, hotspots: hotspots)
+        delegate?.didTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
     func didLongPressHotspot(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {
         
         triggerEvent_PageLongPressed(pageIndex, location: locationInPage)
-                
-        delegate?.didLongPressPage(pagedPublicationView: self, pageIndex: pageIndex, locationInPage: locationInPage, hotspots: hotspots)
+        
+        delegate?.didLongPress(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
 }
-
-
-
-
-
-
-
-
-// Debug utilty for printing out indexSets
-extension IndexSet {
-    func arrayOfAllIndexes() -> [Int] {
-        var allIndexes = [Int]()        
-        self.forEach { (idx) in
-            allIndexes.append(idx)
-        }
-        return allIndexes
-    }
-}
-
-
 

@@ -12,6 +12,7 @@ import UIKit
 import Kingfisher
 import ShopGunSDK
 
+
 class PDFViewController : UIViewController {
     
     lazy var publicationView:PagedPublicationView = {
@@ -35,23 +36,72 @@ class PDFViewController : UIViewController {
         view.addSubview(publicationView)
         
         let publicationId = "efbbJc3"
+//        publicationView.reload(publicationId:publicationId)
+        let bgColor:UIColor? = nil //UIColor(red:0.01, green:0.18, blue:0.36, alpha:1.00)
+        let pageCount:Int = 0
         
-        fetchPublicationData(publicationId, delay:0.2) { [weak self] (viewModel) in
-            if let publication = viewModel {
-                
-                self?.publicationView.update(publication: publication, targetPageIndex:publication.pageCount-1)
-                
-                self?.setNeedsStatusBarAppearanceUpdate()
-                
-                fetchPublicationHotspotData(publicationId, aspectRatio:publication.aspectRatio, delay:1.5) { [weak self] (viewModels) in
-                    self?.publicationView.update(hotspots:viewModels)
-                }
-            }
-
-        }
-        fetchPublicationPageData(publicationId, delay:0.5) { [weak self] (viewModels) in
-            self?.publicationView.update(pages:viewModels)
-        }
+        publicationView.reload(with:LocalPublicationLoader(publicationId:publicationId,
+                                                           preloadedBackgroundColor:bgColor,
+                                                           preloadedPageCount:pageCount),
+                               targetPageIndex:12)
+        
+        
+        /* public interface:
+         
+         publicationView.reload(publicationId)
+         publicationView.reload(publicationId, targetPageIndex:2)
+         publicationView.reload(publicationId, backgroundColor:nil, pageCount:nil, targetPageIndex:2)
+            -> calls configureBasics w/ target page index
+                -> updates bg color
+                -> triggers verso page reload
+            -> builds a default graph loader (giving publicationID) (or maybe have loader class query in delegate)
+            -> calls reload with that loader:
+         publicationView.reload(loader:<>, targetPageIndex:2)
+            -> asks loader to start loading
+            -> on publication completion, loader callback triggers configureBasics w/ target page index (see above)
+            -> on pages completion, calls configurePages
+         
+         
+         
+         
+        */
+        /*
+            create loader with pubID (and viewmodel?)
+            
+            set loader as pubview datasource
+         
+            set pubiew bgcolor, if known
+         
+         
+            pubview.reloadPages() -> asks datasource
+            
+            pubview.setLoading() -> show spinner
+         
+         
+         
+         */
+        
+        
+        
+        
+//        publicationView.reload(with: PagedPublicationGraphLoader())
+        
+//        fetchPublicationData(publicationId, delay:0.2) { [weak self] (viewModel) in
+//            if let publication = viewModel {
+//                
+//                self?.publicationView.update(publication: publication, targetPageIndex:publication.pageCount-1)
+//                
+//                self?.setNeedsStatusBarAppearanceUpdate()
+//                
+//                fetchPublicationHotspotData(publicationId, aspectRatio:publication.aspectRatio, delay:1.5) { [weak self] (viewModels) in
+//                    self?.publicationView.update(hotspots:viewModels)
+//                }
+//            }
+//
+//        }
+//        fetchPublicationPageData(publicationId, delay:0.5) { [weak self] (viewModels) in
+//            self?.publicationView.update(pages:viewModels)
+//        }
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -67,6 +117,20 @@ class PDFViewController : UIViewController {
 }
 
 extension PDFViewController : PagedPublicationViewDataSource {
+    
+//    public func pageCount(for pagedPublicationView: PagedPublicationView) -> Int {
+//        return 0
+//    }
+//    
+//    public func hotspotViewModels(on pageIndex: Int, for pagedPublicationView: PagedPublicationView) -> [PagedPublicationHotspotViewModelProtocol] {
+//        return []
+//    }
+//
+//    public func pageViewModel(at pageIndex: Int, for pagedPublicationView: PagedPublicationView) -> PagedPublicationPageViewModel? {
+//        return nil
+//    }
+
+    
     func outroViewClass(pagedPublicationView: PagedPublicationView, size: CGSize) -> (OutroView.Type)? {
         return ExampleOutroView.self
     }
@@ -85,6 +149,15 @@ extension PDFViewController : PagedPublicationViewDataSource {
 //    func textForPageNumberLabel(pagedPublicationView: PagedPublicationView, pageIndexes: IndexSet, pageCount: Int) -> String? {
 //        return nil
 //    }
+    
+    func errorView(for error:Error?, in pagedPublicationView:PagedPublicationView) -> UIView? {
+        let errorView = UIView()
+        errorView.frame = CGRect(origin:CGPoint.zero, size:CGSize(width: 200, height: 200))
+        errorView.backgroundColor = UIColor.red
+        
+        return errorView
+    }
+
 }
 
 extension PDFViewController : PagedPublicationViewDelegate {
