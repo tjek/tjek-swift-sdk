@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AE06C0271D3F863A00BC8D47 /* ObjCTestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = AE06C0261D3F863A00BC8D47 /* ObjCTestClass.m */; };
-		AE58EDC91D546F3F002BC38A /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE58EDC81D546F3F002BC38A /* PDFViewController.swift */; };
+		AE58EDC91D546F3F002BC38A /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE58EDC81D546F3F002BC38A /* ExampleViewController.swift */; };
 		AE7D784D1D51DB1900B414CE /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; };
 		AE7D78521D51DB2500B414CE /* ShopGunSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE06C0141D3F6C1300BC8D47 /* ShopGunSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEA5AA011D3CB3F400DC5EA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEA5A9F81D3CB3F400DC5EA3 /* Assets.xcassets */; };
@@ -96,7 +96,7 @@
 		AE06C0251D3F863A00BC8D47 /* ObjCTestClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCTestClass.h; sourceTree = "<group>"; };
 		AE06C0261D3F863A00BC8D47 /* ObjCTestClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCTestClass.m; sourceTree = "<group>"; };
 		AE2520E21D507EB300847C29 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		AE58EDC81D546F3F002BC38A /* PDFViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
+		AE58EDC81D546F3F002BC38A /* ExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		AEA5A9F81D3CB3F400DC5EA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AEA5A9FA1D3CB3F400DC5EA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AEA5A9FC1D3CB3F400DC5EA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -146,7 +146,7 @@
 			children = (
 				AEA5A9FF1D3CB3F400DC5EA3 /* AppDelegate.swift */,
 				AEA5AA001D3CB3F400DC5EA3 /* ViewController.swift */,
-				AE58EDC81D546F3F002BC38A /* PDFViewController.swift */,
+				AE58EDC81D546F3F002BC38A /* ExampleViewController.swift */,
 				AEEF1F9E1DBDEC39005D6CD3 /* LocalPublicationLoader.swift */,
 				AED8A9B31D81595D00C92ED5 /* efbbJc3.json */,
 				AED8A9B81D815CDE00C92ED5 /* efbbJc3.pages.json */,
@@ -344,7 +344,7 @@
 				AEEF1F9F1DBDEC39005D6CD3 /* LocalPublicationLoader.swift in Sources */,
 				AED8A9BB1D81640000C92ED5 /* UIColorExtension.swift in Sources */,
 				AEA5AA051D3CB3F400DC5EA3 /* AppDelegate.swift in Sources */,
-				AE58EDC91D546F3F002BC38A /* PDFViewController.swift in Sources */,
+				AE58EDC91D546F3F002BC38A /* ExampleViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

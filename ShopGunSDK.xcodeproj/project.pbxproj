@@ -210,8 +210,7 @@
 				AED8A9B11D81496A00C92ED5 /* PagedPublicationHotspotOverlayView.swift */,
 				AE2312AC1D6C84B7006B84BA /* PagedPublicationViewModels.swift */,
 			);
-			name = PagedPublication;
-			path = PDFPublication;
+			path = PagedPublication;
 			sourceTree = "<group>";
 		};
 		AE7D782B1D50D88E00B414CE /* Frameworks */ = {

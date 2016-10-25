@@ -99,7 +99,6 @@ class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
             }
             
             DispatchQueue.main.async {
-                completion(nil)
                 completion(viewModel)
             }
         }

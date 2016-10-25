@@ -49,6 +49,7 @@ public protocol PagedPublicationViewDelegate : class {
     func outroDidAppear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView)
     func outroDidDisappear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView)
     
+    func didStartReloading(in pagedPublicationView:PagedPublicationView)
     func didLoad(publication publicationViewModel:PagedPublicationViewModelProtocol, in pagedPublicationView:PagedPublicationView)
     func didLoad(pages pageViewModels:[PagedPublicationPageViewModelProtocol], in pagedPublicationView:PagedPublicationView)
     func didLoad(hotspots hotspotViewModels:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView)
@@ -68,6 +69,7 @@ public extension PagedPublicationViewDelegate {
     func outroDidAppear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView) {}
     func outroDidDisappear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView) {}
     
+    func didStartReloading(in pagedPublicationView:PagedPublicationView) {}
     func didLoad(publication publicationViewModel:PagedPublicationViewModelProtocol, in pagedPublicationView:PagedPublicationView) {}
     func didLoad(pages pageViewModels:[PagedPublicationPageViewModelProtocol], in pagedPublicationView:PagedPublicationView) {}
     func didLoad(hotspots hotspotViewModels:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView) {}
@@ -80,29 +82,31 @@ public protocol PagedPublicationViewDataSource : PagedPublicationViewDataSourceO
 public typealias OutroView = VersoPageView
 public protocol PagedPublicationViewDataSourceOptional : class {
     
-    func outroViewClass(pagedPublicationView:PagedPublicationView, size:CGSize) -> (OutroView.Type)?
-    func configureOutroView(pagedPublicationView:PagedPublicationView, outroView:OutroView)
-    func outroViewWidth(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat
-    func outroViewMaxZoom(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat
+    func configure(outroView:OutroView, for pagedPublicationView:PagedPublicationView)
+    func outroViewClass(for pagedPublicationView:PagedPublicationView) -> (OutroView.Type)?
+    func outroViewWidth(for pagedPublicationView:PagedPublicationView) -> CGFloat
+    func outroViewMaxZoom(for pagedPublicationView:PagedPublicationView) -> CGFloat
 
-    func textForPageNumberLabel(pagedPublicationView:PagedPublicationView, pageIndexes:IndexSet, pageCount:Int) -> String?
+
+    func textForPageNumberLabel(pageIndexes:IndexSet, pageCount:Int, for pagedPublicationView:PagedPublicationView) -> String?
     
-    func errorView(for error:Error?, in pagedPublicationView:PagedPublicationView) -> UIView?
+    func errorView(with error:Error?, for pagedPublicationView:PagedPublicationView) -> UIView?
 }
 
 // Default values for datasource
 public extension PagedPublicationViewDataSourceOptional {
-    func configureOutroView(pagedPublicationView:PagedPublicationView, outroView:VersoPageView) { }
-    func outroViewClass(pagedPublicationView:PagedPublicationView, size:CGSize) -> (OutroView.Type)? {
+    func configure(outroView:OutroView, for pagedPublicationView:PagedPublicationView) { }
+    func outroViewClass(for pagedPublicationView:PagedPublicationView) -> (OutroView.Type)? {
         return nil
     }
-    func outroViewWidth(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat {
+    func outroViewWidth(for pagedPublicationView:PagedPublicationView) -> CGFloat {
         return 0.9
     }
-    func outroViewMaxZoom(pagedPublicationView:PagedPublicationView, size:CGSize) -> CGFloat {
+    func outroViewMaxZoom(for pagedPublicationView:PagedPublicationView) -> CGFloat {
         return 1.0
     }
-    func textForPageNumberLabel(pagedPublicationView:PagedPublicationView, pageIndexes:IndexSet, pageCount:Int) -> String? {
+    
+    func textForPageNumberLabel(pageIndexes:IndexSet, pageCount:Int, for pagedPublicationView:PagedPublicationView) -> String? {
         if pageIndexes.count == 1 {
             return "\(pageIndexes.first!+1) / \(pageCount)"
         }
@@ -111,7 +115,8 @@ public extension PagedPublicationViewDataSourceOptional {
         }
         return nil
     }
-    func errorView(for error:Error?, in pagedPublicationView:PagedPublicationView) -> UIView? {
+    
+    func errorView(with error:Error?, for pagedPublicationView:PagedPublicationView) -> UIView? {
         return nil
     }
 }
@@ -248,27 +253,33 @@ open class PagedPublicationView : UIView {
     
     open func reload(with loader:PagedPublicationLoaderProtocol, targetPageIndex:Int = 0) {
         DispatchQueue.main.async { [weak self] in
+            guard let s = self else { return }
             
-            self?.publicationId = loader.publicationId
+            // TODO: what if we have already started reloading?
+            
+            s.publicationId = loader.publicationId
             
             
             // where to go to after configuration ends
-            self?.postConfigureTargetPageIndex = targetPageIndex
+            s.postConfigureTargetPageIndex = targetPageIndex
             
             // reset model properties
-            self?.publicationViewModel = nil
-            self?.pageViewModels = nil
-            self?.hotspotsByPageIndex = nil
-            self?.hotspotOverlayView.isHidden = true
-            self?.publicationAspectRatio = 0
+            s.publicationViewModel = nil
+            s.pageViewModels = nil
+            s.hotspotsByPageIndex = nil
+            s.hotspotOverlayView.isHidden = true
+            s.publicationAspectRatio = 0
             
             
             
             // this shows the loading spinner if we dont have a pagecount
-            self?.configureBasics(backgroundColor: loader.preloadedBackgroundColor ?? nil,
-                                  pageCount:  loader.preloadedPageCount ?? 0,
-                                  targetPageIndex: targetPageIndex)
+            s.configureBasics(backgroundColor: loader.preloadedBackgroundColor ?? nil,
+                              pageCount:  loader.preloadedPageCount ?? 0,
+                              targetPageIndex: targetPageIndex)
             
+            
+            
+            s.delegate?.didStartReloading(in:s)
             
             // The callback when the basic publication details are loaded
             let publicationLoaded:PagedPublicationLoaderProtocol.PublicationLoadedHandler = { (loadedPublicationViewModel, error) in
@@ -488,7 +499,7 @@ open class PagedPublicationView : UIView {
     }
     
     fileprivate func configureError(with error:Error?) {
-        if let errorView = dataSource?.errorView(for: error, in: self) {
+        if let errorView = dataSource?.errorView(with: error, for: self) {
             
             insertSubview(errorView, belowSubview: verso)
             
@@ -744,7 +755,7 @@ extension PagedPublicationView : VersoViewDataSource {
             }
         }
         else if type(of: pageView) === self.outroViewProperties.viewClass {
-            dataSourceOptional.configureOutroView(pagedPublicationView: self, outroView: pageView)
+            dataSourceOptional.configure(outroView:pageView, for:self)
         }
     }
     
@@ -760,9 +771,9 @@ extension PagedPublicationView : VersoViewDataSource {
     public func spreadConfiguration(verso:VersoView, size:CGSize) -> VersoSpreadConfiguration {
         
         // update outro properties from datasource
-        outroViewProperties = (dataSourceOptional.outroViewClass(pagedPublicationView: self, size:size),
-                               dataSourceOptional.outroViewWidth(pagedPublicationView: self, size:size),
-                               dataSourceOptional.outroViewMaxZoom(pagedPublicationView: self, size:size))
+        outroViewProperties = (dataSourceOptional.outroViewClass(for:self),
+                               dataSourceOptional.outroViewWidth(for:self),
+                               dataSourceOptional.outroViewMaxZoom(for:self))
         
         let outroIndex = outroPageIndex
         let totalPageCount = pageCount > 0 && outroIndex != nil ? pageCount + 1 : pageCount
@@ -868,19 +879,19 @@ extension PagedPublicationView : VersoViewDelegate {
     public func currentPageIndexesChanged(verso:VersoView, pageIndexes:IndexSet, added:IndexSet, removed:IndexSet) {
         
         DispatchQueue.main.async { [weak self] in
-            guard self != nil else { return }
+            guard let s = self else { return }
             
             // update the page number label's text and fade in, then out
             let newLabelText:String?
             
-            if let outroIndex = self?.outroPageIndex, pageIndexes.contains(outroIndex) {
+            if let outroIndex = s.outroPageIndex, pageIndexes.contains(outroIndex) {
                 newLabelText = nil
             }
             else {
-                newLabelText = self!.dataSourceOptional.textForPageNumberLabel(pagedPublicationView: self!, pageIndexes: pageIndexes, pageCount: self!.pageCount)
+                newLabelText = s.dataSourceOptional.textForPageNumberLabel(pageIndexes: pageIndexes, pageCount: s.pageCount, for:s)
             }
             
-            self!.updatePageNumberLabel(withText: newLabelText)
+            s.updatePageNumberLabel(withText: newLabelText)
         }
         
         let oldPageIndexes = pageIndexes.subtracting(added).union(removed)
