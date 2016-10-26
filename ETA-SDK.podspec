@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.subspec 'API' do |ss|
     ss.source_files = 'ETA-SDK/ETA.{h,m}', 'ETA-SDK/API/**/*.{h,m}'
       
-    ss.dependency 'AFNetworking', '~> 3.0.0'
+    ss.dependency 'AFNetworking', '~> 3.1.0'
     ss.dependency 'Mantle', '~> 1.5.6'
     ss.dependency 'MAKVONotificationCenter', '~> 0.0.2'
     ss.dependency 'CocoaLumberjack', '~> 1.9.0'
