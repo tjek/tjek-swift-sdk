@@ -410,7 +410,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = ShopGun;
 				TargetAttributes = {
 					AE06BFEF1D3E9BB100BC8D47 = {

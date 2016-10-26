@@ -9,6 +9,8 @@
 
 #include "Shared/Project/Release.xcconfig"
 
+CLANG_WARN_SUSPICIOUS_MOVE = YES
+
 // Use fast optimization rather than whole-module, as it is causing a problem.
 // The issue is a linker error saying "Undefined symbols" &  "Verso.VersoPageView.pageIndex.getter : Swift.Int" when subclassing VersoPageView & building with whole-module-optimization. Gah.
 SWIFT_OPTIMIZATION_LEVEL = -O

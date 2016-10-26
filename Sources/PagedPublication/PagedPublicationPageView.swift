@@ -191,7 +191,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
                 // TODO: handle failed image load
                 // tell delegate? show error? retry?
                 // maybe cache failed image urls to re-fail quickly?
-                print("image load failed", error?.localizedDescription, error?.code)
+                print("image load failed", error?.localizedDescription ?? "", error?.code ?? "")
                 
                 self!.imageLoadState = .failed
             }

@@ -8,3 +8,5 @@
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
 #include "Shared/Project/Debug.xcconfig"
+
+CLANG_WARN_SUSPICIOUS_MOVE = YES
