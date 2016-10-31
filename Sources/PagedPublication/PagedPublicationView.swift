@@ -17,6 +17,9 @@ public protocol PagedPublicationLoaderProtocol {
     /// the publication that is being loaded
     var publicationId:String { get }
     
+    /// where the loader loads it's data from (eg. 'legacy' or 'graph')
+    var sourceType:String { get }
+    
     /// An optional view model that is used to configure the publication before any loading begins
     var preloadedPublication:PagedPublicationViewModelProtocol? { get }
 
@@ -38,6 +41,7 @@ public protocol PagedPublicationViewDelegate : class {
     
     func didTap(pageIndex:Int, locationInPage:CGPoint, hittingHotspots:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView)
     func didLongPress(pageIndex:Int, locationInPage:CGPoint, hittingHotspots:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView)
+    func didDoubleTap(pageIndex:Int, locationInPage:CGPoint, hittingHotspots:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView)
     
     func didFinishLoadingPageImage(imageURL:URL, pageIndex:Int, in pagedPublicationView:PagedPublicationView)
     
@@ -58,7 +62,8 @@ public extension PagedPublicationViewDelegate {
     
     func didTap(pageIndex:Int, locationInPage:CGPoint, hittingHotspots:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView) {}
     func didLongPress(pageIndex:Int, locationInPage:CGPoint, hittingHotspots:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView) {}
-    
+    func didDoubleTap(pageIndex:Int, locationInPage:CGPoint, hittingHotspots:[PagedPublicationHotspotViewModelProtocol], in pagedPublicationView:PagedPublicationView) {}
+
     func didFinishLoadingPageImage(imageURL:URL, pageIndex:Int, in pagedPublicationView:PagedPublicationView) {}
     
     func outroDidAppear(_ outroView:OutroView, in pagedPublicationView:PagedPublicationView) {}
@@ -124,11 +129,6 @@ open class PagedPublicationView : UIView {
 
     public override init(frame: CGRect) {
         super.init(frame:frame)
-        
-        
-        // setup notifications
-        NotificationCenter.default.addObserver(self, selector: #selector(PagedPublicationView._didEnterBackgroundNotification(_:)), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)        
-        NotificationCenter.default.addObserver(self, selector: #selector(PagedPublicationView._willEnterForegroundNotification(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         
         
         addSubview(loadingSpinnerView)
@@ -251,9 +251,9 @@ open class PagedPublicationView : UIView {
             s.reloadId += 1
             let activeReloadId = s.reloadId
             
+            let loadingPublicationId = loader.publicationId
             
-            
-            s.publicationId = loader.publicationId
+            s.publicationId = loadingPublicationId
             
             // where to go to after configuration ends
             s.postReloadPageIndex = pageIndex
@@ -271,8 +271,7 @@ open class PagedPublicationView : UIView {
                               pageCount:  loader.preloadedPublication?.pageCount ?? 0,
                               aspectRatio: loader.preloadedPublication?.aspectRatio ?? 0,
                               jumpTo: pageIndex)
-            
-            
+
             
             s.delegate?.didStartReloading(in:s)
             
@@ -291,10 +290,16 @@ open class PagedPublicationView : UIView {
                         return
                     }
                     
-                    
-
                     if let pubVM = loadedPublicationViewModel {
                         
+                        // successful reload, event handler can now call opened & didAppear
+                        if s.lifecycleEventHandler == nil || s.lifecycleEventHandler!.publicationId != pubVM.publicationId {
+                            s.lifecycleEventHandler = PagedPublicationLifecycleEventHandler(publicationId: pubVM.publicationId, ownerId: pubVM.ownerId, idSource: loader.sourceType)
+                            s.lifecycleEventHandler?.opened()
+                            s.lifecycleEventHandler?.didAppear()
+                        }
+                        
+
                         s.publicationViewModel = pubVM
                         
                         // use the viewmodel to update the basics
@@ -373,27 +378,29 @@ open class PagedPublicationView : UIView {
     }
     
     
-    /// Tell the page publication that it is no longer visible.
-    /// (eg. a view has been placed over the top of the PagedPublicationView, so the content is no longer visible)
-    /// This will pause event collection, until `didEnterForeground` is called again.
-    public func didEnterBackground() {
-        for pageIndex in verso.currentPageIndexes {
-            _pageDidDisappear(pageIndex)
-        }
-    }
     
     /// Tell the page publication that it is now visible again.
     /// (eg. when a view that was placed over the top of this view is removed, and the content becomes visible again).
     /// This will restart event collection. You MUST remember to call this if you previously called `didEnterBackground`, otherwise
     /// the PagePublicationView will not function correctly.
     public func didEnterForeground() {
-        for pageIndex in verso.currentPageIndexes {
-            _pageDidAppear(pageIndex)
-        }
+        
+        // start listening for the app going into the background
+        NotificationCenter.default.addObserver(self, selector: #selector(PagedPublicationView._didEnterBackgroundNotification(_:)), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        
+        lifecycleEventHandler?.didAppear()
     }
     
-    
-    
+    /// Tell the page publication that it is no longer visible.
+    /// (eg. a view has been placed over the top of the PagedPublicationView, so the content is no longer visible)
+    /// This will pause event collection, until `didEnterForeground` is called again.
+    public func didEnterBackground() {
+        
+        // stop listening for going into the background
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        
+        lifecycleEventHandler?.didDisappear()
+    }
     
     
     
@@ -410,6 +417,8 @@ open class PagedPublicationView : UIView {
             return outroViewProperties.viewClass != nil && pageCount > 0 ? pageCount : nil
         }
     }
+    
+    fileprivate var lifecycleEventHandler:PagedPublicationLifecycleEventHandler?
     
     
     lazy fileprivate var verso:VersoView = {
@@ -700,94 +709,23 @@ open class PagedPublicationView : UIView {
     
     
     
-    
-    /// The indexes of active pages that havnt been loaded yet. This set changes when pages are activated and deactivated, and when images are loaded
-    /// Used by the PagedPublicationPageViewDelegate methods
-    fileprivate var activePageIndexesWithPendingLoadEvents = NSMutableIndexSet()
-    
-    
-    
-    
-    
-    
-    
-    // MARK: Page Zooming
-    
-    /// a list of the pageIndexes that are activelty being zoomed (empty if not zoomed in)
-    fileprivate var zoomedPageIndexes:IndexSet = IndexSet()
-    
-    fileprivate func _didZoomOut() {
-        triggerEvent_PageSpreadZoomedOut(zoomedPageIndexes)
-        zoomedPageIndexes = IndexSet()
-    }
-    
-    fileprivate func _didZoomIn(_ zoomingPageIndexes:IndexSet) {
-        triggerEvent_PageSpreadZoomedIn(zoomingPageIndexes)
-        zoomedPageIndexes = zoomingPageIndexes
-    }
-    
-    
-    
-    
     // MARK: Page Appearance/Disappearance
     
     @objc
     fileprivate func _didEnterBackgroundNotification(_ notification:Notification) {
+        
+        // once in the background, listen for coming back to the foreground again
+        NotificationCenter.default.addObserver(self, selector: #selector(PagedPublicationView._willEnterForegroundNotification(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        
         didEnterBackground()
     }
     @objc
     fileprivate func _willEnterForegroundNotification(_ notification:Notification) {
+        
+        // once in the foreground, stop listen for that again
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        
         didEnterForeground()
-    }
-
-    
-    /// page indexes that have had the _appeared_ event triggered. when `disappeared` they are removed from here
-    fileprivate var appearedPages:Set<Int> = []
-    
-    fileprivate func _pageDidAppear(_ pageIndex:Int) {
-        guard appearedPages.contains(pageIndex) == false else {
-            return
-        }
-        
-        appearedPages.insert(pageIndex)
-        
-        
-        // scrolling animation stopped and a new set of page Indexes are now visible.
-        // trigger 'PAGE_APPEARED' event
-        triggerEvent_PageAppeared(pageIndex)
-        
-        
-        // if image loaded then trigger 'PAGE_LOADED' event
-        if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView,
-            pageView.imageLoadState == .loaded {
-            
-            triggerEvent_PageLoaded(pageIndex, fromCache: true)
-        }
-        else {
-            // page became active but image hasnt yet loaded... keep track of it
-            activePageIndexesWithPendingLoadEvents.add(pageIndex)
-        }
-    }
-    
-    fileprivate func _pageDidDisappear(_ pageIndex:Int) {
-        
-        guard appearedPages.contains(pageIndex) else {
-            return
-        }
-        
-        appearedPages.remove(pageIndex)
-        
-        
-        activePageIndexesWithPendingLoadEvents.remove(pageIndex)
-        
-        // trigger a 'PAGE_DISAPPEARED event
-        triggerEvent_PageDisappeared(pageIndex)
-        
-        
-        // cancel the loading of the zoomimage
-        if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView {
-            pageView.clearZoomImage(animated: false)
-        }
     }
 }
 
@@ -802,7 +740,7 @@ open class PagedPublicationView : UIView {
 
 extension PagedPublicationView : VersoViewDataSource {
 
-    public func configurePage(verso: VersoView, pageView: VersoPageView) {
+    public func configure(pageView:VersoPageView, for verso:VersoView) {
         
         if let pubPage = pageView as? PagedPublicationPageView {
             
@@ -834,7 +772,7 @@ extension PagedPublicationView : VersoViewDataSource {
         }
     }
     
-    public func pageViewClass(verso:VersoView, pageIndex:Int) -> VersoPageViewClass {
+    public func pageViewClass(on pageIndex:Int, for verso:VersoView) -> VersoPageViewClass {
         if outroPageIndex == pageIndex {
             return outroViewProperties.viewClass ?? VersoPageView.self
         }
@@ -843,7 +781,7 @@ extension PagedPublicationView : VersoViewDataSource {
         }
     }
     
-    public func spreadConfiguration(verso:VersoView, size:CGSize) -> VersoSpreadConfiguration {
+    public func spreadConfiguration(with size:CGSize, for verso:VersoView) -> VersoSpreadConfiguration {
         
         // update outro properties from datasource
         outroViewProperties = (dataSourceOptional.outroViewClass(for:self),
@@ -878,31 +816,27 @@ extension PagedPublicationView : VersoViewDataSource {
     }
     
     
-    public func spreadOverlayView(verso: VersoView, overlaySize: CGSize, pageFrames: [Int : CGRect]) -> UIView? {
+    public func spreadOverlayView(overlaySize:CGSize, pageFrames:[Int:CGRect], for verso:VersoView) -> UIView? {
         
         // no overlay for outro
         guard (outroPageIndex != nil && pageFrames[outroPageIndex!] != nil) == false else {
             return nil
         }
         
-        // no hotspots to show
-        guard hotspotsByPageIndex != nil else {
-            return nil
-        }
         
         // get the hotspots for this spread - dont add hotspots more than once
         var spreadHotspots:[PagedPublicationHotspotViewModelProtocol] = []
-        for (pageIndex, _) in pageFrames {
-            if let hotspots = hotspotsByPageIndex![pageIndex] {
-                for hotspot in hotspots {                    
-                    if spreadHotspots.contains(where:{ $0 === hotspot }) == false {
-                        spreadHotspots.append(hotspot)
+        
+        if hotspotsByPageIndex != nil {
+            for (pageIndex, _) in pageFrames {
+                if let hotspots = hotspotsByPageIndex![pageIndex] {
+                    for hotspot in hotspots {
+                        if spreadHotspots.contains(where:{ $0 === hotspot }) == false {
+                            spreadHotspots.append(hotspot)
+                        }
                     }
                 }
             }
-        }
-        if spreadHotspots.count == 0 {
-            return nil
         }
         
         // configure the overlay
@@ -920,7 +854,7 @@ extension PagedPublicationView : VersoViewDataSource {
     }
     
 
-    public func adjustPreloadPageIndexes(verso: VersoView, visiblePageIndexes: IndexSet, preloadPageIndexes:IndexSet) -> IndexSet? {
+    public func adjustPreloadPageIndexes(_ preloadPageIndexes:IndexSet, visiblePageIndexes:IndexSet, for verso:VersoView) -> IndexSet? {
         
         guard let realOutroPageIndex = outroPageIndex, visiblePageIndexes.count > 0 else {
             return nil
@@ -951,7 +885,9 @@ extension PagedPublicationView : VersoViewDataSource {
 
 extension PagedPublicationView : VersoViewDelegate {
     
-    public func currentPageIndexesChanged(verso:VersoView, pageIndexes:IndexSet, added:IndexSet, removed:IndexSet) {
+    public func currentPageIndexesChanged(current currentPageIndexes:IndexSet, previous oldPageIndexes:IndexSet, in verso:VersoView) {
+        
+        lifecycleEventHandler?.clearSpreadEventHandler()
         
         DispatchQueue.main.async { [weak self] in
             guard let s = self else { return }
@@ -959,72 +895,77 @@ extension PagedPublicationView : VersoViewDelegate {
             // update the page number label's text and fade in, then out
             let newLabelText:String?
             
-            if let outroIndex = s.outroPageIndex, pageIndexes.contains(outroIndex) {
+            if let outroIndex = s.outroPageIndex, currentPageIndexes.contains(outroIndex) {
                 newLabelText = nil
             }
             else {
-                newLabelText = s.dataSourceOptional.textForPageNumberLabel(pageIndexes: pageIndexes, pageCount: s.pageCount, for:s)
+                newLabelText = s.dataSourceOptional.textForPageNumberLabel(pageIndexes: currentPageIndexes, pageCount: s.pageCount, for:s)
             }
             
             s.updatePageNumberLabel(withText: newLabelText)
         }
         
-        let oldPageIndexes = pageIndexes.subtracting(added).union(removed)
-
-        delegate?.pageIndexesChanged(current: pageIndexes, previous: oldPageIndexes, in: self)
+        delegate?.pageIndexesChanged(current: currentPageIndexes, previous: oldPageIndexes, in: self)
+        
         
         if let outroIndex = outroPageIndex, let outroView = verso.getPageViewIfLoaded(outroIndex) {
-            if added.contains(outroIndex) {
+            
+            let addedIndexes = currentPageIndexes.subtracting(oldPageIndexes)
+            let removedIndexes = oldPageIndexes.subtracting(currentPageIndexes)
+
+            if addedIndexes.contains(outroIndex) {
                 delegate?.outroDidAppear(outroView, in: self)
-            } else if removed.contains(outroIndex) {
+            } else if removedIndexes.contains(outroIndex) {
                 delegate?.outroDidDisappear(outroView, in: self)
             }
         }
     }
-    public func currentPageIndexesFinishedChanging(verso: VersoView, pageIndexes: IndexSet, added: IndexSet, removed: IndexSet) {
+    
+    public func currentPageIndexesFinishedChanging(current currentPageIndexes:IndexSet, previous oldPageIndexes:IndexSet, in verso:VersoView) {
 
-        // pages changed while we were zoomed in - trigger a zoom-out event
-        if zoomedPageIndexes.count > 0 && pageIndexes != zoomedPageIndexes {
-            _didZoomOut()
+        
+        // make a new spreadEventHandler (unless it's the outro)
+        if (outroPageIndex == nil || currentPageIndexes.contains(outroPageIndex!) == false) {
+            
+            lifecycleEventHandler?.newSpreadEventHandler(for: currentPageIndexes)
+            
+            for pageIndex in currentPageIndexes {
+                if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView, pageView.imageLoadState == .loaded {
+                    lifecycleEventHandler?.spreadEventHandler?.pageLoaded(pageIndex: pageIndex)
+                }
+            }
+            
+            if verso.zoomScale > 1 {
+                lifecycleEventHandler?.spreadEventHandler?.didZoomIn()
+            }
+        }
+
+        
+        // cancel the loading of the zoomimage after a page disappears
+        let removedIndexes = oldPageIndexes.subtracting(currentPageIndexes)
+        for pageIndex in removedIndexes {
+            if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView {
+                pageView.clearZoomImage(animated: false)
+            }
         }
         
-        // find the oldPageIndexes, and trigger change event if it was a change
-        let oldPageIndexes = pageIndexes.subtracting(added).union(removed)
-        if oldPageIndexes.count > 0 {
-            triggerEvent_PageSpreadChanged(oldPageIndexes, newPageIndexes: pageIndexes)
-        }
-        
-        
-        // go through all the newly added page indexes, triggering `appeared` (and possibly `loaded`) events
-        for pageIndex in added {
-            // scrolling animation stopped and a new set of page Indexes are now visible.
-            _pageDidAppear(pageIndex)
-        }
-        
-        // go through all the newly removed page indexes, triggering `disappeared` events and removing them from pending list
-        for pageIndex in removed {
-            _pageDidDisappear(pageIndex)
-        }
-        
-        delegate?.pageIndexesFinishedChanging(current: pageIndexes, previous: oldPageIndexes, in: self)
+        delegate?.pageIndexesFinishedChanging(current:currentPageIndexes, previous: oldPageIndexes, in: self)
     }
 
-    public func visiblePageIndexesChanged(verso: VersoView, pageIndexes: IndexSet, added: IndexSet, removed: IndexSet) {
-        
-    }
+//    public func visiblePageIndexesChanged(current currentPageIndexes:IndexSet, previous oldPageIndexes:IndexSet, in verso:VersoView) {
+//        
+//    }
+//    public func didStartZooming(pages pageIndexes:IndexSet, zoomScale:CGFloat, in verso:VersoView) {
+//        
+//    }
+//    public func didZoom(pages pageIndexes:IndexSet, zoomScale:CGFloat, in verso:VersoView) {
+//        
+//    }
     
-    
-    public func didStartZoomingPages(verso: VersoView, zoomingPageIndexes: IndexSet, zoomScale: CGFloat) {
-    }
-    
-    public func didZoomPages(verso: VersoView, zoomingPageIndexes: IndexSet, zoomScale: CGFloat) {
-    }
-    
-    public func didEndZoomingPages(verso: VersoView, zoomingPageIndexes: IndexSet, zoomScale: CGFloat) {
+    public func didEndZooming(pages pageIndexes:IndexSet, zoomScale:CGFloat, in verso:VersoView) {
         
         if zoomScale > 1 {
-            
-            for pageIndex in zoomingPageIndexes {
+            for pageIndex in pageIndexes {
                 if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView
                     , pageView.zoomImageLoadState == .notLoaded,
                     let zoomImageURL = pageViewModels?[sgn_safe:pageIndex]?.zoomImageURL {
@@ -1034,26 +975,11 @@ extension PagedPublicationView : VersoViewDelegate {
                     
                 }
             }
+            
+            lifecycleEventHandler?.spreadEventHandler?.didZoomIn()
         }
-        
-        // Handle a weird case where we think we are zoomed in, but what we are no zoomed into
-        // is not what we have just zoomed into (eg. some page layout happened that we didnt respond to)
-        // In this case trigger a zoom out event for existing zoomed-in pages, and reset the zoomed-in page indexes
-        if zoomedPageIndexes != zoomingPageIndexes && zoomedPageIndexes.count > 0 {
-            _didZoomOut()
-        }
-        
-        
-        // We are not zoomed in and we are being told that Verso has zoomed in.
-        // Trigger a zoom-in event, and remember that we have done so.
-        if zoomedPageIndexes.count == 0 && zoomingPageIndexes.count > 0 && zoomScale > 1 {
-            _didZoomIn(zoomingPageIndexes)
-        }
-        // We are now zoomed out fully of the pages we were previously zoomed into.
-        // Trigger zoom-out event, and remember that we are now not zoomed in.
-        else if zoomedPageIndexes == zoomingPageIndexes && zoomScale <= 1 {
-            // there were some zoomed in pages, but now we have zoomed out, so trigger zoom-out event
-            _didZoomOut()
+        else {
+            lifecycleEventHandler?.spreadEventHandler?.didZoomOut()
         }
     }
     
@@ -1069,47 +995,50 @@ extension PagedPublicationView : VersoViewDelegate {
 
 extension PagedPublicationView : PagedPublicationPageViewDelegate {
 //    public func didConfigure(pageView: PagedPublicationPageView, with viewModel: PagedPublicationPageViewModelProtocol) {
+//        
 //    }
+    
     public func didFinishLoading(viewImage imageURL:URL, fromCache:Bool, in pageView:PagedPublicationPageView) {
         let pageIndex = pageView.pageIndex
         
-        if activePageIndexesWithPendingLoadEvents.contains(pageIndex),
-            let viewModel = pageViewModels?[sgn_safe:pageIndex] , viewModel.viewImageURL == imageURL {
-            
-            // the page is active, and has not yet had its image loaded.
-            // and the image url is the same as that of the viewModel at that page Index (view model hasnt changed since)
-            // so trigger 'PAGE_LOADED' event
-            // Only do this if the app is active - otherwise, when the app went into the background, we have sent a disappeared event
-            if UIApplication.shared.applicationState == .active {
-                triggerEvent_PageLoaded(pageIndex, fromCache: fromCache)
-            }
-            
-            activePageIndexesWithPendingLoadEvents.remove(Int(pageIndex))
-        }
+        // tell the spread that the image loaded. 
+        // Will be ignored if page isnt part of the spread
+        lifecycleEventHandler?.spreadEventHandler?.pageLoaded(pageIndex: pageIndex)
+
         
         delegate?.didFinishLoadingPageImage(imageURL: imageURL, pageIndex: pageIndex, in: self)
     }
     
 //    public func didFinishLoading(zoomImage imageURL:URL, fromCache:Bool, in pageView:PagedPublicationPageView) {
+//        
 //    }
 }
 
 
 
 
+// MARK: - Hotspot Overlay delegate
+
 extension PagedPublicationView : HotspotOverlayViewDelegate {
     
     func didTapHotspot(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {
         
-        triggerEvent_PageTapped(pageIndex, location: locationInPage)
+        lifecycleEventHandler?.spreadEventHandler?.pageTapped(pageIndex: pageIndex, location: locationInPage, hittingHotspots: (hotspots.count > 0))
         
         delegate?.didTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
     func didLongPressHotspot(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {
         
-        triggerEvent_PageLongPressed(pageIndex, location: locationInPage)
+        lifecycleEventHandler?.spreadEventHandler?.pageLongPressed(pageIndex: pageIndex, location: locationInPage)
         
         delegate?.didLongPress(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
+    }
+    
+    func didDoubleTapHotspot(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {
+        
+        lifecycleEventHandler?.spreadEventHandler?.pageDoubleTapped(pageIndex: pageIndex, location: locationInPage)
+        
+        delegate?.didDoubleTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
 }
 

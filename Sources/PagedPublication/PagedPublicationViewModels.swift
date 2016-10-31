@@ -15,7 +15,10 @@ import UIKit
 public protocol PagedPublicationViewModelProtocol {
     
     /// The identifier of the publication
-    var uuid:String { get }
+    var publicationId:String { get }
+    
+    /// The identifier of the provider of the publication
+    var ownerId:String { get }
     
     /// the background brand color of the publication
     var bgColor:UIColor { get }
@@ -33,41 +36,20 @@ public protocol PagedPublicationViewModelProtocol {
 @objc (SGNPagedPublicationViewModel)
 open class PagedPublicationViewModel : NSObject, PagedPublicationViewModelProtocol {
     
-    public var uuid:String
-    
-    /// the background brand color of the publication
+    public var publicationId:String
+    public var ownerId:String
     public var bgColor:UIColor
-    
-    /// expected total number of pages. Should be ≤0 if unknown.
     public var pageCount:Int
-    
-    /// width/height ratio of pages in this publication. Should be ≤0 if unknown.
     public var aspectRatio:CGFloat = 0
     
-    public init(uuid:String, bgColor:UIColor, pageCount:Int, aspectRatio:CGFloat) {
-        self.uuid = uuid
+    public init(publicationId:String, ownerId:String, bgColor:UIColor, pageCount:Int, aspectRatio:CGFloat) {
+        self.publicationId = publicationId
+        self.ownerId = ownerId
         self.bgColor = bgColor
         self.pageCount = pageCount
         self.aspectRatio = aspectRatio
     }
 }
-
-
-
-//@objc (SGNPagedPublicationPageViewModelProtocol)
-//public protocol PagedPublicationPageViewModelProtocol {
-//    var pageIndex: Int { get }
-//    
-//    var pageTitle:String? { get }
-//    var aspectRatio:CGFloat{ get }
-//    
-//    var defaultImageURL:URL? { get }
-//    
-//    var zoomImageURL:URL? { get }
-//    
-//    var thumbImageURL:URL? { get }
-//}
-
 
 
 

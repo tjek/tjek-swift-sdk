@@ -10,7 +10,6 @@
 import Foundation
 
 
-
 @objc(SGNEventsTracker)
 public class EventsTracker : NSObject {
     
@@ -263,3 +262,34 @@ public class EventsTracker : NSObject {
     
 }
 
+
+
+/// A standard event protocol. Any object that claims to be an event must conform at the very least to this protocol.
+@objc(SGNEventProtocol)
+public protocol EventProtocol {
+    var type:String { get }
+    
+    func getProperties() -> [String:AnyObject]?
+}
+
+public extension EventProtocol {
+    // make getProperties optional
+    func getProperties() -> [String:AnyObject]? { return nil }
+}
+
+public extension EventProtocol {
+    // utility track method
+    func track(with tracker:EventsTracker? = EventsTracker.sharedTracker) {
+        guard let t = tracker else {
+            // trying to track an event without a tracker. WARN?
+            return
+        }
+        t.track(event: self)
+    }
+}
+
+public extension EventsTracker {
+    func track(event:EventProtocol) {
+        self.trackEvent(event.type, properties: event.getProperties())
+    }
+}

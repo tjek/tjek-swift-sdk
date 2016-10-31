@@ -15,12 +15,15 @@ protocol HotspotOverlayViewDelegate : class {
     
     func didTapHotspot(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint)
     func didLongPressHotspot(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint)
+    func didDoubleTapHotspot(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint)
+
 }
 
 extension HotspotOverlayViewDelegate {
     
     func didTapHotspot(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {}
     func didLongPressHotspot(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {}
+    func didDoubleTapHotspot(overlay:PagedPublicationView.HotspotOverlayView, hotspots:[PagedPublicationHotspotViewModelProtocol], hotspotViews:[UIView], locationInOverlay:CGPoint, pageIndex:Int, locationInPage:CGPoint) {}
 }
 
 
@@ -64,6 +67,19 @@ extension PagedPublicationView {
 
         weak var delegate:HotspotOverlayViewDelegate?
         
+        fileprivate func _getTargetPage(forGesture gesture:UIGestureRecognizer) -> (index:Int, location:CGPoint)? {
+            
+            // find the page that the gesture occurred in
+            var possibleTargetPage:(index:Int, location:CGPoint)?
+            for (pageIndex, pageView) in pageViews {
+                let pageLocation = gesture.location(in: pageView)
+                if pageView.bounds.isEmpty == false && pageView.bounds.contains(pageLocation) {
+                    possibleTargetPage = (index:pageIndex, location:CGPoint(x:pageLocation.x/pageView.bounds.size.width, y:pageLocation.y/pageView.bounds.size.height))
+                    break
+                }
+            }
+            return possibleTargetPage
+        }
         
         fileprivate func _getHotspotsAtPoint(_ location:CGPoint) -> (views:[UIView], models:[PagedPublicationHotspotViewModelProtocol]) {
             
@@ -89,7 +105,8 @@ extension PagedPublicationView {
         var touchGesture:UILongPressGestureRecognizer?
         var tapGesture:UITapGestureRecognizer?
         var longPressGesture:UILongPressGestureRecognizer?
-        
+        var doubleTapGesture:UITapGestureRecognizer?
+
         fileprivate func _initializeGestureRecognizers() {
             
             touchGesture = UILongPressGestureRecognizer(target: self, action:#selector(HotspotOverlayView.didTouch(_:)))
@@ -102,11 +119,18 @@ extension PagedPublicationView {
             longPressGesture = UILongPressGestureRecognizer(target: self, action:#selector(HotspotOverlayView.didLongPress(_:)))
             longPressGesture!.delegate = self
             
+            doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(HotspotOverlayView.didDoubleTap(_:)))
+            doubleTapGesture!.numberOfTapsRequired = 2
+            doubleTapGesture!.delegate = self
+            
+            
             tapGesture?.require(toFail: longPressGesture!)
+            
             
             addGestureRecognizer(longPressGesture!)
             addGestureRecognizer(tapGesture!)
             addGestureRecognizer(touchGesture!)
+            addGestureRecognizer(doubleTapGesture!)
         }
         
         func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -119,12 +143,13 @@ extension PagedPublicationView {
             else if gestureRecognizer == longPressGesture {
                 return otherGestureRecognizer != tapGesture
             }
+            else if gestureRecognizer == doubleTapGesture {
+                return true
+            }
             else {
                 return false
             }
         }
-
-        
         
         func didTouch(_ touch:UILongPressGestureRecognizer) {
             guard bounds.size.width > 0 && bounds.size.height > 0 else {
@@ -134,7 +159,6 @@ extension PagedPublicationView {
             if touch.state == .began {
                 
                 let location = touch.location(in: self)
-                
                 let hotspots = _getHotspotsAtPoint(location)
                 
                 // highlight the hotspots that were touched
@@ -163,21 +187,11 @@ extension PagedPublicationView {
                 return
             }
             
-            var possibleTargetPage:(index:Int, location:CGPoint)?
-            for (pageIndex, pageView) in pageViews {
-                let pageLocation = tap.location(in: pageView)
-                if pageView.bounds.isEmpty == false && pageView.bounds.contains(pageLocation) {
-                    possibleTargetPage = (index:pageIndex, location:CGPoint(x:pageLocation.x/pageView.bounds.size.width, y:pageLocation.y/pageView.bounds.size.height))
-                    break
-                }
-            }
-            
-            guard let targetPage = possibleTargetPage else {
+            guard let targetPage = _getTargetPage(forGesture:tap) else {
                 return
             }
-            
+
             let overlayLocation = tap.location(in: self)
-            
             let hotspots = _getHotspotsAtPoint(overlayLocation)
 
             delegate?.didTapHotspot(overlay:self, hotspots: hotspots.models, hotspotViews: hotspots.views, locationInOverlay: overlayLocation, pageIndex: targetPage.index, locationInPage: targetPage.location)
@@ -187,10 +201,10 @@ extension PagedPublicationView {
             guard bounds.size.width > 0 && bounds.size.height > 0 else {
                 return
             }
-            
-            let overlayLocation = press.location(in: self)
 
             if press.state == .began {
+                
+                let overlayLocation = press.location(in: self)
                 let hotspots = _getHotspotsAtPoint(overlayLocation)
                 
                 // bounce the views
@@ -212,22 +226,30 @@ extension PagedPublicationView {
                 
                 
                 
-                var possibleTargetPage:(index:Int, location:CGPoint)?
-                for (pageIndex, pageView) in pageViews {
-                    let pageLocation = press.location(in: pageView)
-                    if pageView.bounds.isEmpty == false && pageView.bounds.contains(pageLocation) {
-                        possibleTargetPage = (index:pageIndex, location:CGPoint(x:pageLocation.x/pageView.bounds.size.width, y:pageLocation.y/pageView.bounds.size.height))
-                        break
-                    }
-                }
-                
-                guard let targetPage = possibleTargetPage else {
+                guard let targetPage = _getTargetPage(forGesture:press) else {
                     return
                 }
 
                 delegate?.didLongPressHotspot(overlay:self, hotspots: hotspots.models, hotspotViews: hotspots.views, locationInOverlay: overlayLocation, pageIndex: targetPage.index, locationInPage: targetPage.location)
             }
         }
+        
+        func didDoubleTap(_ doubleTap:UITapGestureRecognizer) {
+            
+            if doubleTap.state == .ended {
+                
+                guard let targetPage = _getTargetPage(forGesture:doubleTap) else {
+                    return
+                }
+                
+                let overlayLocation = doubleTap.location(in: self)                
+                let hotspots = _getHotspotsAtPoint(overlayLocation)
+                
+                delegate?.didDoubleTapHotspot(overlay:self, hotspots: hotspots.models, hotspotViews: hotspots.views, locationInOverlay: overlayLocation, pageIndex: targetPage.index, locationInPage: targetPage.location)
+                
+            }
+        }
+        
         
         
         // MARK: Hotspot views

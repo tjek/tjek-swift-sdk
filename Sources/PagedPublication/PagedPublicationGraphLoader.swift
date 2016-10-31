@@ -14,16 +14,16 @@ public class PagedPublicationGraphLoader : NSObject, PagedPublicationLoaderProto
     
     public var publicationId: String
     public var preloadedPublication:PagedPublicationViewModelProtocol?
-    
+    public var sourceType:String { return "graph" }
     
     convenience init(publicationId:String) {
         self.init(publicationId: publicationId, preloaded:nil)
     }
     convenience init(preloaded viewModel:PagedPublicationViewModelProtocol) {
-        self.init(publicationId: viewModel.uuid, preloaded:viewModel)
+        self.init(publicationId: viewModel.publicationId, preloaded:viewModel)
     }
-    convenience init(publicationId:String, bgColor:UIColor?, pageCount:Int, aspectRatio:CGFloat) {
-        let preloadedVM = PagedPublicationViewModel(uuid: publicationId, bgColor: bgColor ?? UIColor.white, pageCount: pageCount, aspectRatio: aspectRatio)
+    convenience init(publicationId:String, ownerId:String?, bgColor:UIColor?, pageCount:Int, aspectRatio:CGFloat) {
+        let preloadedVM = PagedPublicationViewModel(publicationId: publicationId, ownerId: (ownerId ?? ""), bgColor: (bgColor ?? UIColor.white), pageCount: pageCount, aspectRatio: aspectRatio)
         self.init(publicationId: publicationId, preloaded:preloadedVM)
     }
     init(publicationId:String, preloaded viewModel:PagedPublicationViewModelProtocol?) {
