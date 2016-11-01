@@ -32,6 +32,8 @@ Pod::Spec.new do |s|
     ss.pod_target_xcconfig = { 'ENABLE_TESTABILITY' => 'YES' }
     ss.frameworks   = 'Foundation', 'UIKit'
     ss.dependency 'Valet', '~> 2.2.2'
+    
+    ss.dependency 'ShopGunSDK/Events'
   end
 
   s.subspec 'Events' do |ss|

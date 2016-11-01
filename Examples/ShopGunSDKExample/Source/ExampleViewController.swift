@@ -25,8 +25,7 @@ class ExampleViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        // FIXME: dont do this
+        // just to show that we can handle slow fetches
         KingfisherManager.shared.cache.clearDiskCache()
         KingfisherManager.shared.cache.clearMemoryCache()
         

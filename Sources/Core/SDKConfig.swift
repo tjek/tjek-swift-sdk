@@ -13,27 +13,40 @@ import UIKit
 @objc(SGNSDKConfig)
 public class SDKConfig : NSObject {
     
+    
+    // MARK: -
+    /**
+     *  The `appId` is sent with all requests the SDK. 
+     *  It lets ShopGun know who is making the requests.
+     *  It will be read from the "APP_ID" key in 'ShopGunSDK-Info.plist', that you should include in your bundle.
+     *
+     *  If you do not wish to use this .plist file you can instead assign this key manually:
+     *  `ShopGunSDK.SDKConfig.appId = "..."`
+     *
+     *  Note, if SDKConfig.appId is used before it has been configured it will assert.
+     */
     public static var appId : String? {
         get {
-            if let appId = _overrideAppId ?? _globalAppId {
-                return appId
+            if _appId == nil {
+                _appId = Utils.fetchConfigValue(for:"APP_ID") as? String
             }
             
-            // TODO: make non-optional?
-            
-            // TODO: more details in error message.
-            print("You must define a ShopGun `appId` in your info.plist or SDKConfig")
-            
-            // TODO: maybe consider asserting?
-            // assert(appId != nil, "You must define a ShopGun appId in your info.plist or SDKConfig")
-            return nil
+            assert(_appId != nil, "You must define a ShopGun `APP_ID` in your ShopGunSDK-Info.plist, or with `ShopGunSDK.SDKConfig.appId = ...`")
+            return _appId
         }
         set {
-            _overrideAppId = newValue
+            _appId = newValue
         }
     }
+    fileprivate static var _appId : String?
     
-    // ClientId will be generated on first use, and then saved to the keychain
+    
+    
+    
+    
+    // MARK: -
+    
+    /// ClientId will be generated on first use, and then saved to the keychain
     public static var clientId : String {
         if _clientId == nil {
             if let cachedClientId = Utils.getKeychainString("ClientId") {
@@ -41,6 +54,11 @@ public class SDKConfig : NSObject {
             }
             else {
                 _clientId = UUID().uuidString
+                
+                // fire event whenever clientId is created
+                DispatchQueue.main.async {
+                    EventsTracker.globalTracker?.trackEvent("first-client-session-opened")
+                }
                 
                 _ = Utils.setKeychainString(_clientId!, key: "ClientId")
             }
@@ -53,60 +71,64 @@ public class SDKConfig : NSObject {
         _clientId = nil
     }
     
+    fileprivate static var _clientId : String?
     
     
-    // sessionId exists only while the app is in an active state, and reset when the app goes into the background.
+    
+    
+    // MARK: -
+    
+    /// sessionId is a UUID that is reset every time the app becomes active.
     public static var sessionId : String {
-        return _sessionHandler.sessionUUID
+        return _sessionHandler.sessionId
     }
     
-    
-    
-    
-    
-    // MARK: Private
-    
-    fileprivate static var _overrideAppId : String? = nil
-    fileprivate static let _globalAppId : String? = {
-        return Utils.fetchInfoPlistValue("AppId") as? String
-    }()
-    
-    fileprivate static var _clientId : String?
-
     fileprivate static let _sessionHandler:SessionLifecycleHandler = SessionLifecycleHandler()
+    
     fileprivate class SessionLifecycleHandler {
         
-        /// sessionUUID is lazily generated if nil
-        fileprivate var _sessionUUID:String?
-        var sessionUUID:String {
-            if _sessionUUID == nil {
-                _sessionUUID = UUID().uuidString
+        /// sessionId is lazily generated if nil
+        fileprivate var _sessionId:String?
+        var sessionId:String {
+            if _sessionId == nil {
+                
+                _sessionId = UUID().uuidString
+                
+                // make sure that the `first-client-session-opened` is triggered first
+                _ = SDKConfig.clientId
+                
+                // fire event whenever sessionId is created
+                DispatchQueue.main.async {
+                    EventsTracker.globalTracker?.trackEvent("client-session-opened")
+                }
             }
-            return _sessionUUID!
+            return _sessionId!
         }
-        
         init() {
-            // force a re-creation of the sessionUUID
-            _ = sessionUUID
-            
-            NotificationCenter.default.addObserver(self, selector:#selector(SessionLifecycleHandler.appDidBecomeActive), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
-            NotificationCenter.default.addObserver(self, selector:#selector(SessionLifecycleHandler.appDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
-
-
+            NotificationCenter.default.addObserver(self, selector:#selector(appDidBecomeActive(_:)), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+            NotificationCenter.default.addObserver(self, selector:#selector(appDidEnterBackground(_:)), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
         }
         deinit {
             NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
             NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
         }
         
+        
+        fileprivate var isInBackground:Bool = false
+        
         @objc
-        fileprivate func appDidBecomeActive() {
-            // re-create sessionId if needed
-            _ = sessionUUID
+        fileprivate func appDidBecomeActive(_ notification:Notification) {
+            if isInBackground {
+                // force a reset of the sessionId
+                _sessionId = nil
+                _ = sessionId
+            }
+            isInBackground = false
+                
         }
         @objc
-        fileprivate func appDidEnterBackground() {
-            _sessionUUID = nil
+        fileprivate func appDidEnterBackground(_ notification:Notification) {
+            isInBackground = true
         }
     }
 }

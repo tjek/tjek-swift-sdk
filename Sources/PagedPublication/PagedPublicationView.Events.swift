@@ -265,7 +265,7 @@ class PublicationEvent : EventProtocol, CustomDebugStringConvertible {
     
     var type:String { fatalError("You must subclass this event, and implement type") }
     
-    func getProperties() -> [String : AnyObject]? {
+    var properties:[String : AnyObject]? {
         var props:[String:AnyObject] = [:]
         
         props["pagedPublication"] = ["id": [idSource, publicationId] as AnyObject,
@@ -301,8 +301,8 @@ class PublicationPageEvent : PublicationEvent {
         super.init(publicationId: publicationId, ownedById: ownedById, idSource: idSource)
     }
     
-    override func getProperties() -> [String : AnyObject]? {
-        var props:[String:AnyObject] = super.getProperties() ?? [:]
+    override var properties:[String : AnyObject]? {
+        var props:[String:AnyObject] = super.properties ?? [:]
         
         props["pagedPublicationPage"] = ["pageNumber": pageIndex + 1] as AnyObject
         
@@ -338,8 +338,8 @@ class PublicationPageInteractionEvent : PublicationPageEvent {
         super.init(pageIndex: pageIndex, publicationId: publicationId, ownedById: ownedById, idSource: idSource)
     }
     
-    override func getProperties() -> [String : AnyObject]? {
-        var props:[String:AnyObject] = super.getProperties() ?? [:]
+    override var properties:[String : AnyObject]? {
+        var props:[String:AnyObject] = super.properties ?? [:]
         
         var pubPageProperties = props["pagedPublicationPage"] as? [String:AnyObject] ?? [:]
         
@@ -385,8 +385,8 @@ class PublicationSpreadEvent : PublicationEvent {
         super.init(publicationId: publicationId, ownedById: ownedById, idSource: idSource)
     }
     
-    override func getProperties() -> [String : AnyObject]? {
-        var props:[String:AnyObject] = super.getProperties() ?? [:]
+    override var properties:[String : AnyObject]? {
+        var props:[String:AnyObject] = super.properties ?? [:]
         
         var pageNumbersArray = [Int]()
         pageIndexes.forEach { (idx) in
@@ -419,3 +419,4 @@ class PublicationSpreadEvent_ZoomedIn : PublicationSpreadEvent {
 class PublicationSpreadEvent_ZoomedOut : PublicationSpreadEvent {
     override var type:String { return "paged-publication-page-spread-zoomed-out" }
 }
+

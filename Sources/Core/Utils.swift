@@ -12,8 +12,9 @@ import Valet
 
 public struct Utils {
 
-    static func fetchInfoPlistValue(_ key:String) -> AnyObject? {
-        if let configDict = Bundle.main.object(forInfoDictionaryKey: "ShopGunSDK") as? [String:AnyObject] {
+    static func fetchConfigValue(for key:String) -> AnyObject? {
+        if let path = Bundle.main.path(forResource: "ShopGunSDK-Info", ofType: "plist"),
+            let configDict = NSDictionary(contentsOfFile:path) as? [String:AnyObject] {
             return configDict[key]
         }
         return nil

@@ -58,32 +58,48 @@ public class EventsTracker : NSObject {
     
     // MARK: - Static properties & methods
     
-    public static var sharedTracker:EventsTracker? {
-        if _sharedTracker == nil,
-            let trackId = _overrideTrackId ?? _globalTrackId {
-            _sharedTracker = EventsTracker(trackId: trackId)
+    fileprivate static var _globalTracker:EventsTracker?
+    public static var globalTracker:EventsTracker? {
+        if _globalTracker == nil, let trackId = self.globalTrackId {
+            _globalTracker = EventsTracker(trackId: trackId)
         }
-        
-        return _sharedTracker
+        return _globalTracker
     }
     
     
-    public static var trackId:String? {
+    fileprivate static var _globalTrackId : String?
+    public static var globalTrackId : String? {
         get {
-            return _sharedTracker?.trackId
+            if _globalTrackId == nil {
+                _globalTrackId = Utils.fetchConfigValue(for:"TrackId") as? String
+            }
+            
+            if _globalTrackId == nil {
+                print("You must define a ShopGun `TRACK_ID` in your ShopGunSDK-Info.plist, or with `ShopGunSDK.EventsTracker.globalTrackId = ...`")
+                // TODO: more details in error message.
+                // TODO: maybe consider asserting?
+                // assert(_trackId != nil, "You must define a ShopGun `TrackId` in your info.plist, or with `EventsTracker.trackId = ...`")
+            }
+            
+            return _globalTrackId
         }
         set {
-            _overrideTrackId = newValue
-            _sharedTracker = nil
+            if _globalTracker?.trackId != newValue {
+                _globalTracker = nil
+            }
+            _globalTrackId = newValue
         }
     }
+    
+    
+    
     
     
     public static func trackEvent(_ type:String) {
         trackEvent(type, properties: nil)
     }
     public static func trackEvent(_ type:String, properties:[String:AnyObject]?) {
-        sharedTracker?.trackEvent(type, properties: properties)
+        globalTracker?.trackEvent(type, properties: properties)
     }
     
     
@@ -104,15 +120,6 @@ public class EventsTracker : NSObject {
     
     
     // MARK: Private (static)
-    
-    fileprivate static var _sharedTracker:EventsTracker?
-    
-    
-    fileprivate static let _globalTrackId : String? = {
-        return Utils.fetchInfoPlistValue("TrackId") as? String
-    }()
-    fileprivate static var _overrideTrackId : String? = nil
-    
     
     fileprivate var _currentViewContext:Context.ViewContext?
     fileprivate var _currentCampaignContext:Context.CampaignContext?
@@ -268,18 +275,21 @@ public class EventsTracker : NSObject {
 @objc(SGNEventProtocol)
 public protocol EventProtocol {
     var type:String { get }
-    
-    func getProperties() -> [String:AnyObject]?
+    var properties:[String:AnyObject]? { get }
 }
 
 public extension EventProtocol {
-    // make getProperties optional
-    func getProperties() -> [String:AnyObject]? { return nil }
+    
+    // make properties optional
+    var properties:[String:AnyObject]? {
+        return nil
+    }
+    
 }
 
 public extension EventProtocol {
     // utility track method
-    func track(with tracker:EventsTracker? = EventsTracker.sharedTracker) {
+    func track(with tracker:EventsTracker? = EventsTracker.globalTracker) {
         guard let t = tracker else {
             // trying to track an event without a tracker. WARN?
             return
@@ -290,6 +300,6 @@ public extension EventProtocol {
 
 public extension EventsTracker {
     func track(event:EventProtocol) {
-        self.trackEvent(event.type, properties: event.getProperties())
+        self.trackEvent(event.type, properties: event.properties)
     }
 }
