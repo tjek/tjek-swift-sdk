@@ -55,6 +55,7 @@ class ExampleViewController : UIViewController {
         let targetPageIndex:Int = 42
         
         let loader = LocalPublicationLoader(publicationId:publicationId,
+                                            ownerId:nil,
                                             bgColor:bgColor,
                                             pageCount:pageCount,
                                             aspectRatio:aspectRatio)

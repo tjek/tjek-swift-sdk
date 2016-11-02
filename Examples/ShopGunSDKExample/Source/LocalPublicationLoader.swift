@@ -28,19 +28,16 @@ class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
     
     public var publicationId: String
     public var preloadedPublication:PagedPublicationViewModelProtocol?
-    
-    public var failPublicationRequest:Bool = false
-    public var failPageRequest:Bool = false
-    
+    public var sourceType:String { return "legacy" }
     
     convenience init(publicationId:String) {
         self.init(publicationId: publicationId, preloaded:nil)
     }
     convenience init(preloaded viewModel:PagedPublicationViewModelProtocol) {
-        self.init(publicationId: viewModel.uuid, preloaded:viewModel)
+        self.init(publicationId: viewModel.publicationId, preloaded:viewModel)
     }
-    convenience init(publicationId:String, bgColor:UIColor?, pageCount:Int, aspectRatio:CGFloat) {
-        let preloadedVM = PagedPublicationViewModel(uuid: publicationId, bgColor: bgColor ?? UIColor.white, pageCount: pageCount, aspectRatio: aspectRatio)
+    convenience init(publicationId:String, ownerId:String?, bgColor:UIColor?, pageCount:Int, aspectRatio:CGFloat) {
+        let preloadedVM = PagedPublicationViewModel(publicationId: publicationId, ownerId: (ownerId ?? ""), bgColor: (bgColor ?? UIColor.white), pageCount: pageCount, aspectRatio: aspectRatio)
         self.init(publicationId: publicationId, preloaded:preloadedVM)
     }
     init(publicationId:String, preloaded viewModel:PagedPublicationViewModelProtocol?) {
@@ -48,7 +45,12 @@ class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
         self.preloadedPublication = viewModel
     }
     
+
     
+    public var failPublicationRequest:Bool = false
+    public var failPageRequest:Bool = false
+    
+
     public func load(publicationLoaded:@escaping PagedPublicationLoaderProtocol.PublicationLoadedHandler,
                      pagesLoaded:@escaping PagedPublicationLoaderProtocol.PagesLoadedHandler,
                      hotspotsLoaded:@escaping PagedPublicationLoaderProtocol.HotspotsLoadedHandler) {
@@ -102,7 +104,8 @@ class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
                 let data = try? Data(contentsOf: URL(fileURLWithPath: filePath)),
                 let pubData = try? JSONSerialization.jsonObject(with: data, options:[]) as? NSDictionary {
                 
-                
+                let dealerId = pubData?.value(forKeyPath: "dealer_id") as? String ?? ""
+
                 var bgColorStr:String = pubData?.value(forKeyPath: "branding.pageflip.color") as? String ?? pubData?.value(forKeyPath: "branding.color") as? String ?? "FF0000"
                 if bgColorStr.hasPrefix("#") == false {
                     bgColorStr = "#"+bgColorStr
@@ -116,8 +119,7 @@ class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
                 let height:CGFloat = pubData?.value(forKeyPath: "dimensions.height") as? CGFloat ?? 1.0
                 let aspectRatio:CGFloat = width > 0 && height > 0 ? width / height : 1.0
                 
-                
-                viewModel = PagedPublicationViewModel(uuid:publicationID, bgColor:bgColor, pageCount:pageCount, aspectRatio:aspectRatio)
+                viewModel = PagedPublicationViewModel(publicationId: publicationID, ownerId: dealerId, bgColor: bgColor, pageCount: pageCount, aspectRatio: aspectRatio)
             }
             
             DispatchQueue.main.async {
