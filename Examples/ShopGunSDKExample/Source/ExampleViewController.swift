@@ -29,6 +29,10 @@ class ExampleViewController : UIViewController {
         KingfisherManager.shared.cache.clearDiskCache()
         KingfisherManager.shared.cache.clearMemoryCache()
         
+        EventsTracker.baseURL = URL(string:"https://events-staging.shopgun.com")!
+        EventsTracker.dispatchInterval  =   10 // secs
+        EventsTracker.dispatchLimit    =  100// events
+
         
         publicationView.frame = view.frame
         publicationView.autoresizingMask = [.flexibleWidth, .flexibleHeight]

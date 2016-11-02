@@ -23,13 +23,13 @@
 }
 
 + (void) eventsTracker {
-    SGNEventsTracker.flushTimeout = 15;
-    SGNEventsTracker.flushLimit = 200;
-    SGNEventsTracker.trackId = @"THE TRACK ID";
+    SGNEventsTracker.dispatchInterval = 15;
+    SGNEventsTracker.dispatchLimit = 200;
+    SGNEventsTracker.globalTrackId = @"THE TRACK ID";
     SGNEventsTracker.baseURL = [NSURL URLWithString:@"events-staging.shopgun.com"];
     
-    [SGNEventsTracker.sharedTracker trackEvent:@"sdfg"];
-    [SGNEventsTracker.sharedTracker trackEvent:@"qwerty" properties:@{@"foo":@"bar"}];
+    [SGNEventsTracker.globalTracker trackEvent:@"sdfg"];
+    [SGNEventsTracker.globalTracker trackEvent:@"qwerty" properties:@{@"foo":@"bar"}];
     
     // static versions
     [SGNEventsTracker trackEvent:@"sdfg"];

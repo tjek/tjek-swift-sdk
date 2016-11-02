@@ -9,64 +9,89 @@
 
 import Foundation
 
+/// The format that is saved to the cache, and that is sent to the shipper.
+/// This could be done in a better, more generic way, in the future
+typealias SerializedPoolObject = (poolId:String, jsonData:Data)
 
-// TODO: Remove concept of `event` from pool... just have a 'poolable' object that has a uuid:String
-// TODO: move disk-caching responsibility out of the pool. It's up to person passing in poolable object to know how to cache that type of obj
 
-typealias SerializedEvent = [String:AnyObject]
+/// Defines what an object that can be in the pool must be able to do
+protocol PoolableObject {
+    var poolId:String { get }
+    
+    func serialize() -> SerializedPoolObject?
+}
 
-class EventsPool {
-    typealias EventShipperCompletion = (_ shippedEventIds:[String]?) -> Void
-    typealias EventShipper = (_ serializedEvents:[SerializedEvent], _ completion:@escaping EventShipperCompletion) -> Void
+
+/// Defines what a Pool's cache must be able to do.
+/// Note that these act concurrently, so should be triggered on a bg thread.
+protocol PoolCacheProtocol {
+    
+    var objectCount:Int { get }
+    
+    /// add the objects to the tail of the cache
+    func write(toTail objects:[SerializedPoolObject])
+    
+    /// return the objects from head of cache. They only need to be shippable once they come out of the cache
+    func read(fromHead count:Int) -> [SerializedPoolObject]
+    
+    /// run through the cache removing objects that have the specified ids
+    func remove(poolIds:[String])
+}
+
+protocol PoolShipperProtocol {
+    func ship(objects:[SerializedPoolObject], completion:@escaping ((_ poolIdsToRemove:[String])->Void))
+}
+
+
+
+class CachedFlushablePool {
+    
+    let shipper:PoolShipperProtocol
+    let cache:PoolCacheProtocol
+    
+    var dispatchLimit:Int {
+        didSet {
+            _poolQueue.async {
+                // check if we need to flush after limit changed
+                self.flushPendingObjectsIfNeeded()
+            }
+        }
+    }
+    var dispatchInterval:TimeInterval
+    
+    fileprivate var dispatchIntervalDelay:TimeInterval = 0
     
     
-    init(flushTimeout:Int, flushLimit:Int, eventShipper:@escaping EventShipper) {
-        self.flushTimeout = flushTimeout
-        self.flushLimit = flushLimit
-        self._eventShipperBlock = eventShipper
-        self._pendingEvents = []
+    init(dispatchInterval:TimeInterval, dispatchLimit:Int, shipper:PoolShipperProtocol, cache:PoolCacheProtocol) {
+        self.dispatchInterval = dispatchInterval
+        self.dispatchLimit = dispatchLimit
+        self.shipper = shipper
+        self.cache = cache
         
         _poolQueue.async {
-            // read pending events from disk.
-            if let diskEvents = EventsPool.getPendingEventsFromDisk(), diskEvents.count > 0 {
-                // add disk events to head of pending events
-                self._pendingEvents.insert(contentsOf: diskEvents, at: 0)
-            }
-            
-            if self.shouldFlushEvents() {
-                self.flushPendingEvents()
+            // start flushing the cache on creation
+            if self.shouldFlushObjects() {
+                self.flushPendingObjects()
             } else {
                 self.startTimerIfNeeded()
             }
         }
     }
     
-    func pushEvent(_ event:SerializedEvent) {
-        _poolQueue.async {
-            // add serialized event to pending-events
-            self._pendingEvents.append(event)
-            
-            // need to wait until first initialization
-            EventsPool.savePendingEventsToDisk(self._pendingEvents)
-            
-            // flush any pending events (only if limit reached)
-            self.flushPendingEventsIfNeeded()
-        }
-    }
     
-    var flushLimit:Int {
-        didSet {
-            _poolQueue.async {
-                // check if we need to flush after limit changed
-                self.flushPendingEventsIfNeeded()
-            }
-        }
-    }
-    var flushTimeout:Int {
-        didSet {
-            _poolQueue.async {
-                // restart timer when timeout is changed
-                self.restartTimerIfNeeded()
+    /// Add an object to the pool
+    func push(object:PoolableObject) {
+        //print("[POOL] pushing object")
+        
+        _poolQueue.async {
+            
+            if let serializedObj = object.serialize() {
+                
+                // add the object to the tail of the cache
+                self.cache.write(toTail: [serializedObj])
+                
+                // flush any pending events (only if limit reached)
+                self.flushPendingObjectsIfNeeded()
             }
         }
     }
@@ -76,93 +101,87 @@ class EventsPool {
     
     // MARK: - Private
     
-    fileprivate let _poolQueue:DispatchQueue = DispatchQueue(label: "com.shopgun.ios.sdk.events_pool.queue", attributes: [])
-    fileprivate var _pendingEvents:[SerializedEvent]
-    
+    fileprivate let _poolQueue:DispatchQueue = DispatchQueue(label: "com.shopgun.ios.sdk.pool.queue", attributes: [])
     
     
     // MARK: - Flushing
     
-    fileprivate var _isFlushing:Bool = false
-    fileprivate let _eventShipperBlock:EventShipper
+    fileprivate var isFlushing:Bool = false
     
     
-    fileprivate func flushPendingEventsIfNeeded() {
-        if self.shouldFlushEvents() {
-            self.flushPendingEvents()
+    fileprivate func flushPendingObjectsIfNeeded() {
+        if self.shouldFlushObjects() {
+            self.flushPendingObjects()
         }
     }
-    fileprivate func flushPendingEvents() {
+    fileprivate func flushPendingObjects() {
         // currently flushing. no-op
-        guard _isFlushing == false else {
-            return
-        }
-        // nothing to flush. no-op
-        guard _pendingEvents.count > 0 else {
+        guard isFlushing == false else {
             return
         }
         
-        _isFlushing = true
+        let objsToShip = self.cache.read(fromHead: self.dispatchLimit)
+        
+        // get the objects to be shipped
+        guard objsToShip.count > 0 else {
+            return
+        }
+        
+        
+        //print("[POOL] flushing \(objsToShip.count) objs")
+        
+        
+        isFlushing = true
         
         // stop any running timer (will be restarted on completion)
-        _flushTimer?.invalidate()
-        _flushTimer = nil
+        flushTimer?.invalidate()
+        flushTimer = nil
         
         
-        // get the events that
-        let eventsToShip:[SerializedEvent] = _pendingEvents
-        
-        // pass the serialized events to the eventShipper (on a bg queue)
-        DispatchQueue.global(qos:.background).async {
-            self._eventShipperBlock(eventsToShip) { [unowned self] shippedEventIds in
+        // pass the objects to the shipper (on a bg queue)
+        DispatchQueue.global(qos:.background).async { [weak self] in
+            
+            self?.shipper.ship(objects: objsToShip) { [weak self] (poolIdsToRemove) in
                 
-                // perform completion in pool's queue
-                self._poolQueue.async {
+                // perform completion in pool's queue (this will block events arriving until completed)
+                self?._poolQueue.async { [weak self] in
+                    guard let s = self else { return }
+ 
+                    // remove the successfully shipped events
+                    s.cache.remove(poolIds: poolIdsToRemove)
                     
-                    // only if we receive some shipped events back (eg. no network error)
-                    // we are going to trim the pending events queue of all the events that were successfully received
-                    if shippedEventIds != nil {
-                        
-                        var mutableShippedIds = shippedEventIds!
-                        
-                        let trimmedEvents = self._pendingEvents.filter {
-                            if mutableShippedIds.count > 0,
-                                let eventId:String = $0["id"] as? String,
-                                let idx = mutableShippedIds.index(of: eventId) {
-                                
-                                mutableShippedIds.remove(at: idx)
-                                return false
-                            }
-                            return true
-                        }
-                        
-                        // something changed in the pending events - sync back to memory (and disk) cache
-                        if trimmedEvents.count != self._pendingEvents.count {
-                            self._pendingEvents = trimmedEvents
-                            EventsPool.savePendingEventsToDisk(self._pendingEvents)
+                    
+                    //print("[POOL] flushed \(poolIdsToRemove.count)/\(objsToShip.count)")
+                    
+                    // if no events are shipped then scale back the interval
+                    if poolIdsToRemove.count == 0 {
+                        if s.dispatchInterval > 0 {
+                            let currentInterval = s.dispatchInterval + s.dispatchIntervalDelay
+                            let maxInterval:TimeInterval = 60 * 5 // 5 mins
+                            let newInterval = min(currentInterval * 1.1, maxInterval)
+                            
+                            s.dispatchIntervalDelay = newInterval - s.dispatchInterval
                         }
                     } else {
-                        // TODO: possibly scale back timeout if regularly getting network error
-                        // Also, if maybe have a way to handle pendingEvents count getting really large? Just clear old events on init if > big_number
+                        s.dispatchIntervalDelay = 0
                     }
                     
-                    self._isFlushing = false
-                    
+                    s.isFlushing = false
                     
                     // start the timer
-                    self.startTimerIfNeeded()
+                    s.startTimerIfNeeded()
                 }
             }
         }
     }
     
-    fileprivate func shouldFlushEvents() -> Bool {
-        if _isFlushing {
+    fileprivate func shouldFlushObjects() -> Bool {
+        if isFlushing {
             return false
         }
         
-        // if pool size >= flushLimit
-        if _pendingEvents.count >= flushLimit {
+        // if pool size >= dispatchLimit
+        if self.cache.objectCount >= dispatchLimit {
             return true
         }
         
@@ -175,65 +194,26 @@ class EventsPool {
     
     // MARK: - Timer
     
-    fileprivate var _flushTimer:Timer?
-    
-    fileprivate func restartTimerIfNeeded() {
-        guard _flushTimer?.timeInterval != Double(flushTimeout) else {
-            return
-        }
-        
-        _flushTimer?.invalidate()
-        _flushTimer = nil
-        
-        startTimerIfNeeded()
-    }
+    fileprivate var flushTimer:Timer?
     
     fileprivate func startTimerIfNeeded() {
-        guard _flushTimer == nil && _isFlushing == false else {
+        guard flushTimer == nil && isFlushing == false && self.cache.objectCount > 0 else {
             return
         }
         
+        let interval = dispatchInterval + dispatchIntervalDelay
+        
         // generate a new timer. needs to be performed on main runloop
-        _flushTimer = Timer(timeInterval:Double(flushTimeout), target:self, selector:#selector(EventsPool.flushTimerTick(_:)), userInfo:nil, repeats:true)
-        RunLoop.main.add(_flushTimer!, forMode: RunLoopMode.commonModes)        
+        flushTimer = Timer(timeInterval:interval, target:self, selector:#selector(flushTimerTick(_:)), userInfo:nil, repeats:false)
+        RunLoop.main.add(flushTimer!, forMode: RunLoopMode.commonModes)
     }
     
     @objc fileprivate func flushTimerTick(_ timer:Timer?) {
         // called from main runloop
         _poolQueue.async {
-            self.flushPendingEvents()
+            self.flushTimer?.invalidate()
+            self.flushTimer = nil
+            self.flushPendingObjects()
         }
-    }
-
-    
-    
-    
-    // MARK: - Disk cache
-    
-    fileprivate static let _diskCachePath:String? = {
-        let fileName = "com.shopgun.ios.sdk.events_pool.disk_cache.plist"
-        return (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first as NSString?)?.appendingPathComponent(fileName)
-    }()
-    
-    fileprivate static func savePendingEventsToDisk(_ events:[SerializedEvent]) {
-        guard _diskCachePath != nil else {
-            return
-        }
-        
-        let contents = ["events":events] as NSDictionary
-        contents.write(toFile: _diskCachePath!, atomically: true)
-    }
-    
-    fileprivate static func getPendingEventsFromDisk() -> [SerializedEvent]? {
-        guard _diskCachePath != nil else {
-            return nil
-        }
-        
-        let contents = NSDictionary(contentsOfFile: _diskCachePath!) as? [String:AnyObject]
-        if let events = contents?["events"] as? [SerializedEvent] {
-            return events
-        }
-        
-        return nil
     }
 }

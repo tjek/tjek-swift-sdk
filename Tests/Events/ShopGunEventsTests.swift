@@ -27,34 +27,34 @@ class ShopGunEventsTests: XCTestCase {
 //        let tracker = EventsTracker(trackId:"")
 //        
 //        // tracker starts with default timeout
-//        XCTAssert(tracker.flushTimeout == EventsTracker.defaultFlushTimeout)
+//        XCTAssert(tracker.dispatchInterval == EventsTracker.defaultFlushTimeout)
 //        
 //        // changing timeout works
-//        tracker.flushTimeout = 12345
-//        XCTAssert(tracker.flushTimeout == 12345)
+//        tracker.dispatchInterval = 12345
+//        XCTAssert(tracker.dispatchInterval == 12345)
 //        
 //        // reset timeout sets it back to default
 //        tracker.resetFlushTimeout()
-//        XCTAssert(tracker.flushTimeout == EventsTracker.defaultFlushTimeout)
+//        XCTAssert(tracker.dispatchInterval == EventsTracker.defaultFlushTimeout)
 //        
 //        
 //        // changing global default works, and is used by tracker instances
 //        EventsTracker.defaultFlushTimeout = 23456
 //        XCTAssert(EventsTracker.defaultFlushTimeout == 23456)
-//        XCTAssert(tracker.flushTimeout == 23456)
+//        XCTAssert(tracker.dispatchInterval == 23456)
 //        
 //        // reseting default works, and tracker instances use it
 //        EventsTracker.resetDefaultFlushTimeout()
 //        XCTAssert(EventsTracker.defaultFlushTimeout != 23456)
-//        XCTAssert(tracker.flushTimeout == EventsTracker.defaultFlushTimeout)
+//        XCTAssert(tracker.dispatchInterval == EventsTracker.defaultFlushTimeout)
 //    }
     
     func testTrackEvent() {
-        print (SDKConfig.clientId)
+        //print (SDKConfig.clientId)
         
-        let tracker = EventsTracker(trackId:"myTrackId")
+        //let tracker = EventsTracker(trackId:"myTrackId")
         
-        tracker.trackEvent("x-type", properties: ["foo":"bar"])
+        //tracker.trackEvent("x-type", properties: ["foo":"bar"])
     }
     
 }
