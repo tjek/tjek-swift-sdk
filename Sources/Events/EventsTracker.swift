@@ -25,16 +25,20 @@ public class EventsTracker : NSObject {
         trackEvent(type, properties: nil)
     }
     public func trackEvent(_ type:String, properties:[String:AnyObject]?) {
-        track(event: Event(type:type, trackId:trackId, properties:properties, viewContext:_currentViewContext, campaignContext:_currentCampaignContext))
+        track(event: Event(type:type, trackId:trackId, properties:properties, personId:personId, viewContext:_currentViewContext, campaignContext:_currentCampaignContext))
     }
     func track(event:EventsTracker.Event) {
-        EventsTracker.pool.push(object: event)
+        // make sure that all events are initially triggered on the main thread, to guarantee order. 
+        DispatchQueue.main.async {
+            EventsTracker.pool.push(object: event)
+        }
     }
     
+    /// The optional PersonId that will be sent with every event
+    public var personId:String?
     
     
-    fileprivate var _currentViewContext:Context.ViewContext?
-    
+    /// Allows the client to attach view information to all future events.
     public func updateView(_ path:[String]? = nil, uri:String? = nil, previousPath:[String]? = nil) {
         
         if path == nil && previousPath == nil && uri == nil {
@@ -44,10 +48,10 @@ public class EventsTracker : NSObject {
             _currentViewContext = Context.ViewContext(path:path, previousPath: previousPath, uri: uri)
         }
     }
+    fileprivate var _currentViewContext:Context.ViewContext?
     
     
-    fileprivate var _currentCampaignContext:Context.CampaignContext?
-    
+    /// Allows the client to attach campaign information to all future events
     public func updateCampaign(name:String? = nil, source:String? = nil, medium:String? = nil, term:String? = nil, content:String? = nil) {
         if name == nil && source == nil && medium == nil && term == nil && content == nil {
             _currentCampaignContext = nil
@@ -55,6 +59,7 @@ public class EventsTracker : NSObject {
             _currentCampaignContext = Context.CampaignContext(name:name, source: source, medium: medium, term: term, content: content)
         }
     }
+    fileprivate var _currentCampaignContext:Context.CampaignContext?
     
     
     
@@ -63,16 +68,16 @@ public class EventsTracker : NSObject {
     
     // MARK: - Static properties & methods
     
-    fileprivate static var _globalTracker:EventsTracker?
+    
     public static var globalTracker:EventsTracker? {
         if _globalTracker == nil, let trackId = self.globalTrackId {
             _globalTracker = EventsTracker(trackId: trackId)
         }
         return _globalTracker
     }
+    fileprivate static var _globalTracker:EventsTracker?
     
     
-    fileprivate static var _globalTrackId : String?
     public static var globalTrackId : String? {
         get {
             if _globalTrackId == nil {
@@ -96,7 +101,7 @@ public class EventsTracker : NSObject {
             _globalTrackId = newValue
         }
     }
-    
+    fileprivate static var _globalTrackId : String?
     
     
     
@@ -449,10 +454,23 @@ public class EventsTracker : NSObject {
         let uuid:String
         let recordedDate:Date
         let clientId:String
+        let sessionId:String
+        
+        // optional context properties
         let viewContext:EventsTracker.Context.ViewContext?
         let campaignContext:EventsTracker.Context.CampaignContext?
+        let personId:String?
         
-        init(type:String, trackId:String, properties:[String:AnyObject]? = nil, uuid:String = UUID().uuidString, recordedDate:Date = Date(), clientId:String = SDKConfig.clientId, viewContext:EventsTracker.Context.ViewContext? = nil, campaignContext:EventsTracker.Context.CampaignContext? = nil) {
+        init(type:String,
+             trackId:String,
+             properties:[String:AnyObject]? = nil,
+             uuid:String = UUID().uuidString,
+             recordedDate:Date = Date(),
+             clientId:String = SDKConfig.clientId,
+             sessionId:String = SDKConfig.sessionId,
+             personId:String? = nil,
+             viewContext:EventsTracker.Context.ViewContext? = nil,
+             campaignContext:EventsTracker.Context.CampaignContext? = nil) {
             
             self.type = type
             self.trackId = trackId
@@ -460,8 +478,10 @@ public class EventsTracker : NSObject {
             self.uuid = uuid
             self.recordedDate = recordedDate
             self.clientId = clientId
+            self.sessionId = sessionId
             self.viewContext = viewContext
             self.campaignContext = campaignContext
+            self.personId = personId
         }
     }
    
@@ -481,20 +501,23 @@ extension EventsTracker.Event : PoolableObject {
         
         var dict:[String:AnyObject] = [:]
         
-        dict["version"] = version as AnyObject?
-        dict["id"] = uuid as AnyObject?
-        dict["type"] = type as AnyObject?
-        dict["recordedAt"] = Utils.ISO8601_dateFormatter.string(from: recordedDate) as AnyObject?
+        dict["type"] = type as AnyObject? // required
         
-        // client
-        dict["client"] = ["id": clientId,
-                          "trackId": trackId] as AnyObject?
+        dict["id"] = uuid as AnyObject // required
+        dict["version"] = version as AnyObject  // required
+        dict["recordedAt"] = Utils.ISO8601_dateFormatter.string(from: recordedDate) as AnyObject?  // required, but if date is invalid we want server to warn
         
-        // properties
-        dict["properties"] = prepareForJSON(properties as AnyObject?)
+        // client - required
+        let clientDict:[String:String] = ["id": clientId, "trackId": trackId]
+        dict["client"] = clientDict as AnyObject
         
-        // context
-        dict["context"] = EventsTracker.Context.toDictionary(viewContext, campaignContext:campaignContext) as AnyObject?
+        // context - required
+        let contextDict:[String:AnyObject] = EventsTracker.Context.toDictionary(sessionId:sessionId, personId:personId, viewContext:viewContext, campaignContext:campaignContext) ?? [:]
+        dict["context"] = contextDict as AnyObject
+        
+        // properties - required
+        let propertiesDict:[String:AnyObject] = prepareForJSON(properties as AnyObject?) as? [String : AnyObject] ?? [:]
+        dict["properties"] = propertiesDict as AnyObject
         
         
         guard let jsonData = try? JSONSerialization.data(withJSONObject: dict, options:[]) else {
@@ -511,14 +534,15 @@ extension EventsTracker.Event : PoolableObject {
 
 /// Given arbitrary properties, this will remove those that cant be converted to JSON values, and parse Dates where appropriate.
 fileprivate func prepareForJSON(_ property:AnyObject?)->AnyObject? {
+    
     guard let prop = property else { return nil }
     
     switch prop {
     case is Int,
-         is Double,
-         is Float,
+         is Double, is Float,
+         is NSNumber,
          is NSNull,
-         is String:
+         is String, is NSString:
         return prop
     case is Array<AnyObject>:
         var result:[AnyObject]? = nil

@@ -21,20 +21,24 @@ extension EventsTracker {
     
     struct Context {
         
-        static func toDictionary(_ viewContext:ViewContext?, campaignContext:CampaignContext?) -> [String:AnyObject]? {
+        static func toDictionary(sessionId:String, personId:String?, viewContext:ViewContext?, campaignContext:CampaignContext?) -> [String:AnyObject]? {
             var dict = [String:AnyObject]()
             
-            dict["application"] = ApplicationContext.toDictionary() as AnyObject?
-            dict["device"] = DeviceContext.toDictionary() as AnyObject?
-            dict["os"] = OperatingSystemContext.toDictionary() as AnyObject?
-            dict["location"] = LocationContext.toDictionary() as AnyObject?
-            dict["locale"] = locale as AnyObject?
-            dict["timezone"] = TimeZoneContext.toDictionary() as AnyObject?
-            dict["userAgent"] = userAgent as AnyObject?
+            dict["userAgent"] = userAgent as AnyObject // required
+            dict["timeZone"] = TimeZoneContext.toDictionary() as AnyObject?
+            dict["locale"] = locale as AnyObject
             
-            dict["session"] = ["id": SDKConfig.sessionId] as AnyObject?
             dict["view"] = viewContext?.toDictionary() as AnyObject?
+            dict["session"] = ["id": sessionId] as AnyObject
+            dict["location"] = LocationContext.toDictionary() as AnyObject?
+            
+            dict["os"] = OperatingSystemContext.toDictionary() as AnyObject?
+            dict["device"] = DeviceContext.toDictionary() as AnyObject?
+            dict["application"] = ApplicationContext.toDictionary() as AnyObject?
+            
             dict["campaign"] = campaignContext?.toDictionary() as AnyObject?
+            
+            dict["personId"] = personId as AnyObject?
             
             return dict
         }
@@ -54,7 +58,7 @@ extension EventsTracker {
             }
             
             if let appBundleId = Bundle.main.bundleIdentifier {
-                userAgent = userAgent.appendingFormat("(%@", appBundleId)
+                userAgent = userAgent.appendingFormat(" (%@", appBundleId)
                 if let appVersion = ApplicationContext.version {
                     userAgent = userAgent.appendingFormat("/%@", appVersion)
                 }
@@ -71,14 +75,12 @@ extension EventsTracker {
             var uri:String?
             
             func toDictionary() -> [String:AnyObject]? {
-                guard path != nil else {
-                    return nil
-                }
-                
                 var dict = [String:AnyObject]()
-                dict["path"]  = path as AnyObject?
-                dict["previousPath"] = previousPath as AnyObject?
+                
+                dict["path"] = (path != nil && path!.count > 0) ? path as AnyObject? : nil
+                dict["previousPath"] = (previousPath != nil && previousPath!.count > 0) ? previousPath as AnyObject? : nil
                 dict["uri"] = uri as AnyObject?
+                
                 return dict.count > 0 ? dict : nil
             }
         }
@@ -143,7 +145,7 @@ extension EventsTracker {
             static let manufacturer:String = "Apple"
             
             /// eg. "iPhone7,2"
-            static let model:String? = {
+            static let model:String = {
                 return UIDevice.current.model
             }()
             // The _native_ size, in absolute px. Always portrait.
@@ -187,8 +189,8 @@ extension EventsTracker {
             
             static func toDictionary() -> [String:AnyObject]? {
                 var dict = [String:AnyObject]()
-                dict["name"]  = name as AnyObject?
-                dict["version"] = version as AnyObject?
+                dict["name"]  = name as AnyObject
+                dict["version"] = version as AnyObject
                 return dict
             }
         }
@@ -196,13 +198,23 @@ extension EventsTracker {
         
         struct TimeZoneContext : SerializableContext {
             
+            /// The number of seconds from UTC (excluding dst offset)... in DK this is always 3600.
             static var utcOffsetSeconds:Int {
+                let secsFromUTC = NSTimeZone.local.secondsFromGMT()
+                let dstOffset = Int(NSTimeZone.local.daylightSavingTimeOffset())
+                
+                return secsFromUTC - dstOffset
+            }
+            
+            /// The number of seconds from UTC (including dst offset)... in DK this is 3600 or 7200.
+            static var utcDstOffsetSeconds:Int {
                 return NSTimeZone.local.secondsFromGMT()
             }
             
             static func toDictionary() -> [String:AnyObject]? {
                 var dict = [String:AnyObject]()
-                dict["utcOffsetSeconds"]  = utcOffsetSeconds as AnyObject?
+                dict["utcOffsetSeconds"]  = utcOffsetSeconds as AnyObject
+                dict["utcDstOffsetSeconds"]  = utcDstOffsetSeconds as AnyObject
                 return dict
             }
         }
@@ -224,8 +236,8 @@ extension EventsTracker {
                     var dict = [String:AnyObject]()
                     
                     dict["determinedAt"]  = Utils.ISO8601_dateFormatter.string(from: location.timestamp) as AnyObject?
-                    dict["latitude"] = location.coordinate.latitude as AnyObject?
-                    dict["longitude"] = location.coordinate.longitude as AnyObject?
+                    dict["latitude"] = location.coordinate.latitude as AnyObject // required
+                    dict["longitude"] = location.coordinate.longitude as AnyObject // required
                     dict["altitude"] = location.altitude as AnyObject?
                     dict["speed"] = location.speed as AnyObject?
                     dict["accuracy"] = ["horizontal":location.horizontalAccuracy,

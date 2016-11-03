@@ -52,8 +52,10 @@ class CachedFlushablePool {
     var dispatchLimit:Int {
         didSet {
             _poolQueue.async {
-                // check if we need to flush after limit changed
-                self.flushPendingObjectsIfNeeded()
+                // flush any pending events (only if limit reached)
+                if self.shouldFlushObjects() {
+                    self.flushPendingObjects()
+                }
             }
         }
     }
@@ -91,7 +93,11 @@ class CachedFlushablePool {
                 self.cache.write(toTail: [serializedObj])
                 
                 // flush any pending events (only if limit reached)
-                self.flushPendingObjectsIfNeeded()
+                if self.shouldFlushObjects() {
+                    self.flushPendingObjects()
+                } else {
+                    self.startTimerIfNeeded()
+                }
             }
         }
     }
@@ -108,12 +114,6 @@ class CachedFlushablePool {
     
     fileprivate var isFlushing:Bool = false
     
-    
-    fileprivate func flushPendingObjectsIfNeeded() {
-        if self.shouldFlushObjects() {
-            self.flushPendingObjects()
-        }
-    }
     fileprivate func flushPendingObjects() {
         // currently flushing. no-op
         guard isFlushing == false else {
