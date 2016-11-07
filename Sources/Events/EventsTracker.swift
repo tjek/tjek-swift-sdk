@@ -9,6 +9,17 @@
 
 import Foundation
 
+public extension Notification.Name {
+    
+    static func eventTracked(type:String? = nil) -> Notification.Name {
+        var name = "ShopGunSDK.EventsTracker.eventTracked"
+        if let fullType = type {
+            name = name + "." + fullType
+        }
+        return Notification.Name(name)
+    }
+}
+
 
 @objc(SGNEventsTracker)
 public class EventsTracker : NSObject {
@@ -31,6 +42,17 @@ public class EventsTracker : NSObject {
         // make sure that all events are initially triggered on the main thread, to guarantee order. 
         DispatchQueue.main.async {
             EventsTracker.pool.push(object: event)
+            
+            
+            var eventInfo:[String:AnyObject] = ["type":event.type as AnyObject,
+                                                "uuid":event.uuid as AnyObject]
+            if event.properties != nil {
+                eventInfo["properties"] = event.properties! as AnyObject
+            }
+            
+            // send a notification for that specific event, a generic one
+            NotificationCenter.default.post(name: .eventTracked(type: event.type), object: self, userInfo: eventInfo)
+            NotificationCenter.default.post(name: .eventTracked(), object: self, userInfo: eventInfo)
         }
     }
     
