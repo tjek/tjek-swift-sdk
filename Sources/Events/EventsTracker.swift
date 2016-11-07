@@ -42,13 +42,18 @@ public class EventsTracker : NSObject {
         self.trackId = trackId
     }
     
+    @objc(trackEventType:)
     public func trackEvent(_ type:String) {
         trackEvent(type, properties: nil)
     }
+    
+    @objc(trackEventType:properties:)
     public func trackEvent(_ type:String, properties:[String:AnyObject]?) {
-        track(event: Event(type:type, trackId:trackId, properties:properties, personId:personId, viewContext:_currentViewContext, campaignContext:_currentCampaignContext))
+        track(event: ShippableEvent(type:type, trackId:trackId, properties:properties, personId:personId, viewContext:_currentViewContext, campaignContext:_currentCampaignContext))
     }
-    func track(event:EventsTracker.Event) {
+    
+    
+    internal func track(event:EventsTracker.ShippableEvent) {
         // make sure that all events are initially triggered on the main thread, to guarantee order. 
         DispatchQueue.main.async {
             EventsTracker.pool.push(object: event)
@@ -498,7 +503,7 @@ public class EventsTracker : NSObject {
     
     /// This is a concrete implementation of an Event.
     // It defines everything that an event, as seen by the server
-    class Event {
+    internal class ShippableEvent {
         
         let version:String = "1.0.0"
         
@@ -544,7 +549,7 @@ public class EventsTracker : NSObject {
 
 
 // Make the Event work with the pool
-extension EventsTracker.Event : PoolableObject {
+extension EventsTracker.ShippableEvent : PoolableObject {
     
     var poolId:String {
         return self.uuid
@@ -634,14 +639,11 @@ public protocol EventProtocol {
 }
 
 public extension EventProtocol {
-    
     // make properties optional
     var properties:[String:AnyObject]? {
         return nil
     }
-    
 }
-
 public extension EventProtocol {
     // utility track method
     func track(with tracker:EventsTracker? = EventsTracker.globalTracker) {
@@ -654,7 +656,34 @@ public extension EventProtocol {
 }
 
 public extension EventsTracker {
+    @objc(trackEvent:)
     func track(event:EventProtocol) {
         self.trackEvent(event.type, properties: event.properties)
     }
 }
+
+
+
+
+/// A concrete implementation of the event protocol you can use to build events for the tracker
+@objc(SGNEvent)
+public class Event : NSObject, EventProtocol {
+    
+    public let type:String
+    public let properties: [String : AnyObject]?
+    
+    public init(type:String, properties:[String:AnyObject]) {
+        self.type = type
+        self.properties = properties
+    }
+    
+    public func track(with tracker: EventsTracker) {
+        tracker.track(event: self)
+    }
+    public func track() {
+        EventsTracker.globalTracker?.track(event: self)
+    }
+}
+
+
+
