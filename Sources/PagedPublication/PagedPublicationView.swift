@@ -889,6 +889,32 @@ extension PagedPublicationView : VersoViewDelegate {
         
         lifecycleEventHandler?.clearSpreadEventHandler()
         
+        
+        // remove the outro index when refering to page indexes outside of PagedPub
+        var currentExOutro = currentPageIndexes
+        var oldExOutro = oldPageIndexes
+        if let outroIndex = self.outroPageIndex {
+            currentExOutro.remove(outroIndex)
+            oldExOutro.remove(outroIndex)
+        }
+        delegate?.pageIndexesChanged(current: currentExOutro, previous: oldExOutro, in: self)
+        
+        
+        // check if the outro has newly appeared or disappeared (not if it's in both old & current)
+        if let outroIndex = outroPageIndex, let outroView = verso.getPageViewIfLoaded(outroIndex) {
+            
+            let addedIndexes = currentPageIndexes.subtracting(oldPageIndexes)
+            let removedIndexes = oldPageIndexes.subtracting(currentPageIndexes)
+            
+            if addedIndexes.contains(outroIndex) {
+                delegate?.outroDidAppear(outroView, in: self)
+            } else if removedIndexes.contains(outroIndex) {
+                delegate?.outroDidDisappear(outroView, in: self)
+            }
+        }
+        
+        
+        
         DispatchQueue.main.async { [weak self] in
             guard let s = self else { return }
             
@@ -903,21 +929,6 @@ extension PagedPublicationView : VersoViewDelegate {
             }
             
             s.updatePageNumberLabel(withText: newLabelText)
-        }
-        
-        delegate?.pageIndexesChanged(current: currentPageIndexes, previous: oldPageIndexes, in: self)
-        
-        
-        if let outroIndex = outroPageIndex, let outroView = verso.getPageViewIfLoaded(outroIndex) {
-            
-            let addedIndexes = currentPageIndexes.subtracting(oldPageIndexes)
-            let removedIndexes = oldPageIndexes.subtracting(currentPageIndexes)
-
-            if addedIndexes.contains(outroIndex) {
-                delegate?.outroDidAppear(outroView, in: self)
-            } else if removedIndexes.contains(outroIndex) {
-                delegate?.outroDidDisappear(outroView, in: self)
-            }
         }
     }
     
@@ -941,6 +952,17 @@ extension PagedPublicationView : VersoViewDelegate {
         }
 
         
+        // remove the outro index when refering to page indexes outside of PagedPub
+        var currentExOutro = currentPageIndexes
+        var oldExOutro = oldPageIndexes
+        if let outroIndex = self.outroPageIndex {
+            currentExOutro.remove(outroIndex)
+            oldExOutro.remove(outroIndex)
+        }
+        delegate?.pageIndexesFinishedChanging(current: currentExOutro, previous: oldExOutro, in: self)
+        
+        
+        
         // cancel the loading of the zoomimage after a page disappears
         let removedIndexes = oldPageIndexes.subtracting(currentPageIndexes)
         for pageIndex in removedIndexes {
@@ -948,8 +970,6 @@ extension PagedPublicationView : VersoViewDelegate {
                 pageView.clearZoomImage(animated: false)
             }
         }
-        
-        delegate?.pageIndexesFinishedChanging(current:currentPageIndexes, previous: oldPageIndexes, in: self)
     }
 
 //    public func visiblePageIndexesChanged(current currentPageIndexes:IndexSet, previous oldPageIndexes:IndexSet, in verso:VersoView) {
