@@ -11,6 +11,10 @@ import Foundation
 
 public extension Notification.Name {
     
+    /// Create an 'eventTracked' notification name for a specific event-type.
+    /// If no type is provided the returned name will catch _all_ event types.
+    /// This notification can be queried on a specific tracker object.
+    /// `userInfo` includes `type`, `uuid`, & (optionally) `properties` keys.
     static func eventTracked(type:String? = nil) -> Notification.Name {
         var name = "ShopGunSDK.EventsTracker.eventTracked"
         if let fullType = type {
@@ -18,6 +22,12 @@ public extension Notification.Name {
         }
         return Notification.Name(name)
     }
+    
+    /// This notification is triggered if there is a (non-networking) error when shipping an event.
+    /// A notification will be created for each failed event.
+    /// This notification will not be tied to any specific tracker.
+    /// `userInfo` includes `status`, `response`, `event`, & (optionally) `removingFromCache` keys
+    static let eventShipmentFailed = Notification.Name("ShopGunSDK.EventsTracker.eventShipmentFailed")
 }
 
 
@@ -249,24 +259,46 @@ public class EventsTracker : NSObject {
                     let events = jsonData!["events"] as? [[String:AnyObject]] {
                     
                     // go through all the returned event statuses, figuring out which can be removed from the pool
-                    for eventData in events {
-                        if let uuid = eventData["id"] as? String,
-                            let status = eventData["status"] as? String {
+                    for eventResponse in events {
+                        if let uuid = eventResponse["id"] as? String,
+                            let status = eventResponse["status"] as? String {
                             
-                            // send back all event Ids that where received (even if they were errors)
-                            // only skip those that where not recieved (nack)
-                            if status != "nack" {
+                            // if ack then keep id for removal and continue
+                            guard status != "ack" else {
                                 idsToRemove.append(uuid)
+                                continue
                             }
-                            else {
-                                // nack - check the age of the event, and kill it if it's really old
+                            
+                            // need the event details for posting notification
+                            guard let eventDict = keyedEventDicts[uuid] else {
+                                continue
+                            }
+                            
+                            
+                            var notificationUserInfo:[String:AnyObject] = ["status":status as AnyObject,
+                                                                           "event":eventDict as AnyObject,
+                                                                           "response":eventResponse as AnyObject
+                                                                           ]
+                            
+                            
+                            // nack - check the age of the event, and kill it if it's really old
+                            if status == "nack" {
                                 let maxAge:Double = 60*60*24*7 // 1 week
-                                if let recordedDateStr = keyedEventDicts[uuid]?["recordedAt"] as? String,
+                                if let recordedDateStr = eventDict["recordedAt"] as? String,
                                     let recordedDate = Utils.ISO8601_dateFormatter.date(from: recordedDateStr),
                                     recordedDate.timeIntervalSinceNow < -maxAge {
+                                    
                                     idsToRemove.append(uuid)
+                                    notificationUserInfo["removingFromCache"] = true as AnyObject
                                 }
                             }
+                            else {
+                                // send back all event Ids that where received (even if they were errors)
+                                idsToRemove.append(uuid)
+                                notificationUserInfo["removingFromCache"] = true as AnyObject
+                            }
+                            
+                            NotificationCenter.default.post(name: .eventShipmentFailed, object: nil, userInfo: notificationUserInfo)
                         }
                     }
                 }
