@@ -77,23 +77,29 @@ public class EventsTracker : NSObject {
     
     /// Allows the client to attach view information to all future events.
     public func updateView(_ path:[String]? = nil, uri:String? = nil, previousPath:[String]? = nil) {
+        DispatchQueue.main.async { [weak self] in
+            print ("[EventsTracker] UpdateView: '\(path?.joined(separator: ".") ?? "")' uri:'\(uri ?? "")' prev:'\(previousPath?.joined(separator: ".") ?? "")'")
+            
+            if path == nil && previousPath == nil && uri == nil {
+                self?._currentViewContext = nil
+            }
+            else {
+                self?._currentViewContext = Context.ViewContext(path:path, previousPath: previousPath, uri: uri)
+            }
+        }
         
-        if path == nil && previousPath == nil && uri == nil {
-            _currentViewContext = nil
-        }
-        else {
-            _currentViewContext = Context.ViewContext(path:path, previousPath: previousPath, uri: uri)
-        }
     }
     fileprivate var _currentViewContext:Context.ViewContext?
     
     
     /// Allows the client to attach campaign information to all future events
     public func updateCampaign(name:String? = nil, source:String? = nil, medium:String? = nil, term:String? = nil, content:String? = nil) {
-        if name == nil && source == nil && medium == nil && term == nil && content == nil {
-            _currentCampaignContext = nil
-        } else {
-            _currentCampaignContext = Context.CampaignContext(name:name, source: source, medium: medium, term: term, content: content)
+        DispatchQueue.main.async { [weak self] in
+            if name == nil && source == nil && medium == nil && term == nil && content == nil {
+                self?._currentCampaignContext = nil
+            } else {
+                self?._currentCampaignContext = Context.CampaignContext(name:name, source: source, medium: medium, term: term, content: content)
+            }
         }
     }
     fileprivate var _currentCampaignContext:Context.CampaignContext?
