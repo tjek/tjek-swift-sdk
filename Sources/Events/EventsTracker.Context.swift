@@ -134,9 +134,11 @@ extension EventsTracker {
             
             static func toDictionary() -> [String:AnyObject]? {
                 var dict = [String:AnyObject]()
-                dict["name"]  = name as AnyObject?
-                dict["version"] = version as AnyObject?
-                dict["build"] = build as AnyObject?
+                
+                dict["name"]  = (name?.characters.count ?? 0) > 0 ? name as AnyObject? : nil
+                dict["version"] = (version?.characters.count ?? 0) > 0 ? version as AnyObject? : nil
+                dict["build"] = (build?.characters.count ?? 0) > 0 ? build as AnyObject? : nil
+                
                 return dict.count > 0 ? dict : nil
             }
         }
@@ -157,8 +159,11 @@ extension EventsTracker {
                 var dict = [String:AnyObject]()
                 dict["manufacturer"]  = manufacturer as AnyObject?
                 dict["model"] = model as AnyObject?
-                dict["screen"] = ["height":screenSize.height,
-                                  "width":screenSize.width] as AnyObject?
+                
+                if screenSize.width > 0 && screenSize.height > 0 {
+                    dict["screen"] = ["height":screenSize.height,
+                                      "width":screenSize.width] as AnyObject?
+                }
                 
                 return dict
             }
@@ -231,7 +236,9 @@ extension EventsTracker {
             
             static func toDictionary() -> [String:AnyObject]? {
                 
-                if let location = self.location {
+                if let location = self.location,
+                    (-90.0 ... 90.0).contains(location.coordinate.latitude),
+                    (-180.0 ... 180.0).contains(location.coordinate.longitude) {
                     
                     var dict = [String:AnyObject]()
                     
@@ -239,7 +246,7 @@ extension EventsTracker {
                     dict["latitude"] = location.coordinate.latitude as AnyObject // required
                     dict["longitude"] = location.coordinate.longitude as AnyObject // required
                     dict["altitude"] = location.altitude as AnyObject?
-                    dict["speed"] = location.speed as AnyObject?
+                    dict["speed"] = location.speed >= 0 ? (location.speed as AnyObject?) : nil
                     dict["accuracy"] = ["horizontal":location.horizontalAccuracy,
                                         "vertical":location.verticalAccuracy] as AnyObject?
                     dict["floor"] = location.floor?.level as AnyObject?

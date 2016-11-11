@@ -146,8 +146,8 @@ open class PagedPublicationView : UIView {
     required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
     }
     open override func layoutSubviews() {
         super.layoutSubviews()
@@ -386,7 +386,7 @@ open class PagedPublicationView : UIView {
     public func didEnterForeground() {
         
         // start listening for the app going into the background
-        NotificationCenter.default.addObserver(self, selector: #selector(PagedPublicationView._didEnterBackgroundNotification(_:)), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(PagedPublicationView._willResignActiveNotification(_:)), name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
         
         lifecycleEventHandler?.didAppear()
     }
@@ -397,7 +397,7 @@ open class PagedPublicationView : UIView {
     public func didEnterBackground() {
         
         // stop listening for going into the background
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
         
         lifecycleEventHandler?.didDisappear()
     }
@@ -712,18 +712,18 @@ open class PagedPublicationView : UIView {
     // MARK: Page Appearance/Disappearance
     
     @objc
-    fileprivate func _didEnterBackgroundNotification(_ notification:Notification) {
+    fileprivate func _willResignActiveNotification(_ notification:Notification) {
         
         // once in the background, listen for coming back to the foreground again
-        NotificationCenter.default.addObserver(self, selector: #selector(PagedPublicationView._willEnterForegroundNotification(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(PagedPublicationView._didBecomeActiveNotification(_:)), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
         
         didEnterBackground()
     }
     @objc
-    fileprivate func _willEnterForegroundNotification(_ notification:Notification) {
+    fileprivate func _didBecomeActiveNotification(_ notification:Notification) {
         
         // once in the foreground, stop listen for that again
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
         
         didEnterForeground()
     }

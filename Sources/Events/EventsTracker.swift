@@ -14,7 +14,7 @@ public extension Notification.Name {
     /// Create an 'eventTracked' notification name for a specific event-type.
     /// If no type is provided the returned name will catch _all_ event types.
     /// This notification can be queried on a specific tracker object.
-    /// `userInfo` includes `type`, `uuid`, & (optionally) `properties` keys.
+    /// `userInfo` includes `type`, `uuid`, & (optionally) `properties` & `view` keys.
     static func eventTracked(type:String? = nil) -> Notification.Name {
         var name = "ShopGunSDK.EventsTracker.eventTracked"
         if let fullType = type {
@@ -49,26 +49,34 @@ public class EventsTracker : NSObject {
     
     @objc(trackEventType:properties:)
     public func trackEvent(_ type:String, properties:[String:AnyObject]?) {
-        track(event: ShippableEvent(type:type, trackId:trackId, properties:properties, personId:personId, viewContext:_currentViewContext, campaignContext:_currentCampaignContext))
+        // make sure that all events are initially triggered on the main thread, to guarantee order.
+        DispatchQueue.main.async { [weak self] in
+            guard let s = self else { return }
+            
+            s.track(event: ShippableEvent(type:type, trackId:s.trackId, properties:properties, personId:s.personId, viewContext:s._currentViewContext, campaignContext:s._currentCampaignContext))
+        }
     }
+
     
     
     internal func track(event:EventsTracker.ShippableEvent) {
-        // make sure that all events are initially triggered on the main thread, to guarantee order. 
-        DispatchQueue.main.async {
-            EventsTracker.pool.push(object: event)
-            
-            
-            var eventInfo:[String:AnyObject] = ["type":event.type as AnyObject,
-                                                "uuid":event.uuid as AnyObject]
-            if event.properties != nil {
-                eventInfo["properties"] = event.properties! as AnyObject
-            }
-            
-            // send a notification for that specific event, a generic one
-            NotificationCenter.default.post(name: .eventTracked(type: event.type), object: self, userInfo: eventInfo)
-            NotificationCenter.default.post(name: .eventTracked(), object: self, userInfo: eventInfo)
+        
+        EventsTracker.pool.push(object: event)
+        
+        
+        var eventInfo:[String:AnyObject] = ["type":event.type as AnyObject,
+                                            "uuid":event.uuid as AnyObject]
+        if event.properties != nil {
+            eventInfo["properties"] = event.properties! as AnyObject
         }
+        
+        if let viewDict = event.viewContext?.toDictionary() {
+            eventInfo["view"] = viewDict as AnyObject
+        }
+        
+        // send a notification for that specific event, a generic one
+        NotificationCenter.default.post(name: .eventTracked(type: event.type), object: self, userInfo: eventInfo)
+        NotificationCenter.default.post(name: .eventTracked(), object: self, userInfo: eventInfo)
     }
     
     /// The optional PersonId that will be sent with every event
@@ -78,7 +86,7 @@ public class EventsTracker : NSObject {
     /// Allows the client to attach view information to all future events.
     public func updateView(_ path:[String]? = nil, uri:String? = nil, previousPath:[String]? = nil) {
         DispatchQueue.main.async { [weak self] in
-            print ("[EventsTracker] UpdateView: '\(path?.joined(separator: ".") ?? "")' uri:'\(uri ?? "")' prev:'\(previousPath?.joined(separator: ".") ?? "")'")
+            print ("[EVENTS-TRACKER] UpdateView: '\(path?.joined(separator: ".") ?? "")' (was '\(previousPath?.joined(separator: ".") ?? "")') \(uri ?? "")")
             
             if path == nil && previousPath == nil && uri == nil {
                 self?._currentViewContext = nil
@@ -147,14 +155,6 @@ public class EventsTracker : NSObject {
     fileprivate static var _globalTrackId : String?
     
     
-    
-    
-    public static func trackEvent(_ type:String) {
-        trackEvent(type, properties: nil)
-    }
-    public static func trackEvent(_ type:String, properties:[String:AnyObject]?) {
-        globalTracker?.trackEvent(type, properties: properties)
-    }
     
     
     
@@ -683,12 +683,15 @@ public class Event : NSObject, EventProtocol {
         self.properties = properties
     }
     
+    @objc(trackWith:)
     public func track(with tracker: EventsTracker) {
         tracker.track(event: self)
     }
+    @objc(track)
     public func track() {
         EventsTracker.globalTracker?.track(event: self)
     }
+
 }
 
 
