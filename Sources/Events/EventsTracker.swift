@@ -132,7 +132,7 @@ public class EventsTracker : NSObject {
     public static var globalTrackId : String? {
         get {
             if _globalTrackId == nil {
-                _globalTrackId = Utils.fetchConfigValue(for:"TrackId") as? String
+                _globalTrackId = Utils.fetchConfigValue(for:"TRACK_ID") as? String
             }
             
             if _globalTrackId == nil {

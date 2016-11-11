@@ -176,11 +176,10 @@ class SpreadLifecycleEventHandler {
             return
         }
         
+        PublicationPageInteractionEvent_Clicked(location:location, pageIndex:pageIndex, publicationId: publicationId, ownedById:ownerId, idSource:idSource).track()
+        
         if hittingHotspots {
             PublicationPageInteractionEvent_HotspotsClicked(location:location, pageIndex:pageIndex, publicationId: publicationId, ownedById:ownerId, idSource:idSource).track()
-        }
-        else {
-            PublicationPageInteractionEvent_Clicked(location:location, pageIndex:pageIndex, publicationId: publicationId, ownedById:ownerId, idSource:idSource).track()
         }
     }
     
