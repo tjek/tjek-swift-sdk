@@ -110,12 +110,13 @@ extension PagedPublicationView {
         fileprivate func _initializeGestureRecognizers() {
             
             touchGesture = UILongPressGestureRecognizer(target: self, action:#selector(HotspotOverlayView.didTouch(_:)))
-            touchGesture!.minimumPressDuration = 0.2
+            touchGesture!.minimumPressDuration = 0.15
             touchGesture!.delegate = self
             touchGesture!.cancelsTouchesInView = false
             
             tapGesture = UITapGestureRecognizer(target: self, action: #selector(HotspotOverlayView.didTap(_:)))
             tapGesture!.delegate = self
+            tapGesture!.cancelsTouchesInView = false
 
             longPressGesture = UILongPressGestureRecognizer(target: self, action:#selector(HotspotOverlayView.didLongPress(_:)))
             longPressGesture!.delegate = self
@@ -136,7 +137,7 @@ extension PagedPublicationView {
         
         func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
             if gestureRecognizer == tapGesture {
-                return gestureRecognizer != longPressGesture
+                return gestureRecognizer == touchGesture
             }
             else if gestureRecognizer == touchGesture {
                 return true
