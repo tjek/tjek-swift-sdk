@@ -129,6 +129,13 @@ public class EventsTracker : NSObject {
     fileprivate static var _globalTracker:EventsTracker?
     
     
+    // bit of a hack to report error only once.
+    private static let _reportMissingTrackIdOnce: () = {
+        // TODO: more details in error message?
+        print("You must define a ShopGun `TRACK_ID` in your ShopGunSDK-Info.plist, or with `ShopGunSDK.EventsTracker.globalTrackId = ...`")
+    }()
+    
+    
     public static var globalTrackId : String? {
         get {
             if _globalTrackId == nil {
@@ -136,11 +143,7 @@ public class EventsTracker : NSObject {
             }
             
             if _globalTrackId == nil {
-                // FIXME: only print once.
-                print("You must define a ShopGun `TRACK_ID` in your ShopGunSDK-Info.plist, or with `ShopGunSDK.EventsTracker.globalTrackId = ...`")
-                // TODO: more details in error message.
-                // TODO: maybe consider asserting?
-                // assert(_trackId != nil, "You must define a ShopGun `TrackId` in your info.plist, or with `EventsTracker.trackId = ...`")
+                _reportMissingTrackIdOnce
             }
             
             return _globalTrackId
