@@ -110,8 +110,9 @@ extension PagedPublicationView {
         fileprivate func _initializeGestureRecognizers() {
             
             touchGesture = UILongPressGestureRecognizer(target: self, action:#selector(HotspotOverlayView.didTouch(_:)))
-            touchGesture!.minimumPressDuration = 0.01
+            touchGesture!.minimumPressDuration = 0.2
             touchGesture!.delegate = self
+            touchGesture!.cancelsTouchesInView = false
             
             tapGesture = UITapGestureRecognizer(target: self, action: #selector(HotspotOverlayView.didTap(_:)))
             tapGesture!.delegate = self
@@ -162,7 +163,7 @@ extension PagedPublicationView {
                 let hotspots = _getHotspotsAtPoint(location)
                 
                 // highlight the hotspots that were touched
-                UIView.animate(withDuration: 0.1, delay: 0, options: [.beginFromCurrentState], animations: {
+                UIView.animate(withDuration: 0.1, delay: 0, options: [.beginFromCurrentState, .allowUserInteraction], animations: {
                     for hotspotView in hotspots.views {
                         hotspotView.alpha = 0.5
                     }
@@ -171,7 +172,7 @@ extension PagedPublicationView {
             } else if touch.state == .ended || touch.state == .failed  || touch.state == .cancelled {
 
                 // fade out all hotspot views when touch finishes
-                UIView.animate(withDuration: 0.2, delay: 0.0, options:[.beginFromCurrentState], animations: { [weak self] in
+                UIView.animate(withDuration: 0.2, delay: 0.0, options:[.beginFromCurrentState, .allowUserInteraction], animations: { [weak self] in
                     guard self != nil else { return }
                     
                     for view in self!.hotspotViews {
@@ -300,11 +301,6 @@ extension PagedPublicationView {
             }
             hotspotViews = newHotspotViews
             hotspotModels = newHotspotModels
-            
-            alpha = 0
-            UIView.animate(withDuration: 0.3, animations: { [weak self] in
-                self?.alpha = 1.0
-            }) 
         }
         
         

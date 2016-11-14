@@ -887,6 +887,10 @@ extension PagedPublicationView : VersoViewDelegate {
     
     public func currentPageIndexesChanged(current currentPageIndexes:IndexSet, previous oldPageIndexes:IndexSet, in verso:VersoView) {
         
+        // this is a bit of a hack to cancel the touch-gesture when we start scrolling
+        self.hotspotOverlayView.touchGesture?.isEnabled = false
+        self.hotspotOverlayView.touchGesture?.isEnabled = true
+        
         lifecycleEventHandler?.clearSpreadEventHandler()
         
         
