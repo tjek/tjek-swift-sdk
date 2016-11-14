@@ -218,6 +218,10 @@ open class PagedPublicationView : UIView {
         }
         return verso.getPageViewIfLoaded(outroIndex)
     }
+    public var isOutroVisible:Bool {
+        return outroPageIndex != nil && visiblePageIndexes.contains(outroPageIndex!)
+    }
+    
     
     /// Returns the pageview for the pageIndex, or nil if it hasnt been loaded yet
     public func getPageViewIfLoaded(_ pageIndex:Int) -> PagedPublicationPageView? {
