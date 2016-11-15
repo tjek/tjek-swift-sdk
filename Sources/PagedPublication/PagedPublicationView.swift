@@ -618,8 +618,8 @@ open class PagedPublicationView : UIView {
             layer.cornerRadius = 6
             layer.masksToBounds = true
             textColor = UIColor.white
-            backgroundColor = UIColor(white: 0, alpha: 0.3)
             
+            layer.backgroundColor = UIColor(white: 0, alpha: 0.3).cgColor
             textAlignment = .center
             font = UIFont.boldSystemFont(ofSize: 18) //TODO: dynamic font size
             
@@ -676,6 +676,8 @@ open class PagedPublicationView : UIView {
         self.perform(#selector(PagedPublicationView.dimPageNumberLabel), with: nil, afterDelay: 1.0)
     }
     
+    var currPageLabelText:String?
+    
     fileprivate func updatePageNumberLabel(withText text:String?) {
         if text == nil {
             NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(PagedPublicationView.dimPageNumberLabel), object: nil)
@@ -692,7 +694,7 @@ open class PagedPublicationView : UIView {
             if pageNumberLabel.text == nil {
                 pageNumberLabel.text = text
                 layoutPageNumberLabel()
-            } else {
+            } else if currPageLabelText != text {
                 UIView.transition(with: pageNumberLabel, duration: 0.15, options: [.transitionCrossDissolve, .beginFromCurrentState], animations: {
                     self.pageNumberLabel.text = text
                     self.layoutPageNumberLabel()
@@ -701,6 +703,7 @@ open class PagedPublicationView : UIView {
             
             showPageNumberLabel()
         }
+        currPageLabelText = text
     }
     
     
