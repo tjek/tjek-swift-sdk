@@ -65,7 +65,7 @@ public class SDKConfig : NSObject {
                 
                 // fire event whenever clientId is created
                 DispatchQueue.main.async {
-                    EventsTracker.globalTracker?.trackEvent("first-client-session-opened")
+                    EventsTracker.globalTracker?.trackEventSync("first-client-session-opened", properties: nil)
                 }
                 
                 _ = Utils.setKeychainString(_clientId!, key: "ClientId")
@@ -107,7 +107,7 @@ public class SDKConfig : NSObject {
                 
                 // fire event whenever sessionId is created
                 DispatchQueue.main.async {
-                    EventsTracker.globalTracker?.trackEvent("client-session-opened")
+                    EventsTracker.globalTracker?.trackEventSync("client-session-opened", properties: nil)
                 }
             }
             return _sessionId!

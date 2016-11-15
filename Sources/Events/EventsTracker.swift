@@ -53,10 +53,14 @@ public class EventsTracker : NSObject {
         DispatchQueue.main.async { [weak self] in
             guard let s = self else { return }
             
-            s.track(event: ShippableEvent(type:type, trackId:s.trackId, properties:properties, personId:s.personId, viewContext:s._currentViewContext, campaignContext:s._currentCampaignContext))
+            s.trackEventSync(type, properties: properties)
         }
     }
-
+    
+    /// We expose this method internally so that the SDKConfig can enforce certain events being fired first.
+    internal func trackEventSync(_ type:String, properties:[String:AnyObject]?) {
+        track(event: ShippableEvent(type:type, trackId:trackId, properties:properties, personId:personId, viewContext:_currentViewContext, campaignContext:_currentCampaignContext))
+    }
     
     
     internal func track(event:EventsTracker.ShippableEvent) {
