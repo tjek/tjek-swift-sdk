@@ -621,7 +621,28 @@ open class PagedPublicationView : UIView {
             
             layer.backgroundColor = UIColor(white: 0, alpha: 0.3).cgColor
             textAlignment = .center
-            font = UIFont.boldSystemFont(ofSize: 18) //TODO: dynamic font size
+            
+            // monospaced numbers
+            let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.headline)
+            let monospacedNumbersFontDescriptor = fontDescriptor.addingAttributes(
+                [
+                    UIFontDescriptorFeatureSettingsAttribute: [
+                        [
+                            UIFontFeatureTypeIdentifierKey: kNumberSpacingType,
+                            UIFontFeatureSelectorIdentifierKey: kMonospacedNumbersSelector
+                        ],
+                        [
+                            UIFontFeatureTypeIdentifierKey: kStylisticAlternativesType,
+                            UIFontFeatureSelectorIdentifierKey: kStylisticAltOneOnSelector
+                        ],
+                        [
+                            UIFontFeatureTypeIdentifierKey: kStylisticAlternativesType,
+                            UIFontFeatureSelectorIdentifierKey: kStylisticAltTwoOnSelector
+                        ]
+                    ]
+                ])
+            //TODO: dynamic font size
+            font = UIFont(descriptor: monospacedNumbersFontDescriptor, size: 18)
             
             numberOfLines = 1
         }
@@ -654,6 +675,10 @@ open class PagedPublicationView : UIView {
         // layout page number label
         var lblFrame = pageNumberLabel.frame
         lblFrame.size = pageNumberLabel.sizeThatFits(bounds.size)
+        
+        lblFrame.size.width =  ceil(lblFrame.size.width)
+        lblFrame.size.height = round(lblFrame.size.height)
+        
         lblFrame.origin.x = round(bounds.midX - (lblFrame.width / 2))
         lblFrame.origin.y = round(bounds.maxY - 11 - lblFrame.height)
         pageNumberLabel.frame = lblFrame
