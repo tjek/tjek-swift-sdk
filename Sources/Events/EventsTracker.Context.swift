@@ -237,13 +237,18 @@ extension EventsTracker {
         }
         
         struct LocationContext : SerializableContext {
+            
+            static var locationManager:CLLocationManager = {
+                return CLLocationManager()
+            }()
+            
             static var location:CLLocation? {
                 let authStatus = CLLocationManager.authorizationStatus()
                 guard (authStatus == .authorizedWhenInUse || authStatus == .authorizedAlways) else {
                     return nil
                 }
                 
-                return CLLocationManager().location
+                return locationManager.location
             }
             
             static func toDictionary() -> [String:AnyObject]? {
