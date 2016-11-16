@@ -337,8 +337,13 @@ public class EventsTracker : NSObject {
             self.diskCachePath = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first as NSString?)?.appendingPathComponent(fileName)
         }
         
+        /// Note - this property is syncronized with memory writes, so may not be instantaneous
         var objectCount: Int {
-            return allObjects.count
+            var count:Int = 0
+            cacheInMemoryQueue.sync {
+                count = allObjects.count
+            }
+            return count
         }
         
         let maxCount:Int = 1000
