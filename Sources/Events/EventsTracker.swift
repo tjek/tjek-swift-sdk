@@ -270,9 +270,11 @@ public class EventsTracker : NSObject {
             EventsShipper.networkSession.dataTask(with: request) {
                 (data, response, error) in
                 
+                let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
                 // try to parse the response from the server.
                 // if it is unreadable we will just tell pool to remove just the non-event objects
                 if data != nil,
+                    (200 ..< 300).contains(statusCode),
                     let jsonData = try? JSONSerialization.jsonObject(with: data!, options:[]) as? [String:AnyObject],
                     let events = jsonData!["events"] as? [[String:AnyObject]] {
                     
@@ -311,7 +313,7 @@ public class EventsTracker : NSObject {
                                 }
                             }
                             else {
-                                // send back all event Ids that where received (even if they were errors)
+                                // send back all event Ids that were received (even if they were errors)
                                 idsToRemove.append(uuid)
                                 notificationUserInfo["removingFromCache"] = true as AnyObject
                             }
