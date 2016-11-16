@@ -150,10 +150,16 @@ extension EventsTracker {
             static let model:String = {
                 return UIDevice.current.model
             }()
-            // The _native_ size, in absolute px. Always portrait.
+            // The physical pixel size, in absolute px.
             static var screenSize:CGSize {
-                return UIScreen.main.nativeBounds.size
+                let ptSize = UIScreen.main.bounds.size
+                let density = self.screenDensity > 0 ? self.screenDensity : 1
+                return CGSize(width: ptSize.width * density, height: ptSize.height * density)
             }
+            // The density of the screen - how many px in a pt
+            static var screenDensity:CGFloat = {
+                return UIScreen.main.scale
+            }()
             
             static func toDictionary() -> [String:AnyObject]? {
                 var dict = [String:AnyObject]()
@@ -161,8 +167,14 @@ extension EventsTracker {
                 dict["model"] = model as AnyObject?
                 
                 if screenSize.width > 0 && screenSize.height > 0 {
-                    dict["screen"] = ["height":screenSize.height,
-                                      "width":screenSize.width] as AnyObject?
+                    var screenDict = ["height":screenSize.height,
+                                      "width":screenSize.width]
+                    
+                    if screenDensity > 0{
+                        screenDict["density"] = screenDensity
+                    }
+                    
+                    dict["screen"] = screenDict as AnyObject?
                 }
                 
                 return dict
