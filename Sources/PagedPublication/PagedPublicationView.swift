@@ -422,6 +422,29 @@ open class PagedPublicationView : UIView {
         }
     }
     
+    fileprivate lazy var outroOutsideTapGesture:UITapGestureRecognizer = { [weak self] in
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapOutsideOutro(_:)))
+        tap.cancelsTouchesInView = false
+        
+        self?.addGestureRecognizer(tap)
+        return tap
+    }()
+    
+    @objc
+    func didTapOutsideOutro(_ tap:UITapGestureRecognizer) {
+        guard let outroView = self.outroView, currentPageIndexes.contains(outroView.pageIndex) else {
+            return
+        }
+        
+        
+        let location = tap.location(in: outroView)
+        if outroView.bounds.contains(location) == false {
+            jump(toPageIndex: pageCount-1, animated: true)
+        }
+    }
+    
+    
+    
     fileprivate var lifecycleEventHandler:PagedPublicationLifecycleEventHandler?
     
     
@@ -642,7 +665,7 @@ open class PagedPublicationView : UIView {
                     ]
                 ])
             //TODO: dynamic font size
-            font = UIFont(descriptor: monospacedNumbersFontDescriptor, size: 18)
+            font = UIFont(descriptor: monospacedNumbersFontDescriptor, size: 16)
             
             numberOfLines = 1
         }
@@ -944,8 +967,10 @@ extension PagedPublicationView : VersoViewDelegate {
             
             if addedIndexes.contains(outroIndex) {
                 delegate?.outroDidAppear(outroView, in: self)
+                outroOutsideTapGesture.isEnabled = true
             } else if removedIndexes.contains(outroIndex) {
                 delegate?.outroDidDisappear(outroView, in: self)
+                outroOutsideTapGesture.isEnabled = false
             }
         }
         
