@@ -167,8 +167,8 @@ extension EventsTracker {
                 dict["model"] = model as AnyObject?
                 
                 if screenSize.width > 0 && screenSize.height > 0 {
-                    var screenDict = ["height":screenSize.height,
-                                      "width":screenSize.width]
+                    var screenDict:[String:Any] = ["height":Int(screenSize.height),
+                                                   "width":Int(screenSize.width)]
                     
                     if screenDensity > 0{
                         screenDict["density"] = screenDensity
