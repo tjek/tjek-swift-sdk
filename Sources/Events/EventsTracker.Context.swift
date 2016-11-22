@@ -21,7 +21,7 @@ extension EventsTracker {
     
     struct Context {
         
-        static func toDictionary(sessionId:String, personId:String?, viewContext:ViewContext?, campaignContext:CampaignContext?) -> [String:AnyObject]? {
+        static func toDictionary(sessionId:String, personId:IdField?, viewContext:ViewContext?, campaignContext:CampaignContext?) -> [String:AnyObject]? {
             var dict = [String:AnyObject]()
             
             dict["userAgent"] = userAgent as AnyObject // required
@@ -38,7 +38,7 @@ extension EventsTracker {
             
             dict["campaign"] = campaignContext?.toDictionary() as AnyObject?
             
-            dict["personId"] = personId as AnyObject?
+            dict["personId"] = personId?.jsonArray() as AnyObject?
             
             return dict
         }

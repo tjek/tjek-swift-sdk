@@ -30,6 +30,31 @@ public extension Notification.Name {
     static let eventShipmentFailed = Notification.Name("ShopGunSDK.EventsTracker.eventShipmentFailed")
 }
 
+@objc(SGNIdField)
+public class IdField : NSObject {
+    let id:String
+    let source:String
+    
+    public init?(_ id:String?, source:String) {
+        guard id != nil else { return nil }
+        self.id = id!
+        self.source = source
+    }
+    
+    public func jsonArray() -> [String] {
+        return [source, id]
+    }
+    
+    
+    public static func legacy(_ id:String?) -> IdField? {
+        return IdField(id, source:"legacy")
+    }
+    public static func graph(_ id:String?) -> IdField? {
+        return IdField(id, source:"graph")
+    }
+}
+
+
 
 @objc(SGNEventsTracker)
 public class EventsTracker : NSObject {
@@ -84,7 +109,7 @@ public class EventsTracker : NSObject {
     }
     
     /// The optional PersonId that will be sent with every event
-    public var personId:String?
+    public var personId:IdField?
     
     
     /// Allows the client to attach view information to all future events.
@@ -538,7 +563,7 @@ public class EventsTracker : NSObject {
         // optional context properties
         let viewContext:EventsTracker.Context.ViewContext?
         let campaignContext:EventsTracker.Context.CampaignContext?
-        let personId:String?
+        let personId:IdField?
         
         init(type:String,
              trackId:String,
@@ -547,7 +572,7 @@ public class EventsTracker : NSObject {
              recordedDate:Date = Date(),
              clientId:String = SDKConfig.clientId,
              sessionId:String = SDKConfig.sessionId,
-             personId:String? = nil,
+             personId:IdField? = nil,
              viewContext:EventsTracker.Context.ViewContext? = nil,
              campaignContext:EventsTracker.Context.CampaignContext? = nil) {
             
