@@ -141,6 +141,9 @@ open class PagedPublicationView : UIView {
         addSubview(pageNumberLabel)
         pageNumberLabel.alpha = 0
         
+        addSubview(progressBarView)
+        progressBarView.alpha = 0
+        
         backgroundColor = UIColor.white
     }
     required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
@@ -158,6 +161,7 @@ open class PagedPublicationView : UIView {
         errorViewContainer.frame = bounds
         
         layoutPageNumberLabel()
+        updateProgressBar()
     }
     
     
@@ -233,8 +237,15 @@ open class PagedPublicationView : UIView {
     
     override open var backgroundColor: UIColor? {
         didSet {
+            let alternate = alternateColor
             // update spinner color
-            self.loadingSpinnerView.color = alternateColor
+            self.loadingSpinnerView.color = alternate
+            
+            
+            var whiteComponent:CGFloat = 1.0
+            backgroundColor?.getWhite(&whiteComponent, alpha: nil)
+        
+            self.progressBarView.backgroundColor = whiteComponent <= 0.05 ? UIColor(white:0.58, alpha:0.3) : UIColor(white:0, alpha:0.3)
         }
     }
     public var alternateColor:UIColor {
@@ -629,6 +640,67 @@ open class PagedPublicationView : UIView {
     
     
     
+    // MARK: Progress bar
+    
+    fileprivate lazy var progressBarView:UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(white: 0, alpha: 0.3)
+        return view
+    }()
+
+    
+    
+    fileprivate func updateProgressBar() {
+        
+        let lastPageIndex = CGFloat(self.visiblePageIndexes.last ?? 0)
+        let pageCount = CGFloat(self.pageCount-1)
+        
+        let progress = min(1, max(0, pageCount > 0 ? lastPageIndex / pageCount : 0))
+        
+        let height:CGFloat = 4
+        let width:CGFloat = bounds.width * progress
+        var frame = CGRect(x:bounds.minX,
+                           y:bounds.maxY - height,
+                           width: progressBarView.frame.width,
+                           height:height)
+        
+        progressBarView.frame = frame
+        frame.size.width = width
+        
+        UIView.animate(withDuration: 0.3, delay:0, options: [], animations: { [weak self] in
+            self?.progressBarView.frame = frame
+        })
+
+        
+        if isOutroVisible {
+            UIView.animate(withDuration: 0.1, delay:0, options: [], animations: { [weak self] in
+                self?.progressBarView.alpha = 0
+            })
+        } else {
+            showProgressBarView()
+        }
+    }
+    
+    @objc
+    fileprivate func dimProgressBarView() {
+        UIView.animate(withDuration: 1.0, delay: 0, options: [.beginFromCurrentState], animations: {
+            self.progressBarView.alpha = 0.5
+        }, completion: nil)
+    }
+    
+    fileprivate func showProgressBarView() {
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(PagedPublicationView.dimProgressBarView), object: nil)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, options: [.beginFromCurrentState], animations: {
+            self.progressBarView.alpha = 1.0
+        }, completion: nil)
+        
+        self.perform(#selector(PagedPublicationView.dimProgressBarView), with: nil, afterDelay: 1.0)
+    }
+    
+    
+    
+    
     // MARK: Page Number Label
     
     fileprivate var pageNumberLabel:PageNumberLabel = PageNumberLabel()
@@ -990,6 +1062,8 @@ extension PagedPublicationView : VersoViewDelegate {
             }
             
             s.updatePageNumberLabel(withText: newLabelText)
+            
+            s.updateProgressBar()
         }
     }
     
