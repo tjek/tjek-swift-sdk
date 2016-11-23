@@ -115,7 +115,7 @@ public class EventsTracker : NSObject {
     /// Allows the client to attach view information to all future events.
     public func updateView(_ path:[String]? = nil, uri:String? = nil, previousPath:[String]? = nil) {
         DispatchQueue.main.async { [weak self] in
-            print ("[EVENTS-TRACKER] UpdateView: '\(path?.joined(separator: ".") ?? "")' (was '\(previousPath?.joined(separator: ".") ?? "")') \(uri ?? "")")
+            //print ("[EVENTS-TRACKER] UpdateView: '\(path?.joined(separator: ".") ?? "")' (was '\(previousPath?.joined(separator: ".") ?? "")') \(uri ?? "")")
             
             if path == nil && previousPath == nil && uri == nil {
                 self?._currentViewContext = nil
@@ -217,7 +217,7 @@ public class EventsTracker : NSObject {
     // MARK: - Pool
     
     fileprivate static var pool:CachedFlushablePool = CachedFlushablePool(dispatchInterval: 120, dispatchLimit: 100,
-                                                                          shipper: EventsShipper(baseURL:URL(string: "https://events.shopgun.com")!),
+                                                                          shipper: EventsShipper(baseURL:URL(string: "https://events.service.shopgun.com")!),
                                                                           cache: EventsCache(fileName:"com.shopgun.ios.sdk.events_pool.disk_cache.plist"))
     
     
