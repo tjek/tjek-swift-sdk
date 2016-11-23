@@ -103,6 +103,10 @@ public class EventsTracker : NSObject {
             eventInfo["view"] = viewDict as AnyObject
         }
         
+        if let personId = event.personId?.id {
+            eventInfo["personId"] = personId as AnyObject
+        }
+        
         // send a notification for that specific event, a generic one
         NotificationCenter.default.post(name: .eventTracked(type: event.type), object: self, userInfo: eventInfo)
         NotificationCenter.default.post(name: .eventTracked(), object: self, userInfo: eventInfo)
