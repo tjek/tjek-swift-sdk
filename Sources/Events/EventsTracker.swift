@@ -35,6 +35,14 @@ public extension Notification.Name {
 @objc(SGNEventsTracker)
 public class EventsTracker : NSObject {
     
+    override public class func initialize () {
+        super.initialize()
+
+        // make sure we have a locationManager on first initialize. This is because CLLocationManagers must not be created off the main thread.
+        _ = Context.LocationContext.locationManager
+    }
+
+    
     // MARK: Instance properties & methods
     
     public let trackId:String
