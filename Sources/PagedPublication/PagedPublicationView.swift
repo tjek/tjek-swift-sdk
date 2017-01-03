@@ -308,8 +308,8 @@ open class PagedPublicationView : UIView {
                     if let pubVM = loadedPublicationViewModel {
                         
                         // successful reload, event handler can now call opened & didAppear
-                        if s.lifecycleEventHandler == nil || s.lifecycleEventHandler!.publicationId != pubVM.publicationId {
-                            s.lifecycleEventHandler = PagedPublicationLifecycleEventHandler(publicationId: pubVM.publicationId, ownerId: pubVM.ownerId, idSource: loader.sourceType)
+                        if s.lifecycleEventHandler == nil || s.lifecycleEventHandler!.publicationId.id != pubVM.publicationId || s.lifecycleEventHandler!.publicationId.source != loader.sourceType {
+                            s.lifecycleEventHandler = PagedPublicationLifecycleEventHandler(publicationId:IdField(pubVM.publicationId, source:loader.sourceType)!, ownerId: IdField(pubVM.ownerId, source:loader.sourceType)!)
                             s.lifecycleEventHandler?.opened()
                             s.lifecycleEventHandler?.didAppear()
                         }

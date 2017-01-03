@@ -30,30 +30,6 @@ public extension Notification.Name {
     static let eventShipmentFailed = Notification.Name("ShopGunSDK.EventsTracker.eventShipmentFailed")
 }
 
-@objc(SGNIdField)
-public class IdField : NSObject {
-    let id:String
-    let source:String
-    
-    public init?(_ id:String?, source:String) {
-        guard id != nil else { return nil }
-        self.id = id!
-        self.source = source
-    }
-    
-    public func jsonArray() -> [String] {
-        return [source, id]
-    }
-    
-    
-    public static func legacy(_ id:String?) -> IdField? {
-        return IdField(id, source:"legacy")
-    }
-    public static func graph(_ id:String?) -> IdField? {
-        return IdField(id, source:"graph")
-    }
-}
-
 
 
 @objc(SGNEventsTracker)
@@ -737,5 +713,28 @@ public class Event : NSObject, EventProtocol {
 
 }
 
-
+/// A container for representing an id in an event's properties
+@objc(SGNIdField)
+public class IdField : NSObject {
+    let id:String
+    let source:String
+    
+    public init?(_ id:String?, source:String) {
+        guard id != nil else { return nil }
+        self.id = id!
+        self.source = source
+    }
+    
+    public func jsonArray() -> [String] {
+        return [source, id]
+    }
+    
+    
+    public static func legacy(_ id:String?) -> IdField? {
+        return IdField(id, source:"legacy")
+    }
+    public static func graph(_ id:String?) -> IdField? {
+        return IdField(id, source:"graph")
+    }
+}
 
