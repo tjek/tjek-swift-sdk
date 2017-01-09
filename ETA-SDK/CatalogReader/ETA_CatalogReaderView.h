@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Laurie Hufford. All rights reserved.
 //
 
-#import "ETA_VersoPagedView.h"
+#import <Verso/ETA_VersoPagedView.h>
 
 
 // Error handling

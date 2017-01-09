@@ -16,6 +16,5 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activitySpinner;
-@property (weak, nonatomic) IBOutlet UISwitch *nativeReaderSwitch;
 
 @end

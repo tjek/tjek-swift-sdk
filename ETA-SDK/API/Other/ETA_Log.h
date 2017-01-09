@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 eTilbudsavis. All rights reserved.
 //
 
-#import "DDLog.h"
+#import <CocoaLumberjack/DDLog.h>
 
 #define ETASDK_LOG_CONTEXT 1983
 

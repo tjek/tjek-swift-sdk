@@ -1,4 +1,3 @@
-source 'https://github.com/CocoaPods/Specs.git'
+target 'ETA-SDK Example'
 
 pod "ETA-SDK/CatalogReader", :path => "../"
-pod "ETA-SDK/WebCatalogView", :path => "../"
