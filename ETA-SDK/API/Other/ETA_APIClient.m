@@ -19,7 +19,7 @@
 
 #import <CommonCrypto/CommonDigest.h>
 
-static NSString* const kETA_SessionUserDefaultsKey = @"ETA_Session";
+static NSString* const kETA_AuthSessionUserDefaultsKey = @"ETA_Session";
 static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
 
 
@@ -131,27 +131,28 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
                 [cleanedParameters setValue:obj forKey:key];
             }];
                         
-            void (^successBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, id responseObject)
+            void (^successBlock)(NSURLSessionTask *, id) = ^(NSURLSessionTask *task, id responseObject)
             {
                 // hopefully nil if not an error-object in the responseObj
-                NSError* apiError = [NSError SGN_errorWithAPIJSONResponse:responseObject urlResponse:operation.response];
+                NSError* apiError = [NSError SGN_errorWithAPIJSONResponse:responseObject urlResponse:task.response];
+                NSHTTPURLResponse* httpResponse = [task.response isKindOfClass:NSHTTPURLResponse.class] ? (NSHTTPURLResponse*)task.response : nil;
                 
-                [self updateSessionTokenFromHeaders:operation.response.allHeaderFields];
+                [self updateAuthSessionTokenFromHeaders:httpResponse.allHeaderFields];
                 if (completionHandler)
                     completionHandler(responseObject, apiError);
             };
-            void (^failureBlock)(AFHTTPRequestOperation*, id) = ^(AFHTTPRequestOperation *operation, NSError *networkError)
+            void (^failureBlock)(NSURLSessionTask *, id) = ^(NSURLSessionTask *task, NSError *networkError)
             {
                 // may be nil if not an api error
-                NSError* apiError = [NSError SGN_errorWithAPIJSONResponse:operation.responseObject urlResponse:operation.response];
+                NSError* apiError = [NSError SGN_errorWithAPIJSONData:networkError.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] urlResponse:task.response];
                 
                 if (remainingRetries > 0)
                 {
-                    if ([apiError SGN_doesAPIResponseErrorRequireNewSession])
+                    if ([apiError SGN_doesAPIResponseErrorRequireNewAuthSession])
                     {
                         ETASDKLogWarn(@"Error (%zd) while making request '%@' - Reset Session and retry '%@' - %@", apiError.code, requestPath, apiError.localizedDescription, apiError.localizedFailureReason);
                         // create a new session, and if it was successful, repeat the request we were making
-                        [self startSessionOnSyncQueue:YES forceReset:YES withCompletion:^(NSError *startSessionError) {
+                        [self startAuthSessionOnSyncQueue:YES forceReset:YES withCompletion:^(NSError *startSessionError) {
                             if (!startSessionError)
                             {
                                 [self makeRequest:requestPath type:type parameters:parameters remainingRetries:remainingRetries-1 completion:^(id response, NSError *retryError) {
@@ -193,10 +194,10 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
             switch (type)
             {
                 case ETARequestTypeGET:
-                    [self GET:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
+                    [self GET:requestPath parameters:cleanedParameters progress:nil success:successBlock failure:failureBlock];
                     break;
                 case ETARequestTypePOST:
-                    [self POST:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
+                    [self POST:requestPath parameters:cleanedParameters progress:nil success:successBlock failure:failureBlock];
                     break;
                 case ETARequestTypePUT:
                     [self PUT:requestPath parameters:cleanedParameters success:successBlock failure:failureBlock];
@@ -212,9 +213,9 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
         // the session hasnt been created, or it failed when previously created
         // try to create the session from scratch.
         // we are currently on the syncQ, so dont syncronously dispatch the start to the syncQ
-        if (!self.session)
+        if (!self.authSession)
         {
-            [self startSessionOnSyncQueue:NO forceReset:NO withCompletion:^(NSError *error) {
+            [self startAuthSessionOnSyncQueue:NO forceReset:NO withCompletion:^(NSError *error) {
                 // if we were able to create the session, do the send request
                 if (!error)
                     sendBlock();
@@ -249,10 +250,10 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
 - (void) updateHeaders
 {
     NSString* hash = nil;
-    if (self.session.token && self.apiSecret)
+    if (self.authSession.token && self.apiSecret)
     {
         // try to make an SHA256 Hex string
-        NSData* hashData = [[NSString stringWithFormat:@"%@%@", self.apiSecret, self.session.token] dataUsingEncoding:NSUTF8StringEncoding];
+        NSData* hashData = [[NSString stringWithFormat:@"%@%@", self.apiSecret, self.authSession.token] dataUsingEncoding:NSUTF8StringEncoding];
         
         unsigned char result[CC_SHA256_DIGEST_LENGTH];
         if (CC_SHA256(hashData.bytes, (CC_LONG)hashData.length, result)) {
@@ -267,10 +268,10 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
     
     NSDictionary* httpheaders = self.requestSerializer.HTTPRequestHeaders;
     
-    ETASDKLogInfo(@"Updating Headers - Token:'%@'->'%@' Sig:'%@'->'%@'", httpheaders[@"X-Token"], self.session.token, httpheaders[@"X-Signature"], hash);
+    ETASDKLogInfo(@"Updating Headers - Token:'%@'->'%@' Sig:'%@'->'%@'", httpheaders[@"X-Token"], self.authSession.token, httpheaders[@"X-Signature"], hash);
     
-    [self.requestSerializer setValue:self.session.token forHTTPHeaderField:@"X-Token"];
-    [self.requestSerializer setValue:hash               forHTTPHeaderField:@"X-Signature"];
+    [self.requestSerializer setValue:self.authSession.token forHTTPHeaderField:@"X-Token"];
+    [self.requestSerializer setValue:hash                   forHTTPHeaderField:@"X-Signature"];
 }
 
 
@@ -278,35 +279,35 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
 
 #pragma mark - Session Setters
 
-- (void) setIfSameOrNewerSession:(ETA_Session *)session
+- (void) setIfSameOrNewerAuthSession:(ETA_Session *)authSession
 {
-    if ([session isExpiryTheSameAsSession:self.session] ||
-        [session isExpiryNewerThanSession:self.session])
+    if ([authSession isExpiryTheSameAsSession:self.authSession] ||
+        [authSession isExpiryNewerThanSession:self.authSession])
     {
-        self.session = session;
+        self.authSession = authSession;
     }
 }
-- (void) setIfNewerSession:(ETA_Session *)session
+- (void) setIfNewerAuthSession:(ETA_Session *)authSession
 {
-    if ([session isExpiryNewerThanSession:self.session])
+    if ([authSession isExpiryNewerThanSession:self.authSession])
     {
-        self.session = session;
+        self.authSession = authSession;
     }
 }
 
 
 // Setting the session causes the change to be persisted to User Defaults
-- (void) setSession:(ETA_Session *)session
+- (void) setAuthSession:(ETA_Session *)authSession
 {
-    ETASDKLogInfo(@"Setting Session '%@' (%@) => '%@' (%@)", _session.token, _session.expires, session.token, session.expires);
+    ETASDKLogInfo(@"Setting Session '%@' (%@) => '%@' (%@)", _authSession.token, _authSession.expires, authSession.token, authSession.expires);
     
-    _session = session;
+    _authSession = authSession;
     [self updateHeaders];
-    [self saveSessionToStorage];
+    [self saveAuthSessionToStorage];
 }
 
 // This will only update the session token/expiry if the expiry is newer
-- (void) updateSessionTokenFromHeaders:(NSDictionary*)headers
+- (void) updateAuthSessionTokenFromHeaders:(NSDictionary*)headers
 {
     NSString* newToken = headers[@"X-Token"];
     
@@ -317,40 +318,40 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
     
     // check if it would change anything about the session.
     // if the tokens are the same and the new date is not newer then it's a no-op
-    if ([self.session.token isEqualToString:newToken])
+    if ([self.authSession.token isEqualToString:newToken])
         return;
-    if (self.session.expires && [newExpiryDate compare: self.session.expires]!=NSOrderedDescending)
+    if (self.authSession.expires && [newExpiryDate compare: self.authSession.expires]!=NSOrderedDescending)
         return;
         
     // merge the expiry/token with the current session
-    ETA_Session* newSession = [self.session copy];
+    ETA_Session* newSession = [self.authSession copy];
     [newSession setValuesForKeysWithDictionary:@{@"token":newToken,
                                                  @"expires":newExpiryDate}];
     
-    ETASDKLogInfo(@"Updating Session Tokens - '%@' (%@) => '%@' (%@)", self.session.token, self.session.expires, newSession.token, newSession.expires);
-    self.session = newSession;
+    ETASDKLogInfo(@"Updating Session Tokens - '%@' (%@) => '%@' (%@)", self.authSession.token, self.authSession.expires, newSession.token, newSession.expires);
+    self.authSession = newSession;
 }
 
 #pragma mark - Session Loading / Updating / Saving
 
 // get the session, either from local storage or creating a new one, and make sure it's up to date
 // it will perform it on the sync queue
-- (void) startSessionWithCompletion:(void (^)(NSError* error))completionHandler
+- (void) startAuthSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
-    [self startSessionOnSyncQueue:YES forceReset:NO withCompletion:completionHandler];
+    [self startAuthSessionOnSyncQueue:YES forceReset:NO withCompletion:completionHandler];
 }
 
-- (void) startSessionOnSyncQueue:(BOOL)dispatchOnSyncQ forceReset:(BOOL)forceReset withCompletion:(void (^)(NSError* error))completionHandler
+- (void) startAuthSessionOnSyncQueue:(BOOL)dispatchOnSyncQ forceReset:(BOOL)forceReset withCompletion:(void (^)(NSError* error))completionHandler
 {
     // do it on the sync queue, and block until the completion occurs - that way any other requests will have to wait for the session to have started
     void (^block)() = ^{
         // we are asking to reset the session - just delete existing session
         if (forceReset)
         {
-            self.session = nil;
+            self.authSession = nil;
         }
         // a previous connect was sucessful - dont bother connecting (and dont block syncQ with completion handler
-        else if (self.session)
+        else if (self.authSession)
         {
             if (completionHandler)
             {
@@ -366,13 +367,13 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
         
         
         // fill self.session with the session from user defaults, or nil if not set
-        [self loadSessionFromStorage];
+        [self loadAuthSessionFromStorage];
         
         // if there is no session, or either renew or update fail, call this block, which tries to create a new session
-        void (^createSessionBlock)() = ^{
-            ETASDKLogInfo(@"Resetting session before creating - '%@' => '%@'", self.session.token, nil);
-            self.session = nil;
-            [self createSessionWithCompletion:^(NSError *error) {
+        void (^createAuthSessionBlock)() = ^{
+            ETASDKLogInfo(@"Resetting session before creating - '%@' => '%@'", self.authSession.token, nil);
+            self.authSession = nil;
+            [self createAuthSessionWithCompletion:^(NSError *error) {
 //                if (error)
 //                {
 //                    ETASDKLogWarn(@"Unable to create session: (%d) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
@@ -384,16 +385,16 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
         };
         
         // session loaded from local store - check its state
-        if (self.session)
+        if (self.authSession)
         {
 //            // if the session is out of date, renew it
 //            if ([self.session willExpireSoon])
 //            {
-                [self renewSessionWithCompletion:^(NSError *error) {
-                    if ([error SGN_doesAPIResponseErrorRequireNewSession])
+                [self renewAuthSessionWithCompletion:^(NSError *error) {
+                    if ([error SGN_doesAPIResponseErrorRequireNewAuthSession])
                     {
                         ETASDKLogWarn(@"Unable to renew session - trying to create a new one instead: (%zd) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
-                        createSessionBlock();
+                        createAuthSessionBlock();
                     }
                     else
                     {
@@ -424,7 +425,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
         // no previous session exists - create a new one
         else
         {
-            createSessionBlock();
+            createAuthSessionBlock();
         }
         
         // wait for the semaphore that is going to be called when the getting of the session completes
@@ -438,43 +439,43 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
 }
 
 // get the session from UserDefaults
-- (void) loadSessionFromStorage
+- (void) loadAuthSessionFromStorage
 {
     if (!self.storageEnabled)
         return;
     
-    NSString* sessionJSON = [[NSUserDefaults standardUserDefaults] valueForKey:kETA_SessionUserDefaultsKey];
+    NSString* sessionJSON = [[NSUserDefaults standardUserDefaults] valueForKey:kETA_AuthSessionUserDefaultsKey];
     NSDictionary* sessionDict = (sessionJSON) ? [NSJSONSerialization JSONObjectWithData:[sessionJSON dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil] : nil;
-    ETA_Session* session = nil;
+    ETA_Session* authSession = nil;
     if (sessionDict)
     {
-        session = [ETA_Session objectFromJSONDictionary:sessionDict];
+        authSession = [ETA_Session objectFromJSONDictionary:sessionDict];
     }
-    ETASDKLogInfo(@"Loading Session - '%@' => '%@'", self.session.token, session.token);
-    self.session = session;
+    ETASDKLogInfo(@"Loading Session - '%@' => '%@'", self.authSession.token, authSession.token);
+    self.authSession = authSession;
 }
 
 // save the session to local storage
-- (void) saveSessionToStorage
+- (void) saveAuthSessionToStorage
 {
     if (!self.storageEnabled)
         return;
     
     NSString* sessionJSON = nil;
-    if (self.session)
+    if (self.authSession)
     {
-        NSDictionary* sessionDict = [self.session JSONDictionary];
+        NSDictionary* sessionDict = [self.authSession JSONDictionary];
         
         sessionJSON = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:sessionDict options:0 error:nil]
                                             encoding: NSUTF8StringEncoding];
     }
     [[NSUserDefaults standardUserDefaults] setObject: sessionJSON
-                                              forKey:kETA_SessionUserDefaultsKey];
+                                              forKey:kETA_AuthSessionUserDefaultsKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
     
 // create a new session, and assign
-- (void) createSessionWithCompletion:(void (^)(NSError* error))completionHandler
+- (void) createAuthSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
     NSInteger tokenLife = 90*24*60*60;
 //    NSInteger tokenLife = 5;
@@ -517,8 +518,9 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
     ETASDKLogInfo(@"Creating Session...");
     
     [self POST:[ETA_API path:ETA_API.sessions]
-        parameters:params
-           success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    parameters:params
+      progress:nil
+           success:^(NSURLSessionTask *task, id responseObject) {
                
                // save the sent client ID if we havnt already
                if ([responseObject isKindOfClass:NSDictionary.class])
@@ -537,14 +539,14 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
                }
                
                NSError* error = nil;
-               ETA_Session* session = [ETA_Session objectFromJSONDictionary:responseObject];
+               ETA_Session* authSession = [ETA_Session objectFromJSONDictionary:responseObject];
                
                // save the session that was created, only if we have created it after any previous requests
-               if (session)
+               if (authSession)
                {
-                   ETASDKLogInfo(@"... Creating Session successful - '%@' => '%@'", self.session.token, session.token);
+                   ETASDKLogInfo(@"... Creating Session successful - '%@' => '%@'", self.authSession.token, authSession.token);
                    
-                   [self setIfSameOrNewerSession:session];
+                   [self setIfSameOrNewerAuthSession:authSession];
                }
                else
                {
@@ -556,7 +558,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
                if (completionHandler)
                    completionHandler(error);
            }
-           failure:^(AFHTTPRequestOperation *operation, NSError *networkError) {
+           failure:^(NSURLSessionTask *task, NSError *networkError) {
                if (hashCookie && idCookie && timeCookie)
                {
                    [cookieJar deleteCookie:hashCookie];
@@ -564,7 +566,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
                    [cookieJar deleteCookie:timeCookie];
                }
                
-               NSError* error = [NSError SGN_errorWithAPIJSONResponse:operation.responseObject urlResponse:operation.response] ?: networkError;
+               NSError* error = [NSError SGN_errorWithAPIJSONData:networkError.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] urlResponse:task.response] ?: networkError;
                
                
                ETASDKLogWarn(@"... Unable to create session: (%zd) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
@@ -576,7 +578,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
 }
 
 // get the latest state of the session
-- (void) updateSessionWithCompletion:(void (^)(NSError* error))completionHandler
+- (void) updateAuthSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
     NSMutableDictionary* params = [[self baseRequestParameters] mutableCopy];
     
@@ -589,7 +591,8 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
     ETASDKLogInfo(@"Updating Session...");
     [self GET:[ETA_API path:ETA_API.sessions]
    parameters:params
-      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+     progress:nil
+      success:^(NSURLSessionTask *task, id responseObject) {
           
           // save the sent client ID if we havnt already
           if ([responseObject isKindOfClass:NSDictionary.class])
@@ -601,13 +604,13 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
           
           
           NSError* error = nil;
-          ETA_Session* session = [ETA_Session objectFromJSONDictionary:responseObject];
+          ETA_Session* authSession = [ETA_Session objectFromJSONDictionary:responseObject];
           
           // save the session that was update, only if we have updated it after any previous requests
-          if (session)
+          if (authSession)
           {
-              ETASDKLogInfo(@"... Updating Session successful - '%@' => '%@'", self.session.token, session.token);
-              [self setIfSameOrNewerSession:session];
+              ETASDKLogInfo(@"... Updating Session successful - '%@' => '%@'", self.authSession.token, authSession.token);
+              [self setIfSameOrNewerAuthSession:authSession];
           }
           else
           {
@@ -619,8 +622,8 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
           if (completionHandler)
               completionHandler(error);
       }
-      failure:^(AFHTTPRequestOperation *operation, NSError *networkError) {
-          NSError* error = [NSError SGN_errorWithAPIJSONResponse:operation.responseObject urlResponse:operation.response] ?: networkError;
+      failure:^(NSURLSessionTask *task, NSError *networkError) {
+          NSError* error = [NSError SGN_errorWithAPIJSONData:networkError.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] urlResponse:task.response] ?: networkError;
           
           ETASDKLogWarn(@"... Unable to update session: (%zd) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
           
@@ -630,7 +633,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
 }
 
 // Ask for a new expiration date / token
-- (void) renewSessionWithCompletion:(void (^)(NSError* error))completionHandler
+- (void) renewAuthSessionWithCompletion:(void (^)(NSError* error))completionHandler
 {
     NSMutableDictionary* params = [[self baseRequestParameters] mutableCopy];
     
@@ -643,7 +646,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
     ETASDKLogInfo(@"Renewing Session...");
     [self PUT:[ETA_API path:ETA_API.sessions]
        parameters:params
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+          success:^(NSURLSessionTask *task, id responseObject) {
               
               // save the sent client ID if we havnt already
               if ([responseObject isKindOfClass:NSDictionary.class])
@@ -655,13 +658,13 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
               
               
               NSError* error = nil;
-              ETA_Session* session = [ETA_Session objectFromJSONDictionary:responseObject];
+              ETA_Session* authSession = [ETA_Session objectFromJSONDictionary:responseObject];
 
               // save the session that was renewed, only if we have renewed it after any previous requests
-              if (session)
+              if (authSession)
               {
-                  ETASDKLogInfo(@"... Renewing Session successful - '%@' => '%@'", self.session.token, session.token);
-                  [self setIfSameOrNewerSession:session];
+                  ETASDKLogInfo(@"... Renewing Session successful - '%@' => '%@'", self.authSession.token, authSession.token);
+                  [self setIfSameOrNewerAuthSession:authSession];
               }
               else
               {
@@ -672,8 +675,8 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
               if (completionHandler)
                   completionHandler(error);
           }
-          failure:^(AFHTTPRequestOperation *operation, NSError *networkError) {
-              NSError* error = [NSError SGN_errorWithAPIJSONResponse:operation.responseObject urlResponse:operation.response] ?: networkError;
+          failure:^(NSURLSessionTask *task, NSError *networkError) {
+              NSError* error = [NSError SGN_errorWithAPIJSONData:networkError.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] urlResponse:task.response] ?: networkError;
 
               ETASDKLogWarn(@"... Unable to renew session: (%zd) %@ - %@", error.code, error.localizedDescription, error.localizedFailureReason);
               
@@ -703,13 +706,13 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
            parameters:params
            completion:^(id response, NSError *error) {
                
-               ETA_Session* session = error ? nil : [ETA_Session objectFromJSONDictionary:response];
+               ETA_Session* authSession = error ? nil : [ETA_Session objectFromJSONDictionary:response];
                
                // save the session, only if after any previous requests
-               if (session)
+               if (authSession)
                {
-                   ETASDKLogInfo(@"... Attaching User to Session successful - '%@' => '%@'", self.session.token, session.token);
-                   [self setIfSameOrNewerSession:session];
+                   ETASDKLogInfo(@"... Attaching User to Session successful - '%@' => '%@'", self.authSession.token, authSession.token);
+                   [self setIfSameOrNewerAuthSession:authSession];
                }
                else
                {
@@ -737,13 +740,13 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
            parameters:params
            completion:^(id response, NSError *error) {
                
-               ETA_Session* session = error ? nil : [ETA_Session objectFromJSONDictionary:response];
+               ETA_Session* authSession = error ? nil : [ETA_Session objectFromJSONDictionary:response];
                
                // save the session, only if after any previous requests
-               if (session)
+               if (authSession)
                {
-                   ETASDKLogInfo(@"... Detaching User from Session successful - '%@' => '%@'", self.session.token, session.token);
-                   [self setIfSameOrNewerSession:session];
+                   ETASDKLogInfo(@"... Detaching User from Session successful - '%@' => '%@'", self.authSession.token, authSession.token);
+                   [self setIfSameOrNewerAuthSession:authSession];
                }
                else
                {
@@ -759,7 +762,7 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
 
 - (BOOL) allowsPermission:(NSString*)actionPermission
 {
-    return [self.session allowsPermission:actionPermission];
+    return [self.authSession allowsPermission:actionPermission];
 }
 
 @end

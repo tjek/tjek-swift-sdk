@@ -151,6 +151,15 @@ NSString* const SGN_APIResponseError_UserInfo_ResponseObjectKey = @"SGN_APIRespo
                      urlResponse:urlResponse];
 }
 
++ (nullable instancetype) SGN_errorWithAPIJSONData:(NSData*)responseData urlResponse:(nullable NSURLResponse*)urlResponse
+{
+    if (!responseData)
+        return nil;
+    
+    NSDictionary* obj = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
+    return [self SGN_errorWithAPIJSONResponse:obj urlResponse:urlResponse];
+}
+
 + (nullable instancetype) SGN_errorWithAPIJSONResponse:(NSDictionary*)responseObject urlResponse:(nullable NSURLResponse*)urlResponse
 {
     // check if the obj is a valid dictionary
@@ -210,7 +219,7 @@ NSString* const SGN_APIResponseError_UserInfo_ResponseObjectKey = @"SGN_APIRespo
     return [self.domain isEqualToString:SGN_APIResponseErrorDomain];
 }
 
-- (BOOL) SGN_doesAPIResponseErrorRequireNewSession
+- (BOOL) SGN_doesAPIResponseErrorRequireNewAuthSession
 {
     if (![self SGN_isAPIResponseError])
         return NO;

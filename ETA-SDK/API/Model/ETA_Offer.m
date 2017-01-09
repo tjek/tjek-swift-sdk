@@ -23,7 +23,7 @@
                                                           @"catalogPage": @"catalog_page",
                                                           
                                                           @"price": @"pricing.price",
-                                                          @"preprice": @"pricing.preprice",
+                                                          @"preprice": @"pricing.pre_price",
                                                           @"currency": @"pricing.currency",
                                                           
                                                           @"quantityUnit": @"quantity.unit",
@@ -47,6 +47,7 @@
                                                           @"webshopURL": @"links.webshop",
                                                           
                                                           @"store": NSNull.null,
+                                                          @"branding": @"branding",
                                                           
                                                           }];
 }
@@ -59,6 +60,24 @@
 }
 + (NSValueTransformer *) publishDateJSONTransformer {
     return [NSValueTransformer valueTransformerForName:ETA_APIDate_ValueTransformerName];
+}
++ (NSValueTransformer *)prepriceJSONTransformer {
+    
+    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^NSNumber*(NSNumber* json) {
+        if (!json || [json isEqual:NSNull.null]) {
+            return @0;
+        }
+        return json;
+    } reverseBlock:^NSNumber*(NSNumber* model) {
+        if (!model || [model isEqual:NSNull.null]) {
+            return @0;
+        }
+        return model;
+    }];
+}
++ (NSValueTransformer *)brandingJSONTransformer
+{
+    return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ETA_Branding.class];
 }
 
 + (NSValueTransformer *)dealerURLJSONTransformer

@@ -1,5 +1,11 @@
 # eTilbudsavis iOS SDK - Change Log
 
+## v3.1.0
+
+##### Now requires iOS 7 and up
+* Update to *AFNetworking ~> 3.1.0*
+* Fix minor issues with model objects
+
 ## v3.0.0
 * Sends system locale (eg "en_GB") with every request
 * Update to *Mantle ~> 1.5.6*

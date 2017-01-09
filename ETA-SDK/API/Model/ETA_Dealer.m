@@ -20,13 +20,15 @@
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey
 {
-    return @{ @"name": @"name",
+    return [super.JSONKeyPathsByPropertyKey mtl_dictionaryByAddingEntriesFromDictionary:
+            @{
+              @"name": @"name",
               @"websiteURL": @"website",
               @"color": @"color",
               @"logoURL": @"logo",
               @"pageflipLogoURL": @"pageflip.logo",
               @"pageflipColor": @"pageflip.color",
-              };
+              }];
 }
 
 + (NSValueTransformer *) websiteURLJSONTransformer {

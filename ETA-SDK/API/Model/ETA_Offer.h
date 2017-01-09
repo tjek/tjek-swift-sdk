@@ -9,6 +9,7 @@
 #import "ETA_ModelObject.h"
 
 #import "ETA_Store.h"
+#import "ETA_Branding.h"
 
 typedef enum {
     ETA_Offer_ImageSize_Thumb = 0,
@@ -46,6 +47,8 @@ typedef enum {
 @property (nonatomic, readwrite, strong) NSString* dealerID;
 @property (nonatomic, readwrite, strong) NSString* storeID;
 @property (nonatomic, readwrite, strong) NSString* catalogID;
+
+@property (nonatomic, readwrite, strong) ETA_Branding* branding; // can be nil - it's best to fetch the store and use the branding from there, but this can be used until that loads.
 
 - (NSURL*) imageURLForSize:(ETA_Offer_ImageSize)imageSize;
 

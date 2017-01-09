@@ -108,20 +108,20 @@ static ETA* ETA_SingletonSDK = nil;
     if (_client == client)
         return;
     
-    [_client removeObserver:self forKeyPath:@"session"];
-    [_client removeObserver:self forKeyPath:@"session.user.uuid"];
+    [_client removeObserver:self forKeyPath:@"authSession"];
+    [_client removeObserver:self forKeyPath:@"authSession.user.uuid"];
     
     _client = client;
     
-    [_client addObserver:self forKeyPath:@"session.user.uuid" options:NSKeyValueObservingOptionInitial context:NULL];
-    [_client addObserver:self forKeyPath:@"session" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:NULL];
+    [_client addObserver:self forKeyPath:@"authSession.user.uuid" options:NSKeyValueObservingOptionInitial context:NULL];
+    [_client addObserver:self forKeyPath:@"authSession" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:@"session"])
+    if ([keyPath isEqualToString:@"authSession"])
     {
-        BOOL connected = (self.client.session != nil);
+        BOOL connected = (self.client.authSession != nil);
         if (connected != self.connected)
             self.connected = connected;
 
@@ -143,12 +143,12 @@ static ETA* ETA_SingletonSDK = nil;
                                                           userInfo:@{@"oldUser": (oldUser) ?: NSNull.null,
                                                                      @"newUser": (newUser) ?: NSNull.null }];
     }
-    else if ([keyPath isEqualToString:@"session.user.uuid"])
+    else if ([keyPath isEqualToString:@"authSession.user.uuid"])
     {
-        if ((self.attachedUserID == self.client.session.user.uuid || [self.attachedUserID isEqualToString:self.client.session.user.uuid]) == NO)
+        if ((self.attachedUserID == self.client.authSession.user.uuid || [self.attachedUserID isEqualToString:self.client.authSession.user.uuid]) == NO)
         {
-            ETASDKLogInfo(@"User %@ => %@", self.attachedUserID, self.client.session.user.uuid);
-            self.attachedUserID = self.client.session.user.uuid;
+            ETASDKLogInfo(@"User %@ => %@", self.attachedUserID, self.client.authSession.user.uuid);
+            self.attachedUserID = self.client.authSession.user.uuid;
         }
     }
 }
@@ -157,7 +157,7 @@ static ETA* ETA_SingletonSDK = nil;
 
 - (void) connect:(void (^)(NSError* error))completionHandler
 {
-    [self.client startSessionWithCompletion:completionHandler];
+    [self.client startAuthSessionWithCompletion:completionHandler];
 }
 
 
@@ -194,12 +194,12 @@ static ETA* ETA_SingletonSDK = nil;
 
 - (ETA_User*) attachedUser
 {
-    return [self.client.session.user copy];
+    return [self.client.authSession.user copy];
 }
 
 - (BOOL) attachedUserIsFromFacebook
 {
-    return ([self.client.session.provider caseInsensitiveCompare:@"facebook"] == NSOrderedSame);
+    return ([self.client.authSession.provider caseInsensitiveCompare:@"facebook"] == NSOrderedSame);
 }
 
 
