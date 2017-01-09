@@ -13,7 +13,6 @@
 #import <ETA-SDK/ETA_Catalog.h>
 
 // View Controllers
-#import "WebCatalogViewController.h"
 #import "CatalogReaderViewController.h"
 
 // Utilities
@@ -47,7 +46,6 @@
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.nativeReaderSwitch.on = ![[NSUserDefaults standardUserDefaults] boolForKey:@"kUseWebReaderKey"];
     self.navigationController.navigationBar.tintColor = nil;
 }
 
@@ -193,16 +191,7 @@
 {
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
     
-    BOOL useWebView = [[NSUserDefaults standardUserDefaults] boolForKey:@"kUseWebReaderKey"];
-    
-    if (useWebView)
-    {
-        [self performSegueWithIdentifier:@"WebCatalogViewSegue" sender:indexPath];
-    }
-    else
-    {
-        [self performSegueWithIdentifier:@"CatalogReaderViewSegue" sender:indexPath];
-    }
+    [self performSegueWithIdentifier:@"CatalogReaderViewSegue" sender:indexPath];
 }
 
 
@@ -217,26 +206,12 @@
     // get the catalog object that was selected
     ETA_Catalog* catalog = self.catalogs[indexPath.row];
     
-    if ([segue.identifier isEqualToString:@"WebCatalogViewSegue"])
-    {
-        // get the destination view controller from the storyboard
-        WebCatalogViewController* webCatalogVC = (WebCatalogViewController*)segue.destinationViewController;
-        
-        // assign the catalog object to the destination view controller
-        [webCatalogVC setCatalog:catalog];
-    }
-    else if ([segue.identifier isEqualToString:@"CatalogReaderViewSegue"])
+    if ([segue.identifier isEqualToString:@"CatalogReaderViewSegue"])
     {
         // get the destination view controller from the storyboard
         CatalogReaderViewController* catalogReaderVC = (CatalogReaderViewController*)segue.destinationViewController;
         [catalogReaderVC setCatalogID:catalog.uuid title:catalog.branding.name brandColor:(catalog.branding.pageflipColor) ?: catalog.branding.color];
     }
 }
-
-- (IBAction)didSwitchReaderType:(UISwitch*)switchView
-{
-    [[NSUserDefaults standardUserDefaults] setBool:!switchView.isOn forKey:@"kUseWebReaderKey"];
-}
-
 
 @end

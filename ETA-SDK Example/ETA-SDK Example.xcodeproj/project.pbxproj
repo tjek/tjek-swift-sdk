@@ -7,20 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		074A7F79F9A68FC8D96A3216 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA1BAECAC10B58C376CF3925 /* libPods.a */; };
+		92E3528243183C9F3EE5F403 /* libPods-ETA-SDK Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F61F34FD3CBE21627F4F8F83 /* libPods-ETA-SDK Example.a */; };
 		AE71DB2F1A2758870090297F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AE71DB2E1A2758870090297F /* main.m */; };
 		AE71DB321A2758870090297F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AE71DB311A2758870090297F /* AppDelegate.m */; };
 		AE71DB381A2758870090297F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE71DB361A2758870090297F /* Main.storyboard */; };
 		AE71DB3A1A2758870090297F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE71DB391A2758870090297F /* Images.xcassets */; };
 		AE71DB3D1A2758870090297F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = AE71DB3B1A2758870090297F /* LaunchScreen.xib */; };
 		AE71DB931A2774F00090297F /* CatalogsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE71DB901A2774F00090297F /* CatalogsListViewController.m */; };
-		AE71DB941A2774F00090297F /* WebCatalogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE71DB921A2774F00090297F /* WebCatalogViewController.m */; };
 		AE71DB971A2840C10090297F /* CatalogReaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE71DB961A2840C10090297F /* CatalogReaderViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2F97BFA54C06C287C0C1F959 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		5A52C22121F5C59D1594B745 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		80E29D29677AB5FA82ABB9EB /* Pods-ETA-SDK Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ETA-SDK Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-ETA-SDK Example/Pods-ETA-SDK Example.release.xcconfig"; sourceTree = "<group>"; };
+		98C377D688E9FA415F484455 /* Pods-ETA-SDK Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ETA-SDK Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ETA-SDK Example/Pods-ETA-SDK Example.debug.xcconfig"; sourceTree = "<group>"; };
 		AA1BAECAC10B58C376CF3925 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE71DB291A2758870090297F /* ETA-SDK Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ETA-SDK Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE71DB2D1A2758870090297F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -38,18 +37,17 @@
 		AE71DB8E1A2772F40090297F /* ETA-SDK Example-prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ETA-SDK Example-prefix.pch"; sourceTree = "<group>"; };
 		AE71DB8F1A2774F00090297F /* CatalogsListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CatalogsListViewController.h; sourceTree = "<group>"; };
 		AE71DB901A2774F00090297F /* CatalogsListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatalogsListViewController.m; sourceTree = "<group>"; };
-		AE71DB911A2774F00090297F /* WebCatalogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebCatalogViewController.h; sourceTree = "<group>"; };
-		AE71DB921A2774F00090297F /* WebCatalogViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebCatalogViewController.m; sourceTree = "<group>"; };
 		AE71DB951A2840C10090297F /* CatalogReaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CatalogReaderViewController.h; sourceTree = "<group>"; };
 		AE71DB961A2840C10090297F /* CatalogReaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatalogReaderViewController.m; sourceTree = "<group>"; };
+		F61F34FD3CBE21627F4F8F83 /* libPods-ETA-SDK Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ETA-SDK Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		AE71DB261A2758870090297F /* Frameworks */ = {
+		D071168DB1EC261D950029F0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				074A7F79F9A68FC8D96A3216 /* libPods.a in Frameworks */,
+				92E3528243183C9F3EE5F403 /* libPods-ETA-SDK Example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,8 +57,8 @@
 		56C6A02BC1B8BA3D2BFC1805 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				2F97BFA54C06C287C0C1F959 /* Pods.debug.xcconfig */,
-				5A52C22121F5C59D1594B745 /* Pods.release.xcconfig */,
+				98C377D688E9FA415F484455 /* Pods-ETA-SDK Example.debug.xcconfig */,
+				80E29D29677AB5FA82ABB9EB /* Pods-ETA-SDK Example.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -69,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				AA1BAECAC10B58C376CF3925 /* libPods.a */,
+				F61F34FD3CBE21627F4F8F83 /* libPods-ETA-SDK Example.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -102,8 +101,6 @@
 				AE71DB901A2774F00090297F /* CatalogsListViewController.m */,
 				AE71DB951A2840C10090297F /* CatalogReaderViewController.h */,
 				AE71DB961A2840C10090297F /* CatalogReaderViewController.m */,
-				AE71DB911A2774F00090297F /* WebCatalogViewController.h */,
-				AE71DB921A2774F00090297F /* WebCatalogViewController.m */,
 				AE71DB361A2758870090297F /* Main.storyboard */,
 				AE71DB391A2758870090297F /* Images.xcassets */,
 				AE71DB3B1A2758870090297F /* LaunchScreen.xib */,
@@ -140,11 +137,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AE71DB4C1A2758870090297F /* Build configuration list for PBXNativeTarget "ETA-SDK Example" */;
 			buildPhases = (
-				DE7C6BC8D3E6C28184884411 /* Check Pods Manifest.lock */,
+				DE7C6BC8D3E6C28184884411 /* [CP] Check Pods Manifest.lock */,
 				AE71DB251A2758870090297F /* Sources */,
-				AE71DB261A2758870090297F /* Frameworks */,
 				AE71DB271A2758870090297F /* Resources */,
-				D8BA0EB938F09FA75AEFD92E /* Copy Pods Resources */,
+				D8BA0EB938F09FA75AEFD92E /* [CP] Copy Pods Resources */,
+				D071168DB1EC261D950029F0 /* Frameworks */,
+				399713C766292CB5B53EB9E7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -161,7 +159,7 @@
 		AE71DB211A2758870090297F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = eTilbudsavis;
 				TargetAttributes = {
 					AE71DB281A2758870090297F = {
@@ -201,34 +199,49 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		D8BA0EB938F09FA75AEFD92E /* Copy Pods Resources */ = {
+		399713C766292CB5B53EB9E7 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ETA-SDK Example/Pods-ETA-SDK Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DE7C6BC8D3E6C28184884411 /* Check Pods Manifest.lock */ = {
+		D8BA0EB938F09FA75AEFD92E /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ETA-SDK Example/Pods-ETA-SDK Example-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DE7C6BC8D3E6C28184884411 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -242,7 +255,6 @@
 				AE71DB321A2758870090297F /* AppDelegate.m in Sources */,
 				AE71DB971A2840C10090297F /* CatalogReaderViewController.m in Sources */,
 				AE71DB2F1A2758870090297F /* main.m in Sources */,
-				AE71DB941A2774F00090297F /* WebCatalogViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,15 +293,19 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -302,7 +318,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -323,8 +339,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -332,13 +350,14 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -348,26 +367,26 @@
 		};
 		AE71DB4D1A2758870090297F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F97BFA54C06C287C0C1F959 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 98C377D688E9FA415F484455 /* Pods-ETA-SDK Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PREFIX_HEADER = "ETA-SDK Example/ETA-SDK Example-prefix.pch";
 				INFOPLIST_FILE = "ETA-SDK Example/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "eTilbudsavis.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
 		AE71DB4E1A2758870090297F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5A52C22121F5C59D1594B745 /* Pods.release.xcconfig */;
+			baseConfigurationReference = 80E29D29677AB5FA82ABB9EB /* Pods-ETA-SDK Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PREFIX_HEADER = "ETA-SDK Example/ETA-SDK Example-prefix.pch";
 				INFOPLIST_FILE = "ETA-SDK Example/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "eTilbudsavis.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

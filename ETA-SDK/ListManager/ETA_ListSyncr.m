@@ -48,7 +48,7 @@ NSString* const ETA_ListSyncr_ChangeNotificationInfo_RemovedKey = @"removed";
 @property (nonatomic, strong) NSMutableArray* removedLists;
 @property (nonatomic, strong) NSMutableArray* addedLists;
 
-@property (nonatomic, readwrite, assign) NSUInteger pullSyncCount;
+@property (atomic, readwrite, assign) NSUInteger pullSyncCount;
 
 @end
 

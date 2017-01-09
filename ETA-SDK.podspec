@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
                      Also allows you to easily embed catalogs and shopping lists in your own iOS app.
                     DESC
 
-  s.homepage     = "http://engineering.etilbudsavis.dk/native-ios-eta-sdk/"
+  s.homepage     = "http://docs.api.etilbudsavis.dk"
   s.license      = 'MIT'
   s.author       = { "Laurie Hufford" => "lh@etilbudsavis.dk" }
 
@@ -50,14 +50,6 @@ Pod::Spec.new do |s|
       ss.dependency 'ETA-SDK/API'
       ss.dependency 'FMDB', '~> 2.5'
       ss.dependency 'libextobjc/EXTScope', '~> 0.4.1'
-  end
-  
-
-  # The original, web-based, catalog reader experience. This is deprecated
-  s.subspec 'WebCatalogView' do |ss|
-    ss.source_files = 'ETA-SDK/WebCatalogView/*.{h,m}'
-    
-    ss.dependency 'ETA-SDK/API'
   end
   
 end
