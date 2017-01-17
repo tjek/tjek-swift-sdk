@@ -217,7 +217,8 @@ extern NSString* const SGN_SDKErrorDomain;
  */
 typedef NS_ENUM(NSInteger, SGN_SDKErrorCode)
 {
-    SGN_SDKError_MissingParameter       = -1000
+    SGN_SDKError_MissingParameter       = -1000,
+    SGN_SDKError_NoResults              = -2000
 };
 
 
