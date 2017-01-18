@@ -474,9 +474,6 @@ public class EventsTracker : NSObject {
             cacheInMemoryQueue.async {
                 
                 let objsToSave = self.allObjects
-                guard objsToSave.count > 0 else {
-                    return
-                }
                 
                 let currentWriteRequestCount = self.writeRequestCount
                 
