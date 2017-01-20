@@ -78,8 +78,20 @@ class CachedFlushablePool {
                 self.startTimerIfNeeded()
             }
         }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground(_:)), name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+    }
+    
+    @objc
+    func appDidEnterBackground(_ notification:Notification) {
+        _poolQueue.async { [weak self] in
+            self?.flushPendingObjects()
+        }
+    }
     
     /// Add an object to the pool
     func push(object:PoolableObject) {
