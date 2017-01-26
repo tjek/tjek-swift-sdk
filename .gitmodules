@@ -1,3 +1,12 @@
 [submodule "External/xctoolchain"]
 	path = External/xctoolchain
 	url = https://github.com/ParsePlatform/xctoolchain.git
+[submodule "Carthage/Checkouts/Kingfisher"]
+	path = Carthage/Checkouts/Kingfisher
+	url = https://github.com/onevcat/Kingfisher.git
+[submodule "Carthage/Checkouts/Valet"]
+	path = Carthage/Checkouts/Valet
+	url = https://github.com/square/Valet.git
+[submodule "Carthage/Checkouts/Verso-ios"]
+	path = Carthage/Checkouts/Verso-ios
+	url = https://github.com/ShopGun/Verso-ios.git
