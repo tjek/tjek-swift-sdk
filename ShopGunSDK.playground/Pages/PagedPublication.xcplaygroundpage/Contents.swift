@@ -1,16 +1,8 @@
-//
-//  _____ _           _____
-// |   __| |_ ___ ___|   __|_ _ ___
-// |__   |   | . | . |  |  | | |   |
-// |_____|_|_|___|  _|_____|___|_|_|
-//               |_|
-//
-//  Copyright (c) 2016 ShopGun. All rights reserved.
-
 import UIKit
 
-import Kingfisher
 import ShopGunSDK
+
+import Kingfisher
 
 
 class ExampleViewController : UIViewController {
@@ -32,7 +24,7 @@ class ExampleViewController : UIViewController {
         EventsTracker.baseURL = URL(string:"https://events-staging.shopgun.com")!
         EventsTracker.dispatchInterval  =   10 // secs
         EventsTracker.dispatchLimit    =  100// events
-
+        
         
         publicationView.frame = view.frame
         publicationView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -78,10 +70,10 @@ extension ExampleViewController : PagedPublicationViewDataSource {
     func outroViewClass(for pagedPublicationView:PagedPublicationView) -> (OutroView.Type)? {
         return ExampleOutroView.self
     }
-//    func outroViewWidth(for pagedPublicationView: PagedPublicationView) -> CGFloat {
-//        let size = pagedPublicationView.bounds.size
-//        return size.width > size.height ? 0.7 : 0.8
-//    }
+    //    func outroViewWidth(for pagedPublicationView: PagedPublicationView) -> CGFloat {
+    //        let size = pagedPublicationView.bounds.size
+    //        return size.width > size.height ? 0.7 : 0.8
+    //    }
     func configure(outroView:OutroView, for pagedPublicationView:PagedPublicationView) {
         guard let outro = outroView as? ExampleOutroView else {
             return
@@ -91,9 +83,9 @@ extension ExampleViewController : PagedPublicationViewDataSource {
         outro.layer.borderWidth = 1
     }
     
-//    func textForPageNumberLabel(pageIndexes: IndexSet, pageCount: Int, for pagedPublicationView: PagedPublicationView) -> String? {
-//        return nil
-//    }
+    //    func textForPageNumberLabel(pageIndexes: IndexSet, pageCount: Int, for pagedPublicationView: PagedPublicationView) -> String? {
+    //        return nil
+    //    }
     
     func errorView(with error:Error?, for pagedPublicationView:PagedPublicationView) -> UIView? {
         let errorView = ExampleErrorView()
@@ -104,11 +96,11 @@ extension ExampleViewController : PagedPublicationViewDataSource {
         
         return errorView
     }
-
+    
     public func didTapErrorView(tap:UITapGestureRecognizer) {
         reloadPublication()
-//        reloadPublication(failPubRequest: true, failPageRequest: false)
-//        reloadPublication(failPubRequest: false, failPageRequest: true)
+        //        reloadPublication(failPubRequest: true, failPageRequest: false)
+        //        reloadPublication(failPubRequest: false, failPageRequest: true)
     }
 }
 
@@ -152,3 +144,14 @@ class ExampleErrorView : UIView {
         return CGSize(width:200, height:200)
     }
 }
+
+
+
+
+let vc = ExampleViewController()
+vc.view.frame = CGRect(x: 0, y: 0, width: 320, height: 640)
+
+
+import PlaygroundSupport
+
+PlaygroundPage.current.liveView = vc.view

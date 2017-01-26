@@ -7,40 +7,30 @@
 //
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
-//
-//  _____ _           _____
-// |   __| |_ ___ ___|   __|_ _ ___
-// |__   |   | . | . |  |  | | |   |
-// |_____|_|_|___|  _|_____|___|_|_|
-//               |_|
-//
-//  Copyright (c) 2016 ShopGun. All rights reserved.
-
 import UIKit
 
 import ShopGunSDK
 
 
 
-
 /// This is a loader that fetches the reader view models from the v2 API
-class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
+public class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
     
     public var publicationId: String
     public var preloadedPublication:PagedPublicationViewModelProtocol?
     public var sourceType:String { return "legacy" }
     
-    convenience init(publicationId:String) {
+    convenience public init(publicationId:String) {
         self.init(publicationId: publicationId, preloaded:nil)
     }
-    convenience init(preloaded viewModel:PagedPublicationViewModelProtocol) {
+    convenience public init(preloaded viewModel:PagedPublicationViewModelProtocol) {
         self.init(publicationId: viewModel.publicationId, preloaded:viewModel)
     }
-    convenience init(publicationId:String, ownerId:String?, bgColor:UIColor?, pageCount:Int, aspectRatio:CGFloat) {
+    convenience public init(publicationId:String, ownerId:String?, bgColor:UIColor?, pageCount:Int, aspectRatio:CGFloat) {
         let preloadedVM = PagedPublicationViewModel(publicationId: publicationId, ownerId: (ownerId ?? ""), bgColor: (bgColor ?? UIColor.white), pageCount: pageCount, aspectRatio: aspectRatio)
         self.init(publicationId: publicationId, preloaded:preloadedVM)
     }
-    init(publicationId:String, preloaded viewModel:PagedPublicationViewModelProtocol?) {
+    public init(publicationId:String, preloaded viewModel:PagedPublicationViewModelProtocol?) {
         self.publicationId = publicationId
         self.preloadedPublication = viewModel
     }

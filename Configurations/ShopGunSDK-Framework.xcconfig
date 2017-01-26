@@ -22,6 +22,3 @@ INFOPLIST_FILE = $(SRCROOT)/Resources/Info.plist
 
 // Enable testability to make internal things visible with @testable import
 ENABLE_TESTABILITY = YES
-
-// Search in carthage build folder
-FRAMEWORK_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)/Carthage/Build/iOS
