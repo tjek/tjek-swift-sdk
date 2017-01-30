@@ -259,7 +259,7 @@ extension EventsTracker {
                     
                     var dict = [String:AnyObject]()
                     
-                    dict["determinedAt"]  = Utils.ISO8601_dateFormatter.string(from: location.timestamp) as AnyObject?
+                    dict["determinedAt"]  = Utils.ISO8601_ms_dateFormatter.string(from: location.timestamp) as AnyObject?
                     dict["latitude"] = location.coordinate.latitude as AnyObject // required
                     dict["longitude"] = location.coordinate.longitude as AnyObject // required
                     dict["altitude"] = location.altitude as AnyObject?

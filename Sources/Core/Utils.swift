@@ -26,6 +26,12 @@ public struct Utils {
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
         return formatter
     }()
+    public static let ISO8601_ms_dateFormatter:DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+        return formatter
+    }()
     
     
     fileprivate static let keychainValet:VALValet? = VALValet(identifier: "com.shopgun.ios.sdk.keychain", accessibility: .afterFirstUnlock)

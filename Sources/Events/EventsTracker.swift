@@ -147,11 +147,12 @@ public class EventsTracker : NSObject {
     
     
     // bit of a hack to report error only once.
-    private static let _reportMissingTrackIdOnce: () = {
+    private static let _reportMissingTrackIdOnce:Bool = {
         // TODO: more details in error message?
         print("You must define a ShopGun `TRACK_ID` in your ShopGunSDK-Info.plist, or with `ShopGunSDK.EventsTracker.globalTrackId = ...`")
+        return false
     }()
-    
+        
     
     public static var globalTrackId : String? {
         get {
@@ -160,7 +161,7 @@ public class EventsTracker : NSObject {
             }
             
             if _globalTrackId == nil {
-                _reportMissingTrackIdOnce
+                _ = _reportMissingTrackIdOnce
             }
             
             return _globalTrackId
@@ -241,7 +242,7 @@ public class EventsTracker : NSObject {
                 if var jsonDict = try? JSONSerialization.jsonObject(with: obj.jsonData, options: []) as? [String:AnyObject],
                     jsonDict != nil {
 
-                    jsonDict!["sentAt"] = Utils.ISO8601_dateFormatter.string(from: Date()) as AnyObject?
+                    jsonDict!["sentAt"] = Utils.ISO8601_ms_dateFormatter.string(from: Date()) as AnyObject?
                     
                     orderedEventDicts.append(jsonDict!)
                     keyedEventDicts[obj.poolId] = jsonDict!
@@ -318,7 +319,7 @@ public class EventsTracker : NSObject {
                             if status == "nack" {
                                 let maxAge:Double = 60*60*24*7 // 1 week
                                 if let recordedDateStr = eventDict["recordedAt"] as? String,
-                                    let recordedDate = Utils.ISO8601_dateFormatter.date(from: recordedDateStr),
+                                    let recordedDate = Utils.ISO8601_ms_dateFormatter.date(from: recordedDateStr),
                                     recordedDate.timeIntervalSinceNow < -maxAge {
                                     
                                     idsToRemove.append(uuid)
@@ -594,7 +595,7 @@ extension EventsTracker.ShippableEvent : PoolableObject {
         
         dict["id"] = uuid as AnyObject // required
         dict["version"] = version as AnyObject  // required
-        dict["recordedAt"] = Utils.ISO8601_dateFormatter.string(from: recordedDate) as AnyObject?  // required, but if date is invalid we want server to warn
+        dict["recordedAt"] = Utils.ISO8601_ms_dateFormatter.string(from: recordedDate) as AnyObject?  // required, but if date is invalid we want server to warn
         
         // client - required
         let clientDict:[String:String] = ["id": clientId, "trackId": trackId]
@@ -652,7 +653,7 @@ fileprivate func prepareForJSON(_ property:AnyObject?)->AnyObject? {
         }
         return result as AnyObject?
     case is Date:
-        return Utils.ISO8601_dateFormatter.string(from: prop as! Date) as AnyObject?
+        return Utils.ISO8601_ms_dateFormatter.string(from: prop as! Date) as AnyObject?
     default:
         return nil
     }
