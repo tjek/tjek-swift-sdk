@@ -39,7 +39,7 @@ public class EventsTracker : NSObject {
         super.initialize()
 
         // make sure we have a locationManager on first initialize. This is because CLLocationManagers must not be created off the main thread.
-        _ = Context.LocationContext.locationManager
+        _ = Context.LocationContext.location
     }
 
     
