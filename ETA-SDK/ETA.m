@@ -477,7 +477,7 @@ static ETA* ETA_SingletonSDK = nil;
             params[@"r_radius"] = @(clampedRadius);
         }
         
-        params[@"r_sensor"] = @(self.isLocationFromSensor);
+        params[@"r_sensor"] = self.isLocationFromSensor ? @"true" : @"false";
     }
     
     return params;
