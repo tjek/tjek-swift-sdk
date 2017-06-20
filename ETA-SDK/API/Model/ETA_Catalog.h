@@ -19,32 +19,32 @@ typedef enum {
 
 @interface ETA_Catalog : ETA_ModelObject
 
-@property (nonatomic, readwrite, strong) NSString* label;
-@property (nonatomic, readwrite, strong) UIColor* backgroundColor;
-@property (nonatomic, readwrite, strong) NSDate* runFromDate;
-@property (nonatomic, readwrite, strong) NSDate* runTillDate;
+@property (nonatomic, readwrite, strong, nullable) NSString* label;
+@property (nonatomic, readwrite, strong, nullable) UIColor* backgroundColor;
+@property (nonatomic, readwrite, strong, nullable) NSDate* runFromDate;
+@property (nonatomic, readwrite, strong, nullable) NSDate* runTillDate;
 @property (nonatomic, readwrite, assign) NSInteger pageCount;
 @property (nonatomic, readwrite, assign) NSInteger offerCount;
 
-@property (nonatomic, readwrite, strong) ETA_Branding* branding;
+@property (nonatomic, readwrite, strong, nullable) ETA_Branding* branding;
 
-@property (nonatomic, readwrite, strong) NSString* dealerID;
-@property (nonatomic, readwrite, strong) NSURL* dealerURL;
-@property (nonatomic, readwrite, strong) NSString* storeID;
-@property (nonatomic, readwrite, strong) NSURL* storeURL;
+@property (nonatomic, readwrite, strong, nullable) NSString* dealerID;
+@property (nonatomic, readwrite, strong, nullable) NSURL* dealerURL;
+@property (nonatomic, readwrite, strong, nullable) NSString* storeID;
+@property (nonatomic, readwrite, strong, nullable) NSURL* storeURL;
 
 @property (nonatomic, readwrite, assign) CGSize dimensions;
 
-@property (nonatomic, readwrite, strong) NSDictionary* imageURLBySize;
-@property (nonatomic, readwrite, strong) NSDictionary* pageImageURLsBySize;
+@property (nonatomic, readwrite, strong, nullable) NSDictionary* imageURLBySize;
+@property (nonatomic, readwrite, strong, nullable) NSDictionary* pageImageURLsBySize;
 
 
-- (NSURL*) imageURLForSize:(ETA_Catalog_ImageSize)imageSize;
-- (NSArray*) pageImageURLsForSize:(ETA_Catalog_ImageSize)pageSize;
+- (nullable NSURL*) imageURLForSize:(ETA_Catalog_ImageSize)imageSize;
+- (nullable NSArray*) pageImageURLsForSize:(ETA_Catalog_ImageSize)pageSize;
 
 /**
  *	You need to fetch/assign the Store property yourself using the storeID property - it will be nil until populated.
  */
-@property (nonatomic, readwrite, strong) ETA_Store* store;
+@property (nonatomic, readwrite, strong, nullable) ETA_Store* store;
 
 @end
