@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "ETA_ShoppingList.h"
+#import "ETA_ShoppingListItem.h"
 
 @class ETA;
 @class ETA_ShoppingList;
