@@ -420,7 +420,11 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     list.modified = [NSDate date];
     list.state = ETA_DBSyncState_ToBeSynced;
     
-    NSArray* added = @[list];
+    
+    NSMutableArray* added = [@[list] mutableCopy];
+    if (list.shares != nil) {
+        [added addObjectsFromArray:list.shares];
+    }
     BOOL success = [self updateDBObjects:added error:error];
     
     if (success)
@@ -434,7 +438,11 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     list.modified = [NSDate date];
     list.state = ETA_DBSyncState_ToBeSynced;
     
-    NSArray* modified = @[list];
+    NSMutableArray* modified = [@[list] mutableCopy];
+    if (list.shares != nil) {
+        [modified addObjectsFromArray:list.shares];
+    }
+    
     BOOL success = [self updateDBObjects:modified error:error];
     
     if (success)
