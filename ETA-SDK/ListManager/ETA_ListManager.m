@@ -441,10 +441,8 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     NSMutableArray* modified = [@[list] mutableCopy];
     if (list.shares != nil) {
         for (ETA_ListShare* share in list.shares) {
-            if (share.access != ETA_ListShare_Access_Owner) {
-                share.state = ETA_DBSyncState_ToBeSynced;
-                [modified addObject:share];
-            }
+            share.state = ETA_DBSyncState_ToBeSynced;
+            [modified addObject:share];
         }
         
     }
