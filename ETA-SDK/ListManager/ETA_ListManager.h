@@ -10,6 +10,7 @@
 
 #import "ETA_ShoppingList.h"
 #import "ETA_ShoppingListItem.h"
+#import "ETA_User.h"
 
 @class ETA;
 @class ETA_ShoppingList;
