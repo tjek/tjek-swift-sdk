@@ -13,16 +13,16 @@
 @interface ETA_ModelObject : MTLModel <MTLJSONSerializing>
 
 // setting either uuid or ern will keep the other updated
-@property (nonatomic, readwrite, strong) NSString* uuid; // will always be lowercase, no matter the input case 
-@property (nonatomic, readwrite, strong) NSString* ern;
+@property (nonatomic, readwrite, strong, nonnull) NSString* uuid; // will always be lowercase, no matter the input case
+@property (nonatomic, readwrite, strong, nonnull) NSString* ern;
 
 
-+ (NSString*) APIEndpoint; // base class returns nil.
-+ (NSString*) ernForItemID:(NSString*)itemID; //uses the API Endpoint to generate the ern
++ (nullable NSString*) APIEndpoint; // base class returns nil.
++ (nullable NSString*) ernForItemID:(nullable NSString*)itemID; //uses the API Endpoint to generate the ern
 
-+ (instancetype) objectFromJSONDictionary:(NSDictionary*)JSONDictionary;
-- (NSDictionary*) JSONDictionary;
++ (nullable instancetype) objectFromJSONDictionary:(nullable NSDictionary*)JSONDictionary;
+- (nullable NSDictionary*) JSONDictionary;
 
-+ (NSArray*) objectsFromJSONArray:(NSArray*)JSONArray;
++ (nullable NSArray*) objectsFromJSONArray:(nullable NSArray*)JSONArray;
 
 @end
