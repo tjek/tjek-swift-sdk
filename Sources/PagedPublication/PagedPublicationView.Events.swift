@@ -37,8 +37,6 @@ class PagedPublicationLifecycleEventHandler {
     func didAppear() {
         guard hasAppeared == false else { return }
         
-        Event.publicationAppeared(publicationId:publicationId, ownedById: ownerId).track()
-        
         spreadEventHandler?.didAppear()
         
         hasAppeared = true
@@ -48,8 +46,6 @@ class PagedPublicationLifecycleEventHandler {
         guard hasAppeared == true else { return }
         
         spreadEventHandler?.didDisappear()
-        
-        Event.publicationDisappeared(publicationId:publicationId, ownedById: ownerId).track()
         
         hasAppeared = false
     }
@@ -107,8 +103,6 @@ class SpreadLifecycleEventHandler {
         
         // then pages appear (and load if already loaded)
         for pageIndex in pageIndexes {
-            Event.publicationPageAppeared(pageIndex: pageIndex, publicationId: publicationId, ownedById: ownerId).track()
-            
             if loadedPageIndexes.contains(pageIndex) {
                 Event.publicationPageLoaded(pageIndex: pageIndex, publicationId: publicationId, ownedById: ownerId).track()
             }
@@ -129,12 +123,6 @@ class SpreadLifecycleEventHandler {
         // first zoom out (if zoomed in)
         if isZoomedIn {
             Event.publicationSpreadZoomedOut(pageIndexes: pageIndexes, publicationId: publicationId, ownedById: ownerId).track()
-        }
-        
-        
-        // disappear all the pages
-        for pageIndex in pageIndexes.reversed() {
-            Event.publicationPageDisappeared(pageIndex: pageIndex, publicationId: publicationId, ownedById: ownerId).track()
         }
         
         // disappear the spread
@@ -262,18 +250,6 @@ extension Event {
                                  ownedById: ownedById)
     }
     
-    static func publicationAppeared(publicationId:IdField, ownedById:IdField) -> Event {
-        return _publicationEvent(type: "paged-publication-appeared",
-                                 publicationId: publicationId,
-                                 ownedById: ownedById)
-    }
-    
-    static func publicationDisappeared(publicationId:IdField, ownedById:IdField) -> Event {
-        return _publicationEvent(type: "paged-publication-disappeared",
-                                 publicationId: publicationId,
-                                 ownedById: ownedById)
-    }
-    
     
     
     // MARK: Page Events
@@ -296,21 +272,6 @@ extension Event {
                                   "pagedPublicationPage": pageProperties as AnyObject])
     }
 
-    static func publicationPageAppeared(pageIndex:Int, publicationId:IdField, ownedById:IdField) -> Event {
-        return _publicationPageEvent(type: "paged-publication-page-appeared",
-                                     location: nil,
-                                     pageIndex:pageIndex,
-                                     publicationId: publicationId,
-                                     ownedById: ownedById)
-    }
-    
-    static func publicationPageDisappeared(pageIndex:Int, publicationId:IdField, ownedById:IdField) -> Event {
-        return _publicationPageEvent(type: "paged-publication-page-disappeared",
-                                     location: nil,
-                                     pageIndex:pageIndex,
-                                     publicationId: publicationId,
-                                     ownedById: ownedById)
-    }
     
     static func publicationPageLoaded(pageIndex:Int, publicationId:IdField, ownedById:IdField) -> Event {
         return _publicationPageEvent(type: "paged-publication-page-loaded",
