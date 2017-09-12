@@ -505,66 +505,73 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 
 - (BOOL) moveListsFromUser:(ETA_User*)fromUser toUser:(ETA_User*)toUser error:(NSError * __autoreleasing *)error
 {
+    NSUInteger migratedLists = 0;
     NSArray* listsToMigrate = [self getAllListsForUser:fromUser.uuid];
     for (ETA_ShoppingList* listToMigrate in listsToMigrate)
     {
         NSArray* itemsToMigrate = [self getAllListItemsInList:listToMigrate.uuid sortedByPreviousItemID:YES];
-        if (itemsToMigrate.count)
+        
+        // skip list if empty
+        if (itemsToMigrate.count == 0) {
+            continue;
+        }
+
+        ETA_ShoppingList* list = [listToMigrate copy];
+        list.uuid = [[self class] generateUUID];
+        list.syncUserID = toUser.uuid;
+        
+        if (toUser)
         {
-            ETA_ShoppingList* list = [listToMigrate copy];
-            list.uuid = [[self class] generateUUID];
-            list.syncUserID = toUser.uuid;
+            ETA_ListShare* share = [[ETA_ListShare alloc] init];
+            share.listUUID = list.uuid;
+            share.userEmail = toUser.email;
+            share.userName = toUser.name;
+            share.syncUserID = toUser.uuid;
+            share.access = ETA_ListShare_Access_Owner;
+            share.accepted = YES;
             
-            if (toUser)
-            {
-                ETA_ListShare* share = [[ETA_ListShare alloc] init];
-                share.listUUID = list.uuid;
-                share.userEmail = toUser.email;
-                share.userName = toUser.name;
-                share.syncUserID = toUser.uuid;
-                share.access = ETA_ListShare_Access_Owner;
-                share.accepted = YES;
-                
-                if (![self updateDBObjects:@[share] error:error])
-                {
-                    continue;
-                }
-                
-                list.shares = @[share];
-            }
-            else
-            {
-                list.shares = nil;
-            }
-            
-            if (![self addList:list error:error])
+            if (![self updateDBObjects:@[share] error:error])
             {
                 continue;
             }
             
-            NSString* prevItemID = kETA_ListManager_FirstPrevItemID;
-            for (ETA_ShoppingList* itemToMigrate in itemsToMigrate)
+            list.shares = @[share];
+        }
+        else
+        {
+            list.shares = nil;
+        }
+        
+        // try to add the list
+        if (![self addList:list error:error]) {
+            continue;
+        }
+        
+        migratedLists ++;
+        
+        // move the items
+        NSString* prevItemID = kETA_ListManager_FirstPrevItemID;
+        for (ETA_ShoppingListItem* itemToMigrate in itemsToMigrate)
+        {
+            ETA_ShoppingListItem* item = [itemToMigrate copy];
+            item.uuid = [[self class] generateUUID];
+            item.prevItemID = prevItemID;
+            item.syncUserID = toUser.uuid;
+            item.shoppingListID = list.uuid;
+            item.creator = toUser.email;
+            
+            prevItemID = item.uuid;
+            
+            if (![self addListItem:item error:error])
             {
-                ETA_ShoppingListItem* item = [itemToMigrate copy];
-                item.uuid = [[self class] generateUUID];
-                item.prevItemID = prevItemID;
-                item.syncUserID = toUser.uuid;
-                item.shoppingListID = list.uuid;
-                item.creator = toUser.email;
-                
-                prevItemID = item.uuid;
-                
-                if (![self addListItem:item error:error])
-                {
-                    continue;
-                }
+                continue;
             }
         }
     }
 //    if (shouldDrop)
 //        [self dropAllDataForUserID:(!fromUser) ? NSNull.null : fromUser error:error];
     
-    return YES;
+    return migratedLists > 0;
 }
 #pragma mark - Shares
 
