@@ -155,4 +155,9 @@ typedef enum {
 
 
 - (void) forceSyncToServer:(void(^)())completionHandler;
+
+// contains the error that occurred if the initial sync to the server failed.
+// nil as soon as any syncs occur properly
+@property (nonatomic, readonly, assign) NSError* initialSyncError;
+
 @end

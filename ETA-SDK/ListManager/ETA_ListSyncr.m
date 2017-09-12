@@ -49,7 +49,7 @@ NSString* const ETA_ListSyncr_ChangeNotificationInfo_RemovedKey = @"removed";
 @property (nonatomic, strong) NSMutableArray* addedLists;
 
 @property (atomic, readwrite, assign) NSUInteger pullSyncCount;
-
+@property (nonatomic, readwrite, strong) NSError* initialSyncError;
 @end
 
 
@@ -527,10 +527,12 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
         
         NSString* userID = self.eta.attachedUserID;
         // completion called on main thread
-        [self server_getAllListsForUser:userID completion:^(NSArray *serverLists) {
+        [self server_getAllListsForUser:userID completion:^(NSArray *serverLists, NSError* error) {
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 if (serverLists)
                 {
+                    self.initialSyncError = nil;
+                    
                     NSArray* localLists = [self localDB_getAllObjectsWithSyncStates:nil
                                                                             forUser:userID
                                                                               class:ETA_ShoppingList.class];
@@ -592,7 +594,12 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
                     ETASDKLogDebug(@"[GetServerChanges] Getting All Lists (%.4fs): %tu added / %tu removed / %tu modified", duration, added.count, removed.count, modified.count);
                     
                 }
-                
+                else if (error != nil) {
+                    // error on very first sync. cache the error for others to gaze upon and weep (until we do a successful pull)
+                    if (self.pullSyncCount == 0) {
+                        self.initialSyncError = error;
+                    }
+                }
                 
                 dispatch_semaphore_signal(sema);
             });
@@ -1449,14 +1456,14 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
 }
 
 
-- (void) server_getAllListsForUser:(NSString*)userID completion:(void (^)(NSArray* lists))completionHandler
+- (void) server_getAllListsForUser:(NSString*)userID completion:(void (^)(NSArray* lists, NSError* error))completionHandler
 {
     if (!completionHandler)
         return;
     
     if (!userID)
     {
-        completionHandler(nil);
+        completionHandler(nil, nil);
         return;
     }
     
@@ -1499,7 +1506,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
            {
                ETASDKLogError(@"server_getAllListsForUser: failed %zd:'%@'", error.code, error.localizedDescription);
            }
-           completionHandler(lists);
+           completionHandler(lists, error);
        }];
 }
 

@@ -341,6 +341,9 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 }
 
 
+- (NSError*) initialSyncError {
+    return self.syncr.initialSyncError;
+}
 
 
 #pragma mark - Public methods

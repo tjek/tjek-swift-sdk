@@ -55,4 +55,7 @@ typedef enum{
 
 @property (atomic, readonly, assign) NSUInteger pullSyncCount;
 
+// If there was an error on the initial sync, this is set. It will be reset to nil if any syncs succeed in future.
+@property (nonatomic, readonly, strong) NSError* initialSyncError;
+
 @end
