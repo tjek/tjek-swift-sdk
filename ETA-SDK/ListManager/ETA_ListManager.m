@@ -755,57 +755,19 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         return NO;
     }
     
-    NSDate* modified = [NSDate date];
-    NSString* listID = item.shoppingListID;
-    
     ETA_ShoppingListItem* existingItem = [self getListItem:item.uuid];
     
     NSMutableArray* modifiedItems = [NSMutableArray new];
     NSMutableArray* addedItems = [NSMutableArray new];
     
     // update the item
-    item.modified = modified;
+    item.modified = [NSDate date];
     item.state = ETA_DBSyncState_ToBeSynced;
     if (existingItem)
         [modifiedItems addObject:item];
     else
         [addedItems addObject:item];
     
-    
-    // we are adding the item - the next item is the item that is after the new item's prevItemID
-    // point this item at the new item
-    if (!existingItem)
-    {
-        ETA_ShoppingListItem* nextItem = [self getListItemWithPreviousItemID:item.prevItemID inList:listID];
-        if (nextItem)
-        {
-            nextItem.prevItemID = item.uuid;
-            nextItem.modified = modified;
-            nextItem.state = ETA_DBSyncState_ToBeSynced;
-            [modifiedItems addObject:nextItem];
-        }
-    }
-    // we are moving the item. change both the old & new NextItem's prevItemID
-    else if ([existingItem.prevItemID isEqualToString:item.prevItemID] == NO)
-    {
-        ETA_ShoppingListItem* oldNextItem = [self getListItemWithPreviousItemID:item.uuid inList:listID];
-        if (oldNextItem && [oldNextItem.prevItemID isEqualToString:existingItem.prevItemID] == NO)
-        {
-            oldNextItem.prevItemID = existingItem.prevItemID;
-            oldNextItem.modified = modified;
-            oldNextItem.state = ETA_DBSyncState_ToBeSynced;
-            [modifiedItems addObject:oldNextItem];
-        }
-        
-        ETA_ShoppingListItem* newNextItem = [self getListItemWithPreviousItemID:item.prevItemID inList:listID];
-        if (newNextItem && [newNextItem.prevItemID isEqualToString:item.uuid]==NO)
-        {
-            newNextItem.prevItemID = item.uuid;
-            newNextItem.modified = modified;
-            newNextItem.state = ETA_DBSyncState_ToBeSynced;
-            [modifiedItems addObject:newNextItem];
-        }
-    }
     
     NSMutableArray* objsToUpdate = [NSMutableArray new];
     [objsToUpdate addObjectsFromArray:modifiedItems];
