@@ -132,6 +132,15 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
             completionHandler();
     }];
 }
+- (void) sendNotificationOfLocalModified:(NSArray*)modified added:(NSArray*)added removed:(NSArray*)removed objClass:(Class)objClass
+{
+    NSMutableDictionary* diffs = [NSMutableDictionary dictionaryWithCapacity:3];
+    [diffs setValue:modified forKey:ETA_ListManager_ChangeNotificationInfo_ModifiedKey];
+    [diffs setValue:added forKey:ETA_ListManager_ChangeNotificationInfo_AddedKey];
+    [diffs setValue:removed forKey:ETA_ListManager_ChangeNotificationInfo_RemovedKey];
+    
+    [self sendNotificationOfDifferences:diffs fromServer:NO objClass:objClass];
+}
 
 - (void) sendNotificationOfDifferences:(NSDictionary*)diffs fromServer:(BOOL)fromServer objClass:(Class)objClass
 {
@@ -352,6 +361,9 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     }
     BOOL success = [self updateDBObjects:added error:error];
     
+    if (success)
+        [self sendNotificationOfLocalModified:nil added:added removed:nil objClass:ETA_ShoppingList.class];
+    
     return success;
 }
 
@@ -369,6 +381,9 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     }
         
     BOOL success = [self updateDBObjects:modified error:error];
+    
+    if (success)
+        [self sendNotificationOfLocalModified:modified added:nil removed:nil objClass:ETA_ShoppingList.class];
     
     return success;
 }
@@ -401,6 +416,12 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         success = [self deleteDBObjects:objsToUpdate error:error];
     else
         success = [self updateDBObjects:objsToUpdate error:error];
+    
+    if (success)
+    {
+        [self sendNotificationOfLocalModified:nil added:nil removed:@[list] objClass:ETA_ShoppingList.class];
+        [self sendNotificationOfLocalModified:nil added:nil removed:allItems objClass:ETA_ShoppingListItem.class];
+    }
     
     return success;
 }
@@ -529,6 +550,17 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         }
     }
     
+    if (success)
+    {
+        ETA_ShoppingList* list = [self getList:listID];
+        if (list)
+        {
+            [self sendNotificationOfLocalModified:@[list]
+                                            added:nil
+                                          removed:nil
+                                         objClass:ETA_ShoppingList.class];
+        }
+    }
     return success;
 }
 
@@ -576,6 +608,13 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         
         BOOL success = [self updateDBObjects:@[share] error:error];
         
+        if (success)
+        {
+            [self sendNotificationOfLocalModified:@[list]
+                                            added:nil
+                                          removed:nil
+                                         objClass:ETA_ShoppingList.class];
+        }
         return success;
     }
     return NO;
@@ -613,6 +652,14 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     [objsToUpdate addObjectsFromArray:addedItems];
     BOOL success = [self updateDBObjects:objsToUpdate error:error];
     
+    if (success)
+    {
+        [self sendNotificationOfLocalModified:modifiedItems
+                                        added:addedItems
+                                      removed:nil
+                                     objClass:ETA_ShoppingListItem.class];
+    }
+    
     return success;
 }
 
@@ -641,6 +688,13 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         success = [self updateDBObjects:objsToUpdate error:error];
     }
     
+    if (success)
+    {
+        [self sendNotificationOfLocalModified:nil
+                                        added:nil
+                                      removed:@[item]
+                                     objClass:ETA_ShoppingListItem.class];
+    }
     return success;
 }
 
