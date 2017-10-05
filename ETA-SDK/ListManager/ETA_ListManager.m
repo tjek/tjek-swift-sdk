@@ -132,15 +132,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
             completionHandler();
     }];
 }
-- (void) sendNotificationOfLocalModified:(NSArray*)modified added:(NSArray*)added removed:(NSArray*)removed objClass:(Class)objClass
-{
-    NSMutableDictionary* diffs = [NSMutableDictionary dictionaryWithCapacity:3];
-    [diffs setValue:modified forKey:ETA_ListManager_ChangeNotificationInfo_ModifiedKey];
-    [diffs setValue:added forKey:ETA_ListManager_ChangeNotificationInfo_AddedKey];
-    [diffs setValue:removed forKey:ETA_ListManager_ChangeNotificationInfo_RemovedKey];
-    
-    [self sendNotificationOfDifferences:diffs fromServer:NO objClass:objClass];
-}
 
 - (void) sendNotificationOfDifferences:(NSDictionary*)diffs fromServer:(BOOL)fromServer objClass:(Class)objClass
 {
@@ -349,78 +340,9 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 #pragma mark - Public methods
 
 #pragma mark Lists
-- (ETA_ShoppingList*) createShoppingList:(NSString*)name
-                                 forUser:(ETA_User*)user
-                                   error:(NSError * __autoreleasing *)error
-{
-    NSString* uuid = [[self class] generateUUID];
-    
-    ETA_ShoppingList* list = [ETA_ShoppingList shoppingListWithUUID:uuid
-                                                               name:name
-                                                       modifiedDate:nil
-                                                             access:ETA_ShoppingList_Access_Private];
-    if (user)
-    {
-        list.syncUserID = user.uuid;
-        
-        ETA_ListShare* share = [[ETA_ListShare alloc] init];
-        share.listUUID = list.uuid;
-        share.userEmail = user.email;
-        share.userName = user.name;
-        share.syncUserID = user.uuid;
-        share.access = ETA_ListShare_Access_Owner;
-        share.accepted = YES;
-        
-        if (![self updateDBObjects:@[share] error:error])
-            return nil;
-        
-        list.shares = @[share];
-    }
-    
-    BOOL success = [self addList:list error:error];
-    
-    return (success) ? list : nil;
-}
-
-- (ETA_ShoppingList*) createWishList:(NSString*)name
-                             forUser:(ETA_User*)user
-                               error:(NSError * __autoreleasing *)error
-{
-    
-    NSString* uuid = [[self class] generateUUID];
-    
-    ETA_ShoppingList* list = [ETA_ShoppingList wishListWithUUID:uuid
-                                                           name:name
-                                                   modifiedDate:nil
-                                                         access:ETA_ShoppingList_Access_Private];
-    
-    if (user)
-    {
-        list.syncUserID = user.uuid;
-        
-        ETA_ListShare* share = [[ETA_ListShare alloc] init];
-        share.listUUID = list.uuid;
-        share.userEmail = user.email;
-        share.userName = user.name;
-        share.syncUserID = user.uuid;
-        share.access = ETA_ListShare_Access_Owner;
-        share.accepted = YES;
-        
-        if (![self updateDBObjects:@[share] error:error])
-            return nil;
-        
-        list.shares = @[share];
-    }
-    
-    BOOL success = [self addList:list error:error];
-    
-    return (success) ? list : nil;
-}
-
 
 - (BOOL) addList:(ETA_ShoppingList*)list error:(NSError * __autoreleasing *)error
 {
-    list.modified = [NSDate date];
     list.state = ETA_DBSyncState_ToBeSynced;
     
     
@@ -430,15 +352,11 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     }
     BOOL success = [self updateDBObjects:added error:error];
     
-    if (success)
-        [self sendNotificationOfLocalModified:nil added:added removed:nil objClass:ETA_ShoppingList.class];
-    
     return success;
 }
 
 - (BOOL) updateList:(ETA_ShoppingList*)list error:(NSError * __autoreleasing *)error
 {
-    list.modified = [NSDate date];
     list.state = ETA_DBSyncState_ToBeSynced;
     
     NSMutableArray* modified = [@[list] mutableCopy];
@@ -452,27 +370,27 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         
     BOOL success = [self updateDBObjects:modified error:error];
     
-    if (success)
-        [self sendNotificationOfLocalModified:modified added:nil removed:nil objClass:ETA_ShoppingList.class];
-    
     return success;
 }
 
 
 - (BOOL) removeList:(ETA_ShoppingList*)list error:(NSError * __autoreleasing *)error
 {
-    NSDate* modified = [NSDate date];
     NSMutableArray* objsToUpdate = [NSMutableArray array];
     
-    list.modified = modified;
     list.state = ETA_DBSyncState_ToBeDeleted;
     [objsToUpdate addObject:list];
+    
+    // delete all the shares
+    for (ETA_ListShare* share in list.shares) {
+        [self removeShareForUserEmail:share.userEmail inList:list.uuid asUser:list.syncUserID error:nil];
+    }
     
     // mark all the items as deleted
     NSArray* allItems = [self getAllListItemsInList:list.uuid sortedByPreviousItemID:NO];
     for (ETA_ShoppingListItem* item in allItems)
     {
-        item.modified = modified;
+        item.modified = list.modified;
         item.state = ETA_DBSyncState_ToBeDeleted;
         [objsToUpdate addObject:item];
     }
@@ -483,12 +401,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         success = [self deleteDBObjects:objsToUpdate error:error];
     else
         success = [self updateDBObjects:objsToUpdate error:error];
-    
-    if (success)
-    {
-        [self sendNotificationOfLocalModified:nil added:nil removed:@[list] objClass:ETA_ShoppingList.class];
-        [self sendNotificationOfLocalModified:nil added:nil removed:allItems objClass:ETA_ShoppingListItem.class];
-    }
     
     return success;
 }
@@ -562,17 +474,16 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
             item.syncUserID = toUser.uuid;
             item.shoppingListID = list.uuid;
             item.creator = toUser.email;
+            item.modified = [NSDate date];
             
             prevItemID = item.uuid;
             
-            if (![self addListItem:item error:error])
+            if (![self updateListItem:item error:error])
             {
                 continue;
             }
         }
     }
-//    if (shouldDrop)
-//        [self dropAllDataForUserID:(!fromUser) ? NSNull.null : fromUser error:error];
     
     return migratedLists > 0;
 }
@@ -618,17 +529,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         }
     }
     
-    if (success)
-    {
-        ETA_ShoppingList* list = [self getList:listID];
-        if (list)
-        {
-            [self sendNotificationOfLocalModified:@[list]
-                                            added:nil
-                                          removed:nil
-                                         objClass:ETA_ShoppingList.class];
-        }
-    }
     return success;
 }
 
@@ -676,13 +576,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
         
         BOOL success = [self updateDBObjects:@[share] error:error];
         
-        if (success)
-        {
-            [self sendNotificationOfLocalModified:@[list]
-                                            added:nil
-                                          removed:nil
-                                         objClass:ETA_ShoppingList.class];
-        }
         return success;
     }
     return NO;
@@ -690,59 +583,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
 
 #pragma mark List Items
 
-- (ETA_ShoppingListItem*) createListItem:(NSString *)name
-                                 offerID:(NSString*)offerID
-                            creatorEmail:(NSString*)creatorEmail
-                                   count:(NSUInteger)count
-                                  inList:(NSString*)listID
-                                   error:(NSError * __autoreleasing *)error
-{
-    return [self createListItem:name comment:nil offerID:offerID creatorEmail:creatorEmail count:count inList:listID error:error];
-}
-
-- (ETA_ShoppingListItem*) createListItem:(NSString *)name
-                                 comment:(NSString *)comment
-                                 offerID:(NSString*)offerID
-                            creatorEmail:(NSString*)creatorEmail
-                                   count:(NSUInteger)count
-                                  inList:(NSString*)listID
-                                   error:(NSError * __autoreleasing *)error
-{
-    if (!listID.length || !name.length)
-    {
-        if (error != NULL)
-            *error = [NSError errorWithDomain:kETA_ListManager_ErrorDomain
-                                         code:ETA_ListManager_ErrorCode_MissingParameter
-                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't create ListItem - invalid name or listID",@"")}];
-        return nil;
-    }
-    
-    
-    ETA_ShoppingListItem* item = [ETA_ShoppingListItem new];
-    item.uuid = [[self class] generateUUID];
-    item.name = name;
-    item.shoppingListID = listID;
-    item.count = MAX(1, count);
-    item.offerID = offerID;
-    item.creator = creatorEmail;
-    item.prevItemID = kETA_ListManager_FirstPrevItemID;
-    if (comment)
-    {
-        item.meta = @{kETA_ShoppingListItem_MetaCommentKey : comment};
-    }
-    
-    // take the sync-user from the list it is in
-    ETA_ShoppingList* list = [self getList:listID];
-    item.syncUserID = list.syncUserID;
-    
-    BOOL success = [self addListItem:item error:error];
-    return (success) ? item : nil;
-}
-
-- (BOOL) addListItem:(ETA_ShoppingListItem *)item error:(NSError * __autoreleasing *)error
-{
-    return [self updateListItem:item error:error];
-}
 
 - (BOOL) updateListItem:(ETA_ShoppingListItem *)item error:(NSError * __autoreleasing *)error
 {
@@ -761,7 +601,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     NSMutableArray* addedItems = [NSMutableArray new];
     
     // update the item
-    item.modified = [NSDate date];
     item.state = ETA_DBSyncState_ToBeSynced;
     if (existingItem)
         [modifiedItems addObject:item];
@@ -773,14 +612,6 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     [objsToUpdate addObjectsFromArray:modifiedItems];
     [objsToUpdate addObjectsFromArray:addedItems];
     BOOL success = [self updateDBObjects:objsToUpdate error:error];
-    
-    if (success)
-    {
-        [self sendNotificationOfLocalModified:modifiedItems
-                                        added:addedItems
-                                      removed:nil
-                                     objClass:ETA_ShoppingListItem.class];
-    }
     
     return success;
 }
@@ -794,140 +625,22 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
                                      userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Can't remove non-existing list item",@"")}];
         return NO;
     }
-    NSDate* modified = [NSDate date];
-    NSString* listID = item.shoppingListID;
     
     NSMutableArray* objsToUpdate = [NSMutableArray array];
-
-    item.modified = modified;
     item.state = ETA_DBSyncState_ToBeDeleted;
     [objsToUpdate addObject:item];
-    
-    // update the next item
-    ETA_ShoppingListItem* nextItem = [self getListItemWithPreviousItemID:item.uuid inList:listID];
-    if (nextItem && ![nextItem.uuid isEqualToString:item.uuid])
-    {
-        nextItem.prevItemID = item.prevItemID;
-        nextItem.modified = modified;
-        nextItem.state = ETA_DBSyncState_ToBeSynced;
-        [objsToUpdate addObject:nextItem];
-    }
     
     // if there is no sync-user for the objects, just delete them straight away. otherwise, mark as deleted
     BOOL success = NO;
     if (!item.syncUserID)
     {
         success = [self deleteDBObjects:@[item] error:error];
-        if (nextItem && success)
-            success = [self updateDBObjects:@[nextItem] error:error];
     }
     else
     {
         success = [self updateDBObjects:objsToUpdate error:error];
     }
     
-    if (success)
-    {
-        [self sendNotificationOfLocalModified:(nextItem) ? @[nextItem] : nil
-                                        added:nil
-                                      removed:@[item]
-                                     objClass:ETA_ShoppingListItem.class];
-    }
-    return success;
-}
-
-
-- (BOOL) removeAllListItemsInList:(NSString*)listID error:(NSError * __autoreleasing *)error
-{
-    ETA_ShoppingList* list = [self getList:listID];
-    NSDate* modified = [NSDate date];
-    
-    NSArray* items = [self getAllListItemsInList:listID sortedByPreviousItemID:NO];
-    
-    // if there is no sync-user for the objects, just delete them straight away. otherwise, mark as deleted
-    BOOL success = NO;
-    if (list.syncUserID)
-    {
-        for (ETA_ShoppingListItem* item in items)
-        {
-            item.modified = modified;
-            item.state = ETA_DBSyncState_ToBeDeleted;
-        }
-        success = [self updateDBObjects:items error:error];
-    }
-    else
-    {
-        success = [self deleteDBObjects:items error:error];
-    }
-    
-    // mark the list as updated
-    if (success)
-    {
-        [self updateList:list error:nil];
-        
-        [self sendNotificationOfLocalModified:nil
-                                        added:nil
-                                      removed:items
-                                     objClass:ETA_ShoppingListItem.class];
-    }
-    return success;
-}
-- (BOOL) removeAllMarkedListItemsInList:(NSString*)listID error:(NSError * __autoreleasing *)error
-{
-    ETA_ShoppingList* list = [self getList:listID];
-    NSDate* modified = [NSDate date];
-    
-    NSArray* items = [self getAllListItemsInList:listID sortedByPreviousItemID:NO];
-
-    NSMutableDictionary* itemsToUpdateByUUID = [NSMutableDictionary dictionary];
-    NSMutableDictionary* itemsToDeleteByUUID = [NSMutableDictionary dictionary];
-    
-    for (ETA_ShoppingListItem* item in items)
-    {
-        if (item.tick)
-        {
-            item.modified = modified;
-            item.state = ETA_DBSyncState_ToBeDeleted;
-            
-            itemsToDeleteByUUID[item.uuid] = item;
-            [itemsToUpdateByUUID removeObjectForKey:item.uuid];
-            
-            // update the next item
-            ETA_ShoppingListItem* nextItem = [self getListItemWithPreviousItemID:item.uuid inList:listID];
-            if (nextItem && ![nextItem.uuid isEqualToString:item.uuid] && !itemsToDeleteByUUID[nextItem.uuid])
-            {
-                nextItem.prevItemID = item.prevItemID;
-                nextItem.modified = modified;
-                nextItem.state = ETA_DBSyncState_ToBeSynced;
-                itemsToUpdateByUUID[nextItem.uuid] = nextItem;
-            }
-        }
-    }
-    
-    NSArray* allToDelete = itemsToDeleteByUUID.allValues;
-    NSArray* allToUpdate = itemsToUpdateByUUID.allValues;
-    
-    // if there is no sync-user for the objects, just delete them straight away. otherwise, mark as deleted
-    BOOL success = NO;
-    if (list.syncUserID)
-    {
-        success = [self updateDBObjects:allToDelete error:error];
-    }
-    else
-    {
-        success = [self deleteDBObjects:allToDelete error:error];
-    }
-    
-    if (success)
-        [self updateDBObjects:allToUpdate error:nil];
-    
-    if (success)
-    {
-        [self sendNotificationOfLocalModified:allToUpdate
-                                        added:nil
-                                      removed:allToDelete
-                                     objClass:ETA_ShoppingListItem.class];
-    }
     return success;
 }
 
@@ -936,20 +649,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     return (ETA_ShoppingListItem*)[self getDBObjectWithUUID:itemID objClass:ETA_ShoppingListItem.class];
 }
 
-- (NSArray*) getAllListItemsWithNoPreviousItemIDInList:(NSString*)listID
-{
-    __block NSArray* items = nil;
-    [self.dbQ inDatabase:^(FMDatabase *db) {
-        NSMutableDictionary* WHERE = [@{kETA_ListItem_DBQuery_SyncState:[self activeSyncStates],
-                                        kETA_ListItem_DBQuery_PrevItemID: NSNull.null,
-                                        } mutableCopy];
-        if (listID)
-            [WHERE setValue:listID forKey:kETA_ListItem_DBQuery_ListID];
-        
-        items = [ETA_ShoppingListItem getAllItemsWhere:WHERE fromTable:[self localListItemsTableName] inDB:db];
-    }];
-    return items;
-}
+
 - (ETA_ShoppingListItem*) getListItemWithPreviousItemID:(NSString*)prevItemID inList:(NSString*)listID
 {
     __block ETA_ShoppingListItem* item = nil;
@@ -964,27 +664,7 @@ NSInteger const kETA_ListManager_LatestDBVersion = 4;
     }];
     return item;
 }
-- (ETA_ShoppingListItem*) getListItemWithOfferID:(NSString*)offerID inList:(NSString*)listID
-{
-    __block ETA_ShoppingListItem* item = nil;
-    [self.dbQ inDatabase:^(FMDatabase *db) {
-        NSMutableDictionary* WHERE = [@{kETA_ListItem_DBQuery_SyncState:[self activeSyncStates]} mutableCopy];
-        if (listID)
-            [WHERE setValue:listID forKey:kETA_ListItem_DBQuery_ListID];
-        if (offerID)
-            [WHERE setValue:offerID forKey:kETA_ListItem_DBQuery_OfferID];
-        
-        item = [[ETA_ShoppingListItem getAllItemsWhere:WHERE fromTable:[self localListItemsTableName] inDB:db] firstObject];
-    }];
-    return item;
-}
 
-- (NSArray*) getAllListItemsForUser:(NSString*)userID
-{
-    return [self getAllDBObjectsWithSyncStates:[self activeSyncStates]
-                                       forUser:userID ?: NSNull.null
-                                      objClass:ETA_ShoppingListItem.class];
-}
 - (NSArray*) getAllListItemsInList:(NSString*)listID sortedByPreviousItemID:(BOOL)sortedByPrev
 {
     NSArray* items = [self getAllDBListItemsInList:listID withSyncStates:[self activeSyncStates]];

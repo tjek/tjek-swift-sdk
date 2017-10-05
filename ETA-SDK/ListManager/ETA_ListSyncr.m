@@ -427,18 +427,6 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 if (serverItems)
                 {
-                    NSArray* orderedServerItems = [self localDB_sortListItemsByPrevItemID:serverItems];
-                    NSString* prevItemID = kETA_ListManager_FirstPrevItemID;
-                    for (ETA_ShoppingListItem* item in orderedServerItems)
-                    {
-                        if ([prevItemID isEqualToString:item.prevItemID] == NO)
-                        {
-                            item.prevItemID = prevItemID;
-                            item.modified = [NSDate date];
-                            item.state = ETA_DBSyncState_ToBeSynced;
-                        }
-                        prevItemID = item.uuid;
-                    }
                     
                     NSArray* localItems = [self localDB_getAllListItemsInList:listID withSyncStates:nil];
                     

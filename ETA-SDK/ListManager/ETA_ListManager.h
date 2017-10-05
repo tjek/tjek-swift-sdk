@@ -85,16 +85,6 @@ typedef enum {
 /// @name Lists
 ///---------------------------------------------
 
-- (ETA_ShoppingList*) createShoppingList:(NSString*)name
-                                 forUser:(ETA_User*)user
-                                   error:(NSError * __autoreleasing *)error;
-
-- (ETA_ShoppingList*) createWishList:(NSString*)name
-                             forUser:(ETA_User*)user
-                               error:(NSError * __autoreleasing *)error;
-
-
-- (BOOL) addList:(ETA_ShoppingList*)list error:(NSError * __autoreleasing *)error;
 - (BOOL) updateList:(ETA_ShoppingList*)list error:(NSError * __autoreleasing *)error;
 - (BOOL) removeList:(ETA_ShoppingList*)list error:(NSError * __autoreleasing *)error;
 
@@ -121,36 +111,13 @@ typedef enum {
 /// @name List Items
 ///---------------------------------------------
 
-- (ETA_ShoppingListItem*) createListItem:(NSString *)name
-                                 offerID:(NSString*)offerID
-                            creatorEmail:(NSString*)creatorEmail
-                                   count:(NSUInteger)count
-                                  inList:(NSString*)listID
-                                   error:(NSError * __autoreleasing *)error;
-
-- (ETA_ShoppingListItem*) createListItem:(NSString *)name
-                                 comment:(NSString *)comment
-                                 offerID:(NSString*)offerID
-                            creatorEmail:(NSString*)creatorEmail
-                                   count:(NSUInteger)count
-                                  inList:(NSString*)listID
-                                   error:(NSError * __autoreleasing *)error;
-
-- (BOOL) addListItem:(ETA_ShoppingListItem *)item error:(NSError * __autoreleasing *)error;
 - (BOOL) updateListItem:(ETA_ShoppingListItem *)item error:(NSError * __autoreleasing *)error;
 - (BOOL) removeListItem:(ETA_ShoppingListItem *)item error:(NSError * __autoreleasing *)error;
-- (BOOL) removeAllListItemsInList:(NSString*)listID error:(NSError * __autoreleasing *)error;
-- (BOOL) removeAllMarkedListItemsInList:(NSString*)listID error:(NSError * __autoreleasing *)error;
 
-- (ETA_ShoppingListItem*) getListItem:(NSString*)itemID;
-- (ETA_ShoppingListItem*) getListItemWithPreviousItemID:(NSString*)prevItemID inList:(NSString*)listID;
-- (ETA_ShoppingListItem*) getListItemWithOfferID:(NSString*)offerID inList:(NSString*)listID;
 
-- (NSArray*) getAllListItemsForUser:(NSString*)userID;
 - (NSArray*) getAllListItemsInList:(NSString*)listID sortedByPreviousItemID:(BOOL)sortedByPrev;
 
 // pass NULL userID to delete the non-logged in user data, and nil to delete all data
-- (BOOL) dropAllDataForUserID:(id)userID error:(NSError * __autoreleasing *)error;
 - (BOOL) moveListsFromUser:(ETA_User*)fromUser toUser:(ETA_User*)toUser error:(NSError * __autoreleasing *)error;
 
 
