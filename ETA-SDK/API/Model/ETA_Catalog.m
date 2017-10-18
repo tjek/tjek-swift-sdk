@@ -8,6 +8,7 @@
 
 #import "ETA_Catalog.h"
 #import "ETA_API.h"
+#import "NSValueTransformer+ETAPredefinedValueTransformers.h"
 
 @implementation ETA_Catalog
 

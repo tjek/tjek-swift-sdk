@@ -8,6 +8,7 @@
 
 #import "ETA_Offer.h"
 #import "ETA_API.h"
+#import "NSValueTransformer+ETAPredefinedValueTransformers.h"
 
 @implementation ETA_Offer
 

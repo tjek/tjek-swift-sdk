@@ -9,7 +9,6 @@
 #import "ETA_APIClient.h"
 
 #import "ETA.h"
-#import "SGN_APIErrors.h"
 
 #import "ETA_Session.h"
 #import "ETA_API.h"

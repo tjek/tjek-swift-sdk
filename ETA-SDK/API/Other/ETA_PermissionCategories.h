@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 eTilbudsavis. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 
 @interface NSString (ETA_Permission)
 

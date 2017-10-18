@@ -234,7 +234,7 @@ static NSString * const kETA_APIBaseURLString = @"https://api.etilbudsavis.dk/";
 
 
 
-#pragma - Geolocation
+#pragma mark - Geolocation
 ///---------------------------------------------
 /// @name Geolocation
 ///---------------------------------------------

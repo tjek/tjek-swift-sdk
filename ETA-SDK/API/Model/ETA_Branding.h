@@ -6,9 +6,8 @@
 //  Copyright (c) 2013 eTilbudsavis. All rights reserved.
 //
 
-#import "Mantle.h"
-
-#import <UIKit/UIKit.h>
+@import Mantle;
+@import UIKit;
 
 @interface ETA_Branding : MTLModel<MTLJSONSerializing>
 

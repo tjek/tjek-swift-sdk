@@ -7,7 +7,7 @@
 //
 
 #import "ETA_Session.h"
-
+#import "NSValueTransformer+ETAPredefinedValueTransformers.h"
 #import "ETA_API.h"
 #import "ETA_PermissionCategories.h"
 

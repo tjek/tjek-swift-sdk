@@ -8,6 +8,8 @@
 
 #import "ETA_ShoppingListItem.h"
 #import "ETA_API.h"
+#import "NSValueTransformer+ETAPredefinedValueTransformers.h"
+
 
 NSString* const kETA_ShoppingListItem_MetaCommentKey = @"eta_comment";
 

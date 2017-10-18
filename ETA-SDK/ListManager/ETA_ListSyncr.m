@@ -9,7 +9,6 @@
 #import "ETA_ListSyncr.h"
 
 #import "ETA.h"
-#import "SGN_APIErrors.h"
 #import "ETA_Log.h"
 
 #import <MAKVONotificationCenter/MAKVONotificationCenter.h>

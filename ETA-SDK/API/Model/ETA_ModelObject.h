@@ -6,9 +6,7 @@
 //  Copyright (c) 2013 eTilbudsavis. All rights reserved.
 //
 
-#import "Mantle.h"
-
-#import "NSValueTransformer+ETAPredefinedValueTransformers.h"
+@import Mantle;
 
 @interface ETA_ModelObject : MTLModel <MTLJSONSerializing>
 

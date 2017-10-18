@@ -9,6 +9,8 @@
 #import "ETA_ShoppingList.h"
 #import "ETA_ListShare.h"
 #import "ETA_API.h"
+#import "NSValueTransformer+ETAPredefinedValueTransformers.h"
+
 
 NSString* const kETA_ShoppingList_MetaThemeKey = @"eta_theme";
 
