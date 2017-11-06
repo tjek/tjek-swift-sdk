@@ -623,7 +623,7 @@ extension EventsTracker.ShippableEvent : PoolableObject {
 
 
 /// Given arbitrary properties, this will remove those that cant be converted to JSON values, and parse Dates where appropriate.
-fileprivate func prepareForJSON(_ property:AnyObject?)->AnyObject? {
+fileprivate func prepareForJSON(_ property:AnyObject?) -> AnyObject? {
     
     guard let prop = property else { return nil }
     

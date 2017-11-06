@@ -39,7 +39,7 @@ protocol PoolCacheProtocol {
 }
 
 protocol PoolShipperProtocol {
-    func ship(objects:[SerializedPoolObject], completion:@escaping ((_ poolIdsToRemove:[String])->Void))
+    func ship(objects:[SerializedPoolObject], completion:@escaping ((_ poolIdsToRemove:[String]) -> Void))
 }
 
 

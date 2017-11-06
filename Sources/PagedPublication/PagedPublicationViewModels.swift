@@ -59,9 +59,9 @@ open class PagedPublicationViewModel : NSObject, PagedPublicationViewModelProtoc
 public protocol PagedPublicationHotspotViewModelProtocol : class {
     
     /// return CGRectNull if the hotspot isnt in that page
-    func getLocationForPageIndex(_ pageIndex:Int)->CGRect
+    func getLocationForPageIndex(_ pageIndex:Int) -> CGRect
     
-    func getPageIndexes()->IndexSet
+    func getPageIndexes() -> IndexSet
 }
 
 /// This concrete implementation of a hotspot contains no data, so is designed for subclassing.
@@ -73,7 +73,7 @@ open class PagedPublicationEmptyHotspotViewModel : NSObject, PagedPublicationHot
     open func getLocationForPageIndex(_ pageIndex:Int) -> CGRect {
         return pageLocations[pageIndex] ?? CGRect.null
     }
-    open func getPageIndexes()->IndexSet {
+    open func getPageIndexes() -> IndexSet {
         let pageIndexes = NSMutableIndexSet()
         for (pageIndex, _) in pageLocations {
             pageIndexes.add(pageIndex)

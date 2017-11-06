@@ -85,7 +85,7 @@ public class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
     
     // MARK: Local fetching/parsing methods
     
-    static func fetchPublicationData(_ publicationID:String, delay:TimeInterval = 0, completion:@escaping (PagedPublicationViewModelProtocol?)->Void) {
+    static func fetchPublicationData(_ publicationID:String, delay:TimeInterval = 0, completion:@escaping (PagedPublicationViewModelProtocol?) -> Void) {
         
         DispatchQueue.global().asyncAfter(deadline: .now() + delay) {
             var viewModel:PagedPublicationViewModelProtocol? = nil
@@ -119,7 +119,7 @@ public class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
     }
     
     
-    static func fetchPublicationPageData(_ publicationID:String, delay:TimeInterval = 0, completion:@escaping ([PagedPublicationPageViewModelProtocol]?)->Void) {
+    static func fetchPublicationPageData(_ publicationID:String, delay:TimeInterval = 0, completion:@escaping ([PagedPublicationPageViewModelProtocol]?) -> Void) {
         
         DispatchQueue.global().asyncAfter(deadline: .now() + delay) {
             var viewModels:[PagedPublicationPageViewModelProtocol]? = nil
@@ -153,7 +153,7 @@ public class LocalPublicationLoader : NSObject, PagedPublicationLoaderProtocol {
     }
     
     
-    static func fetchPublicationHotspotData(_ publicationID:String, aspectRatio:CGFloat, delay:TimeInterval = 0, completion:@escaping ([PagedPublicationHotspotViewModelProtocol]?)->Void) {
+    static func fetchPublicationHotspotData(_ publicationID:String, aspectRatio:CGFloat, delay:TimeInterval = 0, completion:@escaping ([PagedPublicationHotspotViewModelProtocol]?) -> Void) {
     
         DispatchQueue.global().asyncAfter(deadline: .now() + delay) {
             var viewModels:[PagedPublicationHotspotViewModelProtocol]? = nil

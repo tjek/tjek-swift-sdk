@@ -14,7 +14,7 @@ import Foundation
 
 /// A protocol defining a server that handles any GraphRequests
 public protocol GraphClient {
-    @discardableResult func start(request:GraphRequestProtocol, completion:@escaping (Result<GraphResponse>)->Void) -> Cancellable
+    @discardableResult func start(request:GraphRequestProtocol, completion:@escaping (Result<GraphResponse>) -> Void) -> Cancellable
 }
 
 
@@ -34,7 +34,7 @@ open class NetworkGraphClient : GraphClient {
     }
     
     @discardableResult
-    public func start(request:GraphRequestProtocol, completion:@escaping (Result<GraphResponse>)->Void) -> Cancellable {        
+    public func start(request:GraphRequestProtocol, completion:@escaping (Result<GraphResponse>) -> Void) -> Cancellable {        
         return connection.send(request: request, completion: completion)
     }
 }

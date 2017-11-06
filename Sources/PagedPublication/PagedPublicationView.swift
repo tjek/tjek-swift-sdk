@@ -23,9 +23,9 @@ public protocol PagedPublicationLoaderProtocol {
     /// An optional view model that is used to configure the publication before any loading begins
     var preloadedPublication:PagedPublicationViewModelProtocol? { get }
 
-    typealias PublicationLoadedHandler = ((PagedPublicationViewModelProtocol?, Error?)->Void)
-    typealias PagesLoadedHandler = (([PagedPublicationPageViewModelProtocol]?, Error?)->Void)
-    typealias HotspotsLoadedHandler = (([PagedPublicationHotspotViewModelProtocol]?, Error?)->Void)
+    typealias PublicationLoadedHandler = ((PagedPublicationViewModelProtocol?, Error?) -> Void)
+    typealias PagesLoadedHandler = (([PagedPublicationPageViewModelProtocol]?, Error?) -> Void)
+    typealias HotspotsLoadedHandler = (([PagedPublicationHotspotViewModelProtocol]?, Error?) -> Void)
 
     func load(publicationLoaded:@escaping PublicationLoadedHandler,
               pagesLoaded:@escaping PagesLoadedHandler,
