@@ -1677,8 +1677,7 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
     // share sync
     //    BOOL isNonRepeatableError = requestError && [requestError.domain isEqualToString:ETA_APIErrorDomain] && (requestError.code==1500 || requestError.code==400);
     
-    // if the requestError is that the item doesnt exist on the server then consider that a success!
-    //    if (!requestError || requestError.code == SGN_APIError_InfoInvalidResourceID || requestError.code == SGN_APIError_InfoMissingAuthentication)
+
     
     
     // client side error - can't retry
@@ -1686,6 +1685,11 @@ static NSTimeInterval kETA_ListSyncr_SlowPollInterval      = 20.0; // secs
     {
         if (error.HTTPStatusCode == 400)
         {
+            return NO;
+        }
+        
+        // if the error is that the item doesnt exist on the server then consider that a success!
+        if (error.code >= SGN_APIError_InfoInvalidResourceID && error.code < SGN_APIError_InfoInvalid_END) {
             return NO;
         }
     }
