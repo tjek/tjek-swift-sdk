@@ -135,9 +135,9 @@ extension EventsTracker {
             static func toDictionary() -> [String:AnyObject]? {
                 var dict = [String:AnyObject]()
                 
-                dict["name"]  = (name?.characters.count ?? 0) > 0 ? name as AnyObject? : nil
-                dict["version"] = (version?.characters.count ?? 0) > 0 ? version as AnyObject? : nil
-                dict["build"] = (build?.characters.count ?? 0) > 0 ? build as AnyObject? : nil
+                dict["name"]  = (name?.count ?? 0) > 0 ? name as AnyObject? : nil
+                dict["version"] = (version?.count ?? 0) > 0 ? version as AnyObject? : nil
+                dict["build"] = (build?.count ?? 0) > 0 ? build as AnyObject? : nil
                 
                 return dict.count > 0 ? dict : nil
             }
