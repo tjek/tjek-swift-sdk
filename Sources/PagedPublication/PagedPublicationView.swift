@@ -777,7 +777,7 @@ open class PagedPublicationView : UIView {
         lblFrame.origin.x = round(bounds.midX - (lblFrame.width / 2))
         
         if #available(iOS 11.0, *) {
-            lblFrame.origin.y = round(bounds.maxY - self.safeAreaLayoutGuide.layoutFrame.origin.y)
+            lblFrame.origin.y = round(self.safeAreaLayoutGuide.layoutFrame.maxY - lblFrame.height)
         } else {
             lblFrame.origin.y = round(bounds.maxY - 11 - lblFrame.height)
         }
