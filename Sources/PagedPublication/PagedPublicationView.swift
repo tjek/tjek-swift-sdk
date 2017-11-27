@@ -775,15 +775,7 @@ open class PagedPublicationView : UIView {
         lblFrame.size.height = round(lblFrame.size.height)
         
         lblFrame.origin.x = round(bounds.midX - (lblFrame.width / 2))
-        
-        if UIDevice().userInterfaceIdiom == .phone {
-            switch UIScreen.main.nativeBounds.height {
-            case 2436: // iPhoneX
-                lblFrame.origin.y = round(bounds.maxY - 22 - lblFrame.height)
-            default:
-                lblFrame.origin.y = round(bounds.maxY - 11 - lblFrame.height)
-            }
-        }
+        lblFrame.origin.y = round(bounds.maxY - 11 - lblFrame.height)
         pageNumberLabel.frame = lblFrame
     }
     
