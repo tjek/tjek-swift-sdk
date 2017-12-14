@@ -722,8 +722,8 @@ public class Event : NSObject, EventProtocol {
 /// A container for representing an id in an event's properties
 @objc(SGNIdField)
 public class IdField : NSObject {
-    let id:String
-    let source:String
+    public let id:String
+    public let source:String
     
     public init?(_ id:String?, source:String) {
         guard id != nil else { return nil }
