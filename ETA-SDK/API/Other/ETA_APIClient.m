@@ -118,8 +118,10 @@ static NSString* const kETA_ClientIDUserDefaultsKey = @"ETA_ClientID";
         void (^sendBlock)() = ^{
             // get the base parameters, and override them with those passed in
             NSMutableDictionary* mergedParameters = [[self baseRequestParameters] mutableCopy];
-            [mergedParameters setValuesForKeysWithDictionary:parameters];
-            
+            for (NSString* key in parameters) {
+                id value = parameters[key];
+                mergedParameters[key] = value;
+            }
             // convert any arrays into a comma separated list
             NSMutableDictionary* cleanedParameters = [NSMutableDictionary dictionary];
             [mergedParameters enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {

@@ -254,7 +254,10 @@ static ETA* ETA_SingletonSDK = nil;
     }
     
     // then take those in the dictionary
-    [mergedParameters setValuesForKeysWithDictionary:parameters];
+    for (NSString* key in parameters) {
+        id value = parameters[key];
+        mergedParameters[key] = value;
+    }
     
     // flag to avoid server calls if there is a valid cache response was set, so skip server call
     BOOL cacheAvoidsServer = [mergedParameters[ETA_AvoidServerCallKey] boolValue];

@@ -62,7 +62,7 @@ NSString* const kETA_ShoppingListItem_MetaCommentKey = @"eta_comment";
             fromJSON = nil;
         return fromJSON;
     } reverseBlock:^id(NSString* fromModel) {
-        return (!fromModel || [fromModel isEqual:NSNull.null]) ? @"" : fromModel;
+        return (!fromModel || [fromModel isEqual:NSNull.null]) ? nil : fromModel;
     }];
 }
 
