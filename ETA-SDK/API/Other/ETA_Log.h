@@ -29,7 +29,7 @@ typedef NS_ENUM(NSUInteger, ETASDK_LogLevel) {
 
 BOOL ETASDK_IsLogLevel(ETASDK_LogLevel logLevel);
 void ETASDK_SetLogLevel(ETASDK_LogLevel logLevel);
-ETASDK_LogLevel ETASDK_GetLogLevel();
+ETASDK_LogLevel ETASDK_GetLogLevel(void);
 
 
 #define ETASDKLogError(frmt, ...)     SYNC_LOG_OBJC_MAYBE(ETASDK_GetLogLevel(), ETASDK_LogFlag_Error,   ETASDK_LOG_CONTEXT, frmt, ##__VA_ARGS__)

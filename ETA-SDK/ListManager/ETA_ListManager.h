@@ -121,7 +121,7 @@ typedef enum {
 - (BOOL) moveListsFromUser:(ETA_User*)fromUser toUser:(ETA_User*)toUser error:(NSError * __autoreleasing *)error;
 
 
-- (void) forceSyncToServer:(void(^)())completionHandler;
+- (void) forceSyncToServer:(void(^)(void))completionHandler;
 
 // contains the error that occurred if the initial sync to the server failed.
 // nil as soon as any syncs occur properly
