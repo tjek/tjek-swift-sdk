@@ -387,7 +387,7 @@ open class PagedPublicationView : UIView {
     
     public func jump(toPageIndex pageIndex:Int, animated:Bool) {
         
-        // FIXME: if loading then save pageIndex for after load finished
+        // TODO: if loading then save pageIndex for after load finished
         
         verso.jump(toPageIndex: pageIndex, animated: animated)
     }
@@ -593,16 +593,16 @@ open class PagedPublicationView : UIView {
             errorView.translatesAutoresizingMaskIntoConstraints = false
             
             let leftCnst = NSLayoutConstraint(item:errorView, attribute:.left, relatedBy:.greaterThanOrEqual, toItem:errorViewContainer, attribute:.leftMargin, multiplier:1, constant:0)
-            leftCnst.priority = UILayoutPriorityRequired
+            leftCnst.priority = UILayoutPriority.required
             
             let rightCnst = NSLayoutConstraint(item:errorView, attribute:.right, relatedBy:.lessThanOrEqual, toItem:errorViewContainer, attribute:.rightMargin, multiplier:1, constant:0)
-            rightCnst.priority = UILayoutPriorityRequired
+            rightCnst.priority = UILayoutPriority.required
             
             let topCnst = NSLayoutConstraint(item:errorView, attribute:.top, relatedBy:.greaterThanOrEqual, toItem:errorViewContainer, attribute:.topMargin, multiplier:1, constant:0)
-            topCnst.priority = UILayoutPriorityRequired
+            topCnst.priority = UILayoutPriority.required
             
             let bottomCnst = NSLayoutConstraint(item:errorView, attribute:.bottom, relatedBy:.lessThanOrEqual, toItem:errorViewContainer, attribute:.bottomMargin, multiplier:1, constant:0)
-            bottomCnst.priority = UILayoutPriorityRequired
+            bottomCnst.priority = UILayoutPriority.required
             
             let centerXCnst = NSLayoutConstraint(item:errorView, attribute:.centerX, relatedBy:.equal, toItem:errorViewContainer, attribute:.centerXWithinMargins, multiplier:1, constant:0)
             let centerYCnst = NSLayoutConstraint(item:errorView, attribute:.centerY, relatedBy:.equal, toItem:errorViewContainer, attribute:.centerYWithinMargins, multiplier:1, constant:0)
@@ -721,18 +721,18 @@ open class PagedPublicationView : UIView {
             let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.headline)
             let monospacedNumbersFontDescriptor = fontDescriptor.addingAttributes(
                 [
-                    UIFontDescriptorFeatureSettingsAttribute: [
+                    UIFontDescriptor.AttributeName.featureSettings: [
                         [
-                            UIFontFeatureTypeIdentifierKey: kNumberSpacingType,
-                            UIFontFeatureSelectorIdentifierKey: kMonospacedNumbersSelector
+                            UIFontDescriptor.FeatureKey.featureIdentifier: kNumberSpacingType,
+                            UIFontDescriptor.FeatureKey.typeIdentifier: kMonospacedNumbersSelector
                         ],
                         [
-                            UIFontFeatureTypeIdentifierKey: kStylisticAlternativesType,
-                            UIFontFeatureSelectorIdentifierKey: kStylisticAltOneOnSelector
+                            UIFontDescriptor.FeatureKey.featureIdentifier: kStylisticAlternativesType,
+                            UIFontDescriptor.FeatureKey.typeIdentifier: kStylisticAltOneOnSelector
                         ],
                         [
-                            UIFontFeatureTypeIdentifierKey: kStylisticAlternativesType,
-                            UIFontFeatureSelectorIdentifierKey: kStylisticAltTwoOnSelector
+                            UIFontDescriptor.FeatureKey.featureIdentifier: kStylisticAlternativesType,
+                            UIFontDescriptor.FeatureKey.typeIdentifier: kStylisticAltTwoOnSelector
                         ]
                     ]
                 ])

@@ -13,14 +13,12 @@ import UIKit
 @objc(SGNSDKConfig)
 public class SDKConfig : NSObject {
     
-    override public class func initialize () {
-        super.initialize()
-        
+    public override init() {
+        super.init()
         // make sure that client & sessionIds are initialized as the very first thing.
-        _ = clientId
-        _ = sessionId
+        _ = SDKConfig.clientId
+        _ = SDKConfig.sessionId
     }
-
     
     // MARK: -
     /**

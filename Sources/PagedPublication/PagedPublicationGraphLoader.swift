@@ -35,7 +35,7 @@ public class PagedPublicationGraphLoader : NSObject, PagedPublicationLoaderProto
               pagesLoaded:@escaping PagedPublicationLoaderProtocol.PagesLoadedHandler,
               hotspotsLoaded:@escaping PagedPublicationLoaderProtocol.HotspotsLoadedHandler) {
         
-        // FIXME: do graph fetching
+        // TODO: do graph fetching
     }
     
 }

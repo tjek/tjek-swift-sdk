@@ -314,7 +314,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
     
     // MARK: - Notifications
     
-    func memoryWarningNotification(_ notification:Notification) {
+    @objc func memoryWarningNotification(_ notification:Notification) {
         clearZoomImage(animated:true)
     }
 }

@@ -239,7 +239,7 @@ extension PagedPublicationView {
             }, completion: nil)
         }
         
-        func didTouch(_ touch:UILongPressGestureRecognizer) {
+        @objc func didTouch(_ touch:UILongPressGestureRecognizer) {
             guard bounds.size.width > 0 && bounds.size.height > 0 else {
                 return
             }
@@ -256,7 +256,7 @@ extension PagedPublicationView {
             }
         }
         
-        func didTap(_ tap:UITapGestureRecognizer) {
+        @objc func didTap(_ tap:UITapGestureRecognizer) {
             guard bounds.size.width > 0 && bounds.size.height > 0 else {
                 return
             }
@@ -281,7 +281,7 @@ extension PagedPublicationView {
             delegate?.didTapHotspot(overlay:self, hotspots: hotspots.models, hotspotRects: hotspots.rects, locationInOverlay: overlayLocation, pageIndex: targetPage.index, locationInPage: targetPage.location)
         }
         
-        func didLongPress(_ press:UILongPressGestureRecognizer) {
+        @objc func didLongPress(_ press:UILongPressGestureRecognizer) {
             guard bounds.size.width > 0 && bounds.size.height > 0 else {
                 return
             }
@@ -316,7 +316,7 @@ extension PagedPublicationView {
             }
         }
         
-        func didDoubleTap(_ doubleTap:UITapGestureRecognizer) {
+        @objc func didDoubleTap(_ doubleTap:UITapGestureRecognizer) {
             
             if doubleTap.state == .ended {
                 

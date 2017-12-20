@@ -611,16 +611,17 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = ShopGun;
 				TargetAttributes = {
 					AE06BFEF1D3E9BB100BC8D47 = {
 						CreatedOnToolsVersion = 7.3.1;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Manual;
 					};
 					AEA5AA311D3CB64A00DC5EA3 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0920;
 					};
 				};
 			};
@@ -891,6 +892,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE4CC9971DB0F6D70087819C /* ShopGunSDK-Framework.xcconfig */;
 			buildSettings = {
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -898,6 +901,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE4CC9971DB0F6D70087819C /* ShopGunSDK-Framework.xcconfig */;
 			buildSettings = {
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -905,6 +910,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE4CC9961DB0F6D70087819C /* ShopGunSDK-Debug.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 			};
 			name = Debug;
 		};
@@ -912,6 +921,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE4CC9981DB0F6D70087819C /* ShopGunSDK-Release.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 			};
 			name = Release;
 		};
@@ -919,6 +932,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE4CC9991DB0F6D70087819C /* ShopGunSDK-Tests.xcconfig */;
 			buildSettings = {
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -926,6 +941,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE4CC9991DB0F6D70087819C /* ShopGunSDK-Tests.xcconfig */;
 			buildSettings = {
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
