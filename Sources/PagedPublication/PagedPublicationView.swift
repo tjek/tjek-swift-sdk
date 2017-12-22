@@ -387,7 +387,7 @@ open class PagedPublicationView : UIView {
     
     public func jump(toPageIndex pageIndex:Int, animated:Bool) {
         
-        // FIXME: if loading then save pageIndex for after load finished
+        //TODO: if loading then save pageIndex for after load finished
         
         verso.jump(toPageIndex: pageIndex, animated: animated)
     }
