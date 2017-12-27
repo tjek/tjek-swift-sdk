@@ -148,7 +148,7 @@ public class LocalPublicationLoader: NSObject, PagedPublicationLoaderProtocol {
                 let hotspotsData = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: AnyObject]] {
     
                 viewModels = []
-                for (_, hotspotData) in hotspotsData!.enumerated() {
+                for (_, hotspotData) in hotspotsData!.enumerated() { // swiftlint:disable:this unused_enumerated
     
                     var pageRects: [Int: CGRect] = [:]
                     if let locationData = hotspotData["locations"] as? [String: [[CGFloat]]] {

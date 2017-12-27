@@ -87,13 +87,13 @@ extension UIColor {
             throw UIColorInputError.missingHashMarkAsPrefix
         }
         
-        let hexString: String = rgba.substring(from: rgba.characters.index(rgba.startIndex, offsetBy: 1))
+        let hexString: String = rgba.substring(from: rgba.index(rgba.startIndex, offsetBy: 1))
         var hexValue: UInt32 = 0
         guard Scanner(string: hexString).scanHexInt32(&hexValue) else {
             throw UIColorInputError.unableToScanHexValue
         }
         
-        switch (hexString.characters.count) {
+        switch hexString.count {
         case 3:
             self.init(hex3: UInt16(hexValue))
         case 4:
@@ -132,7 +132,7 @@ extension UIColor {
         var a: CGFloat = 0
         self.getRed(&r, green: &g, blue: &b, alpha: &a)
         
-        if (includeAlpha) {
+        if includeAlpha {
             return String(format: "#%02X%02X%02X%02X", Int(r * 255), Int(g * 255), Int(b * 255), Int(a * 255))
         } else {
             return String(format: "#%02X%02X%02X", Int(r * 255), Int(g * 255), Int(b * 255))

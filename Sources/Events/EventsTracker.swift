@@ -9,6 +9,8 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+
 public extension Notification.Name {
     
     /// Create an 'eventTracked' notification name for a specific event-type.
@@ -253,8 +255,7 @@ public class EventsTracker: NSObject {
             // print("[SHIPPER] shipping \(orderedEventDicts.count) events (\(String(format:"%.3f", Double(jsonData.count) / 1024.0)) kb)")
             
             // actually do the shipping of the events
-            EventsShipper.networkSession.dataTask(with: request) {
-                (data, response, error) in
+            EventsShipper.networkSession.dataTask(with: request) { (data, response, error) in
                 
                 let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
                 // try to parse the response from the server.
@@ -588,18 +589,18 @@ fileprivate func prepareForJSON(_ property: AnyObject?) -> AnyObject? {
          is NSNull,
          is String, is NSString:
         return prop
-    case is Array<AnyObject>:
+    case is [AnyObject]:
         var result: [AnyObject]? = nil
-        for val in (prop as! Array<AnyObject>) {
+        for val in (prop as! [AnyObject]) {
             if let cleanVal = prepareForJSON(val) {
                 if result == nil { result = [] }
                 result?.append(cleanVal)
             }
         }
         return result as AnyObject?
-    case is Dictionary<String, AnyObject>:
+    case is [String: AnyObject]:
         var result: [String: AnyObject]? = nil
-        for (key, val) in (prop as! Dictionary<String, AnyObject>) {
+        for (key, val) in (prop as! [String: AnyObject]) {
             if let cleanVal = prepareForJSON(val) {
                 if result == nil { result = [:] }
                 result?[key] = cleanVal

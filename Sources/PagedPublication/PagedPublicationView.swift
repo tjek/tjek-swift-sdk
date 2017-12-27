@@ -8,8 +8,9 @@
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
 import UIKit
-
 import Verso
+
+// swiftlint:disable file_length
 
 @objc(SGNPagedPublicationLoaderProtocol)
 public protocol PagedPublicationLoaderProtocol {
@@ -391,7 +392,7 @@ open class PagedPublicationView: UIView {
         return dataSource ?? self
     }
     
-    fileprivate var outroViewProperties:(viewClass: (OutroView.Type)?, width: CGFloat, maxZoom: CGFloat) = (nil, 1.0, 1.0)
+    fileprivate var outroViewProperties:(viewClass: (OutroView.Type)?, width: CGFloat, maxZoom: CGFloat) = (nil, 1.0, 1.0) // swiftlint:disable:this large_tuple
     fileprivate var outroPageIndex: Int? {
         get {
             return outroViewProperties.viewClass != nil && pageCount > 0 ? pageCount : nil
@@ -978,7 +979,7 @@ extension PagedPublicationView: VersoViewDelegate {
     public func currentPageIndexesFinishedChanging(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in verso: VersoView) {
         
         // make a new spreadEventHandler (unless it's the outro)
-        if (outroPageIndex == nil || currentPageIndexes.contains(outroPageIndex!) == false) {
+        if outroPageIndex == nil || currentPageIndexes.contains(outroPageIndex!) == false {
             
             lifecycleEventHandler?.newSpreadEventHandler(for: currentPageIndexes)
             

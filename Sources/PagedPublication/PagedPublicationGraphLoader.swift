@@ -32,8 +32,8 @@ public class PagedPublicationGraphLoader: NSObject, PagedPublicationLoaderProtoc
     }
     
     public func load(publicationLoaded:@escaping PagedPublicationLoaderProtocol.PublicationLoadedHandler,
-              pagesLoaded:@escaping PagedPublicationLoaderProtocol.PagesLoadedHandler,
-              hotspotsLoaded:@escaping PagedPublicationLoaderProtocol.HotspotsLoadedHandler) {
+                     pagesLoaded:@escaping PagedPublicationLoaderProtocol.PagesLoadedHandler,
+                     hotspotsLoaded:@escaping PagedPublicationLoaderProtocol.HotspotsLoadedHandler) {
         
         // TODO: do graph fetching
     }

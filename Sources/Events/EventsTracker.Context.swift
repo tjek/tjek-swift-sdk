@@ -232,7 +232,7 @@ extension EventsTracker {
             
             static var location: CLLocation? {
                 let authStatus = CLLocationManager.authorizationStatus()
-                guard (authStatus == .authorizedWhenInUse || authStatus == .authorizedAlways) else {
+                guard authStatus == .authorizedWhenInUse || authStatus == .authorizedAlways else {
                     return nil
                 }
                 
