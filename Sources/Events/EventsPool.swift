@@ -11,45 +11,41 @@ import Foundation
 
 /// The format that is saved to the cache, and that is sent to the shipper.
 /// This could be done in a better, more generic way, in the future
-typealias SerializedPoolObject = (poolId:String, jsonData:Data)
-
+typealias SerializedPoolObject = (poolId: String, jsonData: Data)
 
 /// Defines what an object that can be in the pool must be able to do
 protocol PoolableObject {
-    var poolId:String { get }
+    var poolId: String { get }
     
     func serialize() -> SerializedPoolObject?
 }
-
 
 /// Defines what a Pool's cache must be able to do.
 /// Note that these act concurrently, so should be triggered on a bg thread.
 protocol PoolCacheProtocol {
     
-    var objectCount:Int { get }
+    var objectCount: Int { get }
     
     /// add the objects to the tail of the cache
-    func write(toTail objects:[SerializedPoolObject])
+    func write(toTail objects: [SerializedPoolObject])
     
     /// return the objects from head of cache. They only need to be shippable once they come out of the cache
-    func read(fromHead count:Int) -> [SerializedPoolObject]
+    func read(fromHead count: Int) -> [SerializedPoolObject]
     
     /// run through the cache removing objects that have the specified ids
-    func remove(poolIds:[String])
+    func remove(poolIds: [String])
 }
 
 protocol PoolShipperProtocol {
-    func ship(objects:[SerializedPoolObject], completion:@escaping ((_ poolIdsToRemove:[String]) -> Void))
+    func ship(objects: [SerializedPoolObject], completion:@escaping ((_ poolIdsToRemove: [String]) -> Void))
 }
-
-
 
 class CachedFlushablePool {
     
-    let shipper:PoolShipperProtocol
-    let cache:PoolCacheProtocol
+    let shipper: PoolShipperProtocol
+    let cache: PoolCacheProtocol
     
-    var dispatchLimit:Int {
+    var dispatchLimit: Int {
         didSet {
             _poolQueue.async {
                 // flush any pending events (only if limit reached)
@@ -59,12 +55,11 @@ class CachedFlushablePool {
             }
         }
     }
-    var dispatchInterval:TimeInterval
+    var dispatchInterval: TimeInterval
     
-    fileprivate var dispatchIntervalDelay:TimeInterval = 0
+    fileprivate var dispatchIntervalDelay: TimeInterval = 0
     
-    
-    init(dispatchInterval:TimeInterval, dispatchLimit:Int, shipper:PoolShipperProtocol, cache:PoolCacheProtocol) {
+    init(dispatchInterval: TimeInterval, dispatchLimit: Int, shipper: PoolShipperProtocol, cache: PoolCacheProtocol) {
         self.dispatchInterval = dispatchInterval
         self.dispatchLimit = dispatchLimit
         self.shipper = shipper
@@ -87,14 +82,14 @@ class CachedFlushablePool {
     }
     
     @objc
-    func appDidEnterBackground(_ notification:Notification) {
+    func appDidEnterBackground(_ notification: Notification) {
         _poolQueue.async { [weak self] in
             self?.flushPendingObjects()
         }
     }
     
     /// Add an object to the pool
-    func push(object:PoolableObject) {
+    func push(object: PoolableObject) {
         //print("[POOL] pushing object")
         
         _poolQueue.async {
@@ -114,17 +109,13 @@ class CachedFlushablePool {
         }
     }
     
-    
-    
-    
     // MARK: - Private
     
-    fileprivate let _poolQueue:DispatchQueue = DispatchQueue(label: "com.shopgun.ios.sdk.pool.queue", attributes: [])
-    
+    fileprivate let _poolQueue: DispatchQueue = DispatchQueue(label: "com.shopgun.ios.sdk.pool.queue", attributes: [])
     
     // MARK: - Flushing
     
-    fileprivate var isFlushing:Bool = false
+    fileprivate var isFlushing: Bool = false
     
     fileprivate func flushPendingObjects() {
         // currently flushing. no-op
@@ -139,9 +130,7 @@ class CachedFlushablePool {
             return
         }
         
-        
         //print("[POOL] flushing \(objsToShip.count) objs")
-        
         
         isFlushing = true
         
@@ -149,9 +138,8 @@ class CachedFlushablePool {
         flushTimer?.invalidate()
         flushTimer = nil
         
-        
         // pass the objects to the shipper (on a bg queue)
-        DispatchQueue.global(qos:.background).async { [weak self] in
+        DispatchQueue.global(qos: .background).async { [weak self] in
             
             self?.shipper.ship(objects: objsToShip) { [weak self] (poolIdsToRemove) in
                 
@@ -162,14 +150,13 @@ class CachedFlushablePool {
                     // remove the successfully shipped events
                     s.cache.remove(poolIds: poolIdsToRemove)
                     
-                    
                     //print("[POOL] flushed \(poolIdsToRemove.count)/\(objsToShip.count)")
                     
                     // if no events are shipped then scale back the interval
                     if poolIdsToRemove.count == 0 {
                         if s.dispatchInterval > 0 {
                             let currentInterval = s.dispatchInterval + s.dispatchIntervalDelay
-                            let maxInterval:TimeInterval = 60 * 5 // 5 mins
+                            let maxInterval: TimeInterval = 60 * 5 // 5 mins
                             let newInterval = min(currentInterval * 1.1, maxInterval)
                             
                             s.dispatchIntervalDelay = newInterval - s.dispatchInterval
@@ -199,14 +186,10 @@ class CachedFlushablePool {
         
         return false
     }
-
-
-
-    
     
     // MARK: - Timer
     
-    fileprivate var flushTimer:Timer?
+    fileprivate var flushTimer: Timer?
     
     fileprivate func startTimerIfNeeded() {
         guard flushTimer == nil && isFlushing == false && self.cache.objectCount > 0 else {
@@ -216,11 +199,11 @@ class CachedFlushablePool {
         let interval = dispatchInterval + dispatchIntervalDelay
         
         // generate a new timer. needs to be performed on main runloop
-        flushTimer = Timer(timeInterval:interval, target:self, selector:#selector(flushTimerTick(_:)), userInfo:nil, repeats:false)
+        flushTimer = Timer(timeInterval: interval, target: self, selector: #selector(flushTimerTick(_:)), userInfo: nil, repeats: false)
         RunLoop.main.add(flushTimer!, forMode: RunLoopMode.commonModes)
     }
     
-    @objc fileprivate func flushTimerTick(_ timer:Timer?) {
+    @objc fileprivate func flushTimerTick(_ timer: Timer?) {
         // called from main runloop
         _poolQueue.async {
             self.flushTimer?.invalidate()

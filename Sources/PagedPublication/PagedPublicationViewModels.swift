@@ -9,40 +9,38 @@
 
 import UIKit
 
-
 /// This protocol defines all the properties needed to render the background of the publication.
 @objc (SGNPagedPublicationViewModelProtocol)
 public protocol PagedPublicationViewModelProtocol {
     
     /// The identifier of the publication
-    var publicationId:String { get }
+    var publicationId: String { get }
     
     /// The identifier of the provider of the publication
-    var ownerId:String { get }
+    var ownerId: String { get }
     
     /// the background brand color of the publication
-    var bgColor:UIColor { get }
+    var bgColor: UIColor { get }
     
     /// expected total number of pages. Should be ≤0 if unknown.
-    var pageCount:Int { get }
+    var pageCount: Int { get }
     
     /// width/height ratio of pages in this publication. Should be ≤0 if unknown.
-    var aspectRatio:CGFloat { get }
+    var aspectRatio: CGFloat { get }
     
 }
 
-
 /// A concrete instance of the PagedPublicationViewModel protocol
 @objc (SGNPagedPublicationViewModel)
-open class PagedPublicationViewModel : NSObject, PagedPublicationViewModelProtocol {
+open class PagedPublicationViewModel: NSObject, PagedPublicationViewModelProtocol {
     
-    public var publicationId:String
-    public var ownerId:String
-    public var bgColor:UIColor
-    public var pageCount:Int
-    public var aspectRatio:CGFloat = 0
+    public var publicationId: String
+    public var ownerId: String
+    public var bgColor: UIColor
+    public var pageCount: Int
+    public var aspectRatio: CGFloat = 0
     
-    public init(publicationId:String, ownerId:String, bgColor:UIColor, pageCount:Int, aspectRatio:CGFloat) {
+    public init(publicationId: String, ownerId: String, bgColor: UIColor, pageCount: Int, aspectRatio: CGFloat) {
         self.publicationId = publicationId
         self.ownerId = ownerId
         self.bgColor = bgColor
@@ -51,26 +49,23 @@ open class PagedPublicationViewModel : NSObject, PagedPublicationViewModelProtoc
     }
 }
 
-
-
-
 /// This protocol defines all the properties we need to show a hotspot
 @objc (SGNPagedPublicationHotspotViewModelProtocol)
-public protocol PagedPublicationHotspotViewModelProtocol : class {
+public protocol PagedPublicationHotspotViewModelProtocol: class {
     
     /// return CGRectNull if the hotspot isnt in that page
-    func getLocationForPageIndex(_ pageIndex:Int) -> CGRect
+    func getLocationForPageIndex(_ pageIndex: Int) -> CGRect
     
     func getPageIndexes() -> IndexSet
 }
 
 /// This concrete implementation of a hotspot contains no data, so is designed for subclassing.
 @objc(SGNPagedPublicationEmptyHotspotViewModel)
-open class PagedPublicationEmptyHotspotViewModel : NSObject, PagedPublicationHotspotViewModelProtocol {
+open class PagedPublicationEmptyHotspotViewModel: NSObject, PagedPublicationHotspotViewModelProtocol {
     
-    fileprivate var pageLocations:[Int:CGRect]
+    fileprivate var pageLocations: [Int: CGRect]
     
-    open func getLocationForPageIndex(_ pageIndex:Int) -> CGRect {
+    open func getLocationForPageIndex(_ pageIndex: Int) -> CGRect {
         return pageLocations[pageIndex] ?? CGRect.null
     }
     open func getPageIndexes() -> IndexSet {
@@ -81,34 +76,27 @@ open class PagedPublicationEmptyHotspotViewModel : NSObject, PagedPublicationHot
         return pageIndexes as IndexSet
     }
     
-    public init(pageLocations:[Int:CGRect]) {
+    public init(pageLocations: [Int: CGRect]) {
         self.pageLocations = pageLocations
     }
 }
 
-
-
-
-
-
 @objc (SGNPagedPublicationPageViewModelProtocol)
 public protocol PagedPublicationPageViewModelProtocol {
     
-    var pageIndex:Int { get }
+    var pageIndex: Int { get }
     
-    var pageTitle:String? { get }
+    var pageTitle: String? { get }
     
-    var aspectRatio:CGFloat { get }
+    var aspectRatio: CGFloat { get }
     
-    var viewImageURL:URL? { get }
+    var viewImageURL: URL? { get }
     
-    var zoomImageURL:URL? { get }
+    var zoomImageURL: URL? { get }
 }
 
-
-
 @objc (SGNPagedPublicationPageViewModel)
-open class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewModelProtocol {
+open class PagedPublicationPageViewModel: NSObject, PagedPublicationPageViewModelProtocol {
     
     public var pageIndex: Int
     
@@ -116,12 +104,11 @@ open class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewMod
     
     public var pageTitle: String?
     
-    public var viewImageURL:URL?
+    public var viewImageURL: URL?
     
-    public var zoomImageURL:URL?
+    public var zoomImageURL: URL?
     
-    
-    public init(pageIndex:Int, pageTitle:String?, aspectRatio:CGFloat = 0, viewImageURL:URL? = nil, zoomImageURL:URL? = nil) {
+    public init(pageIndex: Int, pageTitle: String?, aspectRatio: CGFloat = 0, viewImageURL: URL? = nil, zoomImageURL: URL? = nil) {
         self.pageIndex = pageIndex
         self.pageTitle = pageTitle
         self.aspectRatio = aspectRatio
@@ -129,4 +116,3 @@ open class PagedPublicationPageViewModel : NSObject, PagedPublicationPageViewMod
         self.zoomImageURL = zoomImageURL
     }
 }
-

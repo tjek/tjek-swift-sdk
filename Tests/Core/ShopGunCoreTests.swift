@@ -26,7 +26,7 @@ class ShopGunCoreTests: XCTestCase {
         
         ShopGunSDK.SDKConfig.appId = "fds"
 //        ShopGunCore.SDKConfig.clientId
-//        ShopGunCore.SDKConfig.sessionId        
+//        ShopGunCore.SDKConfig.sessionId
     }
     
 }

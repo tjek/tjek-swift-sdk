@@ -9,34 +9,28 @@
 
 import Foundation
 
-
 public typealias JSONEncodable = Any
-public typealias GraphDict = [String:JSONEncodable]
-
-
+public typealias GraphDict = [String: JSONEncodable]
 
 // MARK: Query
 // The body of an individual query. A request string & some variables.
 // Concrete structs should be made for each actual type, so that input variables can be statically-typed
 
 public protocol GraphQuery {
-    var requestString:String { get }
+    var requestString: String { get }
     
     /// the name of the operation in the requestString to be queried
-    var operationName:String { get }
+    var operationName: String { get }
     
-    var variables:GraphDict? { get }
+    var variables: GraphDict? { get }
 }
 
 extension GraphQuery {
-    var variables:GraphDict? { return nil }
+    var variables: GraphDict? { return nil }
 }
 
-
-
-
-public func loadQueryFile(name:String, bundle:Bundle = Bundle.main) -> String? {
-    guard let filePath = bundle.path(forResource:name, ofType:nil) else {
+public func loadQueryFile(name: String, bundle: Bundle = Bundle.main) -> String? {
+    guard let filePath = bundle.path(forResource: name, ofType: nil) else {
         return nil
     }
     

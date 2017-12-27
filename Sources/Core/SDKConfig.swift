@@ -11,7 +11,7 @@ import Foundation
 import UIKit
 
 @objc(SGNSDKConfig)
-public class SDKConfig : NSObject {
+public class SDKConfig: NSObject {
     
     override public class func initialize () {
         super.initialize()
@@ -20,11 +20,10 @@ public class SDKConfig : NSObject {
         _ = clientId
         _ = sessionId
     }
-
     
     // MARK: -
     /**
-     *  The `appId` is sent with all requests the SDK. 
+     *  The `appId` is sent with all requests the SDK.
      *  It lets ShopGun know who is making the requests.
      *  It will be read from the "APP_ID" key in 'ShopGunSDK-Info.plist', that you should include in your bundle.
      *
@@ -33,10 +32,10 @@ public class SDKConfig : NSObject {
      *
      *  Note, if SDKConfig.appId is used before it has been configured it will assert.
      */
-    public static var appId : String? {
+    public static var appId: String? {
         get {
             if _appId == nil {
-                _appId = Utils.fetchConfigValue(for:"APP_ID") as? String
+                _appId = Utils.fetchConfigValue(for: "APP_ID") as? String
             }
             
             assert(_appId != nil, "You must define a ShopGun `APP_ID` in your ShopGunSDK-Info.plist, or with `ShopGunSDK.SDKConfig.appId = ...`")
@@ -46,21 +45,16 @@ public class SDKConfig : NSObject {
             _appId = newValue
         }
     }
-    fileprivate static var _appId : String?
-    
-    
-    
-    
+    fileprivate static var _appId: String?
     
     // MARK: -
     
     /// ClientId will be generated on first use, and then saved to the keychain
-    public static var clientId : String {
+    public static var clientId: String {
         if _clientId == nil {
             if let cachedClientId = Utils.getKeychainString("ClientId") {
                 _clientId = cachedClientId
-            }
-            else {
+            } else {
                 _clientId = UUID().uuidString
                 
                 // fire event whenever clientId is created
@@ -79,25 +73,22 @@ public class SDKConfig : NSObject {
         _clientId = nil
     }
     
-    fileprivate static var _clientId : String?
-    
-    
-    
+    fileprivate static var _clientId: String?
     
     // MARK: -
     
     /// sessionId is a UUID that is reset every time the app becomes active.
-    public static var sessionId : String {
+    public static var sessionId: String {
         return _sessionHandler.sessionId
     }
     
-    fileprivate static let _sessionHandler:SessionLifecycleHandler = SessionLifecycleHandler()
+    fileprivate static let _sessionHandler: SessionLifecycleHandler = SessionLifecycleHandler()
     
     fileprivate class SessionLifecycleHandler {
         
         /// sessionId is lazily generated if nil
-        fileprivate var _sessionId:String?
-        var sessionId:String {
+        fileprivate var _sessionId: String?
+        var sessionId: String {
             if _sessionId == nil {
                 
                 _sessionId = UUID().uuidString
@@ -113,19 +104,18 @@ public class SDKConfig : NSObject {
             return _sessionId!
         }
         init() {
-            NotificationCenter.default.addObserver(self, selector:#selector(appDidBecomeActive(_:)), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
-            NotificationCenter.default.addObserver(self, selector:#selector(appDidEnterBackground(_:)), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive(_:)), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground(_:)), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
         }
         deinit {
             NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
             NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
         }
         
-        
-        fileprivate var isInBackground:Bool = false
+        fileprivate var isInBackground: Bool = false
         
         @objc
-        fileprivate func appDidBecomeActive(_ notification:Notification) {
+        fileprivate func appDidBecomeActive(_ notification: Notification) {
             if isInBackground {
                 // force a reset of the sessionId
                 _sessionId = nil
@@ -135,7 +125,7 @@ public class SDKConfig : NSObject {
                 
         }
         @objc
-        fileprivate func appDidEnterBackground(_ notification:Notification) {
+        fileprivate func appDidEnterBackground(_ notification: Notification) {
             isInBackground = true
         }
     }

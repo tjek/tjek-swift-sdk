@@ -10,16 +10,15 @@
 import Foundation
 
 /// An error that can be emitted by the graph
-public struct GraphError : Error {
-    public let message:String
-    public let path:[String]
+public struct GraphError: Error {
+    public let message: String
+    public let path: [String]
     
-    public init(message:String, path:[String]) {
+    public init(message: String, path: [String]) {
         self.message = message
         self.path = path
     }
 }
-
 
 /// Pretty-printing error descriptions
 extension GraphError: CustomStringConvertible {
@@ -33,21 +32,17 @@ extension GraphError: LocalizedError {
     }
 }
 
-
-
 /// JSON constructor for GraphError
 extension GraphError {
-    public init?(json:[String:Any]) {
+    public init?(json: [String: Any]) {
         
-        var message:String? = nil
+        var message: String? = nil
         
         if let messageStr = json["message"] as? String {
             message = messageStr
-        }
-        else if let reasonStr = json["reason"] as? String {
+        } else if let reasonStr = json["reason"] as? String {
             message = reasonStr
-        }
-        else if let reasonDict = json["reason"] as? [String:Any],
+        } else if let reasonDict = json["reason"] as? [String: Any],
             let reasonMessage = reasonDict["message"] as? String {
             
             message = reasonMessage

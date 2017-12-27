@@ -10,23 +10,23 @@
 import UIKit
 
 @objc(SGNPagedPublicationGraphLoader)
-public class PagedPublicationGraphLoader : NSObject, PagedPublicationLoaderProtocol {
+public class PagedPublicationGraphLoader: NSObject, PagedPublicationLoaderProtocol {
     
     public var publicationId: String
-    public var preloadedPublication:PagedPublicationViewModelProtocol?
-    public var sourceType:String { return "graph" }
+    public var preloadedPublication: PagedPublicationViewModelProtocol?
+    public var sourceType: String { return "graph" }
     
-    convenience init(publicationId:String) {
-        self.init(publicationId: publicationId, preloaded:nil)
+    convenience init(publicationId: String) {
+        self.init(publicationId: publicationId, preloaded: nil)
     }
-    convenience init(preloaded viewModel:PagedPublicationViewModelProtocol) {
-        self.init(publicationId: viewModel.publicationId, preloaded:viewModel)
+    convenience init(preloaded viewModel: PagedPublicationViewModelProtocol) {
+        self.init(publicationId: viewModel.publicationId, preloaded: viewModel)
     }
-    convenience init(publicationId:String, ownerId:String?, bgColor:UIColor?, pageCount:Int, aspectRatio:CGFloat) {
+    convenience init(publicationId: String, ownerId: String?, bgColor: UIColor?, pageCount: Int, aspectRatio: CGFloat) {
         let preloadedVM = PagedPublicationViewModel(publicationId: publicationId, ownerId: (ownerId ?? ""), bgColor: (bgColor ?? UIColor.white), pageCount: pageCount, aspectRatio: aspectRatio)
-        self.init(publicationId: publicationId, preloaded:preloadedVM)
+        self.init(publicationId: publicationId, preloaded: preloadedVM)
     }
-    init(publicationId:String, preloaded viewModel:PagedPublicationViewModelProtocol?) {
+    init(publicationId: String, preloaded viewModel: PagedPublicationViewModelProtocol?) {
         self.publicationId = publicationId
         self.preloadedPublication = viewModel
     }
@@ -35,16 +35,16 @@ public class PagedPublicationGraphLoader : NSObject, PagedPublicationLoaderProto
               pagesLoaded:@escaping PagedPublicationLoaderProtocol.PagesLoadedHandler,
               hotspotsLoaded:@escaping PagedPublicationLoaderProtocol.HotspotsLoadedHandler) {
         
-        //TODO: do graph fetching
+        // TODO: do graph fetching
     }
     
 }
 
-extension PagedPublicationView {    
-    public func reload(fromGraph publicationId:String, jumpTo pageIndex:Int = 0) {
+extension PagedPublicationView {
+    public func reload(fromGraph publicationId: String, jumpTo pageIndex: Int = 0) {
         
-        let loader = PagedPublicationGraphLoader(publicationId:publicationId)
+        let loader = PagedPublicationGraphLoader(publicationId: publicationId)
         
-        reload(with:loader, jumpTo:pageIndex)
+        reload(with: loader, jumpTo: pageIndex)
     }
 }

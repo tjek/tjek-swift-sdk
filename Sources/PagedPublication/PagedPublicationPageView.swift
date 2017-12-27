@@ -12,25 +12,23 @@ import UIKit
 import Verso
 import Kingfisher
 
-
-public protocol PagedPublicationPageViewDelegate : class {
+public protocol PagedPublicationPageViewDelegate: class {
     
-    func didConfigure(pageView:PagedPublicationPageView, with viewModel:PagedPublicationPageViewModelProtocol)
+    func didConfigure(pageView: PagedPublicationPageView, with viewModel: PagedPublicationPageViewModelProtocol)
     
-    func didFinishLoading(viewImage imageURL:URL, fromCache:Bool, in pageView:PagedPublicationPageView)
-    func didFinishLoading(zoomImage imageURL:URL, fromCache:Bool, in pageView:PagedPublicationPageView)
+    func didFinishLoading(viewImage imageURL: URL, fromCache: Bool, in pageView: PagedPublicationPageView)
+    func didFinishLoading(zoomImage imageURL: URL, fromCache: Bool, in pageView: PagedPublicationPageView)
     
 }
 
 /// Make delegate methods optional
 extension PagedPublicationPageViewDelegate {
-    public func didConfigure(pageView:PagedPublicationPageView, with viewModel:PagedPublicationPageViewModelProtocol) {}
-    public func didFinishLoading(viewImage imageURL:URL, fromCache:Bool, in pageView:PagedPublicationPageView) {}
-    public func didFinishLoading(zoomImage imageURL:URL, fromCache:Bool, in pageView:PagedPublicationPageView) {}
+    public func didConfigure(pageView: PagedPublicationPageView, with viewModel: PagedPublicationPageViewModelProtocol) {}
+    public func didFinishLoading(viewImage imageURL: URL, fromCache: Bool, in pageView: PagedPublicationPageView) {}
+    public func didFinishLoading(zoomImage imageURL: URL, fromCache: Bool, in pageView: PagedPublicationPageView) {}
 }
 
-
-open class LabelledVersoPageView : VersoPageView {
+open class LabelledVersoPageView: VersoPageView {
     
     public required init(frame: CGRect) {
         super.init(frame: frame)
@@ -43,7 +41,7 @@ open class LabelledVersoPageView : VersoPageView {
         backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1.0)
         
         // must be started on non-main run loop to avoid interfering with scrolling
-        self.perform(#selector(startPulsingNumberAnimation), with: nil, afterDelay:0, inModes: [RunLoopMode.commonModes])
+        self.perform(#selector(startPulsingNumberAnimation), with: nil, afterDelay: 0, inModes: [RunLoopMode.commonModes])
     }
     
     public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
@@ -55,7 +53,7 @@ open class LabelledVersoPageView : VersoPageView {
             }, completion: nil)
     }
     
-    open var pageLabel:UILabel = {
+    open var pageLabel: UILabel = {
         
         let view = UILabel(frame: CGRect.zero)
         view.textColor = UIColor(white: 0, alpha: 0.8)
@@ -63,7 +61,6 @@ open class LabelledVersoPageView : VersoPageView {
         view.baselineAdjustment = .alignCenters
         return view
     }()
-    
     
     override open func layoutSubviews() {
         
@@ -79,8 +76,7 @@ open class LabelledVersoPageView : VersoPageView {
     
 }
 
-
-open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizerDelegate {
+open class PagedPublicationPageView: LabelledVersoPageView, UIGestureRecognizerDelegate {
 
     public enum ImageLoadState {
         case notLoaded
@@ -95,7 +91,6 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         // listen for memory warnings and clear the zoomimage
         NotificationCenter.default.addObserver(self, selector: #selector(PagedPublicationPageView.memoryWarningNotification(_:)), name: NSNotification.Name.UIApplicationDidReceiveMemoryWarning, object: nil)
         
-        
         // add subviews
         addSubview(imageView)
         addSubview(zoomImageView)
@@ -109,19 +104,14 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidReceiveMemoryWarning, object: nil)
     }
     
-    
-    
-    
-    
     // MARK: - Public
     
-    weak open var delegate:PagedPublicationPageViewDelegate?
+    weak open var delegate: PagedPublicationPageViewDelegate?
     
-    open fileprivate(set) var imageLoadState:ImageLoadState = .notLoaded
-    open fileprivate(set) var zoomImageLoadState:ImageLoadState = .notLoaded
+    open fileprivate(set) var imageLoadState: ImageLoadState = .notLoaded
+    open fileprivate(set) var zoomImageLoadState: ImageLoadState = .notLoaded
     
-    
-    open func startLoadingZoomImageFromURL(_ zoomImageURL:URL) {
+    open func startLoadingZoomImageFromURL(_ zoomImageURL: URL) {
         
         zoomImageLoadState = .loading
         zoomImageView.image = nil
@@ -135,9 +125,8 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
                 
                 self!.zoomImageLoadState = .loaded
                 
-                self!.delegate?.didFinishLoading(zoomImage:zoomImageURL, fromCache:cacheType != .none, in:self!)
-            }
-            else {
+                self!.delegate?.didFinishLoading(zoomImage: zoomImageURL, fromCache: cacheType != .none, in: self!)
+            } else {
                 self!.zoomImageView.isHidden = true
                 
                 if let errorCode = error?.code, errorCode == NSURLErrorCancelled {
@@ -153,7 +142,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         }
     }
     
-    open func startLoadingImageFromURL(_ imageURL:URL) {
+    open func startLoadingImageFromURL(_ imageURL: URL) {
         
         imageLoadState = .loading
         
@@ -179,9 +168,8 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
                 
                 self!.imageLoadState = .loaded
                 
-                self!.delegate?.didFinishLoading(viewImage:imageURL, fromCache:cacheType != .none, in:self!)
-            }
-            else {
+                self!.delegate?.didFinishLoading(viewImage: imageURL, fromCache: cacheType != .none, in: self!)
+            } else {
                 
                 if let errorCode = error?.code, errorCode == NSURLErrorCancelled {
                     self!.imageLoadState = .notLoaded
@@ -198,7 +186,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         }
     }
     
-    open func clearZoomImage(animated:Bool) {
+    open func clearZoomImage(animated: Bool) {
         
         zoomImageView.kf.cancelDownloadTask()
         zoomImageLoadState = .notLoaded
@@ -208,19 +196,17 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
                 self?.zoomImageView.image = nil
                 self?.zoomImageView.isHidden = true
                 }, completion: nil)
-        }
-        else {
+        } else {
             zoomImageView.image = nil
             zoomImageView.isHidden = true
         }
     }
     
-    open func configure(_ viewModel: PagedPublicationPageViewModelProtocol, publicationAspectRatio:CGFloat, darkBG:Bool) {
+    open func configure(_ viewModel: PagedPublicationPageViewModelProtocol, publicationAspectRatio: CGFloat, darkBG: Bool) {
         
         reset()
         
         aspectRatio = viewModel.aspectRatio > 0 ? viewModel.aspectRatio : (publicationAspectRatio > 0 ? publicationAspectRatio : 1)
-        
         
         pageLabel.text = viewModel.pageTitle
         pageLabel.textColor = darkBG ? UIColor.white : UIColor(white: 0, alpha: 0.7)
@@ -233,12 +219,10 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         
         delegate?.didConfigure(pageView: self, with: viewModel)
     }
-
-    
     
     // MARK: - Private
     
-    fileprivate var aspectRatio:CGFloat = 0
+    fileprivate var aspectRatio: CGFloat = 0
 
     fileprivate func reset() {
         
@@ -255,12 +239,9 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         aspectRatio = 0
     }
     
-    
-    
-    
     // MARK: - Subviews
     
-    fileprivate var imageView:UIImageView = {
+    fileprivate var imageView: UIImageView = {
         let view = UIImageView(frame: CGRect.zero)
         
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -269,7 +250,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         return view
     }()
     
-    fileprivate var zoomImageView:UIImageView = {
+    fileprivate var zoomImageView: UIImageView = {
         let view = UIImageView(frame: CGRect.zero)
         
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -277,9 +258,6 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         
         return view
     }()
-    
-    
-    
     
     // MARK: - UIView subclass
     
@@ -295,8 +273,7 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         
         if aspectRatio < containerAspectRatio {
             newSize.width = newSize.height * aspectRatio
-        }
-        else if aspectRatio > containerAspectRatio {
+        } else if aspectRatio > containerAspectRatio {
             newSize.height = newSize.width / aspectRatio
         }
         
@@ -310,11 +287,9 @@ open class PagedPublicationPageView : LabelledVersoPageView, UIGestureRecognizer
         zoomImageView.frame = bounds
     }
     
-    
-    
     // MARK: - Notifications
     
-    func memoryWarningNotification(_ notification:Notification) {
-        clearZoomImage(animated:true)
+    func memoryWarningNotification(_ notification: Notification) {
+        clearZoomImage(animated: true)
     }
 }

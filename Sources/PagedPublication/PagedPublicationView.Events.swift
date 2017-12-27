@@ -13,10 +13,10 @@ import UIKit
 
 class PagedPublicationLifecycleEventHandler {
     
-    let publicationId:IdField
-    let ownerId:IdField
+    let publicationId: IdField
+    let ownerId: IdField
     
-    init(publicationId:IdField, ownerId:IdField) {
+    init(publicationId: IdField, ownerId: IdField) {
         self.publicationId = publicationId
         self.ownerId = ownerId
     }
@@ -27,12 +27,10 @@ class PagedPublicationLifecycleEventHandler {
     
     // trigger an opened event
     func opened() {
-        Event.publicationOpened(publicationId:publicationId, ownedById: ownerId).track()
+        Event.publicationOpened(publicationId: publicationId, ownedById: ownerId).track()
     }
     
-    
-    
-    fileprivate var hasAppeared:Bool = false
+    fileprivate var hasAppeared: Bool = false
     
     func didAppear() {
         guard hasAppeared == false else { return }
@@ -50,19 +48,16 @@ class PagedPublicationLifecycleEventHandler {
         hasAppeared = false
     }
     
-    
-    
     // MARK: Child event handlers
     
-    func newSpreadEventHandler(for pageIndexes:IndexSet) {
-        spreadEventHandler = SpreadLifecycleEventHandler(pageIndexes:pageIndexes, publicationId:self.publicationId, ownerId:self.ownerId)
+    func newSpreadEventHandler(for pageIndexes: IndexSet) {
+        spreadEventHandler = SpreadLifecycleEventHandler(pageIndexes: pageIndexes, publicationId: self.publicationId, ownerId: self.ownerId)
     }
     func clearSpreadEventHandler() {
         spreadEventHandler = nil
     }
     
-    
-    private(set) var spreadEventHandler:SpreadLifecycleEventHandler? {
+    private(set) var spreadEventHandler: SpreadLifecycleEventHandler? {
         didSet {
             if self.hasAppeared {
                 spreadEventHandler?.didAppear()
@@ -73,11 +68,11 @@ class PagedPublicationLifecycleEventHandler {
 
 class SpreadLifecycleEventHandler {
     
-    let publicationId:IdField
-    let ownerId:IdField
-    let pageIndexes:IndexSet
+    let publicationId: IdField
+    let ownerId: IdField
+    let pageIndexes: IndexSet
     
-    init(pageIndexes:IndexSet, publicationId:IdField, ownerId:IdField) {
+    init(pageIndexes: IndexSet, publicationId: IdField, ownerId: IdField) {
         self.publicationId = publicationId
         self.ownerId = ownerId
         
@@ -88,11 +83,10 @@ class SpreadLifecycleEventHandler {
         didDisappear()
     }
     
-    fileprivate(set) var loadedPageIndexes:IndexSet = IndexSet()
-    fileprivate(set) var isZoomedIn:Bool = false
+    fileprivate(set) var loadedPageIndexes: IndexSet = IndexSet()
+    fileprivate(set) var isZoomedIn: Bool = false
     
-    fileprivate var hasAppeared:Bool = false
-    
+    fileprivate var hasAppeared: Bool = false
     
     // only parent can call these methods - everyone else can just set this class on the parent lifecycle
     fileprivate func didAppear() {
@@ -119,7 +113,6 @@ class SpreadLifecycleEventHandler {
     fileprivate func didDisappear() {
         guard hasAppeared == true else { return }
         
-        
         // first zoom out (if zoomed in)
         if isZoomedIn {
             Event.publicationSpreadZoomedOut(pageIndexes: pageIndexes, publicationId: publicationId, ownedById: ownerId).track()
@@ -131,10 +124,8 @@ class SpreadLifecycleEventHandler {
         hasAppeared = false
     }
     
-    
-    
     /// Mark the page index as loaded, and trigger a didLoad event if the page has appeared
-    public func pageLoaded(pageIndex:Int) {
+    public func pageLoaded(pageIndex: Int) {
         guard pageIndexes.contains(pageIndex) else {
             return
         }
@@ -148,8 +139,7 @@ class SpreadLifecycleEventHandler {
         Event.publicationPageLoaded(pageIndex: pageIndex, publicationId: publicationId, ownedById: ownerId).track()
     }
     
-    
-    public func pageTapped(pageIndex:Int, location:CGPoint, hittingHotspots:Bool) {
+    public func pageTapped(pageIndex: Int, location: CGPoint, hittingHotspots: Bool) {
         guard pageIndexes.contains(pageIndex) else {
             return
         }
@@ -158,14 +148,14 @@ class SpreadLifecycleEventHandler {
             return
         }
         
-        Event.publicationPageClicked(location:location, pageIndex: pageIndex, publicationId: publicationId, ownedById: ownerId).track()
+        Event.publicationPageClicked(location: location, pageIndex: pageIndex, publicationId: publicationId, ownedById: ownerId).track()
         
         if hittingHotspots {
-            Event.publicationPageHotspotsClicked(location:location, pageIndex: pageIndex, publicationId: publicationId, ownedById: ownerId).track()
+            Event.publicationPageHotspotsClicked(location: location, pageIndex: pageIndex, publicationId: publicationId, ownedById: ownerId).track()
         }
     }
     
-    public func pageDoubleTapped(pageIndex:Int, location:CGPoint) {
+    public func pageDoubleTapped(pageIndex: Int, location: CGPoint) {
         guard pageIndexes.contains(pageIndex) else {
             return
         }
@@ -174,10 +164,10 @@ class SpreadLifecycleEventHandler {
             return
         }
         
-        Event.publicationPageDoubleClicked(location:location, pageIndex: pageIndex, publicationId: publicationId, ownedById: ownerId).track()
+        Event.publicationPageDoubleClicked(location: location, pageIndex: pageIndex, publicationId: publicationId, ownedById: ownerId).track()
     }
     
-    public func pageLongPressed(pageIndex:Int, location:CGPoint) {
+    public func pageLongPressed(pageIndex: Int, location: CGPoint) {
         guard pageIndexes.contains(pageIndex) else {
             return
         }
@@ -186,11 +176,8 @@ class SpreadLifecycleEventHandler {
             return
         }
         
-        Event.publicationPageLongPressed(location:location, pageIndex: pageIndex, publicationId: publicationId, ownedById: ownerId).track()
+        Event.publicationPageLongPressed(location: location, pageIndex: pageIndex, publicationId: publicationId, ownedById: ownerId).track()
     }
-    
-    
-    
     
     public func didZoomIn() {
         // check we are not already zoomed in - othewise noop
@@ -225,36 +212,29 @@ class SpreadLifecycleEventHandler {
     }
 }
 
-
-
-
-
-
 extension Event {
     
     // MARK: Publication Events
 
-    private static func _publicationEvent(type:String, publicationId:IdField, ownedById:IdField) -> Event {
+    private static func _publicationEvent(type: String, publicationId: IdField, ownedById: IdField) -> Event {
         
         let pubProperties = ["id": publicationId.jsonArray(),
                              "ownedBy": ownedById.jsonArray()]
         
-        return Event(type:type,
+        return Event(type: type,
                      properties: ["pagedPublication": pubProperties as AnyObject])
 
     }
     
-    static func publicationOpened(publicationId:IdField, ownedById:IdField) -> Event {
+    static func publicationOpened(publicationId: IdField, ownedById: IdField) -> Event {
         return _publicationEvent(type: "paged-publication-opened",
                                  publicationId: publicationId,
                                  ownedById: ownedById)
     }
     
-    
-    
     // MARK: Page Events
     
-    private static func _publicationPageEvent(type:String, location:CGPoint?, pageIndex:Int, publicationId:IdField, ownedById:IdField) -> Event {
+    private static func _publicationPageEvent(type: String, location: CGPoint?, pageIndex: Int, publicationId: IdField, ownedById: IdField) -> Event {
         // TODO: fail if pageIndex is < 0
         // TODO: fail if location.x/y are not within 0-1 range
         
@@ -267,62 +247,56 @@ extension Event {
             pageProperties["y"] = loc.y as AnyObject
         }
         
-        return Event(type:type,
+        return Event(type: type,
                      properties: ["pagedPublication": pubProperties as AnyObject,
                                   "pagedPublicationPage": pageProperties as AnyObject])
     }
-
     
-    static func publicationPageLoaded(pageIndex:Int, publicationId:IdField, ownedById:IdField) -> Event {
+    static func publicationPageLoaded(pageIndex: Int, publicationId: IdField, ownedById: IdField) -> Event {
         return _publicationPageEvent(type: "paged-publication-page-loaded",
                                      location: nil,
-                                     pageIndex:pageIndex,
+                                     pageIndex: pageIndex,
                                      publicationId: publicationId,
                                      ownedById: ownedById)
     }
-    
-    
     
     // MARK: Page Interaction Events
     
-    
-    static func publicationPageClicked(location:CGPoint, pageIndex:Int, publicationId:IdField, ownedById:IdField) -> Event {
+    static func publicationPageClicked(location: CGPoint, pageIndex: Int, publicationId: IdField, ownedById: IdField) -> Event {
         return _publicationPageEvent(type: "paged-publication-page-clicked",
                                      location: location,
-                                     pageIndex:pageIndex,
+                                     pageIndex: pageIndex,
                                      publicationId: publicationId,
                                      ownedById: ownedById)
     }
     
-    static func publicationPageHotspotsClicked(location:CGPoint, pageIndex:Int, publicationId:IdField, ownedById:IdField) -> Event {
+    static func publicationPageHotspotsClicked(location: CGPoint, pageIndex: Int, publicationId: IdField, ownedById: IdField) -> Event {
         return _publicationPageEvent(type: "paged-publication-page-hotspots-clicked",
                                      location: location,
-                                     pageIndex:pageIndex,
+                                     pageIndex: pageIndex,
                                      publicationId: publicationId,
                                      ownedById: ownedById)
     }
     
-    static func publicationPageDoubleClicked(location:CGPoint, pageIndex:Int, publicationId:IdField, ownedById:IdField) -> Event {
+    static func publicationPageDoubleClicked(location: CGPoint, pageIndex: Int, publicationId: IdField, ownedById: IdField) -> Event {
         return _publicationPageEvent(type: "paged-publication-page-double-clicked",
                                      location: location,
-                                     pageIndex:pageIndex,
+                                     pageIndex: pageIndex,
                                      publicationId: publicationId,
                                      ownedById: ownedById)
     }
     
-    static func publicationPageLongPressed(location:CGPoint, pageIndex:Int, publicationId:IdField, ownedById:IdField) -> Event {
+    static func publicationPageLongPressed(location: CGPoint, pageIndex: Int, publicationId: IdField, ownedById: IdField) -> Event {
         return _publicationPageEvent(type: "paged-publication-page-long-pressed",
                                      location: location,
-                                     pageIndex:pageIndex,
+                                     pageIndex: pageIndex,
                                      publicationId: publicationId,
                                      ownedById: ownedById)
     }
-    
-    
     
     // MARK: Spread Events
     
-    private static func _publicationSpreadEvent(type:String, pageIndexes:IndexSet, publicationId:IdField, ownedById:IdField) -> Event {
+    private static func _publicationSpreadEvent(type: String, pageIndexes: IndexSet, publicationId: IdField, ownedById: IdField) -> Event {
         
         // TODO: fail if pageIndexes.count < 1 or any pageIndex is < 0
 
@@ -331,37 +305,36 @@ extension Event {
         
         let spreadProperties = ["pageNumbers": pageIndexes.map { $0 + 1 }]
         
-        
-        return Event(type:type,
+        return Event(type: type,
                      properties: ["pagedPublication": pubProperties as AnyObject,
-                                  "pagedPublicationPageSpread":spreadProperties as AnyObject])
+                                  "pagedPublicationPageSpread": spreadProperties as AnyObject])
         
     }
     
-    static func publicationSpreadAppeared(pageIndexes:IndexSet, publicationId:IdField, ownedById:IdField) -> Event {
+    static func publicationSpreadAppeared(pageIndexes: IndexSet, publicationId: IdField, ownedById: IdField) -> Event {
         return _publicationSpreadEvent(type: "paged-publication-page-spread-appeared",
-                                       pageIndexes:pageIndexes,
+                                       pageIndexes: pageIndexes,
                                        publicationId: publicationId,
                                        ownedById: ownedById)
     }
     
-    static func publicationSpreadDisappeared(pageIndexes:IndexSet, publicationId:IdField, ownedById:IdField) -> Event {
+    static func publicationSpreadDisappeared(pageIndexes: IndexSet, publicationId: IdField, ownedById: IdField) -> Event {
         return _publicationSpreadEvent(type: "paged-publication-page-spread-disappeared",
-                                       pageIndexes:pageIndexes,
+                                       pageIndexes: pageIndexes,
                                        publicationId: publicationId,
                                        ownedById: ownedById)
     }
     
-    static func publicationSpreadZoomedIn(pageIndexes:IndexSet, publicationId:IdField, ownedById:IdField) -> Event {
+    static func publicationSpreadZoomedIn(pageIndexes: IndexSet, publicationId: IdField, ownedById: IdField) -> Event {
         return _publicationSpreadEvent(type: "paged-publication-page-spread-zoomed-in",
-                                       pageIndexes:pageIndexes,
+                                       pageIndexes: pageIndexes,
                                        publicationId: publicationId,
                                        ownedById: ownedById)
     }
     
-    static func publicationSpreadZoomedOut(pageIndexes:IndexSet, publicationId:IdField, ownedById:IdField) -> Event {
+    static func publicationSpreadZoomedOut(pageIndexes: IndexSet, publicationId: IdField, ownedById: IdField) -> Event {
         return _publicationSpreadEvent(type: "paged-publication-page-spread-zoomed-out",
-                                       pageIndexes:pageIndexes,
+                                       pageIndexes: pageIndexes,
                                        publicationId: publicationId,
                                        ownedById: ownedById)
     }

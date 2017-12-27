@@ -15,27 +15,24 @@ public protocol GraphNetworkTransport {
     func send(request: GraphRequestProtocol, completion: @escaping (Result<GraphResponse>) -> Void) -> Cancellable
 }
 
-
-
-
 // MARK: - HTTP Network communication
 
 extension URLSessionTask: Cancellable {}
 
-public class HTTPGraphNetworkTransport : GraphNetworkTransport {
+public class HTTPGraphNetworkTransport: GraphNetworkTransport {
     
-    let url:URL
-    let session:URLSession
-    let additionalHeaders:[String:String]?
+    let url: URL
+    let session: URLSession
+    let additionalHeaders: [String: String]?
     
-    public init(url: URL, additionalHeaders:[String:String]? = nil, configuration: URLSessionConfiguration = URLSessionConfiguration.default) {
+    public init(url: URL, additionalHeaders: [String: String]? = nil, configuration: URLSessionConfiguration = URLSessionConfiguration.default) {
         self.url = url
         self.additionalHeaders = additionalHeaders
         self.session = URLSession(configuration: configuration)
     }
     
     @discardableResult
-    public func send(request:GraphRequestProtocol, completion: @escaping (Result<GraphResponse>) -> Void) -> Cancellable {
+    public func send(request: GraphRequestProtocol, completion: @escaping (Result<GraphResponse>) -> Void) -> Cancellable {
         
         let urlReq = self.buildURLRequest(for: request, additionalHeaders: additionalHeaders)
         
@@ -47,7 +44,7 @@ public class HTTPGraphNetworkTransport : GraphNetworkTransport {
             }
             
             // try to get dictionary from the response.
-            guard let jsonData = responseData, let jsonDict = try? JSONSerialization.jsonObject(with: jsonData) as? [String:Any] else {
+            guard let jsonData = responseData, let jsonDict = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
                 
                 // TODO: Real 'empty/unparseable data' error
                 completion(.failure(GraphError(message: "Invalid JSON", path: [])))
@@ -55,17 +52,17 @@ public class HTTPGraphNetworkTransport : GraphNetworkTransport {
                 return
             }
             
-            var data:[String:Any]?
-            var errors:[GraphError]?
+            var data: [String: Any]?
+            var errors: [GraphError]?
             
-            if let jsonErrors = jsonDict?["errors"] as? [[String:Any]] {
-                let possibleErrors = jsonErrors.flatMap { GraphError(json:$0) }
+            if let jsonErrors = jsonDict?["errors"] as? [[String: Any]] {
+                let possibleErrors = jsonErrors.flatMap { GraphError(json: $0) }
                 if possibleErrors.count > 0 {
                     errors = possibleErrors
                 }
             }
             
-            if let jsonData = jsonDict?["data"] as? [String:Any] {
+            if let jsonData = jsonDict?["data"] as? [String: Any] {
                 data = jsonData
             }
             
@@ -78,15 +75,14 @@ public class HTTPGraphNetworkTransport : GraphNetworkTransport {
         return task
     }
     
-    
     /// Build a URLRequest based on a GraphRequest
     /// First uses `addValue` to set "Content-Type" & "Accept" headers to the URLRequest,
     /// then adds `graphRequest`'s additionalHeaders
     /// then finally adds the passed-in additionalHeaders parameter
-    public func buildURLRequest(for graphRequest:GraphRequestProtocol, additionalHeaders:[String:String]?) -> URLRequest {
+    public func buildURLRequest(for graphRequest: GraphRequestProtocol, additionalHeaders: [String: String]?) -> URLRequest {
         var urlReq = URLRequest(url: self.url)
         
-        var jsonDict:[String:Any] = ["query": graphRequest.query.requestString]
+        var jsonDict: [String: Any] = ["query": graphRequest.query.requestString]
         jsonDict["operationName"] = graphRequest.query.operationName
         
         if let vars = graphRequest.query.variables, vars.count > 0 {
@@ -96,9 +92,8 @@ public class HTTPGraphNetworkTransport : GraphNetworkTransport {
         urlReq.httpMethod = "POST"
         urlReq.timeoutInterval = graphRequest.timeoutInterval
         
-        
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonDict),
-            let jsonStr = String(data:jsonData, encoding:String.Encoding.utf8) {
+            let jsonStr = String(data: jsonData, encoding: String.Encoding.utf8) {
             urlReq.httpBody = jsonStr.data(using: String.Encoding.utf8)
         }
         

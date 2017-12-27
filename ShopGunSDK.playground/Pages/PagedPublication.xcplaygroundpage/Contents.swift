@@ -4,10 +4,9 @@ import ShopGunSDK
 
 import Kingfisher
 
-
-class ExampleViewController : UIViewController {
+class ExampleViewController: UIViewController {
     
-    lazy var publicationView:PagedPublicationView = {
+    lazy var publicationView: PagedPublicationView = {
         let view = PagedPublicationView()
         view.dataSource = self
         view.delegate = self
@@ -21,10 +20,9 @@ class ExampleViewController : UIViewController {
         KingfisherManager.shared.cache.clearDiskCache()
         KingfisherManager.shared.cache.clearMemoryCache()
         
-        EventsTracker.baseURL = URL(string:"https://events-staging.shopgun.com")!
+        EventsTracker.baseURL = URL(string: "https://events-staging.shopgun.com")!
         EventsTracker.dispatchInterval  =   10 // secs
         EventsTracker.dispatchLimit    =  100// events
-        
         
         publicationView.frame = view.frame
         publicationView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -37,44 +35,44 @@ class ExampleViewController : UIViewController {
         get {
             let bgColor = publicationView.backgroundColor ?? UIColor.white
             
-            var white:CGFloat = 1
+            var white: CGFloat = 1
             bgColor.getWhite(&white, alpha: nil)
             return white > 0.6 ? .default : .lightContent
         }
     }
     
-    func reloadPublication(failPubRequest:Bool = false, failPageRequest:Bool = false) {
+    func reloadPublication(failPubRequest: Bool = false, failPageRequest: Bool = false) {
         let publicationId = "efbbJc3"
-        let bgColor:UIColor? = UIColor(red:0.01, green:0.18, blue:0.36, alpha:1.00)
-        let pageCount:Int = 0
-        let aspectRatio:CGFloat = 0
-        let targetPageIndex:Int = 42
+        let bgColor: UIColor? = UIColor(red: 0.01, green: 0.18, blue: 0.36, alpha: 1.00)
+        let pageCount: Int = 0
+        let aspectRatio: CGFloat = 0
+        let targetPageIndex: Int = 42
         
-        let loader = LocalPublicationLoader(publicationId:publicationId,
-                                            ownerId:nil,
-                                            bgColor:bgColor,
-                                            pageCount:pageCount,
-                                            aspectRatio:aspectRatio)
+        let loader = LocalPublicationLoader(publicationId: publicationId,
+                                            ownerId: nil,
+                                            bgColor: bgColor,
+                                            pageCount: pageCount,
+                                            aspectRatio: aspectRatio)
         
         loader.failPublicationRequest = failPubRequest
         loader.failPageRequest = failPageRequest
         
         //        publicationView.reload(fromGraph:publicationId)
-        publicationView.reload(with:loader, jumpTo:targetPageIndex)
+        publicationView.reload(with: loader, jumpTo: targetPageIndex)
     }
     
 }
 
-extension ExampleViewController : PagedPublicationViewDataSource {
+extension ExampleViewController: PagedPublicationViewDataSource {
     
-    func outroViewClass(for pagedPublicationView:PagedPublicationView) -> (OutroView.Type)? {
+    func outroViewClass(for pagedPublicationView: PagedPublicationView) -> (OutroView.Type)? {
         return ExampleOutroView.self
     }
     //    func outroViewWidth(for pagedPublicationView: PagedPublicationView) -> CGFloat {
     //        let size = pagedPublicationView.bounds.size
     //        return size.width > size.height ? 0.7 : 0.8
     //    }
-    func configure(outroView:OutroView, for pagedPublicationView:PagedPublicationView) {
+    func configure(outroView: OutroView, for pagedPublicationView: PagedPublicationView) {
         guard let outro = outroView as? ExampleOutroView else {
             return
         }
@@ -87,7 +85,7 @@ extension ExampleViewController : PagedPublicationViewDataSource {
     //        return nil
     //    }
     
-    func errorView(with error:Error?, for pagedPublicationView:PagedPublicationView) -> UIView? {
+    func errorView(with error: Error?, for pagedPublicationView: PagedPublicationView) -> UIView? {
         let errorView = ExampleErrorView()
         
         errorView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapErrorView(tap:))))
@@ -97,26 +95,26 @@ extension ExampleViewController : PagedPublicationViewDataSource {
         return errorView
     }
     
-    public func didTapErrorView(tap:UITapGestureRecognizer) {
+    public func didTapErrorView(tap: UITapGestureRecognizer) {
         reloadPublication()
         //        reloadPublication(failPubRequest: true, failPageRequest: false)
         //        reloadPublication(failPubRequest: false, failPageRequest: true)
     }
 }
 
-extension ExampleViewController : PagedPublicationViewDelegate {
+extension ExampleViewController: PagedPublicationViewDelegate {
     
     func didLongPress(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationHotspotViewModelProtocol], in pagedPublicationView: PagedPublicationView) {
         
         // debug page-jump when long-pressing
         var target = pageIndex + 10
         if target > pagedPublicationView.pageCount {
-            target = target - pagedPublicationView.pageCount
+            target -= pagedPublicationView.pageCount
         }
         pagedPublicationView.jump(toPageIndex: target, animated: true)
     }
     
-    func didStartReloading(in pagedPublicationView:PagedPublicationView) {
+    func didStartReloading(in pagedPublicationView: PagedPublicationView) {
         self.setNeedsStatusBarAppearanceUpdate()
     }
     
@@ -126,8 +124,7 @@ extension ExampleViewController : PagedPublicationViewDelegate {
     
 }
 
-
-class ExampleOutroView : OutroView {
+class ExampleOutroView: OutroView {
     required init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -138,19 +135,15 @@ class ExampleOutroView : OutroView {
     }
 }
 
-class ExampleErrorView : UIView {
+class ExampleErrorView: UIView {
     
     override open var intrinsicContentSize: CGSize {
-        return CGSize(width:200, height:200)
+        return CGSize(width: 200, height: 200)
     }
 }
 
-
-
-
 let vc = ExampleViewController()
 vc.view.frame = CGRect(x: 0, y: 0, width: 320, height: 640)
-
 
 import PlaygroundSupport
 
