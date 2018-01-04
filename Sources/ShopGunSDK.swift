@@ -87,8 +87,10 @@ public struct ShopGunSDK {
     // MARK: - Logging
     
     public enum LogLevel {
+        case error
         case important
         case verbose
+        case debug
     }
     
     public enum LogSource {
@@ -99,7 +101,7 @@ public struct ShopGunSDK {
         case other(name: String)
     }
 
-    internal static func log(_ message: String, level: LogLevel, source: LogSource, file: String = #file, function: String = #function, line: Int = #line) {
+    public static func log(_ message: String, level: LogLevel, source: LogSource, file: String = #file, function: String = #function, line: Int = #line) {
         
         guard let handler = _shared?.logHandler else { return }
         

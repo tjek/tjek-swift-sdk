@@ -80,22 +80,22 @@ extension CoreAPI {
     // MARK: -
     
     public struct Dealer: Decodable {
-        typealias Identifier = GenericIdentifier<Dealer>
+        public typealias Identifier = GenericIdentifier<Dealer>
         
-        var uuid: Identifier
-        var name: String
-        var website: URL?
-        var description: String?
-        var descriptionMarkdown: String?
-        var logo: URL
-        var color: String
+        public var uuid: Identifier
+        public var name: String
+        public var website: URL?
+        public var description: String?
+        public var descriptionMarkdown: String?
+        public var logo: URL
+        public var color: String
         // TODO: PageFlip color/logo
-        var country: Country
-        var favoriteCount: Int
+        public var country: Country
+        public var favoriteCount: Int
         
-        var facebookPageId: String?
-        var youtubeUserId: String?
-        var twitterHandle: String?
+        public var facebookPageId: String?
+        public var youtubeUserId: String?
+        public var twitterHandle: String?
         
         enum CodingKeys: String, CodingKey {
             case uuid   = "id"

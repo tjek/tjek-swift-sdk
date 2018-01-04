@@ -9,8 +9,6 @@
 
 import Foundation
 
-// MARK: -
-
 public enum HTTPRequestMethod: String {
     case GET
     case POST
@@ -18,9 +16,7 @@ public enum HTTPRequestMethod: String {
     case DELETE
 }
 
-public protocol CoreAPIRequestable {
-    associatedtype ResponseType: Decodable
-    
+public protocol CoreAPIRequest {
     var path: String { get }
     var method: HTTPRequestMethod { get }
     var parameters: [String: String]? { get }
@@ -28,10 +24,16 @@ public protocol CoreAPIRequestable {
     
     var requiresAuth: Bool { get }
     var maxRetryCount: Int { get }
+    
     func urlRequest(for baseURL: URL, additionalParameters: [String: String]) -> URLRequest
 }
 
-extension CoreAPIRequestable {
+// A request that provides a decodable response type
+public protocol CoreAPIDecodableRequest: CoreAPIRequest {
+    associatedtype ResponseType: Decodable
+}
+
+extension CoreAPIRequest {
     // default implementation of the urlRequest generator
     public func urlRequest(for baseURL: URL, additionalParameters: [String: String] = [:]) -> URLRequest {
         var requestURL = baseURL.appendingPathComponent(path)
@@ -62,8 +64,8 @@ extension CoreAPIRequestable {
 
 extension CoreAPI {
     
-    // The simple concrete implementation of the CoreAPIRequestable protocol
-    public struct Request<T: Decodable>: CoreAPIRequestable {
+    // The simple concrete implementation of the CoreAPIDecodableRequest protocol
+    public struct Request<T: Decodable>: CoreAPIDecodableRequest {
         public typealias ResponseType = T
         
         public var path: String
