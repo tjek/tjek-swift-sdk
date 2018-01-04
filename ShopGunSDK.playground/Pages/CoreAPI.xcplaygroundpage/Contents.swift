@@ -15,7 +15,28 @@ extension CoreAPI.Requests {
 
 // MARK: -
 
-var creds = (key: "key", secret: "secret")
+func readCredentialsFile() -> (key: String, secret: String) {
+
+    guard let fileURL = Bundle.main.url(forResource: "credentials.secret", withExtension: "json"),
+        let jsonData = (try? String(contentsOf: fileURL, encoding: .utf8))?.data(using: .utf8),
+        let credentialsDict = try? JSONDecoder().decode([String: String].self, from: jsonData),
+        let key = credentialsDict["key"],
+        let secret = credentialsDict["secret"]
+        else {
+        fatalError("""
+Need valid `credentials.secret.json` file in Playground's `Resources` folder. eg: 
+{
+    "key": "your_key",
+    "secret": "your_secret"
+}
+
+""")
+    }
+    return (key: key, secret: secret)
+}
+
+
+let creds = readCredentialsFile()
 
 // must first configure
 let coreAPISettings = CoreAPI.Settings(key: creds.key,
