@@ -7,11 +7,8 @@
 //
 //  Copyright (c) 2017 ShopGun. All rights reserved.
 
-@import Foundation;
-//#import "CommonCrypto/CommonCrypto.h"
+public protocol Cancellable {
+    func cancel()
+}
 
-//! Project version number for ShopGunSDK.
-FOUNDATION_EXPORT double ShopGunSDKVersionNumber;
-
-//! Project version string for ShopGunSDK.
-FOUNDATION_EXPORT const unsigned char ShopGunSDKVersionString[];
+extension URLSessionTask: Cancellable { }

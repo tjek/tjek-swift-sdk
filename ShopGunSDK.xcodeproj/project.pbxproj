@@ -3,818 +3,347 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 48;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		AEC3D84C1FFAD075004C5947 /* CommonCryptoModuleMap */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = AEC3D84D1FFAD075004C5947 /* Build configuration list for PBXAggregateTarget "CommonCryptoModuleMap" */;
+			buildPhases = (
+				AEC3D8501FFAD089004C5947 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = CommonCryptoModuleMap;
+			productName = CommonCryptoModuleMap;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
-		AE06C0201D3F7D4D00BC8D47 /* ShopGunSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = AE06C01F1D3F7D3C00BC8D47 /* ShopGunSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AE06C03C1D3FA70000BC8D47 /* SDKConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA2A1D3CB52500DC5EA3 /* SDKConfig.swift */; };
-		AE06C03D1D3FA70000BC8D47 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAD31D3CFA6400DC5EA3 /* Utils.swift */; };
-		AE06C03E1D3FA70000BC8D47 /* EventsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA4D1D3CBEF100DC5EA3 /* EventsTracker.swift */; };
-		AE06C0431D40C48A00BC8D47 /* ShopGunEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA5A1D3CC5C900DC5EA3 /* ShopGunEventsTests.swift */; };
-		AE06C0441D40C48A00BC8D47 /* ShopGunEventsTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AA5B1D3CC5C900DC5EA3 /* ShopGunEventsTests_ObjC.m */; };
-		AE06C0451D40C48A00BC8D47 /* ShopGunGraphTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAC31D3CE60C00DC5EA3 /* ShopGunGraphTests.swift */; };
-		AE06C0461D40C48A00BC8D47 /* ShopGunGraphTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5AAC41D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m */; };
-		AE06C0471D40C4E100BC8D47 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06BFF01D3E9BB100BC8D47 /* ShopGunSDK.framework */; };
-		AE06C04D1D40EB1200BC8D47 /* EventsPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06C04C1D40EB1200BC8D47 /* EventsPool.swift */; };
-		AE12AAEC1D59D44700BBEFFC /* PagedPublicationPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE12AAEB1D59D44700BBEFFC /* PagedPublicationPageView.swift */; };
-		AE2312AD1D6C84B7006B84BA /* PagedPublicationViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2312AC1D6C84B7006B84BA /* PagedPublicationViewModels.swift */; };
-		AE2F1C461E39303300BAB26C /* Kingfisher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE2F1C2F1E392FF100BAB26C /* Kingfisher.framework */; };
-		AE2F1C661E39307B00BAB26C /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE2F1C5F1E39305B00BAB26C /* Valet.framework */; };
-		AE58EDC71D537AE6002BC38A /* PagedPublicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE58EDC61D537AE6002BC38A /* PagedPublicationView.swift */; };
-		AE62408B1D50A4560062CAD4 /* EventsTracker.Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62408A1D50A4560062CAD4 /* EventsTracker.Context.swift */; };
-		AE72B5331EF11FD600DCAA0A /* GraphClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72B52D1EF11FD600DCAA0A /* GraphClient.swift */; };
-		AE72B5341EF11FD600DCAA0A /* GraphError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72B52E1EF11FD600DCAA0A /* GraphError.swift */; };
-		AE72B5351EF11FD600DCAA0A /* GraphNetworkTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72B52F1EF11FD600DCAA0A /* GraphNetworkTransport.swift */; };
-		AE72B5361EF11FD600DCAA0A /* GraphQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72B5301EF11FD600DCAA0A /* GraphQuery.swift */; };
-		AE72B5371EF11FD600DCAA0A /* GraphRequestResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72B5311EF11FD600DCAA0A /* GraphRequestResponse.swift */; };
-		AE72B5381EF11FD600DCAA0A /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72B5321EF11FD600DCAA0A /* Result.swift */; };
-		AEA5AA3D1D3CB72000DC5EA3 /* ShopGunCoreTests_ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA5A9F41D3CB28100DC5EA3 /* ShopGunCoreTests_ObjC.m */; };
-		AEA5AA3E1D3CB72000DC5EA3 /* ShopGunCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA5A9F51D3CB28100DC5EA3 /* ShopGunCoreTests.swift */; };
-		AECC4F211D895C6E0017B16A /* Verso.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AECC4F201D895C590017B16A /* Verso.framework */; };
-		AED8A9B21D81496A00C92ED5 /* PagedPublicationHotspotOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED8A9B11D81496A00C92ED5 /* PagedPublicationHotspotOverlayView.swift */; };
-		AED8A9E41D88132300C92ED5 /* PagedPublicationView.Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED8A9E31D88132300C92ED5 /* PagedPublicationView.Events.swift */; };
-		AEEF1F9B1DBDD8C5005D6CD3 /* PagedPublicationGraphLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEF1F9A1DBDD8C5005D6CD3 /* PagedPublicationGraphLoader.swift */; };
+		AEC28B441FF6AAC20007AAB8 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */; };
+		AEC28B631FF6ABFC0007AAB8 /* EventsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */; };
+		AEC28B641FF6ABFC0007AAB8 /* ShopGunSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B581FF6ABFC0007AAB8 /* ShopGunSDK.swift */; };
+		AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5A1FF6ABFC0007AAB8 /* CoreAPI+Models.swift */; };
+		AEC28B661FF6ABFC0007AAB8 /* CoreAPI+Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5B1FF6ABFC0007AAB8 /* CoreAPI+Requests.swift */; };
+		AEC28B671FF6ABFC0007AAB8 /* CoreAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5C1FF6ABFC0007AAB8 /* CoreAPI.swift */; };
+		AEC28B681FF6ABFC0007AAB8 /* CoreAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5D1FF6ABFC0007AAB8 /* CoreAPIError.swift */; };
+		AEC28B691FF6ABFC0007AAB8 /* SignedHTTPHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5E1FF6ABFC0007AAB8 /* SignedHTTPHeaders.swift */; };
+		AEC28B6A1FF6ABFC0007AAB8 /* Cancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */; };
+		AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */; };
+		AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B621FF6ABFC0007AAB8 /* Result.swift */; };
+		AEC28B6E1FF6AC2A0007AAB8 /* ShopGunSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AEC3D8571FFD87FB004C5947 /* ShopGunSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3D8551FFD87FB004C5947 /* ShopGunSDKTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		AE06C0481D40C4E400BC8D47 /* PBXContainerItemProxy */ = {
+		AEC28B451FF6AAC20007AAB8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = AEA5A9C51D3CB11A00DC5EA3 /* Project object */;
+			containerPortal = AEC28B311FF6AAC20007AAB8 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = AE06BFEF1D3E9BB100BC8D47;
+			remoteGlobalIDString = AEC28B391FF6AAC20007AAB8;
 			remoteInfo = ShopGunSDK;
 		};
-		AE2F1C2E1E392FF100BAB26C /* PBXContainerItemProxy */ = {
+		AEC3D8511FFAD0B0004C5947 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D1ED2D351AD2D09F00CFC3EB;
-			remoteInfo = "Kingfisher-iOS";
-		};
-		AE2F1C301E392FF100BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D13F49D61BEDA67C00CE335D;
-			remoteInfo = "Kingfisher-tvOS";
-		};
-		AE2F1C321E392FF100BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 4B2944481C3D01B20088C3E7;
-			remoteInfo = "Kingfisher-macOS";
-		};
-		AE2F1C341E392FF100BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D16799EB1C4E74460020FD12;
-			remoteInfo = "Kingfisher-watchOS";
-		};
-		AE2F1C361E392FF100BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D1ED2D0B1AD2CFA600CFC3EB;
-			remoteInfo = "Kingfisher-Demo";
-		};
-		AE2F1C381E392FF100BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D13F49C21BEDA53F00CE335D;
-			remoteInfo = "Kingfisher-tvOS-Demo";
-		};
-		AE2F1C3A1E392FF100BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 4B2944551C3D03880088C3E7;
-			remoteInfo = "Kingfisher-macOS-Demo";
-		};
-		AE2F1C3C1E392FF100BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D1679A391C4E78B20020FD12;
-			remoteInfo = "Kingfisher-watchOS-Demo";
-		};
-		AE2F1C3E1E392FF100BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D1679A451C4E78B20020FD12;
-			remoteInfo = "Kingfisher-watchOS-Demo Extension";
-		};
-		AE2F1C401E392FF100BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D1ED2D3F1AD2D09F00CFC3EB;
-			remoteInfo = KingfisherTests;
-		};
-		AE2F1C421E392FF100BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 4B37667F1C478F940001443F;
-			remoteInfo = "KingfisherTests-tvOS";
-		};
-		AE2F1C441E392FF100BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D10EC2311C3D632300A4211C;
-			remoteInfo = "KingfisherTests-macOS";
-		};
-		AE2F1C471E39303B00BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
+			containerPortal = AEC28B311FF6AAC20007AAB8 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D1ED2D341AD2D09F00CFC3EB;
-			remoteInfo = "Kingfisher-iOS";
-		};
-		AE2F1C541E39305B00BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C491E39305B00BAB26C /* Valet.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EA1E1F831A8C46080067C991;
-			remoteInfo = "Valet iOS";
-		};
-		AE2F1C561E39305B00BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C491E39305B00BAB26C /* Valet.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EA1E1F8E1A8C46090067C991;
-			remoteInfo = "Valet iOS Tests";
-		};
-		AE2F1C581E39305B00BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C491E39305B00BAB26C /* Valet.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EAF894741B053E0500EDAD6C;
-			remoteInfo = ValetTouchIDTest;
-		};
-		AE2F1C5A1E39305B00BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C491E39305B00BAB26C /* Valet.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EAEAA8821B167A8600F7AA98;
-			remoteInfo = "Valet Mac";
-		};
-		AE2F1C5C1E39305B00BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C491E39305B00BAB26C /* Valet.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EAEAA88C1B167A8700F7AA98;
-			remoteInfo = "Valet Mac Tests";
-		};
-		AE2F1C5E1E39305B00BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C491E39305B00BAB26C /* Valet.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 26E6827C1BA8B3F900EFF4EA;
-			remoteInfo = "Valet-iOS";
-		};
-		AE2F1C601E39305B00BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C491E39305B00BAB26C /* Valet.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 26E6828A1BA8B4B200EFF4EA;
-			remoteInfo = "Valet-Mac";
-		};
-		AE2F1C621E39305B00BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C491E39305B00BAB26C /* Valet.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 371150A51E2962D8004A45D4;
-			remoteInfo = "Valet iOS Test Host App";
-		};
-		AE2F1C641E39307100BAB26C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE2F1C491E39305B00BAB26C /* Valet.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 26E6827B1BA8B3F900EFF4EA;
-			remoteInfo = "Valet-iOS";
-		};
-		AECC4F1F1D895C590017B16A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AECC4F1B1D895C590017B16A /* Verso.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = AED8AA351D89472A00C92ED5;
-			remoteInfo = Verso;
-		};
-		AECC4F221D895C7B0017B16A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AECC4F1B1D895C590017B16A /* Verso.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = AED8AA341D89472A00C92ED5;
-			remoteInfo = Verso;
+			remoteGlobalIDString = AEC3D84C1FFAD075004C5947;
+			remoteInfo = CommonCryptoModuleMap;
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		AE7D784A1D51DA9F00B414CE /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		AE06BFF01D3E9BB100BC8D47 /* ShopGunSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AE06C01F1D3F7D3C00BC8D47 /* ShopGunSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShopGunSDK.h; sourceTree = "<group>"; };
-		AE06C04C1D40EB1200BC8D47 /* EventsPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsPool.swift; sourceTree = "<group>"; };
-		AE12AAEB1D59D44700BBEFFC /* PagedPublicationPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PagedPublicationPageView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		AE2312AC1D6C84B7006B84BA /* PagedPublicationViewModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagedPublicationViewModels.swift; sourceTree = "<group>"; };
-		AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kingfisher.xcodeproj; path = Carthage/Checkouts/Kingfisher/Kingfisher.xcodeproj; sourceTree = "<group>"; };
-		AE2F1C491E39305B00BAB26C /* Valet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Valet.xcodeproj; path = Carthage/Checkouts/Valet/Valet.xcodeproj; sourceTree = "<group>"; };
-		AE4CC9871DB0F6D70087819C /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
-		AE4CC9891DB0F6D70087819C /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
-		AE4CC98A1DB0F6D70087819C /* macOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = macOS.xcconfig; sourceTree = "<group>"; };
-		AE4CC98B1DB0F6D70087819C /* tvOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = tvOS.xcconfig; sourceTree = "<group>"; };
-		AE4CC98C1DB0F6D70087819C /* watchOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = watchOS.xcconfig; sourceTree = "<group>"; };
-		AE4CC98E1DB0F6D70087819C /* Application.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Application.xcconfig; sourceTree = "<group>"; };
-		AE4CC98F1DB0F6D70087819C /* DynamicFramework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = DynamicFramework.xcconfig; sourceTree = "<group>"; };
-		AE4CC9901DB0F6D70087819C /* LogicTests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = LogicTests.xcconfig; sourceTree = "<group>"; };
-		AE4CC9911DB0F6D70087819C /* StaticFramework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = StaticFramework.xcconfig; sourceTree = "<group>"; };
-		AE4CC9931DB0F6D70087819C /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
-		AE4CC9941DB0F6D70087819C /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
-		AE4CC9951DB0F6D70087819C /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
-		AE4CC9961DB0F6D70087819C /* ShopGunSDK-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Debug.xcconfig"; sourceTree = "<group>"; };
-		AE4CC9971DB0F6D70087819C /* ShopGunSDK-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Framework.xcconfig"; sourceTree = "<group>"; };
-		AE4CC9981DB0F6D70087819C /* ShopGunSDK-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Release.xcconfig"; sourceTree = "<group>"; };
-		AE4CC9991DB0F6D70087819C /* ShopGunSDK-Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Tests.xcconfig"; sourceTree = "<group>"; };
-		AE4CC99A1DB0F6D70087819C /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
-		AE58EDC61D537AE6002BC38A /* PagedPublicationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PagedPublicationView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		AE62408A1D50A4560062CAD4 /* EventsTracker.Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTracker.Context.swift; sourceTree = "<group>"; };
-		AE6B71771D3E22F8006A8225 /* ShopGunSDK.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = ShopGunSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		AE72B52D1EF11FD600DCAA0A /* GraphClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphClient.swift; sourceTree = "<group>"; };
-		AE72B52E1EF11FD600DCAA0A /* GraphError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphError.swift; sourceTree = "<group>"; };
-		AE72B52F1EF11FD600DCAA0A /* GraphNetworkTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphNetworkTransport.swift; sourceTree = "<group>"; };
-		AE72B5301EF11FD600DCAA0A /* GraphQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQuery.swift; sourceTree = "<group>"; };
-		AE72B5311EF11FD600DCAA0A /* GraphRequestResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphRequestResponse.swift; sourceTree = "<group>"; };
-		AE72B5321EF11FD600DCAA0A /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
-		AEA5A9F31D3CB1DF00DC5EA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AEA5A9F41D3CB28100DC5EA3 /* ShopGunCoreTests_ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShopGunCoreTests_ObjC.m; sourceTree = "<group>"; };
-		AEA5A9F51D3CB28100DC5EA3 /* ShopGunCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopGunCoreTests.swift; sourceTree = "<group>"; };
-		AEA5AA2A1D3CB52500DC5EA3 /* SDKConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDKConfig.swift; sourceTree = "<group>"; };
-		AEA5AA321D3CB64A00DC5EA3 /* ShopGunSDK-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunSDK-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AEA5AA4D1D3CBEF100DC5EA3 /* EventsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EventsTracker.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		AEA5AA5A1D3CC5C900DC5EA3 /* ShopGunEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ShopGunEventsTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		AEA5AA5B1D3CC5C900DC5EA3 /* ShopGunEventsTests_ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ShopGunEventsTests_ObjC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		AEA5AAC31D3CE60C00DC5EA3 /* ShopGunGraphTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopGunGraphTests.swift; sourceTree = "<group>"; };
-		AEA5AAC41D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShopGunGraphTests_ObjC.m; sourceTree = "<group>"; };
-		AEA5AAD31D3CFA6400DC5EA3 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		AECA905B1E39EEC200488DE3 /* ShopGunSDK.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = ShopGunSDK.playground; sourceTree = "<group>"; };
-		AECC4F1B1D895C590017B16A /* Verso.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Verso.xcodeproj; path = "Carthage/Checkouts/Verso-ios/Verso.xcodeproj"; sourceTree = "<group>"; };
-		AECC50E51D8966C20017B16A /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
-		AED8A9B11D81496A00C92ED5 /* PagedPublicationHotspotOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagedPublicationHotspotOverlayView.swift; sourceTree = "<group>"; };
-		AED8A9E31D88132300C92ED5 /* PagedPublicationView.Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagedPublicationView.Events.swift; sourceTree = "<group>"; };
-		AEED78501D9145B9003A9E92 /* CHANGES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGES.md; sourceTree = "<group>"; };
-		AEED78511D9145B9003A9E92 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
-		AEED78521D9145B9003A9E92 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		AEEF1F9A1DBDD8C5005D6CD3 /* PagedPublicationGraphLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagedPublicationGraphLoader.swift; sourceTree = "<group>"; };
+		AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEC28B431FF6AAC20007AAB8 /* ShopGunSDK-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunSDK-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTracker.swift; sourceTree = "<group>"; };
+		AEC28B581FF6ABFC0007AAB8 /* ShopGunSDK.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShopGunSDK.swift; path = Sources/ShopGunSDK.swift; sourceTree = "<group>"; };
+		AEC28B5A1FF6ABFC0007AAB8 /* CoreAPI+Models.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreAPI+Models.swift"; sourceTree = "<group>"; };
+		AEC28B5B1FF6ABFC0007AAB8 /* CoreAPI+Requests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreAPI+Requests.swift"; sourceTree = "<group>"; };
+		AEC28B5C1FF6ABFC0007AAB8 /* CoreAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAPI.swift; sourceTree = "<group>"; };
+		AEC28B5D1FF6ABFC0007AAB8 /* CoreAPIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAPIError.swift; sourceTree = "<group>"; };
+		AEC28B5E1FF6ABFC0007AAB8 /* SignedHTTPHeaders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignedHTTPHeaders.swift; sourceTree = "<group>"; };
+		AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cancellable.swift; sourceTree = "<group>"; };
+		AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericIdentifier.swift; sourceTree = "<group>"; };
+		AEC28B621FF6ABFC0007AAB8 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShopGunSDK.h; path = Sources/ShopGunSDK.h; sourceTree = "<group>"; };
+		AEC28B6F1FF6AC420007AAB8 /* ShopGunSDK.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = ShopGunSDK.playground; sourceTree = "<group>"; };
+		AEC28B711FF6AC8A0007AAB8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AEC3D8541FFD87FB004C5947 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AEC3D8551FFD87FB004C5947 /* ShopGunSDKTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopGunSDKTests.swift; sourceTree = "<group>"; };
+		AEC3D85D1FFD8E86004C5947 /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
+		AEC3D85F1FFD8E86004C5947 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
+		AEC3D8601FFD8E86004C5947 /* macOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = macOS.xcconfig; sourceTree = "<group>"; };
+		AEC3D8611FFD8E86004C5947 /* tvOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = tvOS.xcconfig; sourceTree = "<group>"; };
+		AEC3D8621FFD8E86004C5947 /* watchOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = watchOS.xcconfig; sourceTree = "<group>"; };
+		AEC3D8641FFD8E86004C5947 /* Application.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Application.xcconfig; sourceTree = "<group>"; };
+		AEC3D8651FFD8E86004C5947 /* DynamicFramework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = DynamicFramework.xcconfig; sourceTree = "<group>"; };
+		AEC3D8661FFD8E86004C5947 /* LogicTests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = LogicTests.xcconfig; sourceTree = "<group>"; };
+		AEC3D8671FFD8E86004C5947 /* StaticFramework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = StaticFramework.xcconfig; sourceTree = "<group>"; };
+		AEC3D8691FFD8E86004C5947 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		AEC3D86A1FFD8E86004C5947 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		AEC3D86B1FFD8E86004C5947 /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
+		AEC3D86C1FFD8E86004C5947 /* ShopGunSDK-Project-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Project-Debug.xcconfig"; sourceTree = "<group>"; };
+		AEC3D86D1FFD8E86004C5947 /* ShopGunSDK-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Framework.xcconfig"; sourceTree = "<group>"; };
+		AEC3D86E1FFD8E86004C5947 /* ShopGunSDK-Project-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Project-Release.xcconfig"; sourceTree = "<group>"; };
+		AEC3D86F1FFD8E86004C5947 /* ShopGunSDK-Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Tests.xcconfig"; sourceTree = "<group>"; };
+		AEC3D8701FFD8E86004C5947 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		AE06BFEC1D3E9BB100BC8D47 /* Frameworks */ = {
+		AEC28B361FF6AAC20007AAB8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE2F1C661E39307B00BAB26C /* Valet.framework in Frameworks */,
-				AE2F1C461E39303300BAB26C /* Kingfisher.framework in Frameworks */,
-				AECC4F211D895C6E0017B16A /* Verso.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AEA5AA2F1D3CB64A00DC5EA3 /* Frameworks */ = {
+		AEC28B401FF6AAC20007AAB8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE06C0471D40C4E100BC8D47 /* ShopGunSDK.framework in Frameworks */,
+				AEC28B441FF6AAC20007AAB8 /* ShopGunSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		AE2F1C201E392FF100BAB26C /* Products */ = {
+		AEC28B301FF6AAC20007AAB8 = {
 			isa = PBXGroup;
 			children = (
-				AE2F1C2F1E392FF100BAB26C /* Kingfisher.framework */,
-				AE2F1C311E392FF100BAB26C /* Kingfisher.framework */,
-				AE2F1C331E392FF100BAB26C /* Kingfisher.framework */,
-				AE2F1C351E392FF100BAB26C /* Kingfisher.framework */,
-				AE2F1C371E392FF100BAB26C /* Kingfisher-Demo.app */,
-				AE2F1C391E392FF100BAB26C /* Kingfisher-tvOS-Demo.app */,
-				AE2F1C3B1E392FF100BAB26C /* Kingfisher-macOS-Demo.app */,
-				AE2F1C3D1E392FF100BAB26C /* Kingfisher-watchOS-Demo.app */,
-				AE2F1C3F1E392FF100BAB26C /* Kingfisher-watchOS-Demo Extension.appex */,
-				AE2F1C411E392FF100BAB26C /* KingfisherTests.xctest */,
-				AE2F1C431E392FF100BAB26C /* KingfisherTests-tvOS.xctest */,
-				AE2F1C451E392FF100BAB26C /* KingfisherTests-macOS.xctest */,
+				AEC28B6F1FF6AC420007AAB8 /* ShopGunSDK.playground */,
+				AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */,
+				AEC28B581FF6ABFC0007AAB8 /* ShopGunSDK.swift */,
+				AEC28B591FF6ABFC0007AAB8 /* CoreAPI */,
+				AEC28B561FF6ABFB0007AAB8 /* EventsTracker */,
+				AEC28B5F1FF6ABFC0007AAB8 /* Utils */,
+				AEC28B701FF6AC8A0007AAB8 /* Resources */,
+				AEC3D8531FFD87FB004C5947 /* Tests */,
+				AEC3D85B1FFD8E86004C5947 /* Configurations */,
+				AEC28B3B1FF6AAC20007AAB8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AEC28B3B1FF6AAC20007AAB8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */,
+				AEC28B431FF6AAC20007AAB8 /* ShopGunSDK-Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		AE2F1C4A1E39305B00BAB26C /* Products */ = {
+		AEC28B561FF6ABFB0007AAB8 /* EventsTracker */ = {
 			isa = PBXGroup;
 			children = (
-				AE2F1C551E39305B00BAB26C /* libValet.a */,
-				AE2F1C571E39305B00BAB26C /* Valet iOS Tests.xctest */,
-				AE2F1C591E39305B00BAB26C /* ValetTouchIDTest.app */,
-				AE2F1C5B1E39305B00BAB26C /* libValet.dylib */,
-				AE2F1C5D1E39305B00BAB26C /* Valet Mac Tests.xctest */,
-				AE2F1C5F1E39305B00BAB26C /* Valet.framework */,
-				AE2F1C611E39305B00BAB26C /* Valet.framework */,
-				AE2F1C631E39305B00BAB26C /* Valet iOS Test Host App.app */,
+				AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */,
 			);
-			name = Products;
+			name = EventsTracker;
+			path = Sources/EventsTracker;
 			sourceTree = "<group>";
 		};
-		AE4CC9851DB0F6D70087819C /* Configurations */ = {
+		AEC28B591FF6ABFC0007AAB8 /* CoreAPI */ = {
 			isa = PBXGroup;
 			children = (
-				AE4CC99A1DB0F6D70087819C /* Version.xcconfig */,
-				AE4CC9971DB0F6D70087819C /* ShopGunSDK-Framework.xcconfig */,
-				AE4CC9991DB0F6D70087819C /* ShopGunSDK-Tests.xcconfig */,
-				AE4CC9981DB0F6D70087819C /* ShopGunSDK-Release.xcconfig */,
-				AE4CC9961DB0F6D70087819C /* ShopGunSDK-Debug.xcconfig */,
-				AE4CC9861DB0F6D70087819C /* Shared */,
+				AEC28B5C1FF6ABFC0007AAB8 /* CoreAPI.swift */,
+				AEC28B5A1FF6ABFC0007AAB8 /* CoreAPI+Models.swift */,
+				AEC28B5B1FF6ABFC0007AAB8 /* CoreAPI+Requests.swift */,
+				AEC28B5D1FF6ABFC0007AAB8 /* CoreAPIError.swift */,
+				AEC28B5E1FF6ABFC0007AAB8 /* SignedHTTPHeaders.swift */,
 			);
-			path = Configurations;
+			name = CoreAPI;
+			path = Sources/CoreAPI;
 			sourceTree = "<group>";
 		};
-		AE4CC9861DB0F6D70087819C /* Shared */ = {
+		AEC28B5F1FF6ABFC0007AAB8 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				AE4CC9871DB0F6D70087819C /* Common.xcconfig */,
-				AE4CC9881DB0F6D70087819C /* Platform */,
-				AE4CC98D1DB0F6D70087819C /* Product */,
-				AE4CC9921DB0F6D70087819C /* Project */,
-				AE4CC9951DB0F6D70087819C /* Warnings.xcconfig */,
+				AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */,
+				AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */,
+				AEC28B621FF6ABFC0007AAB8 /* Result.swift */,
 			);
-			path = Shared;
+			name = Utils;
+			path = Sources/Utils;
 			sourceTree = "<group>";
 		};
-		AE4CC9881DB0F6D70087819C /* Platform */ = {
+		AEC28B701FF6AC8A0007AAB8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				AE4CC9891DB0F6D70087819C /* iOS.xcconfig */,
-				AE4CC98A1DB0F6D70087819C /* macOS.xcconfig */,
-				AE4CC98B1DB0F6D70087819C /* tvOS.xcconfig */,
-				AE4CC98C1DB0F6D70087819C /* watchOS.xcconfig */,
-			);
-			path = Platform;
-			sourceTree = "<group>";
-		};
-		AE4CC98D1DB0F6D70087819C /* Product */ = {
-			isa = PBXGroup;
-			children = (
-				AE4CC98E1DB0F6D70087819C /* Application.xcconfig */,
-				AE4CC98F1DB0F6D70087819C /* DynamicFramework.xcconfig */,
-				AE4CC9901DB0F6D70087819C /* LogicTests.xcconfig */,
-				AE4CC9911DB0F6D70087819C /* StaticFramework.xcconfig */,
-			);
-			path = Product;
-			sourceTree = "<group>";
-		};
-		AE4CC9921DB0F6D70087819C /* Project */ = {
-			isa = PBXGroup;
-			children = (
-				AE4CC9931DB0F6D70087819C /* Debug.xcconfig */,
-				AE4CC9941DB0F6D70087819C /* Release.xcconfig */,
-			);
-			path = Project;
-			sourceTree = "<group>";
-		};
-		AE58EDC51D537AC7002BC38A /* PagedPublication */ = {
-			isa = PBXGroup;
-			children = (
-				AE58EDC61D537AE6002BC38A /* PagedPublicationView.swift */,
-				AEEF1F9A1DBDD8C5005D6CD3 /* PagedPublicationGraphLoader.swift */,
-				AED8A9E31D88132300C92ED5 /* PagedPublicationView.Events.swift */,
-				AE12AAEB1D59D44700BBEFFC /* PagedPublicationPageView.swift */,
-				AED8A9B11D81496A00C92ED5 /* PagedPublicationHotspotOverlayView.swift */,
-				AE2312AC1D6C84B7006B84BA /* PagedPublicationViewModels.swift */,
-			);
-			path = PagedPublication;
-			sourceTree = "<group>";
-		};
-		AE7D782B1D50D88E00B414CE /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				AE2F1C491E39305B00BAB26C /* Valet.xcodeproj */,
-				AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */,
-				AECC4F1B1D895C590017B16A /* Verso.xcodeproj */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		AEA5A9C41D3CB11A00DC5EA3 = {
-			isa = PBXGroup;
-			children = (
-				AE6B71771D3E22F8006A8225 /* ShopGunSDK.podspec */,
-				AECC50E51D8966C20017B16A /* Cartfile */,
-				AECA905B1E39EEC200488DE3 /* ShopGunSDK.playground */,
-				AEED784F1D9145A5003A9E92 /* Docs */,
-				AEA5A9E81D3CB1B000DC5EA3 /* Sources */,
-				AEA5A9F21D3CB1DF00DC5EA3 /* Resources */,
-				AE4CC9851DB0F6D70087819C /* Configurations */,
-				AEA5A9EE1D3CB1BF00DC5EA3 /* Tests */,
-				AE7D782B1D50D88E00B414CE /* Frameworks */,
-				AEA5A9CF1D3CB11A00DC5EA3 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		AEA5A9CF1D3CB11A00DC5EA3 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				AEA5AA321D3CB64A00DC5EA3 /* ShopGunSDK-Tests.xctest */,
-				AE06BFF01D3E9BB100BC8D47 /* ShopGunSDK.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		AEA5A9E81D3CB1B000DC5EA3 /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				AE06C01F1D3F7D3C00BC8D47 /* ShopGunSDK.h */,
-				AEA5A9E91D3CB1B000DC5EA3 /* Core */,
-				AEA5A9EB1D3CB1B000DC5EA3 /* Events */,
-				AEA5A9EC1D3CB1B000DC5EA3 /* Graph */,
-				AE58EDC51D537AC7002BC38A /* PagedPublication */,
-			);
-			path = Sources;
-			sourceTree = "<group>";
-		};
-		AEA5A9E91D3CB1B000DC5EA3 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				AEA5AA2A1D3CB52500DC5EA3 /* SDKConfig.swift */,
-				AEA5AAD31D3CFA6400DC5EA3 /* Utils.swift */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
-		AEA5A9EB1D3CB1B000DC5EA3 /* Events */ = {
-			isa = PBXGroup;
-			children = (
-				AEA5AA4D1D3CBEF100DC5EA3 /* EventsTracker.swift */,
-				AE06C04C1D40EB1200BC8D47 /* EventsPool.swift */,
-				AE62408A1D50A4560062CAD4 /* EventsTracker.Context.swift */,
-			);
-			path = Events;
-			sourceTree = "<group>";
-		};
-		AEA5A9EC1D3CB1B000DC5EA3 /* Graph */ = {
-			isa = PBXGroup;
-			children = (
-				AE72B52D1EF11FD600DCAA0A /* GraphClient.swift */,
-				AE72B5311EF11FD600DCAA0A /* GraphRequestResponse.swift */,
-				AE72B52E1EF11FD600DCAA0A /* GraphError.swift */,
-				AE72B52F1EF11FD600DCAA0A /* GraphNetworkTransport.swift */,
-				AE72B5301EF11FD600DCAA0A /* GraphQuery.swift */,
-				AE72B5321EF11FD600DCAA0A /* Result.swift */,
-			);
-			path = Graph;
-			sourceTree = "<group>";
-		};
-		AEA5A9EE1D3CB1BF00DC5EA3 /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				AEA5A9EF1D3CB1BF00DC5EA3 /* Core */,
-				AEA5AA591D3CC5C900DC5EA3 /* Events */,
-				AEA5AAC21D3CE60B00DC5EA3 /* Graph */,
-			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
-		AEA5A9EF1D3CB1BF00DC5EA3 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				AEA5A9F51D3CB28100DC5EA3 /* ShopGunCoreTests.swift */,
-				AEA5A9F41D3CB28100DC5EA3 /* ShopGunCoreTests_ObjC.m */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
-		AEA5A9F21D3CB1DF00DC5EA3 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				AEA5A9F31D3CB1DF00DC5EA3 /* Info.plist */,
+				AEC28B711FF6AC8A0007AAB8 /* Info.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		AEA5AA591D3CC5C900DC5EA3 /* Events */ = {
+		AEC3D8531FFD87FB004C5947 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				AEA5AA5A1D3CC5C900DC5EA3 /* ShopGunEventsTests.swift */,
-				AEA5AA5B1D3CC5C900DC5EA3 /* ShopGunEventsTests_ObjC.m */,
+				AEC3D8541FFD87FB004C5947 /* Info.plist */,
+				AEC3D8551FFD87FB004C5947 /* ShopGunSDKTests.swift */,
 			);
-			path = Events;
+			path = Tests;
 			sourceTree = "<group>";
 		};
-		AEA5AAC21D3CE60B00DC5EA3 /* Graph */ = {
+		AEC3D85B1FFD8E86004C5947 /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
-				AEA5AAC31D3CE60C00DC5EA3 /* ShopGunGraphTests.swift */,
-				AEA5AAC41D3CE60C00DC5EA3 /* ShopGunGraphTests_ObjC.m */,
+				AEC3D86D1FFD8E86004C5947 /* ShopGunSDK-Framework.xcconfig */,
+				AEC3D86F1FFD8E86004C5947 /* ShopGunSDK-Tests.xcconfig */,
+				AEC3D86C1FFD8E86004C5947 /* ShopGunSDK-Project-Debug.xcconfig */,
+				AEC3D86E1FFD8E86004C5947 /* ShopGunSDK-Project-Release.xcconfig */,
+				AEC3D8701FFD8E86004C5947 /* Version.xcconfig */,
+				AEC3D85C1FFD8E86004C5947 /* Shared */,
 			);
-			path = Graph;
+			path = Configurations;
 			sourceTree = "<group>";
 		};
-		AECC4F1C1D895C590017B16A /* Products */ = {
+		AEC3D85C1FFD8E86004C5947 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				AECC4F201D895C590017B16A /* Verso.framework */,
+				AEC3D85D1FFD8E86004C5947 /* Common.xcconfig */,
+				AEC3D85E1FFD8E86004C5947 /* Platform */,
+				AEC3D8631FFD8E86004C5947 /* Product */,
+				AEC3D8681FFD8E86004C5947 /* Project */,
+				AEC3D86B1FFD8E86004C5947 /* Warnings.xcconfig */,
 			);
-			name = Products;
+			path = Shared;
 			sourceTree = "<group>";
 		};
-		AEED784F1D9145A5003A9E92 /* Docs */ = {
+		AEC3D85E1FFD8E86004C5947 /* Platform */ = {
 			isa = PBXGroup;
 			children = (
-				AEED78521D9145B9003A9E92 /* README.md */,
-				AEED78501D9145B9003A9E92 /* CHANGES.md */,
-				AEED78511D9145B9003A9E92 /* LICENSE.md */,
+				AEC3D85F1FFD8E86004C5947 /* iOS.xcconfig */,
+				AEC3D8601FFD8E86004C5947 /* macOS.xcconfig */,
+				AEC3D8611FFD8E86004C5947 /* tvOS.xcconfig */,
+				AEC3D8621FFD8E86004C5947 /* watchOS.xcconfig */,
 			);
-			name = Docs;
+			path = Platform;
+			sourceTree = "<group>";
+		};
+		AEC3D8631FFD8E86004C5947 /* Product */ = {
+			isa = PBXGroup;
+			children = (
+				AEC3D8641FFD8E86004C5947 /* Application.xcconfig */,
+				AEC3D8651FFD8E86004C5947 /* DynamicFramework.xcconfig */,
+				AEC3D8661FFD8E86004C5947 /* LogicTests.xcconfig */,
+				AEC3D8671FFD8E86004C5947 /* StaticFramework.xcconfig */,
+			);
+			path = Product;
+			sourceTree = "<group>";
+		};
+		AEC3D8681FFD8E86004C5947 /* Project */ = {
+			isa = PBXGroup;
+			children = (
+				AEC3D8691FFD8E86004C5947 /* Debug.xcconfig */,
+				AEC3D86A1FFD8E86004C5947 /* Release.xcconfig */,
+			);
+			path = Project;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		AE06BFED1D3E9BB100BC8D47 /* Headers */ = {
+		AEC28B371FF6AAC20007AAB8 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE06C0201D3F7D4D00BC8D47 /* ShopGunSDK.h in Headers */,
+				AEC28B6E1FF6AC2A0007AAB8 /* ShopGunSDK.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		AE06BFEF1D3E9BB100BC8D47 /* ShopGunSDK */ = {
+		AEC28B391FF6AAC20007AAB8 /* ShopGunSDK */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AE06BFF51D3E9BB100BC8D47 /* Build configuration list for PBXNativeTarget "ShopGunSDK" */;
+			buildConfigurationList = AEC28B4E1FF6AAC20007AAB8 /* Build configuration list for PBXNativeTarget "ShopGunSDK" */;
 			buildPhases = (
-				AE06BFEB1D3E9BB100BC8D47 /* Sources */,
-				AE06BFEC1D3E9BB100BC8D47 /* Frameworks */,
-				AE06BFED1D3E9BB100BC8D47 /* Headers */,
-				AE06BFEE1D3E9BB100BC8D47 /* Resources */,
+				AEC28B351FF6AAC20007AAB8 /* Sources */,
+				AEC28B361FF6AAC20007AAB8 /* Frameworks */,
+				AEC28B371FF6AAC20007AAB8 /* Headers */,
+				AEC28B381FF6AAC20007AAB8 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				AE2F1C651E39307100BAB26C /* PBXTargetDependency */,
-				AE2F1C481E39303B00BAB26C /* PBXTargetDependency */,
-				AECC4F231D895C7B0017B16A /* PBXTargetDependency */,
+				AEC3D8521FFAD0B0004C5947 /* PBXTargetDependency */,
 			);
 			name = ShopGunSDK;
 			productName = ShopGunSDK;
-			productReference = AE06BFF01D3E9BB100BC8D47 /* ShopGunSDK.framework */;
+			productReference = AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		AEA5AA311D3CB64A00DC5EA3 /* ShopGunSDK-Tests */ = {
+		AEC28B421FF6AAC20007AAB8 /* ShopGunSDKTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AEA5AA3A1D3CB64A00DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunSDK-Tests" */;
+			buildConfigurationList = AEC28B511FF6AAC20007AAB8 /* Build configuration list for PBXNativeTarget "ShopGunSDKTests" */;
 			buildPhases = (
-				AEA5AA2E1D3CB64A00DC5EA3 /* Sources */,
-				AEA5AA2F1D3CB64A00DC5EA3 /* Frameworks */,
-				AEA5AA301D3CB64A00DC5EA3 /* Resources */,
-				AE7D784A1D51DA9F00B414CE /* CopyFiles */,
+				AEC28B3F1FF6AAC20007AAB8 /* Sources */,
+				AEC28B401FF6AAC20007AAB8 /* Frameworks */,
+				AEC28B411FF6AAC20007AAB8 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				AE06C0491D40C4E400BC8D47 /* PBXTargetDependency */,
+				AEC28B461FF6AAC20007AAB8 /* PBXTargetDependency */,
 			);
-			name = "ShopGunSDK-Tests";
-			productName = ShopGunCoreTests;
-			productReference = AEA5AA321D3CB64A00DC5EA3 /* ShopGunSDK-Tests.xctest */;
+			name = ShopGunSDKTests;
+			productName = ShopGunSDKTests;
+			productReference = AEC28B431FF6AAC20007AAB8 /* ShopGunSDK-Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		AEA5A9C51D3CB11A00DC5EA3 /* Project object */ = {
+		AEC28B311FF6AAC20007AAB8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0810;
+				LastSwiftUpdateCheck = 0910;
+				LastUpgradeCheck = 0910;
 				ORGANIZATIONNAME = ShopGun;
 				TargetAttributes = {
-					AE06BFEF1D3E9BB100BC8D47 = {
-						CreatedOnToolsVersion = 7.3.1;
-						LastSwiftMigration = 0900;
-						ProvisioningStyle = Manual;
+					AEC28B391FF6AAC20007AAB8 = {
+						CreatedOnToolsVersion = 9.1;
+						LastSwiftMigration = 0910;
+						ProvisioningStyle = Automatic;
 					};
-					AEA5AA311D3CB64A00DC5EA3 = {
-						CreatedOnToolsVersion = 7.3.1;
+					AEC28B421FF6AAC20007AAB8 = {
+						CreatedOnToolsVersion = 9.1;
+						ProvisioningStyle = Automatic;
+					};
+					AEC3D84C1FFAD075004C5947 = {
+						CreatedOnToolsVersion = 9.1;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = AEA5A9C81D3CB11A00DC5EA3 /* Build configuration list for PBXProject "ShopGunSDK" */;
-			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			buildConfigurationList = AEC28B341FF6AAC20007AAB8 /* Build configuration list for PBXProject "ShopGunSDK" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = AEA5A9C41D3CB11A00DC5EA3;
-			productRefGroup = AEA5A9CF1D3CB11A00DC5EA3 /* Products */;
+			mainGroup = AEC28B301FF6AAC20007AAB8;
+			productRefGroup = AEC28B3B1FF6AAC20007AAB8 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = AE2F1C201E392FF100BAB26C /* Products */;
-					ProjectRef = AE2F1C1F1E392FF100BAB26C /* Kingfisher.xcodeproj */;
-				},
-				{
-					ProductGroup = AE2F1C4A1E39305B00BAB26C /* Products */;
-					ProjectRef = AE2F1C491E39305B00BAB26C /* Valet.xcodeproj */;
-				},
-				{
-					ProductGroup = AECC4F1C1D895C590017B16A /* Products */;
-					ProjectRef = AECC4F1B1D895C590017B16A /* Verso.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
-				AE06BFEF1D3E9BB100BC8D47 /* ShopGunSDK */,
-				AEA5AA311D3CB64A00DC5EA3 /* ShopGunSDK-Tests */,
+				AEC28B391FF6AAC20007AAB8 /* ShopGunSDK */,
+				AEC28B421FF6AAC20007AAB8 /* ShopGunSDKTests */,
+				AEC3D84C1FFAD075004C5947 /* CommonCryptoModuleMap */,
 			);
 		};
 /* End PBXProject section */
 
-/* Begin PBXReferenceProxy section */
-		AE2F1C2F1E392FF100BAB26C /* Kingfisher.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Kingfisher.framework;
-			remoteRef = AE2F1C2E1E392FF100BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C311E392FF100BAB26C /* Kingfisher.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Kingfisher.framework;
-			remoteRef = AE2F1C301E392FF100BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C331E392FF100BAB26C /* Kingfisher.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Kingfisher.framework;
-			remoteRef = AE2F1C321E392FF100BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C351E392FF100BAB26C /* Kingfisher.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Kingfisher.framework;
-			remoteRef = AE2F1C341E392FF100BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C371E392FF100BAB26C /* Kingfisher-Demo.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = "Kingfisher-Demo.app";
-			remoteRef = AE2F1C361E392FF100BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C391E392FF100BAB26C /* Kingfisher-tvOS-Demo.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = "Kingfisher-tvOS-Demo.app";
-			remoteRef = AE2F1C381E392FF100BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C3B1E392FF100BAB26C /* Kingfisher-macOS-Demo.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = "Kingfisher-macOS-Demo.app";
-			remoteRef = AE2F1C3A1E392FF100BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C3D1E392FF100BAB26C /* Kingfisher-watchOS-Demo.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = "Kingfisher-watchOS-Demo.app";
-			remoteRef = AE2F1C3C1E392FF100BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C3F1E392FF100BAB26C /* Kingfisher-watchOS-Demo Extension.appex */ = {
-			isa = PBXReferenceProxy;
-			fileType = "wrapper.app-extension";
-			path = "Kingfisher-watchOS-Demo Extension.appex";
-			remoteRef = AE2F1C3E1E392FF100BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C411E392FF100BAB26C /* KingfisherTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = KingfisherTests.xctest;
-			remoteRef = AE2F1C401E392FF100BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C431E392FF100BAB26C /* KingfisherTests-tvOS.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "KingfisherTests-tvOS.xctest";
-			remoteRef = AE2F1C421E392FF100BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C451E392FF100BAB26C /* KingfisherTests-macOS.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "KingfisherTests-macOS.xctest";
-			remoteRef = AE2F1C441E392FF100BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C551E39305B00BAB26C /* libValet.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libValet.a;
-			remoteRef = AE2F1C541E39305B00BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C571E39305B00BAB26C /* Valet iOS Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "Valet iOS Tests.xctest";
-			remoteRef = AE2F1C561E39305B00BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C591E39305B00BAB26C /* ValetTouchIDTest.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = ValetTouchIDTest.app;
-			remoteRef = AE2F1C581E39305B00BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C5B1E39305B00BAB26C /* libValet.dylib */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = libValet.dylib;
-			remoteRef = AE2F1C5A1E39305B00BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C5D1E39305B00BAB26C /* Valet Mac Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "Valet Mac Tests.xctest";
-			remoteRef = AE2F1C5C1E39305B00BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C5F1E39305B00BAB26C /* Valet.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Valet.framework;
-			remoteRef = AE2F1C5E1E39305B00BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C611E39305B00BAB26C /* Valet.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Valet.framework;
-			remoteRef = AE2F1C601E39305B00BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE2F1C631E39305B00BAB26C /* Valet iOS Test Host App.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = "Valet iOS Test Host App.app";
-			remoteRef = AE2F1C621E39305B00BAB26C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AECC4F201D895C590017B16A /* Verso.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Verso.framework;
-			remoteRef = AECC4F1F1D895C590017B16A /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
-
 /* Begin PBXResourcesBuildPhase section */
-		AE06BFEE1D3E9BB100BC8D47 /* Resources */ = {
+		AEC28B381FF6AAC20007AAB8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AEA5AA301D3CB64A00DC5EA3 /* Resources */ = {
+		AEC28B411FF6AAC20007AAB8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -823,143 +352,265 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		AEC3D8501FFAD089004C5947 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This if-statement means we'll only run the main script if the CommonCryptoModuleMap directory doesn't exist\n# Because otherwise the rest of the script causes a full recompile for anything where CommonCrypto is a dependency\n# Do a \"Clean Build Folder\" to remove this directory and trigger the rest of the script to run\nif [ -d \"${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap\" ]; then\necho \"${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap directory already exists, so skipping the rest of the script.\"\nexit 0\nfi\n\nmkdir -p \"${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap\"\ncat <<EOF > \"${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap/module.modulemap\"\nmodule CommonCrypto [system] {\n    header \"${SDKROOT}/usr/include/CommonCrypto/CommonCrypto.h\"\n    export *\n}\nEOF";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
-		AE06BFEB1D3E9BB100BC8D47 /* Sources */ = {
+		AEC28B351FF6AAC20007AAB8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE06C04D1D40EB1200BC8D47 /* EventsPool.swift in Sources */,
-				AE62408B1D50A4560062CAD4 /* EventsTracker.Context.swift in Sources */,
-				AE12AAEC1D59D44700BBEFFC /* PagedPublicationPageView.swift in Sources */,
-				AE58EDC71D537AE6002BC38A /* PagedPublicationView.swift in Sources */,
-				AE06C03C1D3FA70000BC8D47 /* SDKConfig.swift in Sources */,
-				AE72B5341EF11FD600DCAA0A /* GraphError.swift in Sources */,
-				AED8A9B21D81496A00C92ED5 /* PagedPublicationHotspotOverlayView.swift in Sources */,
-				AE2312AD1D6C84B7006B84BA /* PagedPublicationViewModels.swift in Sources */,
-				AE06C03E1D3FA70000BC8D47 /* EventsTracker.swift in Sources */,
-				AE72B5351EF11FD600DCAA0A /* GraphNetworkTransport.swift in Sources */,
-				AEEF1F9B1DBDD8C5005D6CD3 /* PagedPublicationGraphLoader.swift in Sources */,
-				AE72B5331EF11FD600DCAA0A /* GraphClient.swift in Sources */,
-				AE06C03D1D3FA70000BC8D47 /* Utils.swift in Sources */,
-				AE72B5361EF11FD600DCAA0A /* GraphQuery.swift in Sources */,
-				AE72B5381EF11FD600DCAA0A /* Result.swift in Sources */,
-				AED8A9E41D88132300C92ED5 /* PagedPublicationView.Events.swift in Sources */,
-				AE72B5371EF11FD600DCAA0A /* GraphRequestResponse.swift in Sources */,
+				AEC28B671FF6ABFC0007AAB8 /* CoreAPI.swift in Sources */,
+				AEC28B631FF6ABFC0007AAB8 /* EventsTracker.swift in Sources */,
+				AEC28B6A1FF6ABFC0007AAB8 /* Cancellable.swift in Sources */,
+				AEC28B681FF6ABFC0007AAB8 /* CoreAPIError.swift in Sources */,
+				AEC28B641FF6ABFC0007AAB8 /* ShopGunSDK.swift in Sources */,
+				AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Models.swift in Sources */,
+				AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */,
+				AEC28B661FF6ABFC0007AAB8 /* CoreAPI+Requests.swift in Sources */,
+				AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */,
+				AEC28B691FF6ABFC0007AAB8 /* SignedHTTPHeaders.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AEA5AA2E1D3CB64A00DC5EA3 /* Sources */ = {
+		AEC28B3F1FF6AAC20007AAB8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE06C0451D40C48A00BC8D47 /* ShopGunGraphTests.swift in Sources */,
-				AEA5AA3E1D3CB72000DC5EA3 /* ShopGunCoreTests.swift in Sources */,
-				AE06C0441D40C48A00BC8D47 /* ShopGunEventsTests_ObjC.m in Sources */,
-				AEA5AA3D1D3CB72000DC5EA3 /* ShopGunCoreTests_ObjC.m in Sources */,
-				AE06C0431D40C48A00BC8D47 /* ShopGunEventsTests.swift in Sources */,
-				AE06C0461D40C48A00BC8D47 /* ShopGunGraphTests_ObjC.m in Sources */,
+				AEC3D8571FFD87FB004C5947 /* ShopGunSDKTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		AE06C0491D40C4E400BC8D47 /* PBXTargetDependency */ = {
+		AEC28B461FF6AAC20007AAB8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AE06BFEF1D3E9BB100BC8D47 /* ShopGunSDK */;
-			targetProxy = AE06C0481D40C4E400BC8D47 /* PBXContainerItemProxy */;
+			target = AEC28B391FF6AAC20007AAB8 /* ShopGunSDK */;
+			targetProxy = AEC28B451FF6AAC20007AAB8 /* PBXContainerItemProxy */;
 		};
-		AE2F1C481E39303B00BAB26C /* PBXTargetDependency */ = {
+		AEC3D8521FFAD0B0004C5947 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = "Kingfisher-iOS";
-			targetProxy = AE2F1C471E39303B00BAB26C /* PBXContainerItemProxy */;
-		};
-		AE2F1C651E39307100BAB26C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "Valet-iOS";
-			targetProxy = AE2F1C641E39307100BAB26C /* PBXContainerItemProxy */;
-		};
-		AECC4F231D895C7B0017B16A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Verso;
-			targetProxy = AECC4F221D895C7B0017B16A /* PBXContainerItemProxy */;
+			target = AEC3D84C1FFAD075004C5947 /* CommonCryptoModuleMap */;
+			targetProxy = AEC3D8511FFAD0B0004C5947 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		AE06BFF61D3E9BB100BC8D47 /* Debug */ = {
+		AEC28B4C1FF6AAC20007AAB8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE4CC9971DB0F6D70087819C /* ShopGunSDK-Framework.xcconfig */;
+			baseConfigurationReference = AEC3D86C1FFD8E86004C5947 /* ShopGunSDK-Project-Debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		AEC28B4D1FF6AAC20007AAB8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AEC3D86E1FFD8E86004C5947 /* ShopGunSDK-Project-Release.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		AEC28B4F1FF6AAC20007AAB8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AEC3D86D1FFD8E86004C5947 /* ShopGunSDK-Framework.xcconfig */;
 			buildSettings = {
 			};
 			name = Debug;
 		};
-		AE06BFF71D3E9BB100BC8D47 /* Release */ = {
+		AEC28B501FF6AAC20007AAB8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE4CC9971DB0F6D70087819C /* ShopGunSDK-Framework.xcconfig */;
+			baseConfigurationReference = AEC3D86D1FFD8E86004C5947 /* ShopGunSDK-Framework.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;
 		};
-		AEA5A9E01D3CB11A00DC5EA3 /* Debug */ = {
+		AEC28B521FF6AAC20007AAB8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE4CC9961DB0F6D70087819C /* ShopGunSDK-Debug.xcconfig */;
+			baseConfigurationReference = AEC3D86F1FFD8E86004C5947 /* ShopGunSDK-Tests.xcconfig */;
 			buildSettings = {
 			};
 			name = Debug;
 		};
-		AEA5A9E11D3CB11A00DC5EA3 /* Release */ = {
+		AEC28B531FF6AAC20007AAB8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE4CC9981DB0F6D70087819C /* ShopGunSDK-Release.xcconfig */;
+			baseConfigurationReference = AEC3D86F1FFD8E86004C5947 /* ShopGunSDK-Tests.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;
 		};
-		AEA5AA3B1D3CB64A00DC5EA3 /* Debug */ = {
+		AEC3D84E1FFAD075004C5947 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE4CC9991DB0F6D70087819C /* ShopGunSDK-Tests.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = MN86AVA6GX;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
-		AEA5AA3C1D3CB64A00DC5EA3 /* Release */ = {
+		AEC3D84F1FFAD075004C5947 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE4CC9991DB0F6D70087819C /* ShopGunSDK-Tests.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = MN86AVA6GX;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AE06BFF51D3E9BB100BC8D47 /* Build configuration list for PBXNativeTarget "ShopGunSDK" */ = {
+		AEC28B341FF6AAC20007AAB8 /* Build configuration list for PBXProject "ShopGunSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AE06BFF61D3E9BB100BC8D47 /* Debug */,
-				AE06BFF71D3E9BB100BC8D47 /* Release */,
+				AEC28B4C1FF6AAC20007AAB8 /* Debug */,
+				AEC28B4D1FF6AAC20007AAB8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AEA5A9C81D3CB11A00DC5EA3 /* Build configuration list for PBXProject "ShopGunSDK" */ = {
+		AEC28B4E1FF6AAC20007AAB8 /* Build configuration list for PBXNativeTarget "ShopGunSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AEA5A9E01D3CB11A00DC5EA3 /* Debug */,
-				AEA5A9E11D3CB11A00DC5EA3 /* Release */,
+				AEC28B4F1FF6AAC20007AAB8 /* Debug */,
+				AEC28B501FF6AAC20007AAB8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AEA5AA3A1D3CB64A00DC5EA3 /* Build configuration list for PBXNativeTarget "ShopGunSDK-Tests" */ = {
+		AEC28B511FF6AAC20007AAB8 /* Build configuration list for PBXNativeTarget "ShopGunSDKTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AEA5AA3B1D3CB64A00DC5EA3 /* Debug */,
-				AEA5AA3C1D3CB64A00DC5EA3 /* Release */,
+				AEC28B521FF6AAC20007AAB8 /* Debug */,
+				AEC28B531FF6AAC20007AAB8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AEC3D84D1FFAD075004C5947 /* Build configuration list for PBXAggregateTarget "CommonCryptoModuleMap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AEC3D84E1FFAD075004C5947 /* Debug */,
+				AEC3D84F1FFAD075004C5947 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = AEA5A9C51D3CB11A00DC5EA3 /* Project object */;
+	rootObject = AEC28B311FF6AAC20007AAB8 /* Project object */;
 }

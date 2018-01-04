@@ -1,6 +1,0 @@
-
-github "square/Valet" ~> 2.4.2
-
-github "ShopGun/Verso-ios" "develop"
-
-github "onevcat/Kingfisher" ~> 4.1.0
