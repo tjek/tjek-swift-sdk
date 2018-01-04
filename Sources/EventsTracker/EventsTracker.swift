@@ -19,11 +19,9 @@ public final class EventsTracker {
     }
     
     public let settings: Settings
-    public var logLevel: ShopGunSDK.LogLevel
     
-    public init(settings: Settings, logLevel: ShopGunSDK.LogLevel) {
+    public init(settings: Settings) {
         self.settings = settings
-        self.logLevel = logLevel
     }
 }
 

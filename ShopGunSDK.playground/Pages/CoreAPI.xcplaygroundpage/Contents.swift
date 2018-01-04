@@ -1,6 +1,6 @@
 import PlaygroundSupport
 import Foundation
-import ShopGunSDK
+import ShopGunSDK // NOTE: you must build this targetting an iOS simulator
 
 PlaygroundPage.current.needsIndefiniteExecution = true
 
@@ -45,17 +45,35 @@ let coreAPISettings = CoreAPI.Settings(key: creds.key,
                                        locale: "en_GB",
                                        appVersion: "LH TEST - IGNORE")
 
-ShopGunSDK.logLevel = .verbose
-ShopGunSDK.configure(settings: .init(coreAPI: coreAPISettings, eventsTracker: nil))
+let logHandler: ShopGunSDK.LogHandler = { (msg, lvl, source, location) in
+    
+    let output: String
+    
+    let prefix: String
+    switch lvl {
+    case .important:
+        let filename = location.file.components(separatedBy: "/").last ?? location.file
+        output = """
+        🔥 \(msg)
+           👉 \(location.function) @ \(filename):\(location.line)
+        """
+    default:
+        output = "✅ \(msg)"
+    }
+    
+    print(output)
+}
+
+ShopGunSDK.configure(settings: .init(coreAPI: coreAPISettings, eventsTracker: nil), logHandler: logHandler)
 
 let token = ShopGunSDK.coreAPI.request(CoreAPI.Requests.allDealers()) { (result) in
-    switch result {
-    case let .error(error):
-        print("Failed: \(error)")
-    case let .success(dealers):
-        print("Success!")
-        dealers.forEach({ print($0) })
-    }
+//    switch result {
+//    case let .error(error):
+//        print("Failed: \(error)")
+//    case let .success(dealers):
+//        print("Success!")
+//        dealers.forEach({ print($0) })
+//    }
 }
 
 //DispatchQueue.main.asyncAfter(deadline: .now()+0.2) {

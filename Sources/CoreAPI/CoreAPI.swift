@@ -28,11 +28,9 @@ final public class CoreAPI {
     }
     
     public let settings: Settings
-    public var logLevel: ShopGunSDK.LogLevel
     
-    public init(settings: Settings, logLevel: ShopGunSDK.LogLevel) {
+    public init(settings: Settings) {
         self.settings = settings
-        self.logLevel = logLevel
         
         // TODO: load from file
         self.authState = .unauthorized
@@ -47,7 +45,7 @@ final public class CoreAPI {
     // once complete it tries to decode the ResponseType, and return that as a Result .success case
     // if it fails it tries to decode a CoreAPIError to use in the Result's .error case
     @discardableResult public func request<R: CoreAPIRequestable>(_ request: R, completion:((Result<R.ResponseType>)->())?) -> Cancellable {
-        print("[ShopGunSDK.CoreAPI] requesting \(request)")
+        ShopGunSDK.log("Requesting \(request)", level: .verbose, source: .CoreAPI)
         
         let token = RequestToken(owner: self)
         doRequestOperation(RequestOperation<R>(request: request, token: token, completion: completion))
@@ -63,12 +61,13 @@ final public class CoreAPI {
     
     var authState: AuthState {
         didSet {
-            print("authState did change!", authState)
             // TODO: some kind of notification?
             if case let .authorized(session) = authState {
                 // TODO: save the session to disk
                 // TODO: passing clientId to different parts of the SDK?
-//                print("[ShopGunSDK.CoreAPI] authorized", session)
+                
+                ShopGunSDK.log("Authorized \(session)", level: .verbose, source: .CoreAPI)
+                
                 // TODO: check if session token & secret have changed
                 regenerateURLSession()
             }
@@ -119,6 +118,7 @@ final public class CoreAPI {
         authState = .authorizing
         failedAuthRenewCount = 0
         
+        ShopGunSDK.log("Renewing AuthSession…", level: .verbose, source: .CoreAPI)
         //            print("renewAuthSession")
         // TODO: perform the 'renew' request, not just the 'create' request
         
@@ -356,7 +356,8 @@ extension URLSession {
                 } else {
                     // TODO: Real error if client/server error with unknown data format
                     let reason = HTTPURLResponse.localizedString(forStatusCode: httpStatusCode)
-                    print(reason)
+                    
+                    ShopGunSDK.log("Unknown Server/Client Error: '\(reason)'", level: .important, source: .CoreAPI)
                     error = NSError(domain: "Unknown Server/Client Error", code: 123, userInfo: nil)
                 }
                 

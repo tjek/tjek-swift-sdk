@@ -1,11 +1,11 @@
 //
-//  _____ _           _____
-// |   __| |_ ___ ___|   __|_ _ ___
-// |__   |   | . | . |  |  | | |   |
-// |_____|_|_|___|  _|_____|___|_|_|
-//               |_|
+//  ┌────┬─┐         ┌─────┐
+//  │  ──┤ └─┬───┬───┤  ┌──┼─┬─┬───┐
+//  ├──  │ ╷ │ · │ · │  ╵  │ ╵ │ ╷ │
+//  └────┴─┴─┴───┤ ┌─┴─────┴───┴─┴─┘
+//               └─┘
 //
-//  Copyright (c) 2016 ShopGun. All rights reserved.
+//  Copyright (c) 2017 ShopGun. All rights reserved.
 
 #include "Shared/Platform/iOS.xcconfig"
 #include "Shared/Product/DynamicFramework.xcconfig"
@@ -24,6 +24,7 @@ INFOPLIST_FILE = $(SRCROOT)/Resources/Info.plist
 ENABLE_TESTABILITY = YES
 
 HEADER_SEARCH_PATHS = $(inherited) ${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap
+
 INSTALL_PATH = $(LOCAL_LIBRARY_DIR)/Frameworks
 DYLIB_COMPATIBILITY_VERSION = 1
 DYLIB_CURRENT_VERSION = 1
