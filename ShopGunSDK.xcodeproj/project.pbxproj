@@ -22,6 +22,11 @@
 
 /* Begin PBXBuildFile section */
 		AE0654871FFED399009F6F92 /* CoreAPI+UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0654861FFED399009F6F92 /* CoreAPI+UserAgent.swift */; };
+		AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */; };
+		AE85C5E42000384500263F8B /* CoreAPI+AuthVault.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE85C5E32000384500263F8B /* CoreAPI+AuthVault.swift */; };
+		AE85C5ED20017EE600263F8B /* URLSession+CoreAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE85C5EC20017EE600263F8B /* URLSession+CoreAPI.swift */; };
+		AE85C5EF2001884100263F8B /* Result+DecodeJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE85C5EE2001884100263F8B /* Result+DecodeJSON.swift */; };
+		AE85C5F12002B76C00263F8B /* CoreAPI+RequestOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE85C5F02002B76B00263F8B /* CoreAPI+RequestOperation.swift */; };
 		AEC28B441FF6AAC20007AAB8 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */; };
 		AEC28B631FF6ABFC0007AAB8 /* EventsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */; };
 		AEC28B641FF6ABFC0007AAB8 /* ShopGunSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B581FF6ABFC0007AAB8 /* ShopGunSDK.swift */; };
@@ -29,7 +34,6 @@
 		AEC28B661FF6ABFC0007AAB8 /* CoreAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5B1FF6ABFC0007AAB8 /* CoreAPIRequest.swift */; };
 		AEC28B671FF6ABFC0007AAB8 /* CoreAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5C1FF6ABFC0007AAB8 /* CoreAPI.swift */; };
 		AEC28B681FF6ABFC0007AAB8 /* CoreAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5D1FF6ABFC0007AAB8 /* CoreAPIError.swift */; };
-		AEC28B691FF6ABFC0007AAB8 /* CoreAPI+SignedHTTPHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5E1FF6ABFC0007AAB8 /* CoreAPI+SignedHTTPHeaders.swift */; };
 		AEC28B6A1FF6ABFC0007AAB8 /* Cancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */; };
 		AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */; };
 		AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B621FF6ABFC0007AAB8 /* Result.swift */; };
@@ -56,6 +60,11 @@
 
 /* Begin PBXFileReference section */
 		AE0654861FFED399009F6F92 /* CoreAPI+UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+UserAgent.swift"; sourceTree = "<group>"; };
+		AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
+		AE85C5E32000384500263F8B /* CoreAPI+AuthVault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+AuthVault.swift"; sourceTree = "<group>"; };
+		AE85C5EC20017EE600263F8B /* URLSession+CoreAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+CoreAPI.swift"; sourceTree = "<group>"; };
+		AE85C5EE2001884100263F8B /* Result+DecodeJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+DecodeJSON.swift"; sourceTree = "<group>"; };
+		AE85C5F02002B76B00263F8B /* CoreAPI+RequestOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+RequestOperation.swift"; sourceTree = "<group>"; };
 		AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC28B431FF6AAC20007AAB8 /* ShopGunSDK-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunSDK-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTracker.swift; sourceTree = "<group>"; };
@@ -64,7 +73,6 @@
 		AEC28B5B1FF6ABFC0007AAB8 /* CoreAPIRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAPIRequest.swift; sourceTree = "<group>"; };
 		AEC28B5C1FF6ABFC0007AAB8 /* CoreAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAPI.swift; sourceTree = "<group>"; };
 		AEC28B5D1FF6ABFC0007AAB8 /* CoreAPIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAPIError.swift; sourceTree = "<group>"; };
-		AEC28B5E1FF6ABFC0007AAB8 /* CoreAPI+SignedHTTPHeaders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreAPI+SignedHTTPHeaders.swift"; sourceTree = "<group>"; };
 		AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cancellable.swift; sourceTree = "<group>"; };
 		AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericIdentifier.swift; sourceTree = "<group>"; };
 		AEC28B621FF6ABFC0007AAB8 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
@@ -152,8 +160,10 @@
 				AEC28B5A1FF6ABFC0007AAB8 /* CoreAPI+Models.swift */,
 				AEC28B5B1FF6ABFC0007AAB8 /* CoreAPIRequest.swift */,
 				AEC28B5D1FF6ABFC0007AAB8 /* CoreAPIError.swift */,
-				AEC28B5E1FF6ABFC0007AAB8 /* CoreAPI+SignedHTTPHeaders.swift */,
+				AE85C5F02002B76B00263F8B /* CoreAPI+RequestOperation.swift */,
+				AE85C5E32000384500263F8B /* CoreAPI+AuthVault.swift */,
 				AE0654861FFED399009F6F92 /* CoreAPI+UserAgent.swift */,
+				AE85C5EC20017EE600263F8B /* URLSession+CoreAPI.swift */,
 			);
 			name = CoreAPI;
 			path = Sources/CoreAPI;
@@ -165,6 +175,8 @@
 				AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */,
 				AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */,
 				AEC28B621FF6ABFC0007AAB8 /* Result.swift */,
+				AE85C5EE2001884100263F8B /* Result+DecodeJSON.swift */,
+				AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */,
 			);
 			name = Utils;
 			path = Sources/Utils;
@@ -377,16 +389,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				AEC28B671FF6ABFC0007AAB8 /* CoreAPI.swift in Sources */,
+				AE85C5F12002B76C00263F8B /* CoreAPI+RequestOperation.swift in Sources */,
 				AEC28B631FF6ABFC0007AAB8 /* EventsTracker.swift in Sources */,
 				AEC28B6A1FF6ABFC0007AAB8 /* Cancellable.swift in Sources */,
 				AEC28B681FF6ABFC0007AAB8 /* CoreAPIError.swift in Sources */,
 				AEC28B641FF6ABFC0007AAB8 /* ShopGunSDK.swift in Sources */,
+				AE85C5E42000384500263F8B /* CoreAPI+AuthVault.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Models.swift in Sources */,
 				AE0654871FFED399009F6F92 /* CoreAPI+UserAgent.swift in Sources */,
 				AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */,
+				AE85C5EF2001884100263F8B /* Result+DecodeJSON.swift in Sources */,
 				AEC28B661FF6ABFC0007AAB8 /* CoreAPIRequest.swift in Sources */,
+				AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */,
 				AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */,
-				AEC28B691FF6ABFC0007AAB8 /* CoreAPI+SignedHTTPHeaders.swift in Sources */,
+				AE85C5ED20017EE600263F8B /* URLSession+CoreAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

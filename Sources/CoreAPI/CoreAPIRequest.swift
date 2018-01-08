@@ -5,7 +5,7 @@
 //  └────┴─┴─┴───┤ ┌─┴─────┴───┴─┴─┘
 //               └─┘
 //
-//  Copyright (c) 2017 ShopGun. All rights reserved.
+//  Copyright (c) 2018 ShopGun. All rights reserved.
 
 import Foundation
 
@@ -84,4 +84,9 @@ extension CoreAPI {
             self.maxRetryCount = maxRetryCount
         }
     }
+}
+
+extension CoreAPI {
+    // Simple namespace for keeping Requests
+    public struct Requests { private init() {} }
 }

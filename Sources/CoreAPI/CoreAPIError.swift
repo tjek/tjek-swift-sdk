@@ -5,7 +5,7 @@
 //  └────┴─┴─┴───┤ ┌─┴─────┴───┴─┴─┘
 //               └─┘
 //
-//  Copyright (c) 2017 ShopGun. All rights reserved.
+//  Copyright (c) 2018 ShopGun. All rights reserved.
 
 import Foundation
 
@@ -36,32 +36,6 @@ public struct CoreAPIError: Error, Decodable {
         case details
         case previous
         case note = "@note.1"
-    }
-}
-
-extension CoreAPIError: CustomStringConvertible {
-    public var description: String {
-        // "CoreAPIError [session: 1107] 'missing token' (httpStatus: 400 / id: 00jbhp0ycrq192uwcxnzs56wt00wdprf) 'Missing token. No token found in request to an endpoint that requires a valid token.'"
-        var string = "CoreAPIError [\(String(describing: category)): \(code)]"
-        
-        if let msg = message {
-            string.append(" '\(msg)'")
-        }
-        
-        let additionalInfo: [(String, Any?)] = [("httpStatus", httpStatusCode),
-                                                ("id", id)]
-        let infoString: String = additionalInfo.reduce([String](), {
-            guard let val = $1.1 else { return $0 }
-            return $0 + ["\($1.0): \(val)"]
-        }).joined(separator: " / ")
-        if infoString.count > 0 {
-            string.append(" (\(infoString))")
-        }
-        
-        if let deets = details {
-            string.append(" '\(deets.replacingOccurrences(of: "\n", with: ". "))'")
-        }
-        return string
     }
 }
 
@@ -204,5 +178,33 @@ extension CoreAPIError {
         default:
             return false
         }
+    }
+}
+
+// MARK: -
+
+extension CoreAPIError: CustomStringConvertible {
+    public var description: String {
+        // "CoreAPIError [session: 1107] 'missing token' (httpStatus: 400 / id: 00jbhp0ycrq192uwcxnzs56wt00wdprf) 'Missing token. No token found in request to an endpoint that requires a valid token.'"
+        var string = "CoreAPIError [\(String(describing: category)): \(code)]"
+        
+        if let msg = message {
+            string.append(" '\(msg)'")
+        }
+        
+        let additionalInfo: [(String, Any?)] = [("httpStatus", httpStatusCode),
+                                                ("id", id)]
+        let infoString: String = additionalInfo.reduce([String](), {
+            guard let val = $1.1 else { return $0 }
+            return $0 + ["\($1.0): \(val)"]
+        }).joined(separator: " / ")
+        if infoString.count > 0 {
+            string.append(" (\(infoString))")
+        }
+        
+        if let deets = details {
+            string.append(" '\(deets.replacingOccurrences(of: "\n", with: ". "))'")
+        }
+        return string
     }
 }

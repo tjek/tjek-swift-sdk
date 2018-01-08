@@ -9,9 +9,17 @@
 
 import Foundation
 
-extension CoreAPI {
-    internal static var userAgent: String {
-        // TODO: Real UserAgent
-        return "LH-DummyUserAgent-Test"
+extension Result where A == Data {
+    func decodeJSON<R>() -> Result<R> where R: Decodable {
+        switch self {
+        case .error(let err):
+            return .error(err)
+        case .success(let data):
+            do {
+                return .success(try JSONDecoder().decode(R.self, from: data))
+            } catch let decodingError {
+                return .error(decodingError)
+            }
+        }
     }
 }

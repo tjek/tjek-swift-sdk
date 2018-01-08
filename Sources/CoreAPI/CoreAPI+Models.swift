@@ -5,7 +5,7 @@
 //  └────┴─┴─┴───┤ ┌─┴─────┴───┴─┴─┘
 //               └─┘
 //
-//  Copyright (c) 2017 ShopGun. All rights reserved.
+//  Copyright (c) 2018 ShopGun. All rights reserved.
 
 import Foundation
 
@@ -23,50 +23,8 @@ extension CoreAPI {
     
     // MARK: -
     
-    public struct Person: Decodable {
-        //        var email: String
-    }
-    
-    // MARK: -
-    
-    internal struct AuthSession: Decodable {
-        var clientId: String?
-        var token: String
-        var expiry: Date
-        
-        var auth: (person: CoreAPI.Person, provider: AuthProvider)?
-        
-        enum AuthProvider: String, Decodable {
-            case shopgun = "shopgun"
-            case facebook = "facebook"
-        }
-        
-        enum CodingKeys: String, CodingKey {
-            case clientId   = "client_id"
-            case token      = "token"
-            case expiry     = "expires"
-            case provider   = "provider"
-            case person     = "user"
-        }
-        
-        init(from decoder: Decoder) throws {
-            let values = try decoder.container(keyedBy: CodingKeys.self)
-            
-            self.clientId = try? values.decode(String.self, forKey: .clientId)
-            self.token = try values.decode(String.self, forKey: .token)
-            
-            if let provider = try? values.decode(AuthProvider.self, forKey: .provider),
-                let person = try? values.decode(Person.self, forKey: .person) {
-                self.auth = (person, provider)
-            }
-            
-            let expiryString = try values.decode(String.self, forKey: .expiry)
-            if let expiryDate = CoreAPI.dateFormatter.date(from: expiryString) {
-                self.expiry = expiryDate
-            } else {
-                throw DecodingError.dataCorruptedError(forKey: .expiry, in: values, debugDescription: "Date string does not match format expected by formatter.")
-            }
-        }
+    public struct Person: Codable {
+        var email: String
     }
     
     // MARK: -

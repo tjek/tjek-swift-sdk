@@ -42,7 +42,6 @@ let logHandler: ShopGunSDK.LogHandler = { (msg, lvl, source, location) in
     case .verbose:
         output = "💬 \(msg)"
     case .debug:
-        //        return
         output = "🕸 \(msg)"
     }
     
@@ -71,7 +70,7 @@ let coreAPISettings = CoreAPI.Settings(key: creds.key,
 
 ShopGunSDK.configure(settings: .init(coreAPI: coreAPISettings, eventsTracker: nil), logHandler: logHandler)
 
-//for i in 0..<5 {
+for i in 0..<5 {
     let token = ShopGunSDK.coreAPI.request(CoreAPI.Requests.allDealers()) { (result) in
         switch result {
         case .error(let error):
@@ -80,9 +79,19 @@ ShopGunSDK.configure(settings: .init(coreAPI: coreAPISettings, eventsTracker: ni
             ShopGunSDK.log("Success!: \n \(dealers.map({ $0.name }).joined(separator:", "))", level: .important, source: .other(name: "Example"))
         }
     }
-//}
-
-DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
-    token.cancel()
+    ShopGunSDK.coreAPI.login(credentials: .shopgun(email: "lh+dev@shopgun.com", password: "123456"))
 }
+
+//DispatchQueue.main.asyncAfter(deadline: .now()+0.3) {
+//    ShopGunSDK.coreAPI.cancelAll()
+//
+//    ShopGunSDK.coreAPI.request(CoreAPI.Requests.allDealers()) { (result) in
+//        switch result {
+//        case .error(let error):
+//            ShopGunSDK.log("xFailed: \(error)", level: .error, source: .other(name: "Example"))
+//        case .success(let dealers):
+//            ShopGunSDK.log("xSuccess!: \n \(dealers.map({ $0.name }).joined(separator:", "))", level: .important, source: .other(name: "Example"))
+//        }
+//    }
+//}
 

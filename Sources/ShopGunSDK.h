@@ -5,7 +5,7 @@
 //  └────┴─┴─┴───┤ ┌─┴─────┴───┴─┴─┘
 //               └─┘
 //
-//  Copyright (c) 2017 ShopGun. All rights reserved.
+//  Copyright (c) 2018 ShopGun. All rights reserved.
 
 @import Foundation;
 //#import "CommonCrypto/CommonCrypto.h"
