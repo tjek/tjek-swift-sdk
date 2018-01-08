@@ -99,7 +99,7 @@ extension CoreAPI {
             switch result {
             case .success:
                 self.finish(withResult: result)
-            case .error(let error as CoreAPIError)
+            case .error(let error as CoreAPI.APIError)
                 where error.isRetryable && self.remainingRetries > 0:
                 // The error is retryable (and hasnt been retried too many times) ... so retry it
                 self.remainingRetries -= 1
@@ -107,7 +107,7 @@ extension CoreAPI {
                 self.queue.asyncAfter(deadline: .now() + (error.canRetryAfter ?? 0.0)) { [weak self] in
                     self?.startPerformingRequest()
                 }
-            case .error(let error as CoreAPIError)
+            case .error(let error as CoreAPI.APIError)
                 where error.requiresRenewedAuthSession && self.remainingRegenerateAuthRetries > 0:
                 // It was an auth error (and we havnt run out of retries)
                 // Trigger a regenerate on the vault, and retry

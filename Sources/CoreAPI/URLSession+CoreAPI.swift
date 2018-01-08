@@ -42,7 +42,7 @@ extension CoreAPI {
         // client or server error - try to decode the error data
         guard (400...599).contains(httpStatusCode) == false else {
             let error: Error
-            if var apiError = try? JSONDecoder().decode(CoreAPIError.self, from: data) {
+            if var apiError = try? JSONDecoder().decode(CoreAPI.APIError.self, from: data) {
                 apiError.httpResponse = response
                 error = apiError
             } else {

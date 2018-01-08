@@ -79,9 +79,9 @@ extension CoreAPI {
             case (.reauthorize(let credentials), .authorized):
                 request = AuthSessionResponse.renewRequest(clientId: self.clientId, additionalParams: credentials.requestParams)
             case (.reauthorize, .unauthorized):
-                // if we have no valid token at all when trying to reauthorize then no-op
-                // TODO: maybe do something where we first create then reauthorize
-                return
+                // if we have no valid token at all when trying to reauthorize then just create
+                // TODO: maybe do something where we authorize on completion?
+                request = AuthSessionResponse.createRequest(clientId: self.clientId, apiKey: self.key, tokenLife: self.tokenLife)
             }
             
             var urlRequest = request.urlRequest(for: self.baseURL, additionalParameters: [:])
@@ -207,11 +207,14 @@ extension CoreAPI {
                     completion(.success(signedRequest))
                 }
                 
+            case .error(let cancelError as NSError)
+                where cancelError.domain == NSURLErrorDomain && cancelError.code == URLError.Code.cancelled.rawValue:
+                // if cancelled then ignore
+                break;
             case .error(let regenError):
                 ShopGunSDK.log("failed to update authSession \(regenError)", level: .error, source: .CoreAPI)
                 
                 // TODO: depending upon the error do different things
-                // - if cancelled then ignore
                 // - what if retryable? network error?
                 for (_, completion) in self.pendingSignedRequests {
                     completion(.error(regenError))
