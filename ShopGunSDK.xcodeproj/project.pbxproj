@@ -22,6 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		AE0654871FFED399009F6F92 /* CoreAPI+UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0654861FFED399009F6F92 /* CoreAPI+UserAgent.swift */; };
+		AE06548B1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06548A1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift */; };
 		AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */; };
 		AE85C5E42000384500263F8B /* CoreAPI+AuthVault.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE85C5E32000384500263F8B /* CoreAPI+AuthVault.swift */; };
 		AE85C5ED20017EE600263F8B /* URLSession+CoreAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE85C5EC20017EE600263F8B /* URLSession+CoreAPI.swift */; };
@@ -42,6 +43,69 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		AE0654991FFEE24C009F6F92 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EA1E1F831A8C46080067C991;
+			remoteInfo = "Valet iOS";
+		};
+		AE06549B1FFEE24C009F6F92 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EA1E1F8E1A8C46090067C991;
+			remoteInfo = "Valet iOS Tests";
+		};
+		AE06549D1FFEE24C009F6F92 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EAF894741B053E0500EDAD6C;
+			remoteInfo = ValetTouchIDTest;
+		};
+		AE06549F1FFEE24C009F6F92 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EAEAA8821B167A8600F7AA98;
+			remoteInfo = "Valet Mac";
+		};
+		AE0654A11FFEE24C009F6F92 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EAEAA88C1B167A8700F7AA98;
+			remoteInfo = "Valet Mac Tests";
+		};
+		AE0654A31FFEE24C009F6F92 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 26E6827C1BA8B3F900EFF4EA;
+			remoteInfo = "Valet-iOS";
+		};
+		AE0654A51FFEE24C009F6F92 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 26E6828A1BA8B4B200EFF4EA;
+			remoteInfo = "Valet-Mac";
+		};
+		AE0654A71FFEE24C009F6F92 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 371150A51E2962D8004A45D4;
+			remoteInfo = "Valet iOS Test Host App";
+		};
+		AE0654A91FFEE266009F6F92 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 26E6827B1BA8B3F900EFF4EA;
+			remoteInfo = "Valet-iOS";
+		};
 		AEC28B451FF6AAC20007AAB8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AEC28B311FF6AAC20007AAB8 /* Project object */;
@@ -60,6 +124,8 @@
 
 /* Begin PBXFileReference section */
 		AE0654861FFED399009F6F92 /* CoreAPI+UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+UserAgent.swift"; sourceTree = "<group>"; };
+		AE06548A1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShopGunSDK+SecureDataStore.swift"; sourceTree = "<group>"; };
+		AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Valet.xcodeproj; path = External/Valet/Valet.xcodeproj; sourceTree = "<group>"; };
 		AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
 		AE85C5E32000384500263F8B /* CoreAPI+AuthVault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+AuthVault.swift"; sourceTree = "<group>"; };
 		AE85C5EC20017EE600263F8B /* URLSession+CoreAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+CoreAPI.swift"; sourceTree = "<group>"; };
@@ -119,6 +185,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AE06548D1FFEE23D009F6F92 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AE06548F1FFEE24B009F6F92 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AE06549A1FFEE24C009F6F92 /* libValet.a */,
+				AE06549C1FFEE24C009F6F92 /* Valet iOS Tests.xctest */,
+				AE06549E1FFEE24C009F6F92 /* ValetTouchIDTest.app */,
+				AE0654A01FFEE24C009F6F92 /* libValet.dylib */,
+				AE0654A21FFEE24C009F6F92 /* Valet Mac Tests.xctest */,
+				AE0654A41FFEE24C009F6F92 /* Valet.framework */,
+				AE0654A61FFEE24C009F6F92 /* Valet.framework */,
+				AE0654A81FFEE24C009F6F92 /* Valet iOS Test Host App.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		AEC28B301FF6AAC20007AAB8 = {
 			isa = PBXGroup;
 			children = (
@@ -131,6 +220,7 @@
 				AEC28B701FF6AC8A0007AAB8 /* Resources */,
 				AEC3D8531FFD87FB004C5947 /* Tests */,
 				AEC3D85B1FFD8E86004C5947 /* Configurations */,
+				AE06548D1FFEE23D009F6F92 /* Frameworks */,
 				AEC28B3B1FF6AAC20007AAB8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -176,6 +266,7 @@
 				AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */,
 				AEC28B621FF6ABFC0007AAB8 /* Result.swift */,
 				AE85C5EE2001884100263F8B /* Result+DecodeJSON.swift */,
+				AE06548A1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift */,
 				AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */,
 			);
 			name = Utils;
@@ -281,6 +372,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				AE0654AA1FFEE266009F6F92 /* PBXTargetDependency */,
 				AEC3D8521FFAD0B0004C5947 /* PBXTargetDependency */,
 			);
 			name = ShopGunSDK;
@@ -341,6 +433,12 @@
 			mainGroup = AEC28B301FF6AAC20007AAB8;
 			productRefGroup = AEC28B3B1FF6AAC20007AAB8 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = AE06548F1FFEE24B009F6F92 /* Products */;
+					ProjectRef = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				AEC28B391FF6AAC20007AAB8 /* ShopGunSDK */,
@@ -349,6 +447,65 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		AE06549A1FFEE24C009F6F92 /* libValet.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libValet.a;
+			remoteRef = AE0654991FFEE24C009F6F92 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE06549C1FFEE24C009F6F92 /* Valet iOS Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Valet iOS Tests.xctest";
+			remoteRef = AE06549B1FFEE24C009F6F92 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE06549E1FFEE24C009F6F92 /* ValetTouchIDTest.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = ValetTouchIDTest.app;
+			remoteRef = AE06549D1FFEE24C009F6F92 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE0654A01FFEE24C009F6F92 /* libValet.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libValet.dylib;
+			remoteRef = AE06549F1FFEE24C009F6F92 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE0654A21FFEE24C009F6F92 /* Valet Mac Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Valet Mac Tests.xctest";
+			remoteRef = AE0654A11FFEE24C009F6F92 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE0654A41FFEE24C009F6F92 /* Valet.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Valet.framework;
+			remoteRef = AE0654A31FFEE24C009F6F92 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE0654A61FFEE24C009F6F92 /* Valet.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Valet.framework;
+			remoteRef = AE0654A51FFEE24C009F6F92 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE0654A81FFEE24C009F6F92 /* Valet iOS Test Host App.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "Valet iOS Test Host App.app";
+			remoteRef = AE0654A71FFEE24C009F6F92 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		AEC28B381FF6AAC20007AAB8 /* Resources */ = {
@@ -396,6 +553,7 @@
 				AEC28B641FF6ABFC0007AAB8 /* ShopGunSDK.swift in Sources */,
 				AE85C5E42000384500263F8B /* CoreAPI+AuthVault.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Models.swift in Sources */,
+				AE06548B1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift in Sources */,
 				AE0654871FFED399009F6F92 /* CoreAPI+UserAgent.swift in Sources */,
 				AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */,
 				AE85C5EF2001884100263F8B /* Result+DecodeJSON.swift in Sources */,
@@ -417,6 +575,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		AE0654AA1FFEE266009F6F92 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Valet-iOS";
+			targetProxy = AE0654A91FFEE266009F6F92 /* PBXContainerItemProxy */;
+		};
 		AEC28B461FF6AAC20007AAB8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AEC28B391FF6AAC20007AAB8 /* ShopGunSDK */;

@@ -13,11 +13,10 @@ final public class CoreAPI {
     
     public let settings: Settings
     
-    internal init(settings: Settings) {
+    internal init(settings: Settings, secureDataStore: ShopGunSDKSecureDataStore) {
         self.settings = settings
 
-        // TODO: Make a store using settings that are passed in.
-        self.authVault = AuthVault(baseURL: settings.baseURL, key: settings.key, secret: settings.secret, store: nil)
+        self.authVault = AuthVault(baseURL: settings.baseURL, key: settings.key, secret: settings.secret, secureDataStore: secureDataStore)
         
         // Build the urlSession that requests will be run on
         let config = URLSessionConfiguration.default
@@ -79,7 +78,6 @@ extension CoreAPI_PerformRequests {
                                          completion:  { (dataResult) in
                                             // Make sure the completion is always called on main
                                             DispatchQueue.main.async {
-                                                print("completed", token.id, dataResult)
                                                 completion?(dataResult)
                                             }
             })

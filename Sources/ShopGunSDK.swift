@@ -11,13 +11,19 @@ import Foundation
 
 public struct ShopGunSDK {
     
+    public typealias LogHandler = (_ message: String, _ level: LogLevel, _ source: LogSource, _ location: (file: String, function: String, line: Int)) -> ()
+    
     public struct Settings {
         public var coreAPI: CoreAPI.Settings?
         public var eventsTracker: EventsTracker.Settings?
         
-        public init(coreAPI: CoreAPI.Settings?, eventsTracker: EventsTracker.Settings?) {
+        // if this is set then secure data will available to other apps (check entitlements)
+        public var sharedKeychainGroupId: String?
+        
+        public init(coreAPI: CoreAPI.Settings?, eventsTracker: EventsTracker.Settings?, sharedKeychainGroupId: String? = nil) {
             self.coreAPI = coreAPI
             self.eventsTracker = eventsTracker
+            self.sharedKeychainGroupId = sharedKeychainGroupId
         }
         
         // TODO: need a way to get default settings from a .plist file
@@ -25,14 +31,19 @@ public struct ShopGunSDK {
     
     // MARK: -
     
-    public typealias LogHandler = (_ message: String, _ level: LogLevel, _ source: LogSource, _ location: (file: String, function: String, line: Int)) -> ()
-    
     public static func configure(settings: Settings, logHandler: LogHandler? = nil) {
+        
+        let dataStore: ShopGunSDKSecureDataStore
+        if ShopGunSDK.isRunningInPlayground {
+            dataStore = PlaygroundDataStore()
+        } else {
+            dataStore = KeychainDataStore(sharedKeychainGroupId: settings.sharedKeychainGroupId)
+        }
         
         var coreAPI: CoreAPI? = nil
         if let coreAPISettings = settings.coreAPI {
             ShopGunSDK.log("Configuring CoreAPI", level: .verbose, source: .ShopGunSDK)
-            coreAPI = CoreAPI(settings: coreAPISettings)
+            coreAPI = CoreAPI(settings: coreAPISettings, secureDataStore: dataStore)
         }
         
         var eventsTracker: EventsTracker? = nil
@@ -43,6 +54,7 @@ public struct ShopGunSDK {
         
         _shared = ShopGunSDK(coreAPI: coreAPI,
                              eventsTracker: eventsTracker,
+                             secureDataStore: dataStore,
                              logHandler: logHandler)
     }
     
@@ -74,17 +86,24 @@ public struct ShopGunSDK {
     
     private static var _shared: ShopGunSDK?
     
-    private init(coreAPI: CoreAPI?, eventsTracker: EventsTracker?, logHandler: LogHandler?) {
+    private init(coreAPI: CoreAPI?, eventsTracker: EventsTracker?, secureDataStore: ShopGunSDKSecureDataStore, logHandler: LogHandler?) {
         self.coreAPI = coreAPI
         self.eventsTracker = eventsTracker
         self.logHandler = logHandler
+        self.secureDataStore = secureDataStore
     }
     
     private let coreAPI: CoreAPI?
     private let eventsTracker: EventsTracker?
-    private let logHandler: LogHandler?
     
-    // MARK: - Logging
+    private let secureDataStore: ShopGunSDKSecureDataStore
+    private let logHandler: LogHandler?
+}
+
+// MARK: -
+
+private typealias ShopGunSDK_Logging = ShopGunSDK
+extension ShopGunSDK_Logging {
     
     public enum LogLevel {
         case error

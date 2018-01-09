@@ -10,16 +10,9 @@
 import Foundation
 import CommonCrypto
 
-// How to read/save the state to disk
-protocol CoreAPIAuthVaultStore {
-    func updateAuth(_ auth: (token: String, user: CoreAPI.AuthorizedUser?)?, clientId: CoreAPI.AuthVault.ClientIdentifier?)
-    func loadAuth() -> (auth: (token: String, user: CoreAPI.AuthorizedUser?)?, clientId: CoreAPI.AuthVault.ClientIdentifier?)
-}
-
 extension CoreAPI {
     
     final class AuthVault {
-        
         // MARK: - Types
         
         enum AuthRegenerationType {
@@ -37,12 +30,12 @@ extension CoreAPI {
         
         // TODO: Need additional locale/version properties that need to be passed in. And userAgent. Maybe just accept a pre-configured URLSession param
         // TODO: notify of user changes somehow
-        init(baseURL: URL, key: String, secret: String, tokenLife: Int = 7_776_000, store: CoreAPIAuthVaultStore?) {
+        init(baseURL: URL, key: String, secret: String, tokenLife: Int = 7_776_000, secureDataStore: ShopGunSDKSecureDataStore?) {
             self.baseURL = baseURL
             self.key = key
             self.secret = secret
             self.tokenLife = tokenLife
-            self.store = store
+            self.secureDataStore = secureDataStore
             
             let sessionConfig = URLSessionConfiguration.default
             self.urlSession = URLSession(configuration: sessionConfig)
@@ -50,12 +43,11 @@ extension CoreAPI {
             self.activeRegenerateTask = nil
             
             // load clientId/authState from the store (if provided)
-            let storedAuth = store?.loadAuth()
-
-            if let auth = storedAuth?.auth {
-                self.authState = .authorized(token: auth.token, user: auth.user, clientId: storedAuth?.clientId)
+            let storedAuth = AuthVault.loadFromDataStore(secureDataStore)
+            if let auth = storedAuth.auth {
+                self.authState = .authorized(token: auth.token, user: auth.user, clientId: storedAuth.clientId)
             } else {
-                self.authState = .unauthorized(error: nil, clientId: storedAuth?.clientId)
+                self.authState = .unauthorized(error: nil, clientId: storedAuth.clientId)
             }
         }
 
@@ -151,7 +143,7 @@ extension CoreAPI {
         private let key: String
         private let secret: String
         private let tokenLife: Int
-        private let store: CoreAPIAuthVaultStore?
+        private weak var secureDataStore: ShopGunSDKSecureDataStore?
         private let urlSession: URLSession
 
         // if we are in the process of regenerating the token, this is set
@@ -178,11 +170,13 @@ extension CoreAPI {
         
         /// Save the current AuthState to the store
         private func updateStore() {
+            guard let store = self.secureDataStore else { return }
+            
             switch self.authState {
             case let .unauthorized(_, clientId):
-                self.store?.updateAuth(nil, clientId: clientId)
+                AuthVault.updateDataStore(store, data: StoreData(auth: nil, clientId: clientId))
             case let .authorized(token, user, clientId):
-                self.store?.updateAuth((token: token, user: user), clientId: clientId)
+                AuthVault.updateDataStore(store, data: StoreData(auth: (token: token, user: user), clientId: clientId))
             }
         }
         
@@ -221,62 +215,136 @@ extension CoreAPI {
                 }
             }
         }
+    }
+}
+
+// MARK: -
+
+extension CoreAPI.AuthVault {
+    
+    /// The response from requests to the API's session endpoint
+    fileprivate struct AuthSessionResponse: Decodable {
+        var clientId: ClientIdentifier
+        var token: String
+        var expiry: Date
+        var authorizedUser: CoreAPI.AuthorizedUser?
         
-        // MARK: -
+        enum CodingKeys: String, CodingKey {
+            case clientId   = "client_id"
+            case token      = "token"
+            case expiry     = "expires"
+            case provider   = "provider"
+            case person     = "user"
+        }
         
-        /// The response from requests to the API's session endpoint
-        fileprivate struct AuthSessionResponse: Decodable {
-            var clientId: ClientIdentifier
-            var token: String
-            var expiry: Date
-            var authorizedUser: CoreAPI.AuthorizedUser?
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
             
-            enum CodingKeys: String, CodingKey {
-                case clientId   = "client_id"
-                case token      = "token"
-                case expiry     = "expires"
-                case provider   = "provider"
-                case person     = "user"
+            self.clientId = try values.decode(ClientIdentifier.self, forKey: .clientId)
+            self.token = try values.decode(String.self, forKey: .token)
+            
+            if let provider = try? values.decode(CoreAPI.AuthorizedUserProvider.self, forKey: .provider),
+                let person = try? values.decode(CoreAPI.Person.self, forKey: .person) {
+                self.authorizedUser = (person, provider)
             }
             
-            init(from decoder: Decoder) throws {
-                let values = try decoder.container(keyedBy: CodingKeys.self)
-                
-                self.clientId = try values.decode(ClientIdentifier.self, forKey: .clientId)
-                self.token = try values.decode(String.self, forKey: .token)
-                
-                if let provider = try? values.decode(CoreAPI.AuthorizedUserProvider.self, forKey: .provider),
-                    let person = try? values.decode(CoreAPI.Person.self, forKey: .person) {
-                    self.authorizedUser = (person, provider)
-                }
-                
-                let expiryString = try values.decode(String.self, forKey: .expiry)
-                if let expiryDate = CoreAPI.dateFormatter.date(from: expiryString) {
-                    self.expiry = expiryDate
+            let expiryString = try values.decode(String.self, forKey: .expiry)
+            if let expiryDate = CoreAPI.dateFormatter.date(from: expiryString) {
+                self.expiry = expiryDate
+            } else {
+                throw DecodingError.dataCorruptedError(forKey: .expiry, in: values, debugDescription: "Date string does not match format expected by formatter (\(CoreAPI.dateFormatter.dateFormat)).")
+            }
+        }
+        
+        // MARK: Response-generating requests
+        
+        static func createRequest(clientId: CoreAPI.AuthVault.ClientIdentifier?, apiKey: String, tokenLife: Int) -> CoreAPI.Request<AuthSessionResponse> {
+            
+            var params: [String: String] = [:]
+            params["api_key"] = apiKey
+            params["token_ttl"] = String(tokenLife)
+            params["clientId"] = clientId?.rawValue
+            
+            return .init(path: "v2/sessions", method: .POST, requiresAuth: false, parameters: params, timeoutInterval: 10)
+        }
+        
+        static func renewRequest(clientId: CoreAPI.AuthVault.ClientIdentifier?, additionalParams: [String: String] = [:]) -> CoreAPI.Request<AuthSessionResponse> {
+            
+            var params: [String: String] = additionalParams
+            params["clientId"] = clientId?.rawValue
+            
+            return .init(path: "v2/sessions", method: .PUT, requiresAuth: true, parameters: params, timeoutInterval: 10)
+        }
+    }
+}
+
+// MARK: - DataStore
+
+extension CoreAPI.AuthVault {
+    
+    fileprivate static let dataStoreKey = "ShopGunSDK.CoreAPI.AuthVault"
+    
+    fileprivate static func updateDataStore(_ dataStore: ShopGunSDKSecureDataStore?, data: CoreAPI.AuthVault.StoreData) {
+        var authJSON: String? = nil
+        if let authJSONData = try? JSONEncoder().encode(data) {
+            authJSON = String(data: authJSONData, encoding: .utf8)
+        }
+        dataStore?.set(value: authJSON, for: CoreAPI.AuthVault.dataStoreKey)
+    }
+    
+    fileprivate static func loadFromDataStore(_ dataStore: ShopGunSDKSecureDataStore?) -> CoreAPI.AuthVault.StoreData {
+        guard let authJSONData = dataStore?.get(for: CoreAPI.AuthVault.dataStoreKey)?.data(using: .utf8),
+            let auth = try? JSONDecoder().decode(CoreAPI.AuthVault.StoreData.self, from: authJSONData) else {
+                return .init(auth: nil, clientId: nil)
+        }
+        return auth
+    }
+    
+    // The data to be saved/read from disk
+    fileprivate struct StoreData: Codable {
+        var auth: (token: String, user: CoreAPI.AuthorizedUser?)?
+        var clientId: CoreAPI.AuthVault.ClientIdentifier?
+        
+        init(auth: (token: String, user: CoreAPI.AuthorizedUser?)?, clientId: CoreAPI.AuthVault.ClientIdentifier?) {
+            self.auth = auth
+            self.clientId = clientId
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case authToken  = "auth.token"
+            case authUserPerson = "auth.user.person"
+            case authUserProvider = "auth.user.provider"
+            case clientId  = "clientId"
+        }
+        
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            
+            if let token = try? values.decode(String.self, forKey: .authToken) {
+                let authorizedUser: CoreAPI.AuthorizedUser?
+                if let provider = try? values.decode(CoreAPI.AuthorizedUserProvider.self, forKey: .authUserProvider),
+                    let person = try? values.decode(CoreAPI.Person.self, forKey: .authUserPerson) {
+                    authorizedUser = (person, provider)
                 } else {
-                    throw DecodingError.dataCorruptedError(forKey: .expiry, in: values, debugDescription: "Date string does not match format expected by formatter (\(CoreAPI.dateFormatter.dateFormat)).")
+                    authorizedUser = nil
                 }
+                
+                self.auth = (token: token, user: authorizedUser)
+            } else {
+                self.auth = nil
             }
             
-            // MARK: Response-generating requests
+            self.clientId = try? values.decode(ClientIdentifier.self, forKey: .clientId)
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
             
-            static func createRequest(clientId: CoreAPI.AuthVault.ClientIdentifier?, apiKey: String, tokenLife: Int) -> CoreAPI.Request<AuthSessionResponse> {
-                
-                var params: [String: String] = [:]
-                params["api_key"] = apiKey
-                params["token_ttl"] = String(tokenLife)
-                params["clientId"] = clientId?.rawValue
-                
-                return .init(path: "v2/sessions", method: .POST, requiresAuth: false, parameters: params, timeoutInterval: 10)
-            }
+            try? container.encode(self.auth?.token, forKey: .authToken)
+            try? container.encode(self.auth?.user?.person, forKey: .authUserPerson)
+            try? container.encode(self.auth?.user?.provider, forKey: .authUserProvider)
             
-            static func renewRequest(clientId: CoreAPI.AuthVault.ClientIdentifier?, additionalParams: [String: String] = [:]) -> CoreAPI.Request<AuthSessionResponse> {
-                
-                var params: [String: String] = additionalParams
-                params["clientId"] = clientId?.rawValue
-                
-                return .init(path: "v2/sessions", method: .PUT, requiresAuth: true, parameters: params, timeoutInterval: 10)
-            }
+            try? container.encode(self.clientId, forKey: .clientId)
         }
     }
 }
@@ -310,6 +378,7 @@ extension URLRequest {
 // MARK: -
 
 extension CoreAPI.LoginCredentials {
+    
     /// What are the request params that a specific loginCredential needs to send when reauthorizing
     fileprivate var requestParams: [String: String] {
         switch self{

@@ -68,9 +68,9 @@ let coreAPISettings = CoreAPI.Settings(key: creds.key,
                                        locale: Locale.current.identifier,
                                        appVersion: "LH TEST - IGNORE")
 
-ShopGunSDK.configure(settings: .init(coreAPI: coreAPISettings, eventsTracker: nil), logHandler: logHandler)
+ShopGunSDK.configure(settings: .init(coreAPI: coreAPISettings, eventsTracker: nil, sharedKeychainGroupId: "blah"), logHandler: logHandler)
 
-for i in 0..<5 {
+//for i in 0..<5 {
     let token = ShopGunSDK.coreAPI.request(CoreAPI.Requests.allDealers()) { (result) in
         switch result {
         case .error(let error):
@@ -79,8 +79,7 @@ for i in 0..<5 {
             ShopGunSDK.log("Success!: \n \(dealers.map({ $0.name }).joined(separator:", "))", level: .important, source: .other(name: "Example"))
         }
     }
-    ShopGunSDK.coreAPI.login(credentials: .shopgun(email: "lh+dev@shopgun.com", password: "123456"))
-}
+//}
 
 //DispatchQueue.main.asyncAfter(deadline: .now()+0.3) {
 //    ShopGunSDK.coreAPI.cancelAll()
