@@ -20,14 +20,14 @@ extension CoreAPI {
         private var remainingRetries: Int
         private let originalURLRequest: URLRequest
         private let completion: ((Result<Data>) -> ())?
-        private let authVault: AuthVault
+        private let authVault: AuthVault?
         private let urlSession: URLSession
         
         private var activeTask: URLSessionTask?
         private var remainingRegenerateAuthRetries: Int = 3
         private var queue: DispatchQueue = DispatchQueue(label: "ShopGunSDK.CoreAPI.RequestOperationQ")
 
-        init(id: Identifier, requiresAuth: Bool,  maxRetryCount: Int, urlRequest: URLRequest, authVault: AuthVault, urlSession: URLSession, completion: ((Result<Data>) -> ())?) {
+        init(id: Identifier = .generate(), requiresAuth: Bool,  maxRetryCount: Int, urlRequest: URLRequest, authVault: AuthVault?, urlSession: URLSession, completion: ((Result<Data>) -> ())?) {
             self.id = id
             self.requiresAuth = requiresAuth
             self.remainingRetries = maxRetryCount
@@ -63,7 +63,7 @@ extension CoreAPI {
         }
         
         private func startPerformingRequest() {
-            guard requiresAuth else {
+            guard requiresAuth, let authVault = self.authVault else {
                 // no auth required, just perform with the original, unsigned, urlRequest
                 self.performRequest(self.originalURLRequest)
                 return
@@ -108,11 +108,11 @@ extension CoreAPI {
                     self?.startPerformingRequest()
                 }
             case .error(let error as CoreAPI.APIError)
-                where error.requiresRenewedAuthSession && self.remainingRegenerateAuthRetries > 0:
+                where error.requiresRenewedAuthSession && self.remainingRegenerateAuthRetries > 0 && self.authVault != nil:
                 // It was an auth error (and we havnt run out of retries)
                 // Trigger a regenerate on the vault, and retry
                 
-                self.authVault.regenerate(.renewOrCreate)
+                self.authVault?.regenerate(.renewOrCreate)
                 
                 self.activeTask = nil
                 self.requiresAuth = true

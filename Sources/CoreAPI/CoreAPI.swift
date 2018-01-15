@@ -15,8 +15,9 @@ final public class CoreAPI {
     
     internal init(settings: Settings, secureDataStore: ShopGunSDKSecureDataStore) {
         self.settings = settings
-
-        self.authVault = AuthVault(baseURL: settings.baseURL, key: settings.key, secret: settings.secret, secureDataStore: secureDataStore)
+        
+        self.additionalRequestParams = ["api_av": settings.appVersion,
+                                        "r_locale": settings.locale]
         
         // Build the urlSession that requests will be run on
         let config = URLSessionConfiguration.default
@@ -27,8 +28,9 @@ final public class CoreAPI {
 
         self.requestOpQueue.name = "ShopGunSDK.CoreAPI.Requests"
         
-        self.additionalRequestParams = ["api_av": settings.appVersion,
-                                        "r_locale": settings.locale]
+        self.authVault = AuthVault(baseURL: settings.baseURL, key: settings.key, secret: settings.secret, additionalRequestParams: additionalRequestParams, urlSession: self.requstURLSession, secureDataStore: secureDataStore)
+        
+        self.authVault.authorizedUserDidChangeCallback = { [weak self] in self?.authorizedUserDidChange(prevAuthUser: $0, newAuthUser: $1) }
     }
     
     private init() { fatalError("You must provide settings when creating the CoreAPI") }
@@ -156,9 +158,32 @@ extension CoreAPI {
         case facebook   = "facebook"
     }
 
-    public func login(credentials: LoginCredentials) {
+    // TODO: login completion?
+    public func login(credentials: LoginCredentials, completion: ((Result<AuthorizedUser>)->())?) {
         self.queue.async { [weak self] in
-            self?.authVault.regenerate(.reauthorize(credentials))
+            
+            self?.authVault.regenerate(.reauthorize(credentials), completion: { [weak self] in
+                if let user = self?.authorizedUser {
+                    completion?(.success(user))
+                } else {
+                    // TODO: real error
+                    let err = NSError(domain: "Unable to log in", code: 123, userInfo: nil)
+                    completion?(.error(err))
+                }
+            })
+        }
+    }
+    
+    public var authorizedUser: AuthorizedUser? {
+        return self.authVault.currentAuthorizedUser
+    }
+    
+    fileprivate func authorizedUserDidChange(prevAuthUser: AuthorizedUser?, newAuthUser: AuthorizedUser?) {
+        switch newAuthUser {
+        case let (person, provider)?:
+            ShopGunSDK.log("User (\(provider)) logged In \(person)", level: .debug, source: .CoreAPI)
+        case nil:
+            ShopGunSDK.log("User logged out", level: .debug, source: .CoreAPI)
         }
     }
 }

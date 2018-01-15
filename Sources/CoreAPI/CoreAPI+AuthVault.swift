@@ -28,17 +28,15 @@ extension CoreAPI {
 
         // MARK: Funcs
         
-        // TODO: Need additional locale/version properties that need to be passed in. And userAgent. Maybe just accept a pre-configured URLSession param
-        // TODO: notify of user changes somehow
-        init(baseURL: URL, key: String, secret: String, tokenLife: Int = 7_776_000, secureDataStore: ShopGunSDKSecureDataStore?) {
+        init(baseURL: URL, key: String, secret: String, tokenLife: Int = 7_776_000, additionalRequestParams: [String: String], urlSession: URLSession, secureDataStore: ShopGunSDKSecureDataStore?) {
             self.baseURL = baseURL
             self.key = key
             self.secret = secret
             self.tokenLife = tokenLife
             self.secureDataStore = secureDataStore
+            self.additionalRequestParams = additionalRequestParams
             
-            let sessionConfig = URLSessionConfiguration.default
-            self.urlSession = URLSession(configuration: sessionConfig)
+            self.urlSession = urlSession
             
             self.activeRegenerateTask = nil
             
@@ -51,79 +49,25 @@ extension CoreAPI {
             }
         }
 
-        func regenerate(_ type: AuthRegenerationType) {
-            // check that we are not currently doing exactly the same kind of regen.. if so: eject
-            guard self.activeRegenerateTask?.type != type else {
-                return
+        func regenerate(_ type: AuthRegenerationType, completion: (() -> Void)? = nil) {
+            self.queue.async { [weak self] in
+                self?.regenerateOnQueue(type, completion: completion)
             }
-            
-            // If we are in the process of doing a different kind of regen, cancel it
-            cancelActiveRegenerateTask()
-            
-            // generate a request based on the regenerate type
-            let request: CoreAPI.Request<AuthSessionResponse>
-            switch (type, self.authState) {
-            case (.create, _),
-                 (.renewOrCreate, .unauthorized):
-                request = AuthSessionResponse.createRequest(clientId: self.clientId, apiKey: self.key, tokenLife: self.tokenLife)
-            case (.renewOrCreate, .authorized):
-                request = AuthSessionResponse.renewRequest(clientId: self.clientId)
-            case (.reauthorize(let credentials), .authorized):
-                request = AuthSessionResponse.renewRequest(clientId: self.clientId, additionalParams: credentials.requestParams)
-            case (.reauthorize, .unauthorized):
-                // if we have no valid token at all when trying to reauthorize then just create
-                // TODO: maybe do something where we authorize on completion?
-                request = AuthSessionResponse.createRequest(clientId: self.clientId, apiKey: self.key, tokenLife: self.tokenLife)
-            }
-            
-            var urlRequest = request.urlRequest(for: self.baseURL, additionalParameters: [:])
-            if case .authorized(let token, _, _) = self.authState {
-                urlRequest = urlRequest.signedForCoreAPI(withToken: token, secret: self.secret)
-            }
-            
-            let task = self.urlSession.coreAPIDataTask(with: urlRequest) { [weak self] (authSessionResult: Result<AuthSessionResponse>) -> Void in
-                // TODO: jump back to shared queue
-                self?.activeRegenerateTaskCompleted(authSessionResult)
-            }
-            
-            self.activeRegenerateTask = (type: type, task: task)
-            task.resume()
         }
         
-        // Get the httpHeaders to include in future requests that require auth.
-        // The completion will only be called once renew completes
-        // If this is called multiple times while renewing, all the completions will be called at once.
-        // If we have no auth when this is called it will trigger `updateAuth`
+        // Returns a new urlRequest that has been signed with the authToken
+        // If we are not authorized, or in the process of authorizing, then this can take some time to complete.
         func signURLRequest(_ urlRequest: URLRequest, completion: @escaping SignedRequestCompletion) {
-
-            // check if we are in the process of regenerating the token
-            // if so just save the completion handler to be run once regeneration finishes
-            guard self.activeRegenerateTask == nil else {
-                self.pendingSignedRequests.append((urlRequest, completion))
-                return
-            }
-            
-            switch self.authState {
-            case .unauthorized(let authError, _):
-                if let authError = authError {
-                    // unauthorized, with an error, so perform completion and forward the error
-                    completion(.error(authError))
-                } else {
-                    // unauthorized, without an error, so cache completion & start regenerating token
-                    self.pendingSignedRequests.append((urlRequest, completion))
-                    self.regenerate(.renewOrCreate)
-                }
-            case let .authorized(token, _, _):
-                
-                // we are authorized, so sign the request and perform the completion handler
-                let signedRequest = urlRequest.signedForCoreAPI(withToken: token, secret: self.secret)
-                completion(.success(signedRequest))
+            self.queue.async { [weak self] in
+                self?.signURLRequestOnQueue(urlRequest, completion: completion)
             }
         }
+        
+        var authorizedUserDidChangeCallback: ((_ prev: AuthorizedUser?, _ new: AuthorizedUser?) -> ())?
         
         /// If we are authorized, and have an authorized user, then this is non-nil
         var currentAuthorizedUser: AuthorizedUser? {
-            if case .authorized(_, let user, _) = self.authState {
+            if case .authorized(_, let user, _) = self.authState, user != nil {
                 return user
             } else {
                 return nil
@@ -145,14 +89,28 @@ extension CoreAPI {
         private let tokenLife: Int
         private weak var secureDataStore: ShopGunSDKSecureDataStore?
         private let urlSession: URLSession
-
+        private let additionalRequestParams: [String: String]
+        private let queue = DispatchQueue(label: "ShopGunSDK.CoreAPI.AuthVault.Queue")
         // if we are in the process of regenerating the token, this is set
         private var activeRegenerateTask: (type: AuthRegenerationType, task: URLSessionTask)?
+        
+        private var pendingSignedRequests: [(URLRequest, SignedRequestCompletion)] = []
+        
         
         private var authState: AuthState {
             didSet {
                 // save the current authState to the store
                 updateStore()
+                
+                guard let authDidChangeCallback = self.authorizedUserDidChangeCallback else { return }
+                
+                var prevAuthUser: AuthorizedUser? = nil
+                if case .authorized(_, let user?, _) = oldValue {
+                    prevAuthUser = user
+                }
+                if prevAuthUser?.person != currentAuthorizedUser?.person || prevAuthUser?.provider != currentAuthorizedUser?.provider {
+                    authDidChangeCallback(prevAuthUser, currentAuthorizedUser)
+                }
             }
         }
         
@@ -164,9 +122,96 @@ extension CoreAPI {
             }
         }
         
-        private var pendingSignedRequests: [(URLRequest, SignedRequestCompletion)] = []
-        
         // MARK: Funcs
+        
+        private func regenerateOnQueue(_ type: AuthRegenerationType, completion: (() -> Void)? = nil) {
+            
+            // check that we are not currently doing exactly the same kind of regen.. if so: eject
+            guard self.activeRegenerateTask?.type != type else {
+                return
+            }
+            
+            // If we are in the process of doing a different kind of regen, cancel it
+            cancelActiveRegenerateTask()
+            
+            var mutableCompletion = completion
+            
+            // generate a request based on the regenerate type
+            let request: CoreAPI.Request<AuthSessionResponse>
+            switch (type, self.authState) {
+            case (.create, _),
+                 (.renewOrCreate, .unauthorized):
+                request = AuthSessionResponse.createRequest(clientId: self.clientId, apiKey: self.key, tokenLife: self.tokenLife)
+            case (.renewOrCreate, .authorized):
+                request = AuthSessionResponse.renewRequest(clientId: self.clientId)
+            case (.reauthorize(let credentials), .authorized):
+                request = AuthSessionResponse.renewRequest(clientId: self.clientId, additionalParams: credentials.requestParams)
+            case (.reauthorize, .unauthorized):
+                
+                // if we have no valid token at all when trying to reauthorize then just create
+                request = AuthSessionResponse.createRequest(clientId: self.clientId, apiKey: self.key, tokenLife: self.tokenLife)
+                
+                // once completed, if we are authorized, then reauthorize with the credentials
+                mutableCompletion = { [weak self] in
+                    self?.queue.async { [weak self] in
+                        guard case .authorized? = self?.authState else {
+                            DispatchQueue.main.async {
+                                completion?()
+                            }
+                            return
+                        }
+                        self?.regenerate(type, completion: completion)
+                    }
+                }
+            }
+            
+            var urlRequest = request.urlRequest(for: self.baseURL, additionalParameters: self.additionalRequestParams)
+            if case .authorized(let token, _, _) = self.authState {
+                urlRequest = urlRequest.signedForCoreAPI(withToken: token, secret: self.secret)
+            }
+            
+            let task = self.urlSession.coreAPIDataTask(with: urlRequest) { [weak self] (authSessionResult: Result<AuthSessionResponse>) -> Void in
+                self?.queue.async { [weak self] in
+                    self?.activeRegenerateTaskCompleted(authSessionResult)
+                    DispatchQueue.main.async {
+                        mutableCompletion?()
+                    }
+                }
+            }
+            
+            self.activeRegenerateTask = (type: type, task: task)
+            task.resume()
+        }
+        
+        private func signURLRequestOnQueue(_ urlRequest: URLRequest, completion: @escaping SignedRequestCompletion) {
+            
+            // check if we are in the process of regenerating the token
+            // if so just save the completion handler to be run once regeneration finishes
+            guard self.activeRegenerateTask == nil else {
+                self.pendingSignedRequests.append((urlRequest, completion))
+                return
+            }
+            
+            switch self.authState {
+            case .unauthorized(let authError, _):
+                if let authError = authError {
+                    // unauthorized, with an error, so perform completion and forward the error
+                    DispatchQueue.main.async {
+                        completion(.error(authError))
+                    }
+                } else {
+                    // unauthorized, without an error, so cache completion & start regenerating token
+                    self.pendingSignedRequests.append((urlRequest, completion))
+                    self.regenerate(.renewOrCreate)
+                }
+            case let .authorized(token, _, _):
+                // we are authorized, so sign the request and perform the completion handler
+                let signedRequest = urlRequest.signedForCoreAPI(withToken: token, secret: self.secret)
+                DispatchQueue.main.async {
+                    completion(.success(signedRequest))
+                }
+            }
+        }
         
         /// Save the current AuthState to the store
         private func updateStore() {
@@ -198,7 +243,9 @@ extension CoreAPI {
                 // we are authorized, so sign the requests and perform the completion handlers
                 for (urlRequest, completion) in self.pendingSignedRequests {
                     let signedRequest = urlRequest.signedForCoreAPI(withToken: authSession.token, secret: self.secret)
-                    completion(.success(signedRequest))
+                    DispatchQueue.main.async {
+                        completion(.success(signedRequest))
+                    }
                 }
                 
             case .error(let cancelError as NSError)
@@ -211,7 +258,9 @@ extension CoreAPI {
                 // TODO: depending upon the error do different things
                 // - what if retryable? network error?
                 for (_, completion) in self.pendingSignedRequests {
-                    completion(.error(regenError))
+                    DispatchQueue.main.async {
+                        completion(.error(regenError))
+                    }
                 }
             }
         }
@@ -395,17 +444,19 @@ extension CoreAPI.LoginCredentials {
 
 // MARK: -
 
-extension CoreAPI.AuthVault.AuthRegenerationType: Equatable { }
-func == (lhs: CoreAPI.AuthVault.AuthRegenerationType, rhs: CoreAPI.AuthVault.AuthRegenerationType) -> Bool {
-    switch (lhs, rhs) {
-    case (.create, .create): return true
-    case (.renewOrCreate, .renewOrCreate): return true
-    case (.reauthorize(let lhsCred), .reauthorize(let rhsCred)):
-        return lhsCred == rhsCred
-        
-    case (.create, _),
-         (.renewOrCreate, _),
-         (.reauthorize(_), _):
-        return false
+extension CoreAPI.AuthVault.AuthRegenerationType: Equatable {
+    static func == (lhs: CoreAPI.AuthVault.AuthRegenerationType, rhs: CoreAPI.AuthVault.AuthRegenerationType) -> Bool {
+        switch (lhs, rhs) {
+        case (.create, .create): return true
+        case (.renewOrCreate, .renewOrCreate): return true
+        case (.reauthorize(let lhsCred), .reauthorize(let rhsCred)):
+            return lhsCred == rhsCred
+            
+        case (.create, _),
+             (.renewOrCreate, _),
+             (.reauthorize(_), _):
+            return false
+        }
     }
 }
+
