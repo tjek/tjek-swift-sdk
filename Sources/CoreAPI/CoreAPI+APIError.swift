@@ -136,6 +136,7 @@ extension ErrorCodeCategories {
         case internalIntegrity
         case misc
         case maintenance
+        case client
     }
     
     public var category: ErrorCategory {
@@ -149,7 +150,8 @@ extension ErrorCodeCategories {
         case (2000...2099): return .internalIntegrity
         case (4000...4099): return .misc
         case (5000...5999): return .maintenance
-        default: return .unknown
+        case (-1100 ... -1000): return .client
+        default:            return .unknown
         }
     }
 }
@@ -268,4 +270,36 @@ extension ErrorCodeConsts {
     public static var maintenanceErrorServiceDown: CoreAPI.APIError.Code { return .init(rawValue: 5010) }
     // Feature is down for maintainance (Dont send same request again)
     public static var maintenanceErrorFeatureDown: CoreAPI.APIError.Code { return .init(rawValue: 5020) }
+    
+    // MARK: Client -
+    
+    public static var invalidNetworkResponseError: CoreAPI.APIError.Code { return .init(rawValue: -1000) }
+    
+    public static var unknownAPIError: CoreAPI.APIError.Code { return .init(rawValue: -1001) }
+    
+    public static var requestCancelled: CoreAPI.APIError.Code { return .init(rawValue: -1002) }
+    
+    public static var unableToLogin: CoreAPI.APIError.Code { return .init(rawValue: -1003) }
+}
+
+// MARK: -
+
+private typealias ClientAPIErrorConsts = CoreAPI.APIError
+extension ClientAPIErrorConsts {
+    
+    // When API responds with no status code & no data & no error (this is an unlikely situation
+    public static func invalidNetworkResponseError(urlResponse: URLResponse?) -> CoreAPI.APIError { return .init(code: .invalidNetworkResponseError, id: nil, message: "Unknown network error", details: "The API responded with no HTTP status code, no data, and no error", previous: nil, note: nil, httpResponse: urlResponse) }
+    
+    // When API responds with a server or client http status code error, but data is not decodable into an CoreAPI.APIError
+    public static func unknownAPIError(httpStatusCode: Int, urlResponse: URLResponse?) -> CoreAPI.APIError { return .init(code: .unknownAPIError, id: nil, message: "Unknown API error", details: "The API responded with an httpStatus error code, but malformed error json (reason: '\(HTTPURLResponse.localizedString(forStatusCode: httpStatusCode))')", previous: nil, note: nil, httpResponse: urlResponse) }
+    
+    // A request was cancelled
+    public static var requestCancelled: CoreAPI.APIError {
+        return .init(code: .requestCancelled, id: nil, message: "Request Cancelled", details: nil, previous: nil, note: nil, httpResponse: nil)
+    }
+    
+    // A non-specific failure to login
+    public static var unableToLogin: CoreAPI.APIError {
+        return .init(code: .unableToLogin, id: nil, message: "Unable to Login", details: nil, previous: nil, note: nil, httpResponse: nil)
+    }
 }

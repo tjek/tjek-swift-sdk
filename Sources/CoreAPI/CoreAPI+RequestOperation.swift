@@ -52,9 +52,7 @@ extension CoreAPI {
             super.cancel()
             
             self.queue.async { [weak self] in
-                // TODO: real 'cancelled' error
-                let cancelError = NSError(domain: "Cancelled", code: 123, userInfo: nil)
-                self?.completion?(.error(cancelError))
+                self?.completion?(.error(APIError.requestCancelled))
                 
                 self?.activeTask?.cancel()
                 

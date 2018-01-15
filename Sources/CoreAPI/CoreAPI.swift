@@ -162,13 +162,11 @@ extension CoreAPI {
     public func login(credentials: LoginCredentials, completion: ((Result<AuthorizedUser>)->())?) {
         self.queue.async { [weak self] in
             
-            self?.authVault.regenerate(.reauthorize(credentials), completion: { [weak self] in
+            self?.authVault.regenerate(.reauthorize(credentials), completion: { [weak self] (error) in
                 if let user = self?.authorizedUser {
                     completion?(.success(user))
                 } else {
-                    // TODO: real error
-                    let err = NSError(domain: "Unable to log in", code: 123, userInfo: nil)
-                    completion?(.error(err))
+                    completion?(.error(error ?? APIError.unableToLogin))
                 }
             })
         }

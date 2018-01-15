@@ -33,8 +33,7 @@ extension CoreAPI {
             if let err = error {
                 resError = err
             } else {
-                // TODO: Real error if no status code _AND_ no data _AND_ no error
-                resError = NSError(domain: "Unknown network error", code: 123, userInfo: nil)
+                resError = APIError.invalidNetworkResponseError(urlResponse: response)
             }
             return .error(resError)
         }
@@ -46,11 +45,11 @@ extension CoreAPI {
                 apiError.httpResponse = response
                 error = apiError
             } else {
-                // TODO: Real error if client/server error with unknown data format
                 let reason = HTTPURLResponse.localizedString(forStatusCode: httpStatusCode)
 
                 ShopGunSDK.log("Unknown Server/Client Error: '\(reason)'", level: .error, source: .CoreAPI)
-                error = NSError(domain: "Unknown Server/Client Error", code: 123, userInfo: nil)
+                
+                error = APIError.unknownAPIError(httpStatusCode: httpStatusCode, urlResponse: response)
             }
 
             return .error(error)

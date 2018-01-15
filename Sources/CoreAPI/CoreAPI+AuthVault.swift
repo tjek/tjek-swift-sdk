@@ -49,7 +49,7 @@ extension CoreAPI {
             }
         }
 
-        func regenerate(_ type: AuthRegenerationType, completion: (() -> Void)? = nil) {
+        func regenerate(_ type: AuthRegenerationType, completion: ((Error?) -> Void)? = nil) {
             self.queue.async { [weak self] in
                 self?.regenerateOnQueue(type, completion: completion)
             }
@@ -124,12 +124,7 @@ extension CoreAPI {
         
         // MARK: Funcs
         
-        private func regenerateOnQueue(_ type: AuthRegenerationType, completion: (() -> Void)? = nil) {
-            
-            // check that we are not currently doing exactly the same kind of regen.. if so: eject
-            guard self.activeRegenerateTask?.type != type else {
-                return
-            }
+        private func regenerateOnQueue(_ type: AuthRegenerationType, completion: ((Error?) -> Void)? = nil) {
             
             // If we are in the process of doing a different kind of regen, cancel it
             cancelActiveRegenerateTask()
@@ -152,11 +147,11 @@ extension CoreAPI {
                 request = AuthSessionResponse.createRequest(clientId: self.clientId, apiKey: self.key, tokenLife: self.tokenLife)
                 
                 // once completed, if we are authorized, then reauthorize with the credentials
-                mutableCompletion = { [weak self] in
+                mutableCompletion = { [weak self] (createError) in
                     self?.queue.async { [weak self] in
                         guard case .authorized? = self?.authState else {
                             DispatchQueue.main.async {
-                                completion?()
+                                completion?(createError)
                             }
                             return
                         }
@@ -174,7 +169,7 @@ extension CoreAPI {
                 self?.queue.async { [weak self] in
                     self?.activeRegenerateTaskCompleted(authSessionResult)
                     DispatchQueue.main.async {
-                        mutableCompletion?()
+                        mutableCompletion?(authSessionResult.error)
                     }
                 }
             }
@@ -253,7 +248,7 @@ extension CoreAPI {
                 // if cancelled then ignore
                 break;
             case .error(let regenError):
-                ShopGunSDK.log("failed to update authSession \(regenError)", level: .error, source: .CoreAPI)
+                ShopGunSDK.log("Failed to update authSession \(regenError)", level: .error, source: .CoreAPI)
                 
                 // TODO: depending upon the error do different things
                 // - what if retryable? network error?
