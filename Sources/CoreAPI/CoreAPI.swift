@@ -22,7 +22,7 @@ final public class CoreAPI {
         // Build the urlSession that requests will be run on
         let config = URLSessionConfiguration.default
         config.httpAdditionalHeaders = ["Accept-Encoding": "gzip",
-                                        "User-Agent": CoreAPI.userAgent]
+                                        "User-Agent": ShopGunSDK.userAgent]
         self.requstURLSession = URLSession(configuration: config)
         self.requstURLSession.sessionDescription = "ShopGunSDK.CoreAPI"
 
