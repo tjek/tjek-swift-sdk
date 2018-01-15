@@ -13,11 +13,12 @@ final public class CoreAPI {
     
     public let settings: Settings
     
+    public var locale: Locale = Locale.autoupdatingCurrent {
+        didSet { self.updateAuthVaultParams() }
+    }
+    
     internal init(settings: Settings, secureDataStore: ShopGunSDKSecureDataStore) {
         self.settings = settings
-        
-        self.additionalRequestParams = ["api_av": settings.appVersion,
-                                        "r_locale": settings.locale]
         
         // Build the urlSession that requests will be run on
         let config = URLSessionConfiguration.default
@@ -28,9 +29,10 @@ final public class CoreAPI {
 
         self.requestOpQueue.name = "ShopGunSDK.CoreAPI.Requests"
         
-        self.authVault = AuthVault(baseURL: settings.baseURL, key: settings.key, secret: settings.secret, additionalRequestParams: additionalRequestParams, urlSession: self.requstURLSession, secureDataStore: secureDataStore)
+        self.authVault = AuthVault(baseURL: settings.baseURL, key: settings.key, secret: settings.secret, urlSession: self.requstURLSession, secureDataStore: secureDataStore)
         
         self.authVault.authorizedUserDidChangeCallback = { [weak self] in self?.authorizedUserDidChange(prevAuthUser: $0, newAuthUser: $1) }
+        self.updateAuthVaultParams()
     }
     
     private init() { fatalError("You must provide settings when creating the CoreAPI") }
@@ -39,7 +41,13 @@ final public class CoreAPI {
     private let requstURLSession: URLSession
     private let requestOpQueue: OperationQueue = OperationQueue()
     private let queue: DispatchQueue = DispatchQueue(label: "CoreAPI-Queue")
-    private let additionalRequestParams: [String: String]
+
+    private var additionalRequestParams: [String: String] {
+        return ["r_locale": self.locale.identifier]
+    }
+    private func updateAuthVaultParams() {
+        self.authVault.additionalRequestParams.merge(self.additionalRequestParams) { (_, new) in new }
+    }
 }
 
 // MARK: -
@@ -195,21 +203,17 @@ extension CoreAPI_Settings {
         public var key: String
         public var secret: String
         public var baseURL: URL
-        public var locale: String
-        public var appVersion: String
         
-        public init(key: String, secret: String, baseURL: URL, locale: String = Locale.current.identifier, appVersion: String) {
+        public init(key: String, secret: String, baseURL: URL) {
             self.key = key
             self.secret = secret
             self.baseURL = baseURL
-            self.locale = locale
-            self.appVersion = appVersion
         }
     }
 }
 
 extension CoreAPI.Settings {
-    public static func `default`(key: String, secret: String, locale: String, appVersion: String) -> CoreAPI.Settings {
-        return .init(key: key, secret: secret, baseURL: URL(string: "https://api.etilbudsavis.dk")!, locale: locale, appVersion: appVersion)
+    public static func `default`(key: String, secret: String) -> CoreAPI.Settings {
+        return .init(key: key, secret: secret, baseURL: URL(string: "https://api.etilbudsavis.dk")!)
     }
 }

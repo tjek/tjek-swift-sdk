@@ -28,13 +28,12 @@ extension CoreAPI {
 
         // MARK: Funcs
         
-        init(baseURL: URL, key: String, secret: String, tokenLife: Int = 7_776_000, additionalRequestParams: [String: String], urlSession: URLSession, secureDataStore: ShopGunSDKSecureDataStore?) {
+        init(baseURL: URL, key: String, secret: String, tokenLife: Int = 7_776_000, urlSession: URLSession, secureDataStore: ShopGunSDKSecureDataStore?) {
             self.baseURL = baseURL
             self.key = key
             self.secret = secret
             self.tokenLife = tokenLife
             self.secureDataStore = secureDataStore
-            self.additionalRequestParams = additionalRequestParams
             
             self.urlSession = urlSession
             
@@ -64,7 +63,8 @@ extension CoreAPI {
         }
         
         var authorizedUserDidChangeCallback: ((_ prev: AuthorizedUser?, _ new: AuthorizedUser?) -> ())?
-        
+        var additionalRequestParams: [String: String] = [:]
+    
         /// If we are authorized, and have an authorized user, then this is non-nil
         var currentAuthorizedUser: AuthorizedUser? {
             if case .authorized(_, let user, _) = self.authState, user != nil {
@@ -89,7 +89,6 @@ extension CoreAPI {
         private let tokenLife: Int
         private weak var secureDataStore: ShopGunSDKSecureDataStore?
         private let urlSession: URLSession
-        private let additionalRequestParams: [String: String]
         private let queue = DispatchQueue(label: "ShopGunSDK.CoreAPI.AuthVault.Queue")
         // if we are in the process of regenerating the token, this is set
         private var activeRegenerateTask: (type: AuthRegenerationType, task: URLSessionTask)?
