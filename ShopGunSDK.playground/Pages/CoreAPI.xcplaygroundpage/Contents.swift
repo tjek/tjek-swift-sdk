@@ -64,33 +64,16 @@ let creds = readCredentialsFile()
 // must first configure
 let coreAPISettings = CoreAPI.Settings(key: creds.key,
                                        secret: creds.secret,
-                                       baseURL: URL(string: "https://api-edge.etilbudsavis.dk")!,
-                                       locale: Locale.current.identifier,
-                                       appVersion: "LH TEST - IGNORE")
+                                       baseURL: URL(string: "https://api-edge.etilbudsavis.dk")!)
 
 ShopGunSDK.configure(settings: .init(coreAPI: coreAPISettings, eventsTracker: nil, sharedKeychainGroupId: "blah"), logHandler: logHandler)
 
-//for i in 0..<5 {
-    let token = ShopGunSDK.coreAPI.request(CoreAPI.Requests.allDealers()) { (result) in
-        switch result {
-        case .error(let error):
-            ShopGunSDK.log("Failed: \(error)", level: .error, source: .other(name: "Example"))
-        case .success(let dealers):
-            ShopGunSDK.log("Success!: \n \(dealers.map({ $0.name }).joined(separator:", "))", level: .important, source: .other(name: "Example"))
-        }
+let token = ShopGunSDK.coreAPI.request(CoreAPI.Requests.getPagedPublication(withId: "6fe6Mg8")) { (result) in
+    switch result {
+    case .error(let error):
+        ShopGunSDK.log("Failed: \(error)", level: .error, source: .other(name: "Example"))
+    case .success(let publication):
+        ShopGunSDK.log("Success!: \n \(publication)", level: .important, source: .other(name: "Example"))
+        dump(publication)
     }
-//}
-
-//DispatchQueue.main.asyncAfter(deadline: .now()+0.3) {
-//    ShopGunSDK.coreAPI.cancelAll()
-//
-//    ShopGunSDK.coreAPI.request(CoreAPI.Requests.allDealers()) { (result) in
-//        switch result {
-//        case .error(let error):
-//            ShopGunSDK.log("xFailed: \(error)", level: .error, source: .other(name: "Example"))
-//        case .success(let dealers):
-//            ShopGunSDK.log("xSuccess!: \n \(dealers.map({ $0.name }).joined(separator:", "))", level: .important, source: .other(name: "Example"))
-//        }
-//    }
-//}
-
+}

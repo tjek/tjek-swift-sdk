@@ -7,7 +7,7 @@
 //
 //  Copyright (c) 2018 ShopGun. All rights reserved.
 
-import Foundation
+import UIKit
 
 extension CoreAPI {
     
@@ -20,14 +20,13 @@ extension CoreAPI {
             case twitter(handle: String)
         }
         
-        public var uuid: Identifier
+        public var id: Identifier
         public var name: String
         public var website: URL?
         public var description: String?
         public var descriptionMarkdown: String?
-        public var logo: URL
-        // TODO: color as UIColor
-        public var color: String
+        public var logoURL: URL
+        public var color: UIColor?
         public var country: Country
         public var favoriteCount: Int
         public var socialMediaIds: [SocialMediaIdentity]
@@ -35,13 +34,13 @@ extension CoreAPI {
         // TODO: missing fields: PageFlip color&logo / category_ids /
         
         enum CodingKeys: String, CodingKey {
-            case uuid   = "id"
+            case id
             case name
             case website
             case description
             case descriptionMarkdown = "description_markdown"
-            case logo
-            case color
+            case logoURL = "logo"
+            case colorStr = "color"
             case country
             case favoriteCount = "favorite_count"
             case facebookPageId = "facebook_page_id"
@@ -52,13 +51,15 @@ extension CoreAPI {
         public init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             
-            self.uuid = try values.decode(Identifier.self, forKey: .uuid)
+            self.id = try values.decode(Identifier.self, forKey: .id)
             self.name = try values.decode(String.self, forKey: .name)
             self.website = try? values.decode(URL.self, forKey: .website)
             self.description = try? values.decode(String.self, forKey: .description)
             self.descriptionMarkdown = try? values.decode(String.self, forKey: .descriptionMarkdown)
-            self.logo = try values.decode(URL.self, forKey: .logo)
-            self.color = try values.decode(String.self, forKey: .color)
+            self.logoURL = try values.decode(URL.self, forKey: .logoURL)
+            if let colorStr = try? values.decode(String.self, forKey: .colorStr) {
+                self.color = UIColor(hex: colorStr)
+            }
             self.country = try values.decode(Country.self, forKey: .country)
             self.favoriteCount = try values.decode(Int.self, forKey: .favoriteCount)
             

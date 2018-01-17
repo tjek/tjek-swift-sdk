@@ -41,7 +41,6 @@ final public class CoreAPI {
     private let requstURLSession: URLSession
     private let requestOpQueue: OperationQueue = OperationQueue()
     private let queue: DispatchQueue = DispatchQueue(label: "CoreAPI-Queue")
-
     private var additionalRequestParams: [String: String] {
         return ["r_locale": self.locale.identifier]
     }
