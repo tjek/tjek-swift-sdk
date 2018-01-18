@@ -91,24 +91,75 @@ extension CoreAPI {
         // MARK: -
         
         public struct Hotspot: Decodable {
+            
+            public typealias PageLocation = (index: Int, bounds: CGRect)
+            
             public var offer: CoreAPI.Offer?
-            public var pageLocations: [Int: CGRect]
+            public var pageLocations: [PageLocation]
+            
+            /// This returns a new hotspot whose pageLocation bounds is scaled.
+            func withScaledBounds(scale: CGPoint) -> Hotspot {
+                var newHotspot = self
+                newHotspot.pageLocations = newHotspot.pageLocations.map {
+                    var bounds = $0.bounds
+                    bounds.origin.x *= scale.x
+                    bounds.size.width *= scale.x
+                    bounds.origin.y *= scale.y
+                    bounds.size.height *= scale.y
+                    return (index: $0.index, bounds: bounds)
+                }
+                return newHotspot
+            }
+            
+            // MARK: Decoding
+            
+            enum CodingKeys: String, CodingKey {
+                case pageCoords = "locations"
+                case offer
+            }
+            
+            public init(from decoder: Decoder) throws {
+                let values = try decoder.container(keyedBy: CodingKeys.self)
+                
+                self.offer = try? values.decode(CoreAPI.Offer.self, forKey: .offer)
+                
+                if let pageCoords = try? values.decode([Int:[[CGFloat]]].self, forKey: .pageCoords) {
+                    
+                    self.pageLocations = pageCoords.flatMap { (pageNum, coordsList) in
+                        guard pageNum > 0 else { return nil }
+                        
+                        let coordRange: (min: CGPoint, max: CGPoint)? = coordsList.reduce(nil, { (currRange, coords) in
+                            guard coords.count == 2 else { return currRange }
+                            
+                            let point = CGPoint(x: coords[0], y: coords[1])
+                            
+                            guard var newRange = currRange else {
+                                return (min: point, max: point)
+                            }
+                            
+                            newRange.max.x = max(newRange.max.x, point.x)
+                            newRange.max.y = max(newRange.max.y, point.y)
+                            newRange.min.x = min(newRange.min.x, point.x)
+                            newRange.min.y = min(newRange.min.y, point.y)
+                            
+                            return newRange
+                        })
+                        
+                        guard let boundsRange = coordRange else { return nil }
+                        
+                        let bounds = CGRect(origin: boundsRange.min,
+                                            size: CGSize(width: boundsRange.max.x - boundsRange.min.x,
+                                                         height: boundsRange.max.y - boundsRange.min.y))
+
+                        return (index: pageNum - 1, bounds: bounds)
+                    }
+                } else {
+                    self.pageLocations = []
+                }
+            }
         }
     }
 }
-
-// MARK: -
-
-extension CoreAPI {
-    
-    public struct Offer: Decodable {
-        public typealias Identifier = GenericIdentifier<Offer>
-        
-        public var id: Identifier
-        
-    }
-}
-
 // MARK: -
 
 extension CoreAPI {
@@ -193,6 +244,50 @@ extension CoreAPI {
 //        "thumb": "https:\/\/d3ikkoqs9ddhdl.cloudfront.net\/img\/catalog\/thumb\/6fe6Mg8-1.jpg?m=p1nyeo",
 //        "view": "https:\/\/d3ikkoqs9ddhdl.cloudfront.net\/img\/catalog\/view\/6fe6Mg8-1.jpg?m=p1nyeo",
 //        "zoom": "https:\/\/d3ikkoqs9ddhdl.cloudfront.net\/img\/catalog\/zoom\/6fe6Mg8-1.jpg?m=p1nyeo"
+//    }, ...
+//]
+
+// `Hotspots` response
+//[
+//    {
+//        "type": "offer",
+//        "locations": {
+//            "1": [
+//                    [ 0.366304, 1.44773 ],
+//                    [ 0.366304, 0.6373920871 ],
+//                    [ 0.622826, 0.6373920871 ],
+//                    [ 0.622826, 1.44773 ]
+//            ]
+//        },
+//        "id": "a8afitUF",
+//        "run_from": 1515798000,
+//        "run_till": 1516402799,
+//        "heading": "Gavepapir",
+//        "webshop": null,
+//        "offer": {
+//            "id": "a8afitUF",
+//            "ern": "ern:offer:a8afitUF",
+//            "heading": "Gavepapir",
+//            "pricing": {
+//                "price": 30,
+//                "pre_price": null,
+//                "currency": "DKK"
+//            },
+//            "quantity": {
+//                "unit": null,
+//                "size": {
+//                    "from": 1,
+//                    "to": 1
+//                },
+//                "pieces": {
+//                    "from": 1,
+//                    "to": 1
+//                }
+//            },
+//            "run_from": "2018-01-12T23:00:00+0000",
+//            "run_till": "2018-01-19T22:59:59+0000",
+//            "publish": "2018-01-11T17:00:00+0000"
+//        }
 //    }, ...
 //]
 
