@@ -115,6 +115,20 @@
 			remoteGlobalIDString = 26E6827B1BA8B3F900EFF4EA;
 			remoteInfo = "Valet-iOS";
 		};
+		AE4942A420113A0F006658CE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE49429920113A0F006658CE /* Verso.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AED8AA351D89472A00C92ED5;
+			remoteInfo = Verso;
+		};
+		AE4942A620113A23006658CE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE49429920113A0F006658CE /* Verso.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = AED8AA341D89472A00C92ED5;
+			remoteInfo = Verso;
+		};
 		AEC28B451FF6AAC20007AAB8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AEC28B311FF6AAC20007AAB8 /* Project object */;
@@ -137,6 +151,7 @@
 		AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Valet.xcodeproj; path = External/Valet/Valet.xcodeproj; sourceTree = "<group>"; };
 		AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
 		AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShopGunSDK+UserAgent.swift"; sourceTree = "<group>"; };
+		AE49429920113A0F006658CE /* Verso.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Verso.xcodeproj; path = External/Verso/Verso.xcodeproj; sourceTree = "<group>"; };
 		AE85C5E32000384500263F8B /* CoreAPI+AuthVault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+AuthVault.swift"; sourceTree = "<group>"; };
 		AE85C5EC20017EE600263F8B /* URLSession+CoreAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+CoreAPI.swift"; sourceTree = "<group>"; };
 		AE85C5EE2001884100263F8B /* Result+Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Map.swift"; sourceTree = "<group>"; };
@@ -206,6 +221,7 @@
 		AE06548D1FFEE23D009F6F92 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AE49429920113A0F006658CE /* Verso.xcodeproj */,
 				AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */,
 			);
 			name = Frameworks;
@@ -222,6 +238,14 @@
 				AE0654A41FFEE24C009F6F92 /* Valet.framework */,
 				AE0654A61FFEE24C009F6F92 /* Valet.framework */,
 				AE0654A81FFEE24C009F6F92 /* Valet iOS Test Host App.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AE49429A20113A0F006658CE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AE4942A520113A0F006658CE /* Verso.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -415,6 +439,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				AE4942A720113A23006658CE /* PBXTargetDependency */,
 				AE0654AA1FFEE266009F6F92 /* PBXTargetDependency */,
 				AEC3D8521FFAD0B0004C5947 /* PBXTargetDependency */,
 			);
@@ -481,6 +506,10 @@
 					ProductGroup = AE06548F1FFEE24B009F6F92 /* Products */;
 					ProjectRef = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
 				},
+				{
+					ProductGroup = AE49429A20113A0F006658CE /* Products */;
+					ProjectRef = AE49429920113A0F006658CE /* Verso.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -546,6 +575,13 @@
 			fileType = wrapper.application;
 			path = "Valet iOS Test Host App.app";
 			remoteRef = AE0654A71FFEE24C009F6F92 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE4942A520113A0F006658CE /* Verso.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Verso.framework;
+			remoteRef = AE4942A420113A0F006658CE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -631,6 +667,11 @@
 			isa = PBXTargetDependency;
 			name = "Valet-iOS";
 			targetProxy = AE0654A91FFEE266009F6F92 /* PBXContainerItemProxy */;
+		};
+		AE4942A720113A23006658CE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Verso;
+			targetProxy = AE4942A620113A23006658CE /* PBXContainerItemProxy */;
 		};
 		AEC28B461FF6AAC20007AAB8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

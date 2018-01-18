@@ -4,3 +4,7 @@
 [submodule "External/Valet"]
 	path = External/Valet
 	url = https://github.com/square/Valet.git
+[submodule "External/Verso"]
+	path = External/Verso
+	url = https://lozhuf@github.com/shopgun/verso-ios.git
+	branch = develop
