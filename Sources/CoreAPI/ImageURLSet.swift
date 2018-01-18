@@ -27,12 +27,18 @@ public struct ImageURLSet {
 }
 
 extension ImageURLSet {
-    // Create using the standard CoreAPI thumb/view/zoom image urls, and an aspectRatio (if known)
-    init(thumbURL: URL?, viewURL: URL?, zoomURL: URL?, aspectRatio: CGFloat? = nil) {
+    
+    struct CoreAPIImageURLs: Decodable {
+        let thumb: URL?
+        let view: URL?
+        let zoom: URL?
+    }
+    
+    init(fromCoreAPI imageURLs: CoreAPIImageURLs, aspectRatio: CGFloat?) {
         let possibleURLs: [(url: URL?, maxSize: CGSize)] = [
-            (thumbURL, CGSize(width: 177, height: 212)),
-            (viewURL, CGSize(width: 768, height: 1004)),
-            (zoomURL, CGSize(width: 1536, height: 2008))
+            (imageURLs.thumb, CGSize(width: 177, height: 212)),
+            (imageURLs.view, CGSize(width: 768, height: 1004)),
+            (imageURLs.zoom, CGSize(width: 1536, height: 2008))
         ]
         
         let sizedURLs: [SizedURL] = possibleURLs.flatMap { (maybeURL, maxSize) in

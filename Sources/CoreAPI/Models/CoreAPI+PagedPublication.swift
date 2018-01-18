@@ -25,9 +25,7 @@ extension CoreAPI {
         public var frontPageImages: ImageURLSet
         public var dealerId: CoreAPI.Dealer.Identifier
         
-        //"store_id", "store_url", "dealer_url", images, pageImages
-//        public var dealer: CoreAPI.Dealer?
-        
+        //"store_id", "store_url", "dealer_url"        
         enum CodingKeys: String, CodingKey {
             case id
             case label
@@ -74,24 +72,20 @@ extension CoreAPI {
             
             self.dealerId = try values.decode(Dealer.Identifier.self, forKey: .dealerId)
 
-            var frontPageURLs: [String: URL] = [:]
-            if let frontpageURLDict = try? values.decode([String: String].self, forKey: .frontPageImageURLs) {
-                ["thumb", "view", "zoom"].forEach {
-                    guard let urlStr = frontpageURLDict[$0], let url = URL(string: urlStr) else { return }
-                    frontPageURLs[$0] = url
-                }
+            if let frontPageImageURLs = try? values.decode(ImageURLSet.CoreAPIImageURLs.self, forKey: .frontPageImageURLs) {
+                self.frontPageImages = ImageURLSet(fromCoreAPI: frontPageImageURLs, aspectRatio: CGFloat(self.aspectRatio))
+            } else {
+                self.frontPageImages = ImageURLSet(sizedUrls: [])
             }
-            self.frontPageImages = ImageURLSet(thumbURL: frontPageURLs["thumb"], viewURL: frontPageURLs["view"], zoomURL: frontPageURLs["zoom"], aspectRatio: CGFloat(self.aspectRatio))
         }
         
         // MARK: -
         
-        public struct Page: Decodable {
-            public var pageIndex: Int
-            public var pageTitle: String?
+        public struct Page {
+            public var index: Int
+            public var title: String?
             public var aspectRatio: Double
-            public var viewImageURL: URL?
-            public var zoomImageURL: URL?
+            public var images: ImageURLSet
         }
         
         // MARK: -
@@ -148,6 +142,7 @@ extension CoreAPI {
     }
 }
 
+// `Catalog` json response
 //{
 //    "id": "6fe6Mg8",
 //    "ern": "ern:catalog:6fe6Mg8",
@@ -192,4 +187,12 @@ extension CoreAPI {
 //    "pdf_url": "https:\/\/api-edge.etilbudsavis.dk\/v2\/catalogs\/6fe6Mg8\/download"
 //}
 
+// `Pages` response
+//[
+//    {
+//        "thumb": "https:\/\/d3ikkoqs9ddhdl.cloudfront.net\/img\/catalog\/thumb\/6fe6Mg8-1.jpg?m=p1nyeo",
+//        "view": "https:\/\/d3ikkoqs9ddhdl.cloudfront.net\/img\/catalog\/view\/6fe6Mg8-1.jpg?m=p1nyeo",
+//        "zoom": "https:\/\/d3ikkoqs9ddhdl.cloudfront.net\/img\/catalog\/zoom\/6fe6Mg8-1.jpg?m=p1nyeo"
+//    }, ...
+//]
 

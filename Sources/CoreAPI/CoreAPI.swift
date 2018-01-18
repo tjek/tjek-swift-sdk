@@ -54,11 +54,12 @@ final public class CoreAPI {
 private typealias CoreAPI_PerformRequests = CoreAPI
 extension CoreAPI_PerformRequests {
     
-    @discardableResult public func request<R: CoreAPIDecodableRequest>(_ request: R, completion:((Result<R.ResponseType>)->())?) -> Cancellable {
+    @discardableResult public func request<R: CoreAPIMappableRequest>(_ request: R, completion:((Result<R.ResponseType>)->())?) -> Cancellable {
         if let completion = completion {
             // convert the Result<Data> into Result<R.ResponseType>
             return requestData(request, completion: { (dataResult) in
-                completion(dataResult.decodeJSON())
+                let mappedResult = request.resultMapper(dataResult)
+                completion(mappedResult)
             })
         } else {
             return requestData(request, completion: nil)

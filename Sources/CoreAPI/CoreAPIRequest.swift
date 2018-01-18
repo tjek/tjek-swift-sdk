@@ -28,9 +28,11 @@ public protocol CoreAPIRequest {
     func urlRequest(for baseURL: URL, additionalParameters: [String: String]) -> URLRequest
 }
 
-// A request that provides a decodable response type
-public protocol CoreAPIDecodableRequest: CoreAPIRequest {
-    associatedtype ResponseType: Decodable
+public protocol CoreAPIMappableRequest: CoreAPIRequest {
+    associatedtype ResponseType // the type that is returned after mapping input data
+    
+    typealias ResultMapper = ((Result<Data>) -> (Result<ResponseType>))
+    var resultMapper: ResultMapper { get }
 }
 
 extension CoreAPIRequest {
@@ -64,25 +66,34 @@ extension CoreAPIRequest {
 
 extension CoreAPI {
     
-    // The simple concrete implementation of the CoreAPIDecodableRequest protocol
-    public struct Request<T: Decodable>: CoreAPIDecodableRequest {
+    // The simple concrete implementation of the CoreAPIMappableRequest protocol
+    public struct Request<T>: CoreAPIMappableRequest {
         public typealias ResponseType = T
-        
+
         public var path: String
         public var method: HTTPRequestMethod
         public var parameters: [String: String]?
         public var timeoutInterval: TimeInterval
         public var requiresAuth: Bool
         public var maxRetryCount: Int
+        public var resultMapper: ((Result<Data>) -> (Result<T>))
 
-        public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String]? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
+        public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String]? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3, resultMapper: @escaping ResultMapper) {
             self.path = path
             self.method = method
             self.parameters = parameters
             self.timeoutInterval = timeoutInterval
             self.requiresAuth = requiresAuth
             self.maxRetryCount = maxRetryCount
+            self.resultMapper = resultMapper
         }
+    }
+}
+
+extension CoreAPI.Request where T: Decodable {
+    /// If we know the responseType is decodable then allow for Request creation with a default jsonDecoder resultMapper.
+    public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String]? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
+        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: { $0.decodeJSON() })
     }
 }
 
