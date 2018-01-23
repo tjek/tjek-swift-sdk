@@ -136,7 +136,7 @@ extension ShopGunSDK_Logging {
         case .GraphAPI:
             sourceName = "ShopGunSDK.GraphAPI"
         case .PagedPublicationViewer:
-            sourceName = "ShopGunSDK.PagePublicationViewer"
+            sourceName = "ShopGunSDK.PagedPublicationViewer"
         case .other(let name):
             sourceName = "ShopGunSDK.\(name)"
         }
