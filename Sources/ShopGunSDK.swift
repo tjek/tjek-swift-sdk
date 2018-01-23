@@ -117,6 +117,7 @@ extension ShopGunSDK_Logging {
         case CoreAPI
         case EventsTracker
         case GraphAPI
+        case PagedPublicationViewer
         case other(name: String)
     }
 
@@ -134,6 +135,8 @@ extension ShopGunSDK_Logging {
             sourceName = "ShopGunSDK.EventsTracker"
         case .GraphAPI:
             sourceName = "ShopGunSDK.GraphAPI"
+        case .PagedPublicationViewer:
+            sourceName = "ShopGunSDK.PagePublicationViewer"
         case .other(let name):
             sourceName = "ShopGunSDK.\(name)"
         }

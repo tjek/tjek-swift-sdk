@@ -10,10 +10,7 @@
 import Foundation
 
 public enum HTTPRequestMethod: String {
-    case GET
-    case POST
-    case PUT
-    case DELETE
+    case GET, POST, PUT, DELETE
 }
 
 public protocol CoreAPIRequest {
