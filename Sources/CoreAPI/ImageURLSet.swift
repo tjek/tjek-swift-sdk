@@ -34,7 +34,7 @@ extension ImageURLSet {
         let zoom: URL?
     }
     
-    init(fromCoreAPI imageURLs: CoreAPIImageURLs, aspectRatio: CGFloat?) {
+    init(fromCoreAPI imageURLs: CoreAPIImageURLs, aspectRatio: Double?) {
         let possibleURLs: [(url: URL?, maxSize: CGSize)] = [
             (imageURLs.thumb, CGSize(width: 177, height: 212)),
             (imageURLs.view, CGSize(width: 768, height: 1004)),
@@ -46,7 +46,7 @@ extension ImageURLSet {
             
             var fittingSize = maxSize
             if let ratio = aspectRatio, ratio != 0 {
-                fittingSize = maxSize.scaledDownToAspectRatio(ratio)
+                fittingSize = maxSize.scaledDownToAspectRatio(CGFloat(ratio))
             }
             
             return (CGSize(width: round(fittingSize.width), height: round(fittingSize.height)), url)

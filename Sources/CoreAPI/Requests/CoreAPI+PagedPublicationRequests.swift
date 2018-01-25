@@ -18,7 +18,7 @@ extension CoreAPI.Requests {
     }
     
     /// Fetch all the pages for the specified publication
-    public static func getPagedPublicationPages(withId pubId: CoreAPI.PagedPublication.Identifier, aspectRatio: CGFloat? = nil) -> CoreAPI.Request<[CoreAPI.PagedPublication.Page]> {
+    public static func getPagedPublicationPages(withId pubId: CoreAPI.PagedPublication.Identifier, aspectRatio: Double? = nil) -> CoreAPI.Request<[CoreAPI.PagedPublication.Page]> {
         return .init(path: "/v2/catalogs/\(pubId.rawValue)/pages", method: .GET, timeoutInterval: 30, resultMapper: {
             return $0.map {
                 // map the raw array of imageURLSets into objects containing page indexes
@@ -26,7 +26,7 @@ extension CoreAPI.Requests {
                 return pageURLs.enumerated().map {
                     let images = ImageURLSet(fromCoreAPI: $0.element, aspectRatio: aspectRatio)
                     let pageIndex = $0.offset
-                    return .init(index: pageIndex, title: "\(pageIndex+1)", aspectRatio: Double(aspectRatio ?? 1.0), images: images)
+                    return .init(index: pageIndex, title: "\(pageIndex+1)", aspectRatio: aspectRatio ?? 1.0, images: images)
                 }
             }
         })
@@ -34,7 +34,7 @@ extension CoreAPI.Requests {
 
     /// Fetch all hotspots for the specified publication
     /// The `aspectRatio` (w/h) of the publication is needed in order to position the hotspots correctly
-    public static func getPagedPublicationHotspots(withId pubId: CoreAPI.PagedPublication.Identifier, aspectRatio: CGFloat) -> CoreAPI.Request<[CoreAPI.PagedPublication.Hotspot]> {
+    public static func getPagedPublicationHotspots(withId pubId: CoreAPI.PagedPublication.Identifier, aspectRatio: Double) -> CoreAPI.Request<[CoreAPI.PagedPublication.Hotspot]> {
         return .init(path: "/v2/catalogs/\(pubId.rawValue)/hotspots", method: .GET, timeoutInterval: 30, resultMapper: {
             return $0.map {
                 return try JSONDecoder().decode([CoreAPI.PagedPublication.Hotspot].self, from: $0).map {

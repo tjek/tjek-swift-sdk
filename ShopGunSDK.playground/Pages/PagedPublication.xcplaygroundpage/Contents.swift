@@ -1,5 +1,5 @@
+import PlaygroundSupport
 import UIKit
-
 import ShopGunSDK // NOTE: you must build this targetting an iOS simulator
 
 class ExampleViewController: UIViewController {
@@ -16,15 +16,16 @@ class ExampleViewController: UIViewController {
         publicationView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(publicationView)
         
-        publicationView.update(publicationId: "abc123",
-                               pageIndex: 0,
-                               initialProperties: .init(bgColor: .blue, pageCount: 10, aspectRatio: 1.6))
+        publicationView.reload(publicationId: "9e42Nlz",
+                               openPageIndex: 15,
+                               basicProperties: .empty)
     }
 }
 
-let vc = ExampleViewController()
-vc.view.frame = CGRect(x: 0, y: 0, width: 320, height: 640)
+PlaygroundPage.current.needsIndefiniteExecution = true
 
-import PlaygroundSupport
+ShopGunSDK.configureForPlaygroundDevelopment()
+
+let vc = ExampleViewController()
 
 PlaygroundPage.current.liveView = vc

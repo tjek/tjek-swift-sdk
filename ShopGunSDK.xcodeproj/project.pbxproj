@@ -25,6 +25,9 @@
 		AE06548B1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06548A1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift */; };
 		AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */; };
 		AE2008D5200CE86F004363BE /* ShopGunSDK+UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */; };
+		AE3C38F52019DF7900A92597 /* PagedPublicationView+ContentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38F42019DF7900A92597 /* PagedPublicationView+ContentsView.swift */; };
+		AE3C38FE2019DFD700A92597 /* PagedPublicationView+LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FD2019DFD700A92597 /* PagedPublicationView+LoadingView.swift */; };
+		AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */; };
 		AE4942C120174406006658CE /* PagedPublicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4942C020174406006658CE /* PagedPublicationView.swift */; };
 		AE85C5E42000384500263F8B /* CoreAPI+AuthVault.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE85C5E32000384500263F8B /* CoreAPI+AuthVault.swift */; };
 		AE85C5ED20017EE600263F8B /* URLSession+CoreAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE85C5EC20017EE600263F8B /* URLSession+CoreAPI.swift */; };
@@ -152,6 +155,9 @@
 		AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Valet.xcodeproj; path = External/Valet/Valet.xcodeproj; sourceTree = "<group>"; };
 		AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
 		AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShopGunSDK+UserAgent.swift"; sourceTree = "<group>"; };
+		AE3C38F42019DF7900A92597 /* PagedPublicationView+ContentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+ContentsView.swift"; sourceTree = "<group>"; };
+		AE3C38FD2019DFD700A92597 /* PagedPublicationView+LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+LoadingView.swift"; sourceTree = "<group>"; };
+		AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+CoreAPILoader.swift"; sourceTree = "<group>"; };
 		AE49429920113A0F006658CE /* Verso.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Verso.xcodeproj; path = External/Verso/Verso.xcodeproj; sourceTree = "<group>"; };
 		AE4942C020174406006658CE /* PagedPublicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagedPublicationView.swift; sourceTree = "<group>"; };
 		AE85C5E32000384500263F8B /* CoreAPI+AuthVault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+AuthVault.swift"; sourceTree = "<group>"; };
@@ -256,6 +262,9 @@
 			isa = PBXGroup;
 			children = (
 				AE4942C020174406006658CE /* PagedPublicationView.swift */,
+				AE3C38F42019DF7900A92597 /* PagedPublicationView+ContentsView.swift */,
+				AE3C38FD2019DFD700A92597 /* PagedPublicationView+LoadingView.swift */,
+				AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */,
 			);
 			name = PagedPublication;
 			path = Sources/PagedPublication;
@@ -648,6 +657,7 @@
 				AE85C5E42000384500263F8B /* CoreAPI+AuthVault.swift in Sources */,
 				AE8E4548200F6D140042CCE2 /* CGSize+Fitting.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Person.swift in Sources */,
+				AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */,
 				AE06548B1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift in Sources */,
 				AE0654871FFED399009F6F92 /* CoreAPI+Utils.swift in Sources */,
 				AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */,
@@ -655,11 +665,13 @@
 				AE8E453F200E29350042CCE2 /* CoreAPI+PagedPublication.swift in Sources */,
 				AE8E4544200E3CA70042CCE2 /* CoreAPI+PagedPublicationRequests.swift in Sources */,
 				AE8E4546200F6CAA0042CCE2 /* ImageURLSet.swift in Sources */,
+				AE3C38FE2019DFD700A92597 /* PagedPublicationView+LoadingView.swift in Sources */,
 				AE2008D5200CE86F004363BE /* ShopGunSDK+UserAgent.swift in Sources */,
 				AE85C5EF2001884100263F8B /* Result+Map.swift in Sources */,
 				AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */,
 				AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */,
 				AE85C5ED20017EE600263F8B /* URLSession+CoreAPI.swift in Sources */,
+				AE3C38F52019DF7900A92597 /* PagedPublicationView+ContentsView.swift in Sources */,
 				AE85C5F12002B76C00263F8B /* CoreAPI+RequestOperation.swift in Sources */,
 				AE4942C120174406006658CE /* PagedPublicationView.swift in Sources */,
 			);

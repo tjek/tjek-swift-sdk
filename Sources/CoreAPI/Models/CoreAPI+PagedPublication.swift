@@ -73,7 +73,7 @@ extension CoreAPI {
             self.dealerId = try values.decode(Dealer.Identifier.self, forKey: .dealerId)
 
             if let frontPageImageURLs = try? values.decode(ImageURLSet.CoreAPIImageURLs.self, forKey: .frontPageImageURLs) {
-                self.frontPageImages = ImageURLSet(fromCoreAPI: frontPageImageURLs, aspectRatio: CGFloat(self.aspectRatio))
+                self.frontPageImages = ImageURLSet(fromCoreAPI: frontPageImageURLs, aspectRatio: self.aspectRatio)
             } else {
                 self.frontPageImages = ImageURLSet(sizedUrls: [])
             }
