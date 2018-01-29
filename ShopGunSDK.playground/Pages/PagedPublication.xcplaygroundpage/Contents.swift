@@ -17,8 +17,7 @@ class ExampleViewController: UIViewController {
         view.addSubview(publicationView)
         
         publicationView.reload(publicationId: "9e42Nlz",
-                               openPageIndex: 15,
-                               basicProperties: .empty)
+                               initialPageIndex: 20)
     }
 }
 

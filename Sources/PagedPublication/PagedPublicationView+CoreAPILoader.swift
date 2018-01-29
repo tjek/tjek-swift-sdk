@@ -11,7 +11,7 @@ import Foundation
 
 extension PagedPublicationView {
     
-    class CoreAPILoader: PagedPublicationViewLoader {
+    class CoreAPILoader: PagedPublicationViewDataLoader {
         
         internal var coreAPI: CoreAPI?
         internal var cancelTokens: [Cancellable] = []

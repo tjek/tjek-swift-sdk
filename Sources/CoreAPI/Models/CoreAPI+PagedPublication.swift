@@ -25,6 +25,8 @@ extension CoreAPI {
         public var frontPageImages: ImageURLSet
         public var dealerId: CoreAPI.Dealer.Identifier
         
+        // MARK: Decodable
+        
         //"store_id", "store_url", "dealer_url"        
         enum CodingKeys: String, CodingKey {
             case id
@@ -90,25 +92,30 @@ extension CoreAPI {
         
         // MARK: -
         
-        public struct Hotspot: Decodable {
-            
-            public typealias PageLocation = (index: Int, bounds: CGRect)
+        public struct Hotspot: Decodable, Equatable {
             
             public var offer: CoreAPI.Offer?
-            public var pageLocations: [PageLocation]
+            public var pageLocations: [Int: CGRect]
             
             /// This returns a new hotspot whose pageLocation bounds is scaled.
             func withScaledBounds(scale: CGPoint) -> Hotspot {
                 var newHotspot = self
-                newHotspot.pageLocations = newHotspot.pageLocations.map {
-                    var bounds = $0.bounds
+                newHotspot.pageLocations = newHotspot.pageLocations.mapValues({
+                    var bounds = $0
                     bounds.origin.x *= scale.x
                     bounds.size.width *= scale.x
                     bounds.origin.y *= scale.y
                     bounds.size.height *= scale.y
-                    return (index: $0.index, bounds: bounds)
-                }
+                    return bounds
+                })
                 return newHotspot
+            }
+            
+            // MARK: Equatable
+            
+            public static func ==(lhs: CoreAPI.PagedPublication.Hotspot, rhs: CoreAPI.PagedPublication.Hotspot) -> Bool {
+                return lhs.offer == rhs.offer
+                    && lhs.pageLocations == rhs.pageLocations
             }
             
             // MARK: Decoding
@@ -125,8 +132,11 @@ extension CoreAPI {
                 
                 if let pageCoords = try? values.decode([Int:[[CGFloat]]].self, forKey: .pageCoords) {
                     
-                    self.pageLocations = pageCoords.flatMap { (pageNum, coordsList) in
-                        guard pageNum > 0 else { return nil }
+                    self.pageLocations = pageCoords.reduce(into: [:]) {
+                        let pageNum = $1.key
+                        let coordsList = $1.value
+                        
+                        guard pageNum > 0 else { return }
                         
                         let coordRange: (min: CGPoint, max: CGPoint)? = coordsList.reduce(nil, { (currRange, coords) in
                             guard coords.count == 2 else { return currRange }
@@ -145,16 +155,16 @@ extension CoreAPI {
                             return newRange
                         })
                         
-                        guard let boundsRange = coordRange else { return nil }
+                        guard let boundsRange = coordRange else { return }
                         
                         let bounds = CGRect(origin: boundsRange.min,
                                             size: CGSize(width: boundsRange.max.x - boundsRange.min.x,
                                                          height: boundsRange.max.y - boundsRange.min.y))
 
-                        return (index: pageNum - 1, bounds: bounds)
+                        $0[pageNum - 1] = bounds
                     }
                 } else {
-                    self.pageLocations = []
+                    self.pageLocations = [:]
                 }
             }
         }

@@ -14,7 +14,7 @@ public typealias UnitSymbol = String
 
 extension CoreAPI {
     
-    public struct Offer: Decodable {
+    public struct Offer: Decodable, Equatable {
         public typealias Identifier = GenericIdentifier<Offer>
         
         public var id: Identifier
@@ -24,6 +24,19 @@ extension CoreAPI {
         
         public var price: Price?
         public var quantity: Quantity?
+        
+        // MARK: Equatable
+        
+        public static func ==(lhs: CoreAPI.Offer, rhs: CoreAPI.Offer) -> Bool {
+            return lhs.id == rhs.id
+                && lhs.heading == rhs.heading
+                && lhs.runDateRange == rhs.runDateRange
+                && lhs.publishDate == rhs.publishDate
+                && lhs.price == rhs.price
+                && lhs.quantity == rhs.quantity
+        }
+        
+        // MARK: Decodable
         
         enum CodingKeys: String, CodingKey {
             case id
@@ -66,7 +79,7 @@ extension CoreAPI {
 
 extension CoreAPI.Offer {
     
-    public struct Price: Decodable {
+    public struct Price: Decodable, Equatable {
         public var currency: CurrencyCode
         public var price: Double
         public var prePrice: Double?
@@ -76,12 +89,26 @@ extension CoreAPI.Offer {
             case price
             case prePrice = "pre_price"
         }
+
+        public static func ==(lhs: CoreAPI.Offer.Price, rhs: CoreAPI.Offer.Price) -> Bool {
+            return lhs.currency == rhs.currency
+                && lhs.price == rhs.price
+                && lhs.prePrice == rhs.prePrice
+        }
     }
     
-    public struct Quantity: Decodable {
+    public struct Quantity: Decodable, Equatable {
         public var unit: UnitSymbol?
         public var size: (from: Double?, to: Double?)
         public var pieces: (from: Double?, to: Double?)
+        
+        public static func ==(lhs: CoreAPI.Offer.Quantity, rhs: CoreAPI.Offer.Quantity) -> Bool {
+            return lhs.unit == rhs.unit
+                && lhs.size.from == rhs.size.from
+                && lhs.size.to == rhs.size.to
+                && lhs.pieces.from == rhs.pieces.from
+                && lhs.pieces.from == rhs.pieces.from
+        }
         
         enum CodingKeys: String, CodingKey {
             case unit
