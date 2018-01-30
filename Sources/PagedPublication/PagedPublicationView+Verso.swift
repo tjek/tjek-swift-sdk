@@ -16,7 +16,6 @@ extension PagedPublicationView: VersoViewDataSource {
     
     // Return how many pages are on each spread
     public func spreadConfiguration(with size: CGSize, for verso: VersoView) -> VersoSpreadConfiguration {
-        
         let pageCount = self.pageCount
         let lastPageIndex = max(0, pageCount - 1)
         var totalPageCount = pageCount
@@ -65,7 +64,7 @@ extension PagedPublicationView: VersoViewDataSource {
             let pageProperties = self.pageViewProperties(forPageIndex: pubPageView.pageIndex)
             pubPageView.configure(with: pageProperties)
         } else if type(of: pageView) === self.outroViewProperties?.viewClass {
-            delegateWithDefaults.configure(outroView: pageView, for: self)
+            dataSourceWithDefaults.configure(outroView: pageView, for: self)
         }
     }
     
@@ -115,31 +114,30 @@ extension PagedPublicationView: VersoViewDelegate {
         self.hotspotOverlayView.touchGesture?.isEnabled = true
         
         //        lifecycleEventHandler?.clearSpreadEventHandler()
-        //
-        //        // remove the outro index when refering to page indexes outside of PagedPub
-        //        var currentExOutro = currentPageIndexes
-        //        var oldExOutro = oldPageIndexes
-        //        if let outroIndex = self.outroPageIndex {
-        //            currentExOutro.remove(outroIndex)
-        //            oldExOutro.remove(outroIndex)
-        //        }
-        //        delegate?.pageIndexesChanged(current: currentExOutro, previous: oldExOutro, in: self)
-        //
-        //        // check if the outro has newly appeared or disappeared (not if it's in both old & current)
-        //        if let outroIndex = outroPageIndex, let outroView = verso.getPageViewIfLoaded(outroIndex) {
-        //
-        //            let addedIndexes = currentPageIndexes.subtracting(oldPageIndexes)
-        //            let removedIndexes = oldPageIndexes.subtracting(currentPageIndexes)
-        //
-        //            if addedIndexes.contains(outroIndex) {
-        //                delegate?.outroDidAppear(outroView, in: self)
-        //                outroOutsideTapGesture.isEnabled = true
-        //            } else if removedIndexes.contains(outroIndex) {
-        //                delegate?.outroDidDisappear(outroView, in: self)
-        //                outroOutsideTapGesture.isEnabled = false
-        //            }
-        //        }
-        //
+        
+        // remove the outro index when refering to page indexes outside of PagedPub
+        var currentExOutro = currentPageIndexes
+        var oldExOutro = oldPageIndexes
+        if let outroIndex = self.outroPageIndex {
+            currentExOutro.remove(outroIndex)
+            oldExOutro.remove(outroIndex)
+        }
+        delegate?.pageIndexesChanged(current: currentExOutro, previous: oldExOutro, in: self)
+        
+        // check if the outro has newly appeared or disappeared (not if it's in both old & current)
+        if let outroIndex = outroPageIndex, let outroView = verso.getPageViewIfLoaded(outroIndex) {
+            
+            let addedIndexes = currentPageIndexes.subtracting(oldPageIndexes)
+            let removedIndexes = oldPageIndexes.subtracting(currentPageIndexes)
+            
+            if addedIndexes.contains(outroIndex) {
+                delegate?.outroDidAppear(outroView, in: self)
+                outroOutsideTapGesture.isEnabled = true
+            } else if removedIndexes.contains(outroIndex) {
+                delegate?.outroDidDisappear(outroView, in: self)
+                outroOutsideTapGesture.isEnabled = false
+            }
+        }
         
         updateContentsViewLabels()
     }
@@ -172,7 +170,7 @@ extension PagedPublicationView: VersoViewDelegate {
             currentExOutro.remove(outroIndex)
             oldExOutro.remove(outroIndex)
         }
-//        delegate?.pageIndexesFinishedChanging(current: currentExOutro, previous: oldExOutro, in: self)
+        delegate?.pageIndexesFinishedChanging(current: currentExOutro, previous: oldExOutro, in: self)
         
         // cancel the loading of the zoomimage after a page disappears
         oldPageIndexes.subtracting(currentPageIndexes).forEach {

@@ -15,7 +15,7 @@ extension PagedPublicationView {
         
         var tasks: [UIImageView: URLSessionTask] = [:]
         
-        func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, forced: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool)>, URL) -> Void)) {
+        func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, evenWhenCached: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool)>, URL) -> Void)) {
 
             let task = URLSession.shared.dataTask(with: url) { [weak self] (data, response, error) in
                 self?.tasks[imageView] = nil

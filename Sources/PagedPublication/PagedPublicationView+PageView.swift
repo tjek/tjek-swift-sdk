@@ -185,7 +185,7 @@ extension PagedPublicationView {
             imageLoadState = .loading
 
             // load the image from the url
-            imageLoader?.loadImage(in: imageView, url: imageURL, transition: (fadeDuration: 0.1, forced: false)) { [weak self] (result, url) in
+            imageLoader?.loadImage(in: imageView, url: imageURL, transition: (fadeDuration: 0.1, evenWhenCached: false)) { [weak self] (result, url) in
                 guard let s = self else { return }
 
                 switch result {
@@ -224,7 +224,7 @@ extension PagedPublicationView {
             zoomImageView.image = nil
             zoomImageView.isHidden = false
 
-            imageLoader?.loadImage(in: zoomImageView, url: zoomImageURL, transition: (fadeDuration: 0.3, forced: true)) { [weak self] (result, url) in
+            imageLoader?.loadImage(in: zoomImageView, url: zoomImageURL, transition: (fadeDuration: 0.3, evenWhenCached: true)) { [weak self] (result, url) in
                 guard let s = self else { return }
 
                 switch result {

@@ -23,7 +23,7 @@ public protocol PagedPublicationViewDataLoader {
 /// The object that knows how to load/cache the page images from a URL
 /// Loosely based on `Kingfisher` interface
 public protocol PagedPublicationImageLoader: class {
-    func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, forced: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool)>, URL) -> Void))
+    func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, evenWhenCached: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool)>, URL) -> Void))
     func cancelImageLoad(for imageView: UIImageView)
 }
 
@@ -31,30 +31,33 @@ public typealias OutroView = VersoPageView
 public typealias OutroViewProperties = (viewClass: OutroView.Type, width: CGFloat, maxZoom: CGFloat)
 
 public protocol PagedPublicationViewDelegate: class {
+    // MARK: Page Change events
+    func pageIndexesChanged(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in pagedPublicationView: PagedPublicationView)
+    func pageIndexesFinishedChanging(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in pagedPublicationView: PagedPublicationView)
+    func didFinishLoadingPageImage(imageURL: URL, pageIndex: Int, in pagedPublicationView: PagedPublicationView)
     
+    // MARK: Hotspot events
+    func didTap(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView)
+    func didLongPress(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView)
+    func didDoubleTap(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView)
+    
+    // MARK: Outro events
+    func outroDidAppear(_ outroView: OutroView, in pagedPublicationView: PagedPublicationView)
+    func outroDidDisappear(_ outroView: OutroView, in pagedPublicationView: PagedPublicationView)
+    
+    // MARK: Loading events
+    func didStartReloading(in pagedPublicationView: PagedPublicationView)
+    func didLoad(publication publicationModel: PagedPublicationView.PublicationModel, in pagedPublicationView: PagedPublicationView)
+    func didLoad(pages pageModels: [PagedPublicationView.PageModel], in pagedPublicationView: PagedPublicationView)
+    func didLoad(hotspots hotspotModels: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView)
+}
+
+public protocol PagedPublicationViewDataSource: class {
     func outroViewProperties(for pagedPublicationView: PagedPublicationView) -> OutroViewProperties?
     func configure(outroView: OutroView, for pagedPublicationView: PagedPublicationView)
     func textForPageNumberLabel(pageIndexes: IndexSet, pageCount: Int, for pagedPublicationView: PagedPublicationView) -> String?
+    func errorView(with error: Error?, for pagedPublicationView: PagedPublicationView) -> UIView?
 }
-
-public extension PagedPublicationViewDelegate {
-    func outroViewProperties(for pagedPublicationView: PagedPublicationView) -> OutroViewProperties? { return nil }
-    
-    func configure(outroView: OutroView, for pagedPublicationView: PagedPublicationView) { }
-    
-    func textForPageNumberLabel(pageIndexes: IndexSet, pageCount: Int, for pagedPublicationView: PagedPublicationView) -> String? {
-        guard let first = pageIndexes.first, let last = pageIndexes.last else {
-            return nil
-        }
-        if first == last {
-            return "\(first+1) / \(pageCount)"
-        } else {
-            return "\(first+1)-\(last+1) / \(pageCount)"
-        }
-    }
-}
-
-extension PagedPublicationView: PagedPublicationViewDelegate { }
 
 // MARK: -
 
@@ -68,6 +71,7 @@ public class PagedPublicationView: UIView {
     public typealias CoreProperties = (pageCount: Int?, bgColor: UIColor, aspectRatio: Double)
     
     public weak var delegate: PagedPublicationViewDelegate?
+    public weak var dataSource: PagedPublicationViewDataSource?
     
     public func reload(publicationId: PublicationId, initialPageIndex: Int = 0, initialProperties: CoreProperties = (nil, .white, 1.0)) {
         
@@ -81,9 +85,16 @@ public class PagedPublicationView: UIView {
         
         // TODO: what if reload different after starting to load? need to handle id change
         
+        delegate?.didStartReloading(in: self)
+        
         // do the loading
         self.dataLoader.cancelLoading()
         self.dataLoader.startLoading(publicationId: publicationId, publicationLoaded: { [weak self] in self?.publicationDidLoad(forId: publicationId, initialPageIndex: initialPageIndex, result: $0) }, pagesLoaded: { [weak self] in self?.pagesDidLoad(forId: publicationId, initialPageIndex: initialPageIndex, result: $0) }, hotspotsLoaded: { [weak self] in self?.hotspotsDidLoad(forId: publicationId, initialPageIndex: initialPageIndex, result: $0) })
+    }
+    
+    public func jump(toPageIndex pageIndex: Int, animated: Bool) {
+        // TODO: if loading then save pageIndex for after load finished
+        contentsView.versoView.jump(toPageIndex: pageIndex, animated: animated)
     }
     
     // MARK: - UIView Lifecycle
@@ -166,6 +177,25 @@ public class PagedPublicationView: UIView {
     //    fileprivate let errorView = PagedPublicationView.ErrorView()
     let hotspotOverlayView = HotspotOverlayView()
     
+    lazy var outroOutsideTapGesture: UITapGestureRecognizer = { [weak self] in
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapOutsideOutro))
+        tap.cancelsTouchesInView = false
+        self?.addGestureRecognizer(tap)
+        return tap
+        }()
+    
+    @objc
+    func didTapOutsideOutro(_ tap: UITapGestureRecognizer) {
+        guard self.isOutroPageVisible, let outroView = self.outroView else {
+            return
+        }
+        
+        let location = tap.location(in: outroView)
+        if outroView.bounds.contains(location) == false {
+            jump(toPageIndex: pageCount-1, animated: true)
+        }
+    }
+    
     // MARK: - Data Loading
     
     private func publicationDidLoad(forId publicationId: PublicationId, initialPageIndex: Int?, result: Result<PublicationModel>) {
@@ -178,6 +208,7 @@ public class PagedPublicationView: UIView {
                                    bgColor: publicationModel.branding.color ?? self.coreProperties.bgColor,
                                    aspectRatio: publicationModel.aspectRatio)
             
+            delegate?.didLoad(publication: publicationModel, in: self)
         case .error(let error):
             self.publicationState = .error(publicationId, error)
         }
@@ -193,6 +224,8 @@ public class PagedPublicationView: UIView {
                                                                             isBackgroundDark: self.isBackgroundDark,
                                                                             aspectRatio: CGFloat($0.aspectRatio),
                                                                             images: $0.images) }))
+            
+            delegate?.didLoad(pages: pageModels, in: self)
         case .error(let error):
             self.pagesState = .error(publicationId, error)
         }
@@ -204,6 +237,7 @@ public class PagedPublicationView: UIView {
         switch result {
         case .success(let hotspotModels):
             self.hotspotsState = .loaded(publicationId, hotspotModels)
+            self.delegate?.didLoad(hotspots: hotspotModels, in: self)
         case .error(let error):
             self.hotspotsState = .error(publicationId, error)
         }
@@ -273,7 +307,7 @@ public class PagedPublicationView: UIView {
             
             properties.updateProgress(pageCount: pageCount, pageIndex: firstVisiblePageIndex)
             
-            properties.pageLabelString = delegateWithDefaults.textForPageNumberLabel(pageIndexes: currentPageIndexes,
+            properties.pageLabelString = dataSourceWithDefaults.textForPageNumberLabel(pageIndexes: currentPageIndexes,
                                                                             pageCount: pageCount,
                                                                             for: self)
         } else {
@@ -281,27 +315,41 @@ public class PagedPublicationView: UIView {
             properties.pageLabelString = nil
         }
         
-        properties.isBackgroundBlack = false // TODO: use real value based on coreProperties
+        properties.isBackgroundBlack = self.isBackgroundDark
         
         contentsView.update(properties: properties)
     }
     
     // MARK: Derived Values
     
-    var delegateWithDefaults: PagedPublicationViewDelegate {
-        return self.delegate ?? self
+    var dataSourceWithDefaults: PagedPublicationViewDataSource {
+        return self.dataSource ?? self
     }
     
     var pageCount: Int {
         return coreProperties.pageCount ?? 0
     }
     var outroViewProperties: OutroViewProperties? {
-        return delegateWithDefaults.outroViewProperties(for: self)
+        return dataSourceWithDefaults.outroViewProperties(for: self)
     }
     var outroPageIndex: Int? {
         return outroViewProperties != nil && pageCount > 0 ? pageCount : nil
     }
+    var outroView: OutroView? {
+        guard let outroIndex = outroPageIndex else {
+            return nil
+        }
+        return contentsView.versoView.getPageViewIfLoaded(outroIndex)
+    }
+    func isOutroPage(inPageIndexes pageIndexSet: IndexSet) -> Bool {
+        guard let outroIndex = self.outroPageIndex else { return false }
+        return pageIndexSet.contains(outroIndex)
+    }
     
+    var isOutroPageVisible: Bool {
+        return isOutroPage(inPageIndexes: contentsView.versoView.visiblePageIndexes)
+    }
+
     func hotspots(onPageIndexes pageIndexSet: IndexSet) -> [HotspotModel] {
         guard case .loaded(_, let hotspotModels) = self.hotspotsState else {
             return []
@@ -328,11 +376,6 @@ public class PagedPublicationView: UIView {
         
         return pageProperties[pageIndex]
     }
-    
-    func isOutroPage(inPageIndexes pageIndexSet: IndexSet) -> Bool {
-        guard let outroIndex = self.outroPageIndex else { return false }
-        return pageIndexSet.contains(outroIndex)
-    }
 }
 
 // MARK: -
@@ -340,7 +383,7 @@ public class PagedPublicationView: UIView {
 private typealias PageViewDelegate = PagedPublicationView
 extension PageViewDelegate: PagedPublicationPageViewDelegate {
     func didFinishLoading(viewImage imageURL: URL, fromCache: Bool, in pageView: PagedPublicationView.PageView) {
-//        let pageIndex = pageView.pageIndex
+        let pageIndex = pageView.pageIndex
         
         // TODO: eventHandler & delegate
         
@@ -348,7 +391,7 @@ extension PageViewDelegate: PagedPublicationPageViewDelegate {
         // Will be ignored if page isnt part of the spread
 //        lifecycleEventHandler?.spreadEventHandler?.pageLoaded(pageIndex: pageIndex)
         
-//        delegate?.didFinishLoadingPageImage(imageURL: imageURL, pageIndex: pageIndex, in: self)
+        delegate?.didFinishLoadingPageImage(imageURL: imageURL, pageIndex: pageIndex, in: self)
     }
 }
 
@@ -360,20 +403,65 @@ extension HotspotDelegate: HotspotOverlayViewDelegate {
     func didTapHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint) {
         
 //        lifecycleEventHandler?.spreadEventHandler?.pageTapped(pageIndex: pageIndex, location: locationInPage, hittingHotspots: (hotspots.count > 0))
-//
-//        delegate?.didTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
+        
+        delegate?.didTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
     func didLongPressHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint) {
         
 //        lifecycleEventHandler?.spreadEventHandler?.pageLongPressed(pageIndex: pageIndex, location: locationInPage)
-//
-//        delegate?.didLongPress(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
+
+        delegate?.didLongPress(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
     
     func didDoubleTapHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint) {
         
 //        lifecycleEventHandler?.spreadEventHandler?.pageDoubleTapped(pageIndex: pageIndex, location: locationInPage)
-//
-//        delegate?.didDoubleTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
+
+        delegate?.didDoubleTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
 }
+
+// MARK: -
+
+public extension PagedPublicationViewDelegate {
+    func pageIndexesChanged(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in pagedPublicationView: PagedPublicationView) {}
+    func pageIndexesFinishedChanging(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in pagedPublicationView: PagedPublicationView) {}
+    func didFinishLoadingPageImage(imageURL: URL, pageIndex: Int, in pagedPublicationView: PagedPublicationView) {}
+    
+    // MARK: Hotspot events
+    func didTap(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView) {}
+    func didLongPress(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView) {}
+    func didDoubleTap(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView) {}
+    
+    // MARK: Outro events
+    func outroDidAppear(_ outroView: OutroView, in pagedPublicationView: PagedPublicationView) {}
+    func outroDidDisappear(_ outroView: OutroView, in pagedPublicationView: PagedPublicationView) {}
+    
+    // MARK: Loading events
+    func didStartReloading(in pagedPublicationView: PagedPublicationView) {}
+    func didLoad(publication publicationModel: PagedPublicationView.PublicationModel, in pagedPublicationView: PagedPublicationView) {}
+    func didLoad(pages pageModels: [PagedPublicationView.PageModel], in pagedPublicationView: PagedPublicationView) {}
+    func didLoad(hotspots hotspotModels: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView) {}
+}
+
+// MARK: -
+
+public extension PagedPublicationViewDataSource {
+    func outroViewProperties(for pagedPublicationView: PagedPublicationView) -> OutroViewProperties? { return nil }
+    func configure(outroView: OutroView, for pagedPublicationView: PagedPublicationView) { }
+    
+    func textForPageNumberLabel(pageIndexes: IndexSet, pageCount: Int, for pagedPublicationView: PagedPublicationView) -> String? {
+        guard let first = pageIndexes.first, let last = pageIndexes.last else {
+            return nil
+        }
+        if first == last {
+            return "\(first+1) / \(pageCount)"
+        } else {
+            return "\(first+1)-\(last+1) / \(pageCount)"
+        }
+    }
+    func errorView(with error: Error?, for pagedPublicationView: PagedPublicationView) -> UIView? {
+        return nil
+    }
+}
+extension PagedPublicationView: PagedPublicationViewDataSource { }
