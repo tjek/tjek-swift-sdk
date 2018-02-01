@@ -30,6 +30,7 @@
 		AE3C38FE2019DFD700A92597 /* PagedPublicationView+LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FD2019DFD700A92597 /* PagedPublicationView+LoadingView.swift */; };
 		AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */; };
 		AE4942C120174406006658CE /* PagedPublicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4942C020174406006658CE /* PagedPublicationView.swift */; };
+		AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */; };
 		AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7F6A72201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift */; };
 		AE7F6A77201F36F300168C1A /* PagedPublicationView+Verso.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7F6A76201F36F300168C1A /* PagedPublicationView+Verso.swift */; };
 		AE7F6A79201F5F4900168C1A /* PagedPublicationView+SimpleImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7F6A78201F5F4900168C1A /* PagedPublicationView+SimpleImageLoader.swift */; };
@@ -165,6 +166,7 @@
 		AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+CoreAPILoader.swift"; sourceTree = "<group>"; };
 		AE49429920113A0F006658CE /* Verso.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Verso.xcodeproj; path = External/Verso/Verso.xcodeproj; sourceTree = "<group>"; };
 		AE4942C020174406006658CE /* PagedPublicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagedPublicationView.swift; sourceTree = "<group>"; };
+		AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+EventHandler.swift"; sourceTree = "<group>"; };
 		AE7F6A72201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+HotspotOverlayView.swift"; sourceTree = "<group>"; };
 		AE7F6A76201F36F300168C1A /* PagedPublicationView+Verso.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+Verso.swift"; sourceTree = "<group>"; };
 		AE7F6A78201F5F4900168C1A /* PagedPublicationView+SimpleImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+SimpleImageLoader.swift"; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 				AE7F6A72201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift */,
 				AE7F6A76201F36F300168C1A /* PagedPublicationView+Verso.swift */,
 				AE7F6A78201F5F4900168C1A /* PagedPublicationView+SimpleImageLoader.swift */,
+				AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */,
 			);
 			name = PagedPublication;
 			path = Sources/PagedPublication;
@@ -668,6 +671,7 @@
 				AE8E4541200E31E60042CCE2 /* UIColor+Hex.swift in Sources */,
 				AEC28B641FF6ABFC0007AAB8 /* ShopGunSDK.swift in Sources */,
 				AE85C5E42000384500263F8B /* CoreAPI+AuthVault.swift in Sources */,
+				AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */,
 				AE8E4548200F6D140042CCE2 /* CGSize+Fitting.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Person.swift in Sources */,
 				AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */,

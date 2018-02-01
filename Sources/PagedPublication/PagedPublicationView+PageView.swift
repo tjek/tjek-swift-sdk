@@ -36,8 +36,11 @@ extension PagedPublicationView {
         }
         
         weak var delegate: PagedPublicationPageViewDelegate?
-        weak var imageLoader: PagedPublicationImageLoader?
+        weak var imageLoader: PagedPublicationViewImageLoader?
         
+        var isViewImageLoaded: Bool {
+            return imageLoadState == .loaded
+        }
         func startLoadingZoomImageIfNotLoaded() {
             guard zoomImageLoadState == .notLoaded else { return }
             
@@ -45,7 +48,6 @@ extension PagedPublicationView {
             let maxScaleFactor: CGFloat = 4
             guard let zoomImageURL = properties?.images?.url(fitting: CGSize(width: pageSize.width * maxScaleFactor, height: pageSize.height * maxScaleFactor)) else { return }
             
-            print("Fetching zoomImage for size:", CGSize(width: pageSize.width * maxScaleFactor, height: pageSize.height * maxScaleFactor))
             self.startLoadingZoomImage(fromURL: zoomImageURL)
         }
         
@@ -59,13 +61,13 @@ extension PagedPublicationView {
             backgroundColor = properties.isBackgroundDark ? UIColor(white: 1, alpha: 0.1) : UIColor(white: 0.8, alpha: 0.15)
             
             if let imageURL = properties.images?.url(fitting: self.bounds.size) {
-                print("Fetching viewImage for size:", self.bounds.size)
                 startLoadingViewImage(fromURL: imageURL)
             }
             
             delegate?.didConfigure(pageView: self, with: properties)
             
         }
+        
         private var properties: Properties?
         
         // MARK: - Subviews
@@ -197,11 +199,8 @@ extension PagedPublicationView {
                     //                            s.aspectRatio = newAspectRatio
                     //                            // TODO: this will only affect future uses of this page. Somehow trigger a re-layout from the verso. Maybe in the delegate?
                     //                        }
-                    print("... Fetched viewImage")
-
                     s.imageLoadState = .loaded
                     s.delegate?.didFinishLoading(viewImage: url, fromCache: fromCache, in: s)
-                    
                 case let .error(error):
                     guard (error as NSError).code != NSURLErrorCancelled else {
                         s.imageLoadState = .notLoaded
@@ -239,8 +238,6 @@ extension PagedPublicationView {
                         s.zoomImageLoadState = .notLoaded
                         return // image load cancelled
                     }
-
-                    print("... Fetched zoomImage")
                     // TODO: handle failed image load
                     // tell delegate? show error? retry?
                     // maybe cache failed image urls to re-fail quickly?

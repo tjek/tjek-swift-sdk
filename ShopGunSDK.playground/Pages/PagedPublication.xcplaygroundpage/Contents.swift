@@ -18,6 +18,8 @@ class ExampleViewController: UIViewController {
         
         publicationView.reload(publicationId: "9e42Nlz",
                                initialPageIndex: 20)
+        
+        publicationView.didEnterForeground()
     }
 }
 

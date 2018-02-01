@@ -11,7 +11,7 @@ import UIKit
 
 extension PagedPublicationView {
     
-    class SimpleImageLoader: PagedPublicationImageLoader {
+    class SimpleImageLoader: PagedPublicationViewImageLoader {
         
         var tasks: [UIImageView: URLSessionTask] = [:]
         

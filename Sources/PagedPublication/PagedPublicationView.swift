@@ -22,7 +22,7 @@ public protocol PagedPublicationViewDataLoader {
 
 /// The object that knows how to load/cache the page images from a URL
 /// Loosely based on `Kingfisher` interface
-public protocol PagedPublicationImageLoader: class {
+public protocol PagedPublicationViewImageLoader: class {
     func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, evenWhenCached: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool)>, URL) -> Void))
     func cancelImageLoad(for imageView: UIImageView)
 }
@@ -97,6 +97,25 @@ public class PagedPublicationView: UIView {
         contentsView.versoView.jump(toPageIndex: pageIndex, animated: animated)
     }
     
+    /// Tell the page publication that it is now visible again.
+    /// (eg. when a view that was placed over the top of this view is removed, and the content becomes visible again).
+    /// This will restart event collection. You MUST remember to call this if you previously called `didEnterBackground`, otherwise
+    /// the PagePublicationView will not function correctly.
+    public func didEnterForeground() {
+        // start listening for the app going into the background
+        NotificationCenter.default.addObserver(self, selector: #selector(willResignActiveNotification), name: .UIApplicationWillResignActive, object: nil)
+        lifecycleEventTracker?.didAppear()
+    }
+    
+    /// Tell the page publication that it is no longer visible.
+    /// (eg. a view has been placed over the top of the PagedPublicationView, so the content is no longer visible)
+    /// This will pause event collection, until `didEnterForeground` is called again.
+    public func didEnterBackground() {
+        // stop listening for going into the background
+        NotificationCenter.default.removeObserver(self, name: .UIApplicationWillResignActive, object: nil)
+        lifecycleEventTracker?.didDisappear()
+    }
+    
     // MARK: - UIView Lifecycle
     
     public override init(frame: CGRect) {
@@ -118,6 +137,11 @@ public class PagedPublicationView: UIView {
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .UIApplicationWillResignActive, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIApplicationDidBecomeActive, object: nil)
     }
     
     // MARK: - Internal
@@ -170,7 +194,8 @@ public class PagedPublicationView: UIView {
     var currentViewState: ViewState = .initial
     
     public var dataLoader: PagedPublicationViewDataLoader = PagedPublicationView.CoreAPILoader()
-    public var imageLoader: PagedPublicationImageLoader? = PagedPublicationView.SimpleImageLoader()
+    public var imageLoader: PagedPublicationViewImageLoader? = PagedPublicationView.SimpleImageLoader()
+    public var eventHandler: PagedPublicationViewEventHandler? = PagedPublicationView.EventsHandler()
     
     let contentsView = PagedPublicationView.ContentsView()
     let loadingView = PagedPublicationView.LoadingView()
@@ -184,17 +209,7 @@ public class PagedPublicationView: UIView {
         return tap
         }()
     
-    @objc
-    func didTapOutsideOutro(_ tap: UITapGestureRecognizer) {
-        guard self.isOutroPageVisible, let outroView = self.outroView else {
-            return
-        }
-        
-        let location = tap.location(in: outroView)
-        if outroView.bounds.contains(location) == false {
-            jump(toPageIndex: pageCount-1, animated: true)
-        }
-    }
+    var lifecycleEventTracker: PagedPublicationView.LifecycleEventTracker?
     
     // MARK: - Data Loading
     
@@ -207,6 +222,14 @@ public class PagedPublicationView: UIView {
             self.coreProperties = (pageCount: publicationModel.pageCount,
                                    bgColor: publicationModel.branding.color ?? self.coreProperties.bgColor,
                                    aspectRatio: publicationModel.aspectRatio)
+            
+            // successful reload, event handler can now call opened & didAppear (if new publication, or we havnt called it yet)
+            if lifecycleEventTracker?.publicationModel.id != publicationModel.id, let eventHandler = self.eventHandler {
+                
+                lifecycleEventTracker = PagedPublicationView.LifecycleEventTracker(publicationModel: publicationModel, eventHandler: eventHandler)
+                lifecycleEventTracker?.opened()
+                lifecycleEventTracker?.didAppear()
+            }
             
             delegate?.didLoad(publication: publicationModel, in: self)
         case .error(let error):
@@ -376,6 +399,33 @@ public class PagedPublicationView: UIView {
         
         return pageProperties[pageIndex]
     }
+    
+    // MARK: -
+    
+    @objc
+    fileprivate func didTapOutsideOutro(_ tap: UITapGestureRecognizer) {
+        guard self.isOutroPageVisible, let outroView = self.outroView else {
+            return
+        }
+        
+        let location = tap.location(in: outroView)
+        if outroView.bounds.contains(location) == false {
+            jump(toPageIndex: pageCount-1, animated: true)
+        }
+    }
+    
+    @objc
+    fileprivate func willResignActiveNotification(_ notification: Notification) {
+        // once in the background, listen for coming back to the foreground again
+        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActiveNotification), name: .UIApplicationDidBecomeActive, object: nil)
+        didEnterBackground()
+    }
+    @objc
+    fileprivate func didBecomeActiveNotification(_ notification: Notification) {
+        // once in the foreground, stop listen for that again
+        NotificationCenter.default.removeObserver(self, name: .UIApplicationDidBecomeActive, object: nil)
+        didEnterForeground()
+    }
 }
 
 // MARK: -
@@ -383,13 +433,12 @@ public class PagedPublicationView: UIView {
 private typealias PageViewDelegate = PagedPublicationView
 extension PageViewDelegate: PagedPublicationPageViewDelegate {
     func didFinishLoading(viewImage imageURL: URL, fromCache: Bool, in pageView: PagedPublicationView.PageView) {
+        
         let pageIndex = pageView.pageIndex
-        
-        // TODO: eventHandler & delegate
-        
+
         // tell the spread that the image loaded.
         // Will be ignored if page isnt part of the spread
-//        lifecycleEventHandler?.spreadEventHandler?.pageLoaded(pageIndex: pageIndex)
+        lifecycleEventTracker?.spreadLifecycleTracker?.pageLoaded(pageIndex: pageIndex)
         
         delegate?.didFinishLoadingPageImage(imageURL: imageURL, pageIndex: pageIndex, in: self)
     }
@@ -401,22 +450,16 @@ private typealias HotspotDelegate = PagedPublicationView
 extension HotspotDelegate: HotspotOverlayViewDelegate {
     
     func didTapHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint) {
-        
-//        lifecycleEventHandler?.spreadEventHandler?.pageTapped(pageIndex: pageIndex, location: locationInPage, hittingHotspots: (hotspots.count > 0))
-        
+        lifecycleEventTracker?.spreadLifecycleTracker?.pageTapped(pageIndex: pageIndex, location: locationInPage, hittingHotspots: (hotspots.count > 0))
         delegate?.didTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
     func didLongPressHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint) {
-        
-//        lifecycleEventHandler?.spreadEventHandler?.pageLongPressed(pageIndex: pageIndex, location: locationInPage)
-
+        lifecycleEventTracker?.spreadLifecycleTracker?.pageLongPressed(pageIndex: pageIndex, location: locationInPage)
         delegate?.didLongPress(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
     
     func didDoubleTapHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint) {
-        
-//        lifecycleEventHandler?.spreadEventHandler?.pageDoubleTapped(pageIndex: pageIndex, location: locationInPage)
-
+        lifecycleEventTracker?.spreadLifecycleTracker?.pageDoubleTapped(pageIndex: pageIndex, location: locationInPage)
         delegate?.didDoubleTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
 }

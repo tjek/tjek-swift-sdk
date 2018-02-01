@@ -61,6 +61,7 @@ extension PagedPublicationView: VersoViewDataSource {
     public func configure(pageView: VersoPageView, for verso: VersoView) {
         if let pubPageView = pageView as? PagedPublicationView.PageView {
             pubPageView.imageLoader = self.imageLoader
+            pubPageView.delegate = self
             let pageProperties = self.pageViewProperties(forPageIndex: pubPageView.pageIndex)
             pubPageView.configure(with: pageProperties)
         } else if type(of: pageView) === self.outroViewProperties?.viewClass {
@@ -107,13 +108,11 @@ extension PagedPublicationView: VersoViewDataSource {
 extension PagedPublicationView: VersoViewDelegate {
     
     public func currentPageIndexesChanged(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in verso: VersoView) {
-        // TODO: event handlers & delegates
-
         // this is a bit of a hack to cancel the touch-gesture when we start scrolling
         self.hotspotOverlayView.touchGesture?.isEnabled = false
         self.hotspotOverlayView.touchGesture?.isEnabled = true
         
-        //        lifecycleEventHandler?.clearSpreadEventHandler()
+        lifecycleEventTracker?.clearSpreadLifecycleTracker()
         
         // remove the outro index when refering to page indexes outside of PagedPub
         var currentExOutro = currentPageIndexes
@@ -143,25 +142,20 @@ extension PagedPublicationView: VersoViewDelegate {
     }
     
     public func currentPageIndexesFinishedChanging(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in verso: VersoView) {
-        // TODO: event handlers & delegates
-        
         // make a new spreadEventHandler (unless it's the outro)
         if self.isOutroPage(inPageIndexes: currentPageIndexes) == false {
+            lifecycleEventTracker?.newSpreadLifecycleTracker(for: currentPageIndexes)
             
-            //                    lifecycleEventHandler?.newSpreadEventHandler(for: currentPageIndexes)
-            //
-            //                    for pageIndex in currentPageIndexes {
-            //                        if let pageView = verso.getPageViewIfLoaded(pageIndex) as? PagedPublicationPageView, pageView.imageLoadState == .loaded {
-            //                            lifecycleEventHandler?.spreadEventHandler?.pageLoaded(pageIndex: pageIndex)
-            //                        }
-            //                    }
-            //
-            //                    if verso.zoomScale > 1 {
-            //                        lifecycleEventHandler?.spreadEventHandler?.didZoomIn()
-            //                    }
+            currentPageIndexes.forEach {
+                if let pageView = verso.getPageViewIfLoaded($0) as? PagedPublicationView.PageView, pageView.isViewImageLoaded {
+                    lifecycleEventTracker?.spreadLifecycleTracker?.pageLoaded(pageIndex: $0)
+                }
+            }
+            
+            if verso.zoomScale > 1 {
+                lifecycleEventTracker?.spreadLifecycleTracker?.didZoomIn()
+            }
         }
-        
-        
         
         // remove the outro index when refering to page indexes outside of PagedPub
         var currentExOutro = currentPageIndexes
@@ -181,10 +175,9 @@ extension PagedPublicationView: VersoViewDelegate {
     }
     
     public func didEndZooming(pages pageIndexes: IndexSet, zoomScale: CGFloat, in verso: VersoView) {
-        // TODO: event handlers x2
 
         guard zoomScale > 1 else {
-//            lifecycleEventHandler?.spreadEventHandler?.didZoomOut()
+            lifecycleEventTracker?.spreadLifecycleTracker?.didZoomOut()
             return
         }
         
@@ -194,6 +187,6 @@ extension PagedPublicationView: VersoViewDelegate {
             }
         }
         
-//        lifecycleEventHandler?.spreadEventHandler?.didZoomIn()
+        lifecycleEventTracker?.spreadLifecycleTracker?.didZoomIn()
     }
 }
