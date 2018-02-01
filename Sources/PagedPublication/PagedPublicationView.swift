@@ -20,13 +20,6 @@ public protocol PagedPublicationViewDataLoader {
     func cancelLoading()
 }
 
-/// The object that knows how to load/cache the page images from a URL
-/// Loosely based on `Kingfisher` interface
-public protocol PagedPublicationViewImageLoader: class {
-    func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, evenWhenCached: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool)>, URL) -> Void))
-    func cancelImageLoad(for imageView: UIImageView)
-}
-
 public typealias OutroView = VersoPageView
 public typealias OutroViewProperties = (viewClass: OutroView.Type, width: CGFloat, maxZoom: CGFloat)
 
@@ -194,7 +187,7 @@ public class PagedPublicationView: UIView {
     var currentViewState: ViewState = .initial
     
     public var dataLoader: PagedPublicationViewDataLoader = PagedPublicationView.CoreAPILoader()
-    public var imageLoader: PagedPublicationViewImageLoader? = PagedPublicationView.SimpleImageLoader()
+    public var imageLoader: PagedPublicationViewImageLoader? = PagedPublicationView.KingfisherImageLoader()
     public var eventHandler: PagedPublicationViewEventHandler? = PagedPublicationView.EventsHandler()
     
     let contentsView = PagedPublicationView.ContentsView()

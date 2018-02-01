@@ -8,3 +8,6 @@
 	path = External/Verso
 	url = https://lozhuf@github.com/shopgun/verso-ios.git
 	branch = develop
+[submodule "External/Kingfisher"]
+	path = External/Kingfisher
+	url = https://github.com/onevcat/Kingfisher.git
