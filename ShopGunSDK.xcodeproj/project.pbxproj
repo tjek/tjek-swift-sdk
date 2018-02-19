@@ -23,6 +23,11 @@
 /* Begin PBXBuildFile section */
 		AE0654871FFED399009F6F92 /* CoreAPI+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0654861FFED399009F6F92 /* CoreAPI+Utils.swift */; };
 		AE06548B1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE06548A1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift */; };
+		AE091FEB203AF24000345009 /* GraphRequestResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD3203AF23F00345009 /* GraphRequestResponse.swift */; };
+		AE091FEC203AF24000345009 /* GraphNetworkTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD4203AF23F00345009 /* GraphNetworkTransport.swift */; };
+		AE091FED203AF24000345009 /* GraphClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD5203AF23F00345009 /* GraphClient.swift */; };
+		AE091FEF203AF24000345009 /* GraphQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD7203AF23F00345009 /* GraphQuery.swift */; };
+		AE091FF0203AF24000345009 /* GraphError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD8203AF23F00345009 /* GraphError.swift */; };
 		AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */; };
 		AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */; };
 		AE2008D5200CE86F004363BE /* ShopGunSDK+UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */; };
@@ -249,6 +254,11 @@
 		AE0654861FFED399009F6F92 /* CoreAPI+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+Utils.swift"; sourceTree = "<group>"; };
 		AE06548A1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShopGunSDK+SecureDataStore.swift"; sourceTree = "<group>"; };
 		AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Valet.xcodeproj; path = External/Valet/Valet.xcodeproj; sourceTree = "<group>"; };
+		AE091FD3203AF23F00345009 /* GraphRequestResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphRequestResponse.swift; sourceTree = "<group>"; };
+		AE091FD4203AF23F00345009 /* GraphNetworkTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphNetworkTransport.swift; sourceTree = "<group>"; };
+		AE091FD5203AF23F00345009 /* GraphClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphClient.swift; sourceTree = "<group>"; };
+		AE091FD7203AF23F00345009 /* GraphQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQuery.swift; sourceTree = "<group>"; };
+		AE091FD8203AF23F00345009 /* GraphError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphError.swift; sourceTree = "<group>"; };
 		AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+PageView.swift"; sourceTree = "<group>"; };
 		AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
 		AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShopGunSDK+UserAgent.swift"; sourceTree = "<group>"; };
@@ -353,6 +363,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		AE091FD2203AF23F00345009 /* Graph */ = {
+			isa = PBXGroup;
+			children = (
+				AE091FD3203AF23F00345009 /* GraphRequestResponse.swift */,
+				AE091FD4203AF23F00345009 /* GraphNetworkTransport.swift */,
+				AE091FD5203AF23F00345009 /* GraphClient.swift */,
+				AE091FD7203AF23F00345009 /* GraphQuery.swift */,
+				AE091FD8203AF23F00345009 /* GraphError.swift */,
+			);
+			name = Graph;
+			path = Sources/Graph;
+			sourceTree = "<group>";
+		};
 		AE49429A20113A0F006658CE /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -415,6 +438,7 @@
 				AEC28B591FF6ABFC0007AAB8 /* CoreAPI */,
 				AE4942BF201743FA006658CE /* PagedPublication */,
 				AEC28B561FF6ABFB0007AAB8 /* EventsTracker */,
+				AE091FD2203AF23F00345009 /* Graph */,
 				AEC28B5F1FF6ABFC0007AAB8 /* Utils */,
 				AEC28B701FF6AC8A0007AAB8 /* Resources */,
 				AEC3D8531FFD87FB004C5947 /* Tests */,
@@ -870,12 +894,16 @@
 				AEC28B681FF6ABFC0007AAB8 /* CoreAPI+APIError.swift in Sources */,
 				AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */,
 				AE8E4541200E31E60042CCE2 /* UIColor+Hex.swift in Sources */,
+				AE091FEB203AF24000345009 /* GraphRequestResponse.swift in Sources */,
 				AEC28B641FF6ABFC0007AAB8 /* ShopGunSDK.swift in Sources */,
 				AE85C5E42000384500263F8B /* CoreAPI+AuthVault.swift in Sources */,
+				AE091FED203AF24000345009 /* GraphClient.swift in Sources */,
 				AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */,
 				AE8E4548200F6D140042CCE2 /* CGSize+Fitting.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Person.swift in Sources */,
+				AE091FEC203AF24000345009 /* GraphNetworkTransport.swift in Sources */,
 				AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */,
+				AE091FEF203AF24000345009 /* GraphQuery.swift in Sources */,
 				AE06548B1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift in Sources */,
 				AE0654871FFED399009F6F92 /* CoreAPI+Utils.swift in Sources */,
 				AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */,
@@ -887,6 +915,7 @@
 				AE7F6A77201F36F300168C1A /* PagedPublicationView+Verso.swift in Sources */,
 				AE2008D5200CE86F004363BE /* ShopGunSDK+UserAgent.swift in Sources */,
 				AE85C5EF2001884100263F8B /* Result+Map.swift in Sources */,
+				AE091FF0203AF24000345009 /* GraphError.swift in Sources */,
 				AE3C38F52019DF7900A92597 /* PagedPublicationView+ContentsView.swift in Sources */,
 				AE7F6A79201F5F4900168C1A /* PagedPublicationView+ImageLoader.swift in Sources */,
 				AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */,
