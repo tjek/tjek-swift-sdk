@@ -15,3 +15,4 @@ let token = ShopGunSDK.coreAPI.request(CoreAPI.Requests.getPagedPublication(with
         dump(publication)
     }
 }
+

@@ -20,9 +20,6 @@ public protocol PagedPublicationViewDataLoader {
     func cancelLoading()
 }
 
-public typealias OutroView = VersoPageView
-public typealias OutroViewProperties = (viewClass: OutroView.Type, width: CGFloat, maxZoom: CGFloat)
-
 public protocol PagedPublicationViewDelegate: class {
     // MARK: Page Change events
     func pageIndexesChanged(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in pagedPublicationView: PagedPublicationView)
@@ -35,8 +32,8 @@ public protocol PagedPublicationViewDelegate: class {
     func didDoubleTap(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView)
     
     // MARK: Outro events
-    func outroDidAppear(_ outroView: OutroView, in pagedPublicationView: PagedPublicationView)
-    func outroDidDisappear(_ outroView: OutroView, in pagedPublicationView: PagedPublicationView)
+    func outroDidAppear(_ outroView: PagedPublicationView.OutroView, in pagedPublicationView: PagedPublicationView)
+    func outroDidDisappear(_ outroView: PagedPublicationView.OutroView, in pagedPublicationView: PagedPublicationView)
     
     // MARK: Loading events
     func didStartReloading(in pagedPublicationView: PagedPublicationView)
@@ -46,8 +43,8 @@ public protocol PagedPublicationViewDelegate: class {
 }
 
 public protocol PagedPublicationViewDataSource: class {
-    func outroViewProperties(for pagedPublicationView: PagedPublicationView) -> OutroViewProperties?
-    func configure(outroView: OutroView, for pagedPublicationView: PagedPublicationView)
+    func outroViewProperties(for pagedPublicationView: PagedPublicationView) -> PagedPublicationView.OutroViewProperties?
+    func configure(outroView: PagedPublicationView.OutroView, for pagedPublicationView: PagedPublicationView)
     func textForPageNumberLabel(pageIndexes: IndexSet, pageCount: Int, for pagedPublicationView: PagedPublicationView) -> String?
     func errorView(with error: Error?, for pagedPublicationView: PagedPublicationView) -> UIView?
 }
@@ -55,6 +52,9 @@ public protocol PagedPublicationViewDataSource: class {
 // MARK: -
 
 public class PagedPublicationView: UIView {
+    
+    public typealias OutroView = VersoPageView
+    public typealias OutroViewProperties = (viewClass: OutroView.Type, width: CGFloat, maxZoom: CGFloat)
     
     public typealias PublicationId = CoreAPI.PagedPublication.Identifier
     public typealias PublicationModel = CoreAPI.PagedPublication
@@ -67,22 +67,24 @@ public class PagedPublicationView: UIView {
     public weak var dataSource: PagedPublicationViewDataSource?
     
     public func reload(publicationId: PublicationId, initialPageIndex: Int = 0, initialProperties: CoreProperties = (nil, .white, 1.0)) {
-        
-        self.coreProperties = initialProperties
-        self.publicationState = .loading(publicationId)
-        self.pagesState = .loading(publicationId)
-        self.hotspotsState = .loading(publicationId)
-        
-        // change what we are showing based on the states
-        updateCurrentViewState(initialPageIndex: initialPageIndex)
-        
-        // TODO: what if reload different after starting to load? need to handle id change
-        
-        delegate?.didStartReloading(in: self)
-        
-        // do the loading
-        self.dataLoader.cancelLoading()
-        self.dataLoader.startLoading(publicationId: publicationId, publicationLoaded: { [weak self] in self?.publicationDidLoad(forId: publicationId, initialPageIndex: initialPageIndex, result: $0) }, pagesLoaded: { [weak self] in self?.pagesDidLoad(forId: publicationId, initialPageIndex: initialPageIndex, result: $0) }, hotspotsLoaded: { [weak self] in self?.hotspotsDidLoad(forId: publicationId, initialPageIndex: initialPageIndex, result: $0) })
+        DispatchQueue.main.async { [weak self] in
+            guard let s = self else { return }
+            s.coreProperties = initialProperties
+            s.publicationState = .loading(publicationId)
+            s.pagesState = .loading(publicationId)
+            s.hotspotsState = .loading(publicationId)
+            
+            // change what we are showing based on the states
+            s.updateCurrentViewState(initialPageIndex: initialPageIndex)
+            
+            // TODO: what if reload different after starting to load? need to handle id change
+            
+            s.delegate?.didStartReloading(in: s)
+            
+            // do the loading
+            s.dataLoader.cancelLoading()
+            s.dataLoader.startLoading(publicationId: publicationId, publicationLoaded: { [weak self] in self?.publicationDidLoad(forId: publicationId, initialPageIndex: initialPageIndex, result: $0) }, pagesLoaded: { [weak self] in self?.pagesDidLoad(forId: publicationId, initialPageIndex: initialPageIndex, result: $0) }, hotspotsLoaded: { [weak self] in self?.hotspotsDidLoad(forId: publicationId, initialPageIndex: initialPageIndex, result: $0) })
+        }
     }
     
     public func jump(toPageIndex pageIndex: Int, animated: Bool) {
@@ -265,7 +267,6 @@ public class PagedPublicationView: UIView {
     
     // given the loading states (and coreProperties, generate the correct viewState
     private func updateCurrentViewState(initialPageIndex: Int?) {
-        
         let oldViewState = self.currentViewState
         
         // Based on the pub/pages/hotspots states, return the state of the view
@@ -317,15 +318,18 @@ public class PagedPublicationView: UIView {
         
         let currentPageIndexes = contentsView.versoView.currentPageIndexes
         
-        // TODO: hide progress if showing outro
         if let pageCount = coreProperties.pageCount,
-            let firstVisiblePageIndex = currentPageIndexes.first {
+            let firstCurrentPageIndex = currentPageIndexes.first,
+            self.isOutroPage(inPageIndexes: currentPageIndexes) == false,
+            self.isOutroPageVisible == false
+            {
             
-            properties.updateProgress(pageCount: pageCount, pageIndex: firstVisiblePageIndex)
+            properties.updateProgress(pageCount: pageCount, pageIndex: firstCurrentPageIndex)
             
             properties.pageLabelString = dataSourceWithDefaults.textForPageNumberLabel(pageIndexes: currentPageIndexes,
                                                                             pageCount: pageCount,
                                                                             for: self)
+                
         } else {
             properties.progress = nil
             properties.pageLabelString = nil
@@ -470,8 +474,8 @@ public extension PagedPublicationViewDelegate {
     func didDoubleTap(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView) {}
     
     // MARK: Outro events
-    func outroDidAppear(_ outroView: OutroView, in pagedPublicationView: PagedPublicationView) {}
-    func outroDidDisappear(_ outroView: OutroView, in pagedPublicationView: PagedPublicationView) {}
+    func outroDidAppear(_ outroView: PagedPublicationView.OutroView, in pagedPublicationView: PagedPublicationView) {}
+    func outroDidDisappear(_ outroView: PagedPublicationView.OutroView, in pagedPublicationView: PagedPublicationView) {}
     
     // MARK: Loading events
     func didStartReloading(in pagedPublicationView: PagedPublicationView) {}
@@ -483,8 +487,8 @@ public extension PagedPublicationViewDelegate {
 // MARK: -
 
 public extension PagedPublicationViewDataSource {
-    func outroViewProperties(for pagedPublicationView: PagedPublicationView) -> OutroViewProperties? { return nil }
-    func configure(outroView: OutroView, for pagedPublicationView: PagedPublicationView) { }
+    func outroViewProperties(for pagedPublicationView: PagedPublicationView) -> PagedPublicationView.OutroViewProperties? { return nil }
+    func configure(outroView: PagedPublicationView.OutroView, for pagedPublicationView: PagedPublicationView) { }
     
     func textForPageNumberLabel(pageIndexes: IndexSet, pageCount: Int, for pagedPublicationView: PagedPublicationView) -> String? {
         guard let first = pageIndexes.first, let last = pageIndexes.last else {
