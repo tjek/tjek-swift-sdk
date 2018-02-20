@@ -3,7 +3,7 @@ import UIKit
 import ShopGunSDK // NOTE: you must build this targetting an iOS simulator
 
 class ExampleOutroView: PagedPublicationView.OutroView {
-    func configure() {        
+    func configure() {
         print("config outro")
         backgroundColor = .orange
     }
@@ -28,7 +28,6 @@ class ExampleViewController: UIViewController, PagedPublicationViewDataSource {
         
         publicationView.didEnterForeground()
     }
-    
     
     func outroViewProperties(for pagedPublicationView: PagedPublicationView) -> PagedPublicationView.OutroViewProperties? {
         return (viewClass: ExampleOutroView.self, width: 0.9, maxZoom: 1.0)

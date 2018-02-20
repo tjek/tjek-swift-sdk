@@ -21,7 +21,7 @@ extension PagedPublicationView {
                 spinner.leadingAnchor.constraint(equalTo: leadingAnchor),
                 spinner.trailingAnchor.constraint(equalTo: trailingAnchor),
                 spinner.topAnchor.constraint(equalTo: topAnchor),
-                spinner.bottomAnchor.constraint(equalTo: bottomAnchor),
+                spinner.bottomAnchor.constraint(equalTo: bottomAnchor)
                 ])
         }
         

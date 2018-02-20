@@ -58,4 +58,3 @@ extension CoreAPI {
         return .success(data)
     }
 }
-

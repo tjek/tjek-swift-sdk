@@ -54,7 +54,7 @@ final public class CoreAPI {
 private typealias CoreAPI_PerformRequests = CoreAPI
 extension CoreAPI_PerformRequests {
     
-    @discardableResult public func request<R: CoreAPIMappableRequest>(_ request: R, completion:((Result<R.ResponseType>)->())?) -> Cancellable {
+    @discardableResult public func request<R: CoreAPIMappableRequest>(_ request: R, completion: ((Result<R.ResponseType>) -> Void)?) -> Cancellable {
         if let completion = completion {
             // convert the Result<Data> into Result<R.ResponseType>
             return requestData(request, completion: { (dataResult) in
@@ -66,7 +66,7 @@ extension CoreAPI_PerformRequests {
         }
     }
     
-    @discardableResult public func requestData(_ request: CoreAPIRequest, completion: ((Result<Data>)->())?) -> Cancellable {
+    @discardableResult public func requestData(_ request: CoreAPIRequest, completion: ((Result<Data>) -> Void)?) -> Cancellable {
         
         // make a new cancellable token by which we refer to this request from the outside
         let token = CancellableToken(owner: self)
@@ -85,7 +85,7 @@ extension CoreAPI_PerformRequests {
                                          urlRequest: urlRequest,
                                          authVault: s.authVault,
                                          urlSession: s.requstURLSession,
-                                         completion:  { (dataResult) in
+                                         completion: { (dataResult) in
                                             // Make sure the completion is always called on main
                                             DispatchQueue.main.async {
                                                 completion?(dataResult)
@@ -167,7 +167,7 @@ extension CoreAPI {
     }
 
     // TODO: login completion?
-    public func login(credentials: LoginCredentials, completion: ((Result<AuthorizedUser>)->())?) {
+    public func login(credentials: LoginCredentials, completion: ((Result<AuthorizedUser>) -> Void)?) {
         self.queue.async { [weak self] in
             
             self?.authVault.regenerate(.reauthorize(credentials), completion: { [weak self] (error) in

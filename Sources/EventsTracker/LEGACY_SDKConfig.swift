@@ -9,12 +9,12 @@
 
 import Foundation
 
-extension CoreAPI {
-    /// The dateFormatter of all the dates in/out of the CoreAPI
-    static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        return formatter
-    }()
+// TODO: Replace!
+@objc(SGNSDKConfig)
+public class SDKConfig: NSObject {
+
+    public static var clientId: String { return "" }
+    public static var sessionId: String { return "" }
+    public static func resetClientId() {
+    }
 }

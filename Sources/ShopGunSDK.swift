@@ -11,7 +11,7 @@ import Foundation
 
 public struct ShopGunSDK {
     
-    public typealias LogHandler = (_ message: String, _ level: LogLevel, _ source: LogSource, _ location: (file: String, function: String, line: Int)) -> ()
+    public typealias LogHandler = (_ message: String, _ level: LogLevel, _ source: LogSource, _ location: (file: String, function: String, line: Int)) -> Void
     
     public struct Settings {
         public var coreAPI: CoreAPI.Settings?

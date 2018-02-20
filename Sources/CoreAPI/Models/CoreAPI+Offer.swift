@@ -27,7 +27,7 @@ extension CoreAPI {
         
         // MARK: Equatable
         
-        public static func ==(lhs: CoreAPI.Offer, rhs: CoreAPI.Offer) -> Bool {
+        public static func == (lhs: CoreAPI.Offer, rhs: CoreAPI.Offer) -> Bool {
             return lhs.id == rhs.id
                 && lhs.heading == rhs.heading
                 && lhs.runDateRange == rhs.runDateRange
@@ -90,7 +90,7 @@ extension CoreAPI.Offer {
             case prePrice = "pre_price"
         }
 
-        public static func ==(lhs: CoreAPI.Offer.Price, rhs: CoreAPI.Offer.Price) -> Bool {
+        public static func == (lhs: CoreAPI.Offer.Price, rhs: CoreAPI.Offer.Price) -> Bool {
             return lhs.currency == rhs.currency
                 && lhs.price == rhs.price
                 && lhs.prePrice == rhs.prePrice
@@ -102,7 +102,7 @@ extension CoreAPI.Offer {
         public var size: (from: Double?, to: Double?)
         public var pieces: (from: Double?, to: Double?)
         
-        public static func ==(lhs: CoreAPI.Offer.Quantity, rhs: CoreAPI.Offer.Quantity) -> Bool {
+        public static func == (lhs: CoreAPI.Offer.Quantity, rhs: CoreAPI.Offer.Quantity) -> Bool {
             return lhs.unit == rhs.unit
                 && lhs.size.from == rhs.size.from
                 && lhs.size.to == rhs.size.to
@@ -161,4 +161,3 @@ extension CoreAPI.Offer {
 //        "run_till": "2018-01-19T22:59:59+0000",
 //        "publish": "2018-01-11T17:00:00+0000"
 //    }
-

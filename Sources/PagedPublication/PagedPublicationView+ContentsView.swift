@@ -17,8 +17,8 @@ extension PagedPublicationView {
     class ContentsView: UIView {
         
         struct Properties {
-            var progress: Double? = nil
-            var pageLabelString: String? = nil
+            var progress: Double?
+            var pageLabelString: String?
             var isBackgroundBlack: Bool = false
             
             mutating func updateProgress(pageCount: Int, pageIndex: Int) {
@@ -111,7 +111,6 @@ extension ContentsPageNumberLabel {
         lblFrame.size.height = round(lblFrame.size.height)
         
         lblFrame.origin.x = round(bounds.midX - (lblFrame.width / 2))
-        
         
         // change the bottom offset of the pageLabel when on iPhoneX
         let pageLabelBottomOffset: CGFloat

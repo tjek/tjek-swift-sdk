@@ -27,7 +27,7 @@ extension CoreAPI {
         
         // MARK: Decodable
         
-        //"store_id", "store_url", "dealer_url"        
+        //"store_id", "store_url", "dealer_url"
         enum CodingKeys: String, CodingKey {
             case id
             case label
@@ -113,7 +113,7 @@ extension CoreAPI {
             
             // MARK: Equatable
             
-            public static func ==(lhs: CoreAPI.PagedPublication.Hotspot, rhs: CoreAPI.PagedPublication.Hotspot) -> Bool {
+            public static func == (lhs: CoreAPI.PagedPublication.Hotspot, rhs: CoreAPI.PagedPublication.Hotspot) -> Bool {
                 return lhs.offer == rhs.offer
                     && lhs.pageLocations == rhs.pageLocations
             }
@@ -130,7 +130,7 @@ extension CoreAPI {
                 
                 self.offer = try? values.decode(CoreAPI.Offer.self, forKey: .offer)
                 
-                if let pageCoords = try? values.decode([Int:[[CGFloat]]].self, forKey: .pageCoords) {
+                if let pageCoords = try? values.decode([Int: [[CGFloat]]].self, forKey: .pageCoords) {
                     
                     self.pageLocations = pageCoords.reduce(into: [:]) {
                         let pageNum = $1.key
@@ -300,4 +300,3 @@ extension CoreAPI {
 //        }
 //    }, ...
 //]
-

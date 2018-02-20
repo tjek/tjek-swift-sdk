@@ -102,7 +102,6 @@ extension PagedPublicationView: VersoViewDataSource {
     }
 }
 
-
 // MARK: - Verso Delegate
 
 extension PagedPublicationView: VersoViewDelegate {

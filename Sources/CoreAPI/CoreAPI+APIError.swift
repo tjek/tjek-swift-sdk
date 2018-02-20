@@ -13,7 +13,7 @@ extension CoreAPI {
     
     public struct APIError: Error, Decodable {
         
-        public struct Code : RawRepresentable, Hashable, Decodable {
+        public struct Code: RawRepresentable, Hashable, Decodable {
             public let rawValue: Int
             
             public init(rawValue: Int) {

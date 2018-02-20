@@ -14,12 +14,14 @@ extension CoreAPI {
     /// This represents the state of an 'active' request being handled by the CoreAPI
     class RequestOperation: AsyncOperation {
         typealias Identifier = GenericIdentifier<RequestOperation>
+        typealias CompletionHandler = ((Result<Data>) -> Void)
+        
         let id: Identifier
         
         private var requiresAuth: Bool
         private var remainingRetries: Int
         private let originalURLRequest: URLRequest
-        private let completion: ((Result<Data>) -> ())?
+        private let completion: CompletionHandler?
         private let authVault: AuthVault?
         private let urlSession: URLSession
         
@@ -27,7 +29,7 @@ extension CoreAPI {
         private var remainingRegenerateAuthRetries: Int = 3
         private var queue: DispatchQueue = DispatchQueue(label: "ShopGunSDK.CoreAPI.RequestOperationQ")
 
-        init(id: Identifier = .generate(), requiresAuth: Bool,  maxRetryCount: Int, urlRequest: URLRequest, authVault: AuthVault?, urlSession: URLSession, completion: ((Result<Data>) -> ())?) {
+        init(id: Identifier = .generate(), requiresAuth: Bool, maxRetryCount: Int, urlRequest: URLRequest, authVault: AuthVault?, urlSession: URLSession, completion: CompletionHandler?) {
             self.id = id
             self.requiresAuth = requiresAuth
             self.remainingRetries = maxRetryCount

@@ -28,6 +28,9 @@
 		AE091FED203AF24000345009 /* GraphClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD5203AF23F00345009 /* GraphClient.swift */; };
 		AE091FEF203AF24000345009 /* GraphQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD7203AF23F00345009 /* GraphQuery.swift */; };
 		AE091FF0203AF24000345009 /* GraphError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD8203AF23F00345009 /* GraphError.swift */; };
+		AE092011203C1F4D00345009 /* EventsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */; };
+		AE092013203C1F8700345009 /* LEGACY_EventsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE092012203C1F8700345009 /* LEGACY_EventsTracker.swift */; };
+		AE092015203C209A00345009 /* LEGACY_SDKConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */; };
 		AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */; };
 		AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */; };
 		AE2008D5200CE86F004363BE /* ShopGunSDK+UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */; };
@@ -51,7 +54,6 @@
 		AE8E454F2010941F0042CCE2 /* CoreAPI+DealerRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E454E2010941F0042CCE2 /* CoreAPI+DealerRequests.swift */; };
 		AE8E45582010A38C0042CCE2 /* CoreAPI+Offer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E45572010A38C0042CCE2 /* CoreAPI+Offer.swift */; };
 		AEC28B441FF6AAC20007AAB8 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */; };
-		AEC28B631FF6ABFC0007AAB8 /* EventsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */; };
 		AEC28B641FF6ABFC0007AAB8 /* ShopGunSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B581FF6ABFC0007AAB8 /* ShopGunSDK.swift */; };
 		AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5A1FF6ABFC0007AAB8 /* CoreAPI+Person.swift */; };
 		AEC28B661FF6ABFC0007AAB8 /* CoreAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5B1FF6ABFC0007AAB8 /* CoreAPIRequest.swift */; };
@@ -259,6 +261,11 @@
 		AE091FD5203AF23F00345009 /* GraphClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphClient.swift; sourceTree = "<group>"; };
 		AE091FD7203AF23F00345009 /* GraphQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQuery.swift; sourceTree = "<group>"; };
 		AE091FD8203AF23F00345009 /* GraphError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphError.swift; sourceTree = "<group>"; };
+		AE09200B203C1EB600345009 /* LEGACY_EventsTracker_OLD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LEGACY_EventsTracker_OLD.swift; sourceTree = "<group>"; };
+		AE09200C203C1EB600345009 /* LEGACY_EventsPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LEGACY_EventsPool.swift; sourceTree = "<group>"; };
+		AE09200D203C1EB600345009 /* LEGACY_EventsTracker.Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LEGACY_EventsTracker.Context.swift; sourceTree = "<group>"; };
+		AE092012203C1F8700345009 /* LEGACY_EventsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LEGACY_EventsTracker.swift; sourceTree = "<group>"; };
+		AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LEGACY_SDKConfig.swift; sourceTree = "<group>"; };
 		AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+PageView.swift"; sourceTree = "<group>"; };
 		AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
 		AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShopGunSDK+UserAgent.swift"; sourceTree = "<group>"; };
@@ -461,6 +468,11 @@
 			isa = PBXGroup;
 			children = (
 				AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */,
+				AE092012203C1F8700345009 /* LEGACY_EventsTracker.swift */,
+				AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */,
+				AE09200C203C1EB600345009 /* LEGACY_EventsPool.swift */,
+				AE09200D203C1EB600345009 /* LEGACY_EventsTracker.Context.swift */,
+				AE09200B203C1EB600345009 /* LEGACY_EventsTracker_OLD.swift */,
 			);
 			name = EventsTracker;
 			path = Sources/EventsTracker;
@@ -887,11 +899,12 @@
 			files = (
 				AEC28B671FF6ABFC0007AAB8 /* CoreAPI.swift in Sources */,
 				AE8E45582010A38C0042CCE2 /* CoreAPI+Offer.swift in Sources */,
+				AE092013203C1F8700345009 /* LEGACY_EventsTracker.swift in Sources */,
 				AEC28B661FF6ABFC0007AAB8 /* CoreAPIRequest.swift in Sources */,
-				AEC28B631FF6ABFC0007AAB8 /* EventsTracker.swift in Sources */,
 				AEDCC2F02008BA14002644C2 /* CoreAPI+Dealer.swift in Sources */,
 				AEC28B6A1FF6ABFC0007AAB8 /* Cancellable.swift in Sources */,
 				AEC28B681FF6ABFC0007AAB8 /* CoreAPI+APIError.swift in Sources */,
+				AE092015203C209A00345009 /* LEGACY_SDKConfig.swift in Sources */,
 				AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */,
 				AE8E4541200E31E60042CCE2 /* UIColor+Hex.swift in Sources */,
 				AE091FEB203AF24000345009 /* GraphRequestResponse.swift in Sources */,
@@ -905,6 +918,7 @@
 				AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */,
 				AE091FEF203AF24000345009 /* GraphQuery.swift in Sources */,
 				AE06548B1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift in Sources */,
+				AE092011203C1F4D00345009 /* EventsTracker.swift in Sources */,
 				AE0654871FFED399009F6F92 /* CoreAPI+Utils.swift in Sources */,
 				AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */,
 				AE8E454F2010941F0042CCE2 /* CoreAPI+DealerRequests.swift in Sources */,

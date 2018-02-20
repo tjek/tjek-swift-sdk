@@ -126,7 +126,7 @@ public class PagedPublicationView: UIView {
         loadingView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             loadingView.centerXAnchor.constraint(equalTo: layoutMarginsGuide.centerXAnchor),
-            loadingView.centerYAnchor.constraint(equalTo: layoutMarginsGuide.centerYAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: layoutMarginsGuide.centerYAnchor)
             ])
     }
     
@@ -321,8 +321,7 @@ public class PagedPublicationView: UIView {
         if let pageCount = coreProperties.pageCount,
             let firstCurrentPageIndex = currentPageIndexes.first,
             self.isOutroPage(inPageIndexes: currentPageIndexes) == false,
-            self.isOutroPageVisible == false
-            {
+            self.isOutroPageVisible == false {
             
             properties.updateProgress(pageCount: pageCount, pageIndex: firstCurrentPageIndex)
             
@@ -441,7 +440,7 @@ extension PageViewDelegate: PagedPublicationPageViewDelegate {
     }
 }
 
-// MARK: - 
+// MARK: -
 
 private typealias HotspotDelegate = PagedPublicationView
 extension HotspotDelegate: HotspotOverlayViewDelegate {

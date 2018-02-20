@@ -62,7 +62,7 @@ extension CoreAPI {
             }
         }
         
-        var authorizedUserDidChangeCallback: ((_ prev: AuthorizedUser?, _ new: AuthorizedUser?) -> ())?
+        var authorizedUserDidChangeCallback: ((_ prev: AuthorizedUser?, _ new: AuthorizedUser?) -> Void)?
         var additionalRequestParams: [String: String] = [:]
     
         /// If we are authorized, and have an authorized user, then this is non-nil
@@ -94,7 +94,6 @@ extension CoreAPI {
         private var activeRegenerateTask: (type: AuthRegenerationType, task: URLSessionTask)?
         
         private var pendingSignedRequests: [(URLRequest, SignedRequestCompletion)] = []
-        
         
         private var authState: AuthState {
             didSet {
@@ -245,7 +244,7 @@ extension CoreAPI {
             case .error(let cancelError as NSError)
                 where cancelError.domain == NSURLErrorDomain && cancelError.code == URLError.Code.cancelled.rawValue:
                 // if cancelled then ignore
-                break;
+                break
             case .error(let regenError):
                 ShopGunSDK.log("Failed to update authSession \(regenError)", level: .error, source: .CoreAPI)
                 
@@ -424,7 +423,7 @@ extension CoreAPI.LoginCredentials {
     
     /// What are the request params that a specific loginCredential needs to send when reauthorizing
     fileprivate var requestParams: [String: String] {
-        switch self{
+        switch self {
         case .logout:
             return ["email": ""]
         case let .shopgun(email, password):
@@ -453,4 +452,3 @@ extension CoreAPI.AuthVault.AuthRegenerationType: Equatable {
         }
     }
 }
-
