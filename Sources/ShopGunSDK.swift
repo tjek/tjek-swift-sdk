@@ -33,6 +33,7 @@ public struct ShopGunSDK {
     
     public static func configure(settings: Settings, logHandler: LogHandler? = nil) {
         
+        // TODO: setup logHandler first
         let dataStore: ShopGunSDKSecureDataStore
         if ShopGunSDK.isRunningInPlayground {
             dataStore = PlaygroundDataStore()

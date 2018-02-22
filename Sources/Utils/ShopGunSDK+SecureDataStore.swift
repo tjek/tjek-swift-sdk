@@ -38,13 +38,28 @@ extension ShopGunSDK {
 
         // TODO: will fail if not in entitlements
         init(sharedKeychainGroupId: String?) {
+            
+            var valet: VALValet? = nil
+            
             if let sharedGroupId = sharedKeychainGroupId {
-                self.valet = VALValet(sharedAccessGroupIdentifier: sharedGroupId,
+                valet = VALValet(sharedAccessGroupIdentifier: sharedGroupId,
                                       accessibility: .afterFirstUnlock)
-            } else {
-                self.valet = VALValet(identifier: "com.shopgun.ios.sdk.keychain-store",
-                                      accessibility: .afterFirstUnlock)
+                if valet?.canAccessKeychain() == false {
+                    valet = nil
+                    ShopGunSDK.log("Unable to access shared keychain group '\(sharedGroupId)'. Will attempt to save secure data in an unshared keychain instead.", level: .important, source: .ShopGunSDK)
+                }
             }
+            
+            // if the valet is unable to access the keychain, revert to a non-shared store
+            if valet == nil {
+                valet = VALValet(identifier: "com.shopgun.ios.sdk.keychain-store",
+                                 accessibility: .afterFirstUnlock)
+                
+                if valet?.canAccessKeychain() == false {
+                    ShopGunSDK.log("Unable to access keychain. Secure data will not be cached.", level: .error, source: .ShopGunSDK)
+                }
+            }
+            self.valet = valet
         }
         
         func set(value: String?, for key: String) {
