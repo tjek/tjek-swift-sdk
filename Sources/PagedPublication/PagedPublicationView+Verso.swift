@@ -75,7 +75,7 @@ extension PagedPublicationView: VersoViewDataSource {
             return nil
         }
         
-        let spreadHotspots = self.hotspots(onPageIndexes: IndexSet(pageFrames.keys))
+        let spreadHotspots = self.hotspotModels(onPageIndexes: IndexSet(pageFrames.keys))
             
         // configure the overlay
         self.hotspotOverlayView.isHidden = self.pageCount == 0

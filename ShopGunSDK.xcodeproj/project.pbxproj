@@ -261,9 +261,6 @@
 		AE091FD5203AF23F00345009 /* GraphClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphClient.swift; sourceTree = "<group>"; };
 		AE091FD7203AF23F00345009 /* GraphQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQuery.swift; sourceTree = "<group>"; };
 		AE091FD8203AF23F00345009 /* GraphError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphError.swift; sourceTree = "<group>"; };
-		AE09200B203C1EB600345009 /* LEGACY_EventsTracker_OLD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LEGACY_EventsTracker_OLD.swift; sourceTree = "<group>"; };
-		AE09200C203C1EB600345009 /* LEGACY_EventsPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LEGACY_EventsPool.swift; sourceTree = "<group>"; };
-		AE09200D203C1EB600345009 /* LEGACY_EventsTracker.Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LEGACY_EventsTracker.Context.swift; sourceTree = "<group>"; };
 		AE092012203C1F8700345009 /* LEGACY_EventsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LEGACY_EventsTracker.swift; sourceTree = "<group>"; };
 		AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LEGACY_SDKConfig.swift; sourceTree = "<group>"; };
 		AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+PageView.swift"; sourceTree = "<group>"; };
@@ -470,9 +467,6 @@
 				AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */,
 				AE092012203C1F8700345009 /* LEGACY_EventsTracker.swift */,
 				AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */,
-				AE09200C203C1EB600345009 /* LEGACY_EventsPool.swift */,
-				AE09200D203C1EB600345009 /* LEGACY_EventsTracker.Context.swift */,
-				AE09200B203C1EB600345009 /* LEGACY_EventsTracker_OLD.swift */,
 			);
 			name = EventsTracker;
 			path = Sources/EventsTracker;

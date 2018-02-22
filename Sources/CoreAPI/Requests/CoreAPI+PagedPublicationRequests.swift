@@ -44,4 +44,18 @@ extension CoreAPI.Requests {
             }
         })
     }
+    
+    /// Given a publication's Id, this will return
+    public static func getSuggestedPublications(relatedTo pubId: CoreAPI.PagedPublication.Identifier, pageRange: NSRange = NSRange(location: 0, length: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+        
+        let params = ["catalog_id": pubId.rawValue,
+                      "limit": String(pageRange.length),
+                      "location": String(pageRange.location)]
+        
+        return .init(path: "/v2/catalogs/suggest",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params,
+                     timeoutInterval: 30)
+    }
 }

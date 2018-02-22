@@ -64,4 +64,9 @@ extension EventsTracker {
     public func trackEvent(_ type: String, properties: [String: AnyObject]?) {
         // TODO: Properly when EventsKit rewritten!
     }
+    
+    public var personId: IdField? {
+        get { return nil }
+        set { }
+    }
 }

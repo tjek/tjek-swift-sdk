@@ -156,7 +156,7 @@ public class PagedPublicationView: UIView {
         
         init(coreProperties: CoreProperties,
              publicationState: LoadingState<PublicationId, PublicationModel>,
-             pagesState: LoadingState<PublicationId, [PageView.Properties]>,
+             pagesState: LoadingState<PublicationId, [PageModel]>,
              hotspotsState: LoadingState<PublicationId, [HotspotModel]>) {
             
             switch (publicationState, pagesState, hotspotsState) {
@@ -182,15 +182,79 @@ public class PagedPublicationView: UIView {
         }
     }
     
-    var coreProperties: CoreProperties = (nil, .white, 1.0)
+    public internal(set) var coreProperties: CoreProperties = (nil, .white, 1.0)
     var publicationState: LoadingState<PublicationId, PublicationModel> = .unloaded
-    var pagesState: LoadingState<PublicationId, [PageView.Properties]> = .unloaded
+    var pagesState: LoadingState<PublicationId, [PageModel]> = .unloaded
     var hotspotsState: LoadingState<PublicationId, [HotspotModel]> = .unloaded
+    
     var currentViewState: ViewState = .initial
     
     public var dataLoader: PagedPublicationViewDataLoader = PagedPublicationView.CoreAPILoader()
     public var imageLoader: PagedPublicationViewImageLoader? = PagedPublicationView.KingfisherImageLoader()
     public var eventHandler: PagedPublicationViewEventHandler? = PagedPublicationView.EventsHandler()
+    
+    /// The pan gesture used to change the pages.
+    public var panGestureRecognizer: UIPanGestureRecognizer {
+        return contentsView.versoView.panGestureRecognizer
+    }
+    
+    /// This will return the OutroView (provided by the delegate) only after it has been configured.
+    /// It is configured once the user has scrolled within a certain distance of the outro page (currently 10 pages).
+    public var outroView: OutroView? {
+        guard let outroIndex = outroPageIndex else {
+            return nil
+        }
+        return contentsView.versoView.getPageViewIfLoaded(outroIndex)
+    }
+    
+    public var isOutroPageVisible: Bool {
+        return isOutroPage(inPageIndexes: contentsView.versoView.visiblePageIndexes)
+    }
+    
+    public var pageCount: Int {
+        return coreProperties.pageCount ?? 0
+    }
+    
+    /// The page indexes of the spread that was centered when scrolling animations last ended
+    public var currentPageIndexes: IndexSet {
+        return self.contentsView.versoView.currentPageIndexes
+    }
+    
+    /// The publication Id that is being loaded, has been loaded, or failed to load
+    public var publicationId: PublicationId? {
+        switch publicationState {
+        case .unloaded:
+            return nil
+        case .loading(let id),
+             .loaded(let id, _),
+             .error(let id, _):
+            return id
+        }
+    }
+    /// The loaded Publication Model
+    public var publicationModel: PublicationModel? {
+        guard case .loaded(_, let model) = self.publicationState else { return nil }
+        return model
+    }
+    
+    public func hotspotModels(onPageIndexes pageIndexSet: IndexSet) -> [HotspotModel] {
+        guard case .loaded(_, let hotspotModels) = self.hotspotsState else {
+            return []
+        }
+        return hotspotModels.filter({
+            IndexSet($0.pageLocations.keys).contains(integersIn: pageIndexSet)
+        })
+    }
+    
+    public var pageModels: [PageModel]? {
+        guard case .loaded(_, let models) = self.pagesState else { return nil }
+        return models
+    }
+    
+    /// Returns the pageview for the pageIndex, or nil if it hasnt been loaded yet
+    public func pageViewIfLoaded(atPageIndex pageIndex: Int) -> UIView? {
+        return self.contentsView.versoView.getPageViewIfLoaded(pageIndex)
+    }
     
     let contentsView = PagedPublicationView.ContentsView()
     let loadingView = PagedPublicationView.LoadingView()
@@ -238,11 +302,7 @@ public class PagedPublicationView: UIView {
         switch result {
         case .success(let pageModels):
             // generate page view states based on the pageModels
-            self.pagesState = .loaded(publicationId, pageModels.map({ .init(pageTitle: $0.title ?? String($0.index + 1),
-                                                                            isBackgroundDark: self.isBackgroundDark,
-                                                                            aspectRatio: CGFloat($0.aspectRatio),
-                                                                            images: $0.images) }))
-            
+            self.pagesState = .loaded(publicationId, pageModels)
             delegate?.didLoad(pages: pageModels, in: self)
         case .error(let error):
             self.pagesState = .error(publicationId, error)
@@ -345,47 +405,29 @@ public class PagedPublicationView: UIView {
         return self.dataSource ?? self
     }
     
-    var pageCount: Int {
-        return coreProperties.pageCount ?? 0
-    }
     var outroViewProperties: OutroViewProperties? {
         return dataSourceWithDefaults.outroViewProperties(for: self)
     }
     var outroPageIndex: Int? {
         return outroViewProperties != nil && pageCount > 0 ? pageCount : nil
     }
-    var outroView: OutroView? {
-        guard let outroIndex = outroPageIndex else {
-            return nil
-        }
-        return contentsView.versoView.getPageViewIfLoaded(outroIndex)
-    }
     func isOutroPage(inPageIndexes pageIndexSet: IndexSet) -> Bool {
         guard let outroIndex = self.outroPageIndex else { return false }
         return pageIndexSet.contains(outroIndex)
-    }
-    
-    var isOutroPageVisible: Bool {
-        return isOutroPage(inPageIndexes: contentsView.versoView.visiblePageIndexes)
-    }
-
-    func hotspots(onPageIndexes pageIndexSet: IndexSet) -> [HotspotModel] {
-        guard case .loaded(_, let hotspotModels) = self.hotspotsState else {
-            return []
-        }
-        return hotspotModels.filter({
-            IndexSet($0.pageLocations.keys).contains(integersIn: pageIndexSet)
-        })
     }
     
     var isBackgroundDark: Bool {
         // TODO: based on self.backgroundColor
         return false
     }
+    public var foregroundColor: UIColor {
+        return .white
+        // TODO: calculate based on bgColor
+    }
     
     // Get the properties for a page, based on the pages state
     func pageViewProperties(forPageIndex pageIndex: Int) -> PageView.Properties {
-        guard case .loaded(_, let pageProperties) = self.pagesState, (0 ..< pageProperties.count).contains(pageIndex) else {
+        guard case .loaded(_, let pageModels) = self.pagesState, pageModels.indices.contains(pageIndex) else {
             // return an 'empty' page view
             return .init(pageTitle: String(pageIndex+1),
                          isBackgroundDark: self.isBackgroundDark,
@@ -393,7 +435,11 @@ public class PagedPublicationView: UIView {
                          images: nil)
         }
         
-        return pageProperties[pageIndex]
+        let pageModel = pageModels[pageIndex]
+        return .init(pageTitle: pageModel.title ?? String(pageModel.index + 1),
+                     isBackgroundDark: self.isBackgroundDark,
+                     aspectRatio: CGFloat(pageModel.aspectRatio),
+                     images: pageModel.images)
     }
     
     // MARK: -
