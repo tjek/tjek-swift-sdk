@@ -210,7 +210,7 @@ extension PagedPublicationView {
                     // TODO: handle failed image load
                     // tell delegate? show error? retry?
                     // maybe cache failed image urls to re-fail quickly?
-                    ShopGunSDK.log("ViewImage load failed (page: \(s.pageIndex))'\(error.localizedDescription)' (\((error as NSError).code)", level: .error, source: .PagedPublicationViewer)
+                    ShopGun.log("ViewImage load failed (page: \(s.pageIndex))'\(error.localizedDescription)' (\((error as NSError).code)", level: .error, source: .PagedPublicationViewer)
                     
                     s.imageLoadState = .failed
                 }
@@ -241,7 +241,7 @@ extension PagedPublicationView {
                     // TODO: handle failed image load
                     // tell delegate? show error? retry?
                     // maybe cache failed image urls to re-fail quickly?
-                    ShopGunSDK.log("ZoomImage load failed (page: \(s.pageIndex))'\(error.localizedDescription)' (\((error as NSError).code)", level: .error, source: .PagedPublicationViewer)
+                    ShopGun.log("ZoomImage load failed (page: \(s.pageIndex))'\(error.localizedDescription)' (\((error as NSError).code)", level: .error, source: .PagedPublicationViewer)
 
                     s.zoomImageLoadState = .failed
                 }

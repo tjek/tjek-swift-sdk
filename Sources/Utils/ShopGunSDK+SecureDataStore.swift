@@ -10,7 +10,7 @@
 import Foundation
 import Valet
 
-extension ShopGunSDK {
+extension ShopGun {
     static var isRunningInPlayground: Bool {
         return Bundle.main.bundleIdentifier?.hasPrefix("com.apple.dt.playground.") ?? false
     }
@@ -21,7 +21,7 @@ protocol ShopGunSDKSecureDataStore: class {
     func get(for key: String) -> String?
 }
 
-extension ShopGunSDK {
+extension ShopGun {
     
     class PlaygroundDataStore: ShopGunSDKSecureDataStore {
         func set(value: String?, for key: String) {
@@ -46,7 +46,7 @@ extension ShopGunSDK {
                                       accessibility: .afterFirstUnlock)
                 if valet?.canAccessKeychain() == false {
                     valet = nil
-                    ShopGunSDK.log("Unable to access shared keychain group '\(sharedGroupId)'. Will attempt to save secure data in an unshared keychain instead.", level: .important, source: .ShopGunSDK)
+                    ShopGun.log("Unable to access shared keychain group '\(sharedGroupId)'. Will attempt to save secure data in an unshared keychain instead.", level: .important, source: .ShopGunSDK)
                 }
             }
             
@@ -56,7 +56,7 @@ extension ShopGunSDK {
                                  accessibility: .afterFirstUnlock)
                 
                 if valet?.canAccessKeychain() == false {
-                    ShopGunSDK.log("Unable to access keychain. Secure data will not be cached.", level: .error, source: .ShopGunSDK)
+                    ShopGun.log("Unable to access keychain. Secure data will not be cached.", level: .error, source: .ShopGunSDK)
                 }
             }
             self.valet = valet

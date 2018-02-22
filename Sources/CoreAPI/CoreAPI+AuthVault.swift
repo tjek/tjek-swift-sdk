@@ -228,7 +228,7 @@ extension CoreAPI {
             
             switch result {
             case .success(let authSession):
-                ShopGunSDK.log("successfully updated authSession \(authSession)", level: .debug, source: .CoreAPI)
+                ShopGun.log("successfully updated authSession \(authSession)", level: .debug, source: .CoreAPI)
                 
                 self.authState = .authorized(token: authSession.token, user: authSession.authorizedUser, clientId: authSession.clientId)
                 self.activeRegenerateTask = nil
@@ -246,7 +246,7 @@ extension CoreAPI {
                 // if cancelled then ignore
                 break
             case .error(let regenError):
-                ShopGunSDK.log("Failed to update authSession \(regenError)", level: .error, source: .CoreAPI)
+                ShopGun.log("Failed to update authSession \(regenError)", level: .error, source: .CoreAPI)
                 
                 // TODO: depending upon the error do different things
                 // - what if retryable? network error?

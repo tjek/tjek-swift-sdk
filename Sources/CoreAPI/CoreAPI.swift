@@ -23,7 +23,7 @@ final public class CoreAPI {
         // Build the urlSession that requests will be run on
         let config = URLSessionConfiguration.default
         config.httpAdditionalHeaders = ["Accept-Encoding": "gzip",
-                                        "User-Agent": ShopGunSDK.userAgent]
+                                        "User-Agent": ShopGun.userAgent]
         self.requstURLSession = URLSession(configuration: config)
         self.requstURLSession.sessionDescription = "ShopGunSDK.CoreAPI"
 
@@ -74,7 +74,7 @@ extension CoreAPI_PerformRequests {
         self.queue.async { [weak self] in
             guard let s = self else { return }
             
-            ShopGunSDK.log("Requesting \(request.path) \(token.id)", level: .verbose, source: .CoreAPI)
+            ShopGun.log("Requesting \(request.path) \(token.id)", level: .verbose, source: .CoreAPI)
             
             let urlRequest = request.urlRequest(for: s.settings.baseURL, additionalParameters: s.additionalRequestParams)
             
@@ -187,9 +187,9 @@ extension CoreAPI {
     fileprivate func authorizedUserDidChange(prevAuthUser: AuthorizedUser?, newAuthUser: AuthorizedUser?) {
         switch newAuthUser {
         case let (person, provider)?:
-            ShopGunSDK.log("User (\(provider)) logged In \(person)", level: .debug, source: .CoreAPI)
+            ShopGun.log("User (\(provider)) logged In \(person)", level: .debug, source: .CoreAPI)
         case nil:
-            ShopGunSDK.log("User logged out", level: .debug, source: .CoreAPI)
+            ShopGun.log("User logged out", level: .debug, source: .CoreAPI)
         }
     }
 }

@@ -9,7 +9,7 @@
 
 import Foundation
 
-public struct ShopGunSDK {
+public struct ShopGun {
     
     public typealias LogHandler = (_ message: String, _ level: LogLevel, _ source: LogSource, _ location: (file: String, function: String, line: Int)) -> Void
     
@@ -35,7 +35,7 @@ public struct ShopGunSDK {
         
         // TODO: setup logHandler first
         let dataStore: ShopGunSDKSecureDataStore
-        if ShopGunSDK.isRunningInPlayground {
+        if ShopGun.isRunningInPlayground {
             dataStore = PlaygroundDataStore()
         } else {
             dataStore = KeychainDataStore(sharedKeychainGroupId: settings.sharedKeychainGroupId)
@@ -43,17 +43,17 @@ public struct ShopGunSDK {
         
         var coreAPI: CoreAPI? = nil
         if let coreAPISettings = settings.coreAPI {
-            ShopGunSDK.log("Configuring CoreAPI", level: .verbose, source: .ShopGunSDK)
+            ShopGun.log("Configuring CoreAPI", level: .verbose, source: .ShopGunSDK)
             coreAPI = CoreAPI(settings: coreAPISettings, secureDataStore: dataStore)
         }
         
         var eventsTracker: EventsTracker? = nil
         if let eventsTrackerSettings = settings.eventsTracker {
-            ShopGunSDK.log("Configuring EventsTracker", level: .verbose, source: .ShopGunSDK)
+            ShopGun.log("Configuring EventsTracker", level: .verbose, source: .ShopGunSDK)
             eventsTracker = EventsTracker(settings: eventsTrackerSettings)
         }
         
-        _shared = ShopGunSDK(coreAPI: coreAPI,
+        _shared = ShopGun(coreAPI: coreAPI,
                              eventsTracker: eventsTracker,
                              secureDataStore: dataStore,
                              logHandler: logHandler)
@@ -85,7 +85,7 @@ public struct ShopGunSDK {
     
     // MARK: -
     
-    private static var _shared: ShopGunSDK?
+    private static var _shared: ShopGun?
     
     private init(coreAPI: CoreAPI?, eventsTracker: EventsTracker?, secureDataStore: ShopGunSDKSecureDataStore, logHandler: LogHandler?) {
         self.coreAPI = coreAPI
@@ -103,7 +103,7 @@ public struct ShopGunSDK {
 
 // MARK: -
 
-private typealias ShopGunSDK_Logging = ShopGunSDK
+private typealias ShopGunSDK_Logging = ShopGun
 extension ShopGunSDK_Logging {
     
     public enum LogLevel {

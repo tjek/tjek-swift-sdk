@@ -10,7 +10,7 @@
 import Foundation
 import UIKit
 
-extension ShopGunSDK {
+extension ShopGun {
     
     // eg. "com.shopgun.ios.sdk/1.0.1 (com.shopgun.ios.myApp/3.2.1) [iPad; iOS 11.5.2; Scale/2.00]"
     internal static var userAgent: String {

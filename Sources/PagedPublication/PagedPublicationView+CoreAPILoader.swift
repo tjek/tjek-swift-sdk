@@ -22,7 +22,7 @@ extension PagedPublicationView {
         
         func startLoading(publicationId: PagedPublicationView.PublicationId, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler) {
             
-            let coreAPI = self.coreAPI ?? ShopGunSDK.coreAPI
+            let coreAPI = self.coreAPI ?? ShopGun.coreAPI
             
             let pubReq = CoreAPI.Requests.getPagedPublication(withId: publicationId)
             
