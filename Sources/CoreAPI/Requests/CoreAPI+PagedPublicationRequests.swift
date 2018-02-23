@@ -8,49 +8,8 @@
 //  Copyright (c) 2018 ShopGun. All rights reserved.
 
 import UIKit
-import CoreLocation
 
 extension CoreAPI.Requests {
-    
-    public struct PaginatedQuery {
-        public var startCursor: Int
-        public var itemCount: Int
-        
-        public init(start: Int = 0, count: Int) {
-            self.startCursor = start
-            self.itemCount = count
-        }
-        
-        fileprivate var requestParams: [String: String] {
-            return ["offset": String(self.startCursor),
-                    "limit": String(self.itemCount)]
-        }
-    }
-    
-    public struct LocationQuery {
-        public var coordinate: CLLocationCoordinate2D
-        public var radius: CLLocationDistance?
-        public var isFromSensor: Bool
-        
-        public init(coordinate: CLLocationCoordinate2D, radius: CLLocationDistance?, isFromSensor: Bool) {
-            self.coordinate = coordinate
-            self.radius = radius
-            self.isFromSensor = isFromSensor
-        }
-        
-        fileprivate var requestParams: [String: String] {
-            var params: [String: String] = [:]
-            
-            params["r_lat"] = String(self.coordinate.latitude)
-            params["r_lng"] = String(self.coordinate.longitude)
-            params["r_sensor"] = self.isFromSensor ? "true" : "false"
-            
-            if let radius = self.radius {
-                params["r_radius"] = String(radius)
-            }
-            return params
-        }
-    }
     
     // TODO: add a load stores option?
     /// Fetch the details about the specified publication
