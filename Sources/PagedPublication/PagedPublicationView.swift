@@ -190,7 +190,7 @@ public class PagedPublicationView: UIView {
     var currentViewState: ViewState = .initial
     
     public var dataLoader: PagedPublicationViewDataLoader = PagedPublicationView.CoreAPILoader()
-    public var imageLoader: PagedPublicationViewImageLoader? = PagedPublicationView.KingfisherImageLoader()
+    public var imageLoader: PagedPublicationViewImageLoader? = KingfisherImageLoader()
     public var eventHandler: PagedPublicationViewEventHandler? = PagedPublicationView.EventsHandler()
     
     /// The pan gesture used to change the pages.

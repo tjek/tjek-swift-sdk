@@ -8,7 +8,6 @@
 //  Copyright (c) 2018 ShopGun. All rights reserved.
 
 import UIKit
-import Kingfisher
 
 /// The object that knows how to load/cache the page images from a URL
 /// Loosely based on `Kingfisher` interface
@@ -18,11 +17,29 @@ public protocol PagedPublicationViewImageLoader: class {
 }
 
 extension PagedPublicationView {
-    
     enum ImageLoaderError: Error {
         case unknownImageLoadError(url: URL)
+        case cancelled
     }
+}
 
+extension Error where Self == PagedPublicationView.ImageLoaderError {
+    var isCancellationError: Bool {
+        switch self {
+        case .cancelled:
+            return true
+        default:
+            return false
+        }
+    }
+}
+
+// MARK: -
+
+import Kingfisher
+
+extension PagedPublicationView {
+    
     /// This class wraps the Kingfisher library
     class KingfisherImageLoader: PagedPublicationViewImageLoader {
         
@@ -37,7 +54,13 @@ extension PagedPublicationView {
                 if let img = image {
                     completion(.success((img, cacheType.cached)), url)
                 } else {
-                    let err: Error = error ?? PagedPublicationView.ImageLoaderError.unknownImageLoadError(url: url)
+                    let err: Error
+                    // if it is a KingFisher cancellation error, convert into our own cancellation error
+                    if let nsErr: NSError = error, nsErr.domain == KingfisherErrorDomain, nsErr.code == KingfisherError.downloadCancelledBeforeStarting.rawValue {
+                        err = PagedPublicationView.ImageLoaderError.cancelled
+                    } else {
+                        err = error ?? PagedPublicationView.ImageLoaderError.unknownImageLoadError(url: url)
+                    }
                     completion(.error(err), url)
                 }
             }

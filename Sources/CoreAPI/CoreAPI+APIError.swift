@@ -74,6 +74,17 @@ extension CoreAPI.APIError: LocalizedError {
     }
 }
 
+extension Error where Self == CoreAPI.APIError {
+    public var isCancellationError: Bool {
+        switch self.code {
+        case .requestCancelled:
+            return true
+        default:
+            return false
+        }
+    }
+}
+
 // MARK: -
 
 private typealias CalculatedErrorAttributes = CoreAPI.APIError

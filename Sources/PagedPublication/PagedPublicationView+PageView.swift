@@ -201,12 +201,13 @@ extension PagedPublicationView {
                     //                        }
                     s.imageLoadState = .loaded
                     s.delegate?.didFinishLoading(viewImage: url, fromCache: fromCache, in: s)
-                case let .error(error):
-                    guard (error as NSError).code != NSURLErrorCancelled else {
+                case .error(let error):
+                    
+                    guard error.isCancellationError == false else {
                         s.imageLoadState = .notLoaded
                         return // image load cancelled
                     }
-
+                    
                     // TODO: handle failed image load
                     // tell delegate? show error? retry?
                     // maybe cache failed image urls to re-fail quickly?
@@ -234,7 +235,7 @@ extension PagedPublicationView {
                 case .error(let error):
                     s.zoomImageView.isHidden = true
 
-                    guard (error as NSError).code != NSURLErrorCancelled else {
+                    guard error.isCancellationError == false else {
                         s.zoomImageLoadState = .notLoaded
                         return // image load cancelled
                     }
