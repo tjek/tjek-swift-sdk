@@ -157,7 +157,7 @@ public class PagedPublicationView: UIView {
         init(coreProperties: CoreProperties,
              publicationState: LoadingState<PublicationId, PublicationModel>,
              pagesState: LoadingState<PublicationId, [PageModel]>,
-             hotspotsState: LoadingState<PublicationId, [HotspotModel]>) {
+             hotspotsState: LoadingState<PublicationId, [IndexSet: [HotspotModel]]>) {
             
             switch (publicationState, pagesState, hotspotsState) {
             case (.error(_, let error), _, _),
@@ -185,7 +185,7 @@ public class PagedPublicationView: UIView {
     public internal(set) var coreProperties: CoreProperties = (nil, .white, 1.0)
     var publicationState: LoadingState<PublicationId, PublicationModel> = .unloaded
     var pagesState: LoadingState<PublicationId, [PageModel]> = .unloaded
-    var hotspotsState: LoadingState<PublicationId, [HotspotModel]> = .unloaded
+    var hotspotsState: LoadingState<PublicationId, [IndexSet: [HotspotModel]]> = .unloaded
     
     var currentViewState: ViewState = .initial
     
@@ -238,11 +238,14 @@ public class PagedPublicationView: UIView {
     }
     
     public func hotspotModels(onPageIndexes pageIndexSet: IndexSet) -> [HotspotModel] {
-        guard case .loaded(_, let hotspotModels) = self.hotspotsState else {
+        guard case .loaded(_, let hotspotModelsByPage) = self.hotspotsState else {
             return []
         }
-        return hotspotModels.filter({
-            IndexSet($0.pageLocations.keys).contains(integersIn: pageIndexSet)
+        
+        return hotspotModelsByPage.reduce(into: [], {
+            if $1.key.contains(where: pageIndexSet.contains) {
+                $0 += $1.value
+            }
         })
     }
     
@@ -314,7 +317,13 @@ public class PagedPublicationView: UIView {
     private func hotspotsDidLoad(forId publicationId: PublicationId, initialPageIndex: Int?, result: Result<[HotspotModel]>) {
         switch result {
         case .success(let hotspotModels):
-            self.hotspotsState = .loaded(publicationId, hotspotModels)
+            // key hotspots by their pageLocations
+            let hotspotsByPage: [IndexSet: [HotspotModel]] = hotspotModels.reduce(into: [:], {
+                let pageKey = IndexSet($1.pageLocations.keys)
+                $0[pageKey] = $0[pageKey, default: []] + [$1]
+            })
+            
+            self.hotspotsState = .loaded(publicationId, hotspotsByPage)
             self.delegate?.didLoad(hotspots: hotspotModels, in: self)
         case .error(let error):
             self.hotspotsState = .error(publicationId, error)
@@ -421,8 +430,10 @@ public class PagedPublicationView: UIView {
         return false
     }
     public var foregroundColor: UIColor {
-        return .white
-        // TODO: calculate based on bgColor
+        // get the alternate color for the bg color
+        var whiteComponent: CGFloat = 1.0
+        backgroundColor?.getWhite(&whiteComponent, alpha: nil)
+        return (whiteComponent > 0.6) ? UIColor(white: 0, alpha: 0.7) : UIColor.white
     }
     
     // Get the properties for a page, based on the pages state
