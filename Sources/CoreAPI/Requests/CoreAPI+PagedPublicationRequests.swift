@@ -8,8 +8,49 @@
 //  Copyright (c) 2018 ShopGun. All rights reserved.
 
 import UIKit
+import CoreLocation
 
 extension CoreAPI.Requests {
+    
+    public struct PaginatedQuery {
+        public var startCursor: Int
+        public var itemCount: Int
+        
+        public init(start: Int = 0, count: Int) {
+            self.startCursor = start
+            self.itemCount = count
+        }
+        
+        fileprivate var requestParams: [String: String] {
+            return ["offset": String(self.startCursor),
+                    "limit": String(self.itemCount)]
+        }
+    }
+    
+    public struct LocationQuery {
+        public var coordinate: CLLocationCoordinate2D
+        public var radius: CLLocationDistance?
+        public var isFromSensor: Bool
+        
+        public init(coordinate: CLLocationCoordinate2D, radius: CLLocationDistance?, isFromSensor: Bool) {
+            self.coordinate = coordinate
+            self.radius = radius
+            self.isFromSensor = isFromSensor
+        }
+        
+        fileprivate var requestParams: [String: String] {
+            var params: [String: String] = [:]
+            
+            params["r_lat"] = String(self.coordinate.latitude)
+            params["r_lng"] = String(self.coordinate.longitude)
+            params["r_sensor"] = self.isFromSensor ? "true" : "false"
+            
+            if let radius = self.radius {
+                params["r_radius"] = String(radius)
+            }
+            return params
+        }
+    }
     
     // TODO: add a load stores option?
     /// Fetch the details about the specified publication
@@ -46,13 +87,62 @@ extension CoreAPI.Requests {
     }
     
     /// Given a publication's Id, this will return
-    public static func getSuggestedPublications(relatedTo pubId: CoreAPI.PagedPublication.Identifier, pageRange: NSRange = NSRange(location: 0, length: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+    public static func getSuggestedPublications(relatedTo pubId: CoreAPI.PagedPublication.Identifier, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
         
-        let params = ["catalog_id": pubId.rawValue,
-                      "limit": String(pageRange.length),
-                      "location": String(pageRange.location)]
-        
+        var params = ["catalog_id": pubId.rawValue]
+        params.merge(pagination.requestParams) { (_, new) in new }
+
         return .init(path: "/v2/catalogs/suggest",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params,
+                     timeoutInterval: 30)
+    }
+    
+    public enum PublicationSortOrder {
+        case nameAtoZ
+        case popularity
+        case newestPublished
+        case nearest
+        case oldestExpiry
+        
+        fileprivate var sortKeys: [String] {
+            switch self {
+            case .nameAtoZ:
+                return ["name"]
+            case .popularity:
+                return ["-popularity", "distance"]
+            case .newestPublished:
+                return ["-publication_date", "distance"]
+            case .nearest:
+                return ["distance"]
+            case .oldestExpiry:
+                return ["expiration_date", "distance"]
+            }
+        }
+    }
+    
+    // TODO: Load stores option
+    public static func getPublications(near locationQuery: LocationQuery, sortedBy: PublicationSortOrder, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+        
+        var params = ["order_by": sortedBy.sortKeys.joined(separator: ",")]
+        params.merge(locationQuery.requestParams) { (_, new) in new }
+        params.merge(pagination.requestParams) { (_, new) in new }
+        
+        return .init(path: "/v2/catalogs",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params,
+                     timeoutInterval: 30)
+    }
+    
+    // TODO: Load stores option. or a way to pipe requests together
+    public static func getFavoritedPublications(sortedBy: PublicationSortOrder, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+        
+        var params = ["order_by": sortedBy.sortKeys.joined(separator: ",")]
+        params.merge(pagination.requestParams) { (_, new) in new }
+        
+        return .init(path: "/v2/catalogs/favorites",
                      method: .GET,
                      requiresAuth: true,
                      parameters: params,

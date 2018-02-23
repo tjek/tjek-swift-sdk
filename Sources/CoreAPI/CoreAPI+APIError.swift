@@ -13,6 +13,8 @@ extension CoreAPI {
     
     public struct APIError: Error, Decodable {
         
+        public typealias Identifier = String
+        
         public struct Code: RawRepresentable, Hashable, Decodable {
             public let rawValue: Int
             
@@ -25,14 +27,23 @@ extension CoreAPI {
         }
         
         public var code: Code
-        public var id: String?
+        public var id: Identifier?
         public var message: String?
         public var details: String?
-        public var previous: String?
+        public var previous: Identifier?
         public var note: String?
-        
         // non-decodable... can be added manually
         public var httpResponse: URLResponse? = nil
+        
+        public init(code: Code, id: Identifier? = nil, message: String? = nil, details: String? = nil, previous: Identifier? = nil, note: String? = nil, httpResponse: URLResponse? = nil) {
+            self.code = code
+            self.id = id
+            self.message = message
+            self.details = details
+            self.previous = previous
+            self.note = note
+            self.httpResponse = httpResponse
+        }
         
         // MARK: Generated
         
@@ -50,6 +61,16 @@ extension CoreAPI {
             case previous
             case note = "@note.1"
         }
+    }
+}
+
+extension CoreAPI.APIError: LocalizedError {
+    public var errorDescription: String? {
+        return message
+    }
+    
+    public var failureReason: String? {
+        return details
     }
 }
 
