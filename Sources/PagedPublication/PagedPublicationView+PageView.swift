@@ -26,13 +26,20 @@ extension PagedPublicationView {
     
     class PageView: VersoPageView {
         
-        struct Properties {
+        struct Properties: Equatable {
             var pageTitle: String
             var isBackgroundDark: Bool
             var aspectRatio: CGFloat
             var images: ImageURLSet?
             
             static var empty = Properties(pageTitle: "", isBackgroundDark: false, aspectRatio: 1.0, images: nil)
+            
+            static func == (lhs: PagedPublicationView.PageView.Properties, rhs: PagedPublicationView.PageView.Properties) -> Bool {
+                return lhs.pageTitle == rhs.pageTitle
+                    && lhs.isBackgroundDark == rhs.isBackgroundDark
+                    && lhs.aspectRatio == rhs.aspectRatio
+                    && lhs.images == rhs.images
+            }
         }
         
         weak var delegate: PagedPublicationPageViewDelegate?
@@ -52,9 +59,20 @@ extension PagedPublicationView {
         }
         
         func configure(with properties: Properties) {
+            
+            let oldProperties = self.properties
             self.properties = properties
             
-            reset()
+            if oldProperties?.images != properties.images {
+                imageLoader?.cancelImageLoad(for: imageView)
+                imageView.image = nil
+                imageLoadState = .notLoaded
+                
+                imageLoader?.cancelImageLoad(for: zoomImageView)
+                zoomImageView.image = nil
+                zoomImageView.isHidden = true
+                zoomImageLoadState = .notLoaded
+            }
             
             pageLabel.text = properties.pageTitle
             pageLabel.textColor = properties.isBackgroundDark ? UIColor.white : UIColor(white: 0, alpha: 0.7)
@@ -262,20 +280,6 @@ extension PagedPublicationView {
                 zoomImageView.image = nil
                 zoomImageView.isHidden = true
             }
-        }
-        
-        fileprivate func reset() {
-            imageLoader?.cancelImageLoad(for: imageView)
-            imageView.image = nil
-            imageLoadState = .notLoaded
-
-            imageLoader?.cancelImageLoad(for: zoomImageView)
-            zoomImageView.image = nil
-            zoomImageView.isHidden = true
-            zoomImageLoadState = .notLoaded
-
-            pageLabel.text = nil
-//            aspectRatio = 0
         }
     }
 }

@@ -11,11 +11,14 @@ import UIKit
 
 public struct ImageURLSet {
     public typealias SizedURL = (size: CGSize, url: URL)
+    
+    /// The urls & their sizes, sorted from smallest to largest by area
     public let sizedUrls: [SizedURL]
     
     public init(sizedUrls: [SizedURL]) {
-        // TODO: Store ordered from smallest to largest (based on area?)
-        self.sizedUrls = sizedUrls
+        self.sizedUrls = sizedUrls.sorted {
+            ($0.size.width * $0.size.height) < ($1.size.width * $1.size.height)
+        }
     }
     
     public func url(fitting size: CGSize) -> URL? {
@@ -23,7 +26,19 @@ public struct ImageURLSet {
         return closest?.val
     }
     
-    // TODO: add different utility getters. eg. `smallest`, `largest`, `largerThan`
+    public var smallest: SizedURL? {
+        return sizedUrls.first
+    }
+    public var largest: SizedURL? {
+        return sizedUrls.last
+    }
+    // TODO: add different utility getters. eg. `largerThan`
+}
+
+extension ImageURLSet: Equatable {
+    public static func == (lhs: ImageURLSet, rhs: ImageURLSet) -> Bool {
+        return lhs.sizedUrls.elementsEqual(rhs.sizedUrls, by: ==)
+    }
 }
 
 extension ImageURLSet {
