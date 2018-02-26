@@ -20,6 +20,7 @@ extension PagedPublicationView {
             var progress: Double?
             var pageLabelString: String?
             var isBackgroundBlack: Bool = false
+            var showAdditionalLoading: Bool = false
             
             mutating func updateProgress(pageCount: Int, pageIndex: Int) {
                 self.progress = min(1, max(0, pageCount > 0 ? Double(pageIndex) / Double(pageCount - 1) : 0))
@@ -32,6 +33,14 @@ extension PagedPublicationView {
             self.properties = properties
             updatePageNumberLabel(with: properties.pageLabelString)
             updateProgressBar(progress: properties.progress, isBackgroundBlack: properties.isBackgroundBlack)
+            
+            var spinnerFrame = additionalLoadingSpinner.frame
+            spinnerFrame.origin.x = self.layoutMarginsGuide.layoutFrame.maxX - spinnerFrame.width
+            spinnerFrame.origin.y = pageNumberLabel.frame.midY - (spinnerFrame.height / 2)
+            additionalLoadingSpinner.frame = spinnerFrame
+            
+            additionalLoadingSpinner.color = properties.isBackgroundBlack ? .white : UIColor(white: 0, alpha: 0.7)
+            additionalLoadingSpinner.alpha = properties.showAdditionalLoading ? 1 : 0
         }
         
         var progressBarHeight: CGFloat = 4 {
@@ -43,7 +52,13 @@ extension PagedPublicationView {
         var versoView = VersoView()
         fileprivate var progressBarView = UIView()
         fileprivate var pageNumberLabel = PageNumberLabel()
-        
+        fileprivate var additionalLoadingSpinner: UIActivityIndicatorView = {
+            let view = UIActivityIndicatorView(activityIndicatorStyle: .white)
+            view.hidesWhenStopped = false
+            view.startAnimating()
+            return view
+        }()
+
         // MARK: UIView Lifecycle
         
         override init(frame: CGRect) {
@@ -53,10 +68,12 @@ extension PagedPublicationView {
             addSubview(versoView)
             addSubview(progressBarView)
             addSubview(pageNumberLabel)
+            addSubview(additionalLoadingSpinner)
             
             // initial state is invisible
             progressBarView.alpha = 0
             pageNumberLabel.alpha = 0
+            additionalLoadingSpinner.alpha = 0
             
             setNeedsLayout()
         }
