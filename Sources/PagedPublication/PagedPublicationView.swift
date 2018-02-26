@@ -139,6 +139,19 @@ public class PagedPublicationView: UIView {
         NotificationCenter.default.removeObserver(self, name: .UIApplicationDidBecomeActive, object: nil)
     }
     
+    override public var backgroundColor: UIColor? {
+        set {
+            super.backgroundColor = newValue
+            
+            var whiteComponent: CGFloat = 1.0
+            newValue?.getWhite(&whiteComponent, alpha: nil)
+            self.isBackgroundDark = whiteComponent <= 0.6
+        }
+        get { return super.backgroundColor }
+    }
+    
+    var isBackgroundDark: Bool = false
+    
     // MARK: - Internal
     
     enum LoadingState<Id, Model> {
@@ -362,7 +375,7 @@ public class PagedPublicationView: UIView {
             self.backgroundColor = coreProperties.bgColor
             
             // TODO: use additionalLoading value to show mini-spinner
-            updateContentsViewLabels()
+            updateContentsViewLabels(pageIndexes: currentPageIndexes)
         case let .error(bgColor, error):
             self.loadingView.alpha = 0
             self.contentsView.alpha = 0
@@ -382,19 +395,17 @@ public class PagedPublicationView: UIView {
     }
     
     // refresh the properties of the contentsView based on the current state
-    func updateContentsViewLabels() {
+    func updateContentsViewLabels(pageIndexes: IndexSet) {
         var properties = contentsView.properties
         
-        let currentPageIndexes = contentsView.versoView.currentPageIndexes
-        
         if let pageCount = coreProperties.pageCount,
-            let firstCurrentPageIndex = currentPageIndexes.first,
-            self.isOutroPage(inPageIndexes: currentPageIndexes) == false,
+            let firstCurrentPageIndex = pageIndexes.first,
+            self.isOutroPage(inPageIndexes: pageIndexes) == false,
             self.isOutroPageVisible == false {
             
             properties.updateProgress(pageCount: pageCount, pageIndex: firstCurrentPageIndex)
             
-            properties.pageLabelString = dataSourceWithDefaults.textForPageNumberLabel(pageIndexes: currentPageIndexes,
+            properties.pageLabelString = dataSourceWithDefaults.textForPageNumberLabel(pageIndexes: pageIndexes,
                                                                             pageCount: pageCount,
                                                                             for: self)
                 
@@ -425,21 +436,10 @@ public class PagedPublicationView: UIView {
         return pageIndexSet.contains(outroIndex)
     }
     
-    var isBackgroundDark: Bool {
-        // TODO: based on self.backgroundColor
-        return false
-    }
-    public var foregroundColor: UIColor {
-        // get the alternate color for the bg color
-        var whiteComponent: CGFloat = 1.0
-        backgroundColor?.getWhite(&whiteComponent, alpha: nil)
-        return (whiteComponent > 0.6) ? UIColor(white: 0, alpha: 0.7) : UIColor.white
-    }
-    
     // Get the properties for a page, based on the pages state
     func pageViewProperties(forPageIndex pageIndex: Int) -> PageView.Properties {
         guard case .loaded(_, let pageModels) = self.pagesState, pageModels.indices.contains(pageIndex) else {
-            // return an 'empty' page view
+            // return a 'loading' page view
             return .init(pageTitle: String(pageIndex+1),
                          isBackgroundDark: self.isBackgroundDark,
                          aspectRatio: CGFloat(self.coreProperties.aspectRatio),

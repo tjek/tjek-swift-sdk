@@ -136,8 +136,7 @@ extension PagedPublicationView: VersoViewDelegate {
                 outroOutsideTapGesture.isEnabled = false
             }
         }
-        
-        updateContentsViewLabels()
+        updateContentsViewLabels(pageIndexes: currentPageIndexes)
     }
     
     public func currentPageIndexesFinishedChanging(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in verso: VersoView) {
