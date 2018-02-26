@@ -111,6 +111,7 @@ extension ShopGunSDK_Logging {
         case important
         case verbose
         case debug
+        case performance
     }
     
     public enum LogSource {

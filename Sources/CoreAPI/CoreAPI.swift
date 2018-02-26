@@ -59,7 +59,12 @@ extension CoreAPI_PerformRequests {
             // convert the Result<Data> into Result<R.ResponseType>
             return requestData(request, completion: { [weak self] (dataResult) in
                 self?.queue.async {
+                    let start = Date()
                     let mappedResult = request.resultMapper(dataResult)
+                    
+                    let duration = Date().timeIntervalSince(start)
+                    ShopGun.log("Request response parsed: \(String(format: "%.3fs", duration)) '\(request.path)'", level: .performance, source: .CoreAPI)
+
                     DispatchQueue.main.async {
                         completion(mappedResult)
                     }
@@ -75,10 +80,11 @@ extension CoreAPI_PerformRequests {
         // make a new cancellable token by which we refer to this request from the outside
         let token = CancellableToken(owner: self)
         
+        ShopGun.log("Requesting '\(request.path)' (\(token.id.rawValue))", level: .verbose, source: .CoreAPI)
+        let start = Date()
+        
         self.queue.async { [weak self] in
             guard let s = self else { return }
-            
-            ShopGun.log("Requesting \(request.path) \(token.id)", level: .verbose, source: .CoreAPI)
             
             let urlRequest = request.urlRequest(for: s.settings.baseURL, additionalParameters: s.additionalRequestParams)
             
@@ -92,6 +98,9 @@ extension CoreAPI_PerformRequests {
                                          completion: { (dataResult) in
                                             // Make sure the completion is always called on main
                                             DispatchQueue.main.async {
+                                                let duration = Date().timeIntervalSince(start)
+                                                ShopGun.log("Request completed: \(String(format: "%.3fs %.3fkb", duration, Double(dataResult.value?.count ?? 0) / 1024 )) '\(request.path)' (\(token.id.rawValue))", level: .performance, source: .CoreAPI)
+
                                                 completion?(dataResult)
                                             }
             })
