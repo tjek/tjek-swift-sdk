@@ -212,11 +212,6 @@ extension PagedPublicationView {
                 case let .success(image, fromCache):
                     guard image.size.width > 0 && image.size.height > 0 else { return }
                     
-                    //                        let newAspectRatio = image.size.width / image.size.height
-                    //                        if newAspectRatio != s.aspectRatio {
-                    //                            s.aspectRatio = newAspectRatio
-                    //                            // TODO: this will only affect future uses of this page. Somehow trigger a re-layout from the verso. Maybe in the delegate?
-                    //                        }
                     s.imageLoadState = .loaded
                     s.delegate?.didFinishLoading(viewImage: url, fromCache: fromCache, in: s)
                 case .error(let error):

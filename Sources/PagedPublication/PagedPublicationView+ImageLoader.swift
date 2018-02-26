@@ -43,6 +43,11 @@ extension PagedPublicationView {
     /// This class wraps the Kingfisher library
     class KingfisherImageLoader: PagedPublicationViewImageLoader {
         
+        init() {
+            // max 150 Mb of disk cache
+            KingfisherManager.shared.cache.maxDiskCacheSize = 150*1024*1024
+        }
+        
         func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, evenWhenCached: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool)>, URL) -> Void)) {
             
             var options: KingfisherOptionsInfo = [.transition(.fade(transition.fadeDuration))]
