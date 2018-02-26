@@ -57,9 +57,13 @@ extension CoreAPI_PerformRequests {
     @discardableResult public func request<R: CoreAPIMappableRequest>(_ request: R, completion: ((Result<R.ResponseType>) -> Void)?) -> Cancellable {
         if let completion = completion {
             // convert the Result<Data> into Result<R.ResponseType>
-            return requestData(request, completion: { (dataResult) in
-                let mappedResult = request.resultMapper(dataResult)
-                completion(mappedResult)
+            return requestData(request, completion: { [weak self] (dataResult) in
+                self?.queue.async {
+                    let mappedResult = request.resultMapper(dataResult)
+                    DispatchQueue.main.async {
+                        completion(mappedResult)
+                    }
+                }
             })
         } else {
             return requestData(request, completion: nil)
