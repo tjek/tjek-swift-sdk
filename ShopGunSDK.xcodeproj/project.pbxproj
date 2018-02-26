@@ -35,7 +35,11 @@
 		AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */; };
 		AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */; };
 		AE2008D5200CE86F004363BE /* ShopGunSDK+UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */; };
-		AE3B3228204030AD001C75C9 /* Error+IsCancellation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3227204030AD001C75C9 /* Error+IsCancellation.swift */; };
+		AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3227204030AD001C75C9 /* Error+Extensions.swift */; };
+		AE3B323C2044136C001C75C9 /* PagedPublicationView+ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B323B2044136C001C75C9 /* PagedPublicationView+ErrorView.swift */; };
+		AE3B323E20441AF2001C75C9 /* PagedPublicationView.strings in Resources */ = {isa = PBXBuildFile; fileRef = AE3B323D20441AF2001C75C9 /* PagedPublicationView.strings */; };
+		AE3B324020442161001C75C9 /* PagedPublicationView.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3B323F20442161001C75C9 /* PagedPublicationView.xcassets */; };
+		AE3B3242204422D5001C75C9 /* Bundle+ShopGunSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */; };
 		AE3C38F52019DF7900A92597 /* PagedPublicationView+ContentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38F42019DF7900A92597 /* PagedPublicationView+ContentsView.swift */; };
 		AE3C38FE2019DFD700A92597 /* PagedPublicationView+LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FD2019DFD700A92597 /* PagedPublicationView+LoadingView.swift */; };
 		AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */; };
@@ -269,7 +273,11 @@
 		AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+PageView.swift"; sourceTree = "<group>"; };
 		AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
 		AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShopGunSDK+UserAgent.swift"; sourceTree = "<group>"; };
-		AE3B3227204030AD001C75C9 /* Error+IsCancellation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+IsCancellation.swift"; sourceTree = "<group>"; };
+		AE3B3227204030AD001C75C9 /* Error+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extensions.swift"; sourceTree = "<group>"; };
+		AE3B323B2044136C001C75C9 /* PagedPublicationView+ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+ErrorView.swift"; sourceTree = "<group>"; };
+		AE3B323D20441AF2001C75C9 /* PagedPublicationView.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = PagedPublicationView.strings; sourceTree = "<group>"; };
+		AE3B323F20442161001C75C9 /* PagedPublicationView.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = PagedPublicationView.xcassets; sourceTree = "<group>"; };
+		AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+ShopGunSDK.swift"; sourceTree = "<group>"; };
 		AE3C38F42019DF7900A92597 /* PagedPublicationView+ContentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+ContentsView.swift"; sourceTree = "<group>"; };
 		AE3C38FD2019DFD700A92597 /* PagedPublicationView+LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+LoadingView.swift"; sourceTree = "<group>"; };
 		AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+CoreAPILoader.swift"; sourceTree = "<group>"; };
@@ -400,10 +408,13 @@
 				AE3C38F42019DF7900A92597 /* PagedPublicationView+ContentsView.swift */,
 				AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */,
 				AE3C38FD2019DFD700A92597 /* PagedPublicationView+LoadingView.swift */,
+				AE3B323B2044136C001C75C9 /* PagedPublicationView+ErrorView.swift */,
 				AE7F6A72201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift */,
 				AE7F6A76201F36F300168C1A /* PagedPublicationView+Verso.swift */,
 				AE7F6A78201F5F4900168C1A /* PagedPublicationView+ImageLoader.swift */,
 				AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */,
+				AE3B323D20441AF2001C75C9 /* PagedPublicationView.strings */,
+				AE3B323F20442161001C75C9 /* PagedPublicationView.xcassets */,
 			);
 			name = PagedPublication;
 			path = Sources/PagedPublication;
@@ -507,7 +518,8 @@
 				AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */,
 				AE8E4540200E31E60042CCE2 /* UIColor+Hex.swift */,
 				AE8E4547200F6D140042CCE2 /* CGSize+Fitting.swift */,
-				AE3B3227204030AD001C75C9 /* Error+IsCancellation.swift */,
+				AE3B3227204030AD001C75C9 /* Error+Extensions.swift */,
+				AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */,
 			);
 			name = Utils;
 			path = Sources/Utils;
@@ -864,6 +876,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE3B324020442161001C75C9 /* PagedPublicationView.xcassets in Resources */,
+				AE3B323E20441AF2001C75C9 /* PagedPublicationView.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -914,14 +928,16 @@
 				AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */,
 				AE8E4548200F6D140042CCE2 /* CGSize+Fitting.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Person.swift in Sources */,
-				AE3B3228204030AD001C75C9 /* Error+IsCancellation.swift in Sources */,
+				AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */,
 				AE091FEC203AF24000345009 /* GraphNetworkTransport.swift in Sources */,
 				AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */,
 				AE091FEF203AF24000345009 /* GraphQuery.swift in Sources */,
 				AE06548B1FFEDFDB009F6F92 /* ShopGunSDK+SecureDataStore.swift in Sources */,
 				AE092011203C1F4D00345009 /* EventsTracker.swift in Sources */,
+				AE3B3242204422D5001C75C9 /* Bundle+ShopGunSDK.swift in Sources */,
 				AE0654871FFED399009F6F92 /* CoreAPI+Utils.swift in Sources */,
 				AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */,
+				AE3B323C2044136C001C75C9 /* PagedPublicationView+ErrorView.swift in Sources */,
 				AE09204820401E6A00345009 /* CoreAPI+RequestQueryParameters.swift in Sources */,
 				AE8E454F2010941F0042CCE2 /* CoreAPI+DealerRequests.swift in Sources */,
 				AE8E453F200E29350042CCE2 /* CoreAPI+PagedPublication.swift in Sources */,

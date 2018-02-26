@@ -46,7 +46,6 @@ public protocol PagedPublicationViewDataSource: class {
     func outroViewProperties(for pagedPublicationView: PagedPublicationView) -> PagedPublicationView.OutroViewProperties?
     func configure(outroView: PagedPublicationView.OutroView, for pagedPublicationView: PagedPublicationView)
     func textForPageNumberLabel(pageIndexes: IndexSet, pageCount: Int, for pagedPublicationView: PagedPublicationView) -> String?
-    func errorView(with error: Error?, for pagedPublicationView: PagedPublicationView) -> UIView?
 }
 
 // MARK: -
@@ -66,6 +65,8 @@ public class PagedPublicationView: UIView {
     public weak var delegate: PagedPublicationViewDelegate?
     public weak var dataSource: PagedPublicationViewDataSource?
     
+    fileprivate var postReloadPageIndex: Int = 0
+    
     public func reload(publicationId: PublicationId, initialPageIndex: Int = 0, initialProperties: CoreProperties = (nil, .white, 1.0)) {
         DispatchQueue.main.async { [weak self] in
             guard let s = self else { return }
@@ -79,17 +80,28 @@ public class PagedPublicationView: UIView {
             
             // TODO: what if reload different after starting to load? need to handle id change
             
+            s.postReloadPageIndex = initialPageIndex
+            
             s.delegate?.didStartReloading(in: s)
             
             // do the loading
             s.dataLoader.cancelLoading()
-            s.dataLoader.startLoading(publicationId: publicationId, publicationLoaded: { [weak self] in self?.publicationDidLoad(forId: publicationId, initialPageIndex: initialPageIndex, result: $0) }, pagesLoaded: { [weak self] in self?.pagesDidLoad(forId: publicationId, initialPageIndex: initialPageIndex, result: $0) }, hotspotsLoaded: { [weak self] in self?.hotspotsDidLoad(forId: publicationId, initialPageIndex: initialPageIndex, result: $0) })
+            s.dataLoader.startLoading(publicationId: publicationId, publicationLoaded: { [weak self] in self?.publicationDidLoad(forId: publicationId, result: $0) },
+                                      pagesLoaded: { [weak self] in self?.pagesDidLoad(forId: publicationId, result: $0) },
+                                      hotspotsLoaded: { [weak self] in self?.hotspotsDidLoad(forId: publicationId, result: $0)
+            })
         }
     }
     
     public func jump(toPageIndex pageIndex: Int, animated: Bool) {
-        // TODO: if loading then save pageIndex for after load finished
-        contentsView.versoView.jump(toPageIndex: pageIndex, animated: animated)
+        switch self.currentViewState {
+        case .contents:
+            contentsView.versoView.jump(toPageIndex: pageIndex, animated: animated)
+        case .loading,
+             .initial,
+             .error:
+            postReloadPageIndex = pageIndex
+        }
     }
     
     /// Tell the page publication that it is now visible again.
@@ -116,17 +128,42 @@ public class PagedPublicationView: UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.contentsView.frame = frame
-        self.contentsView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(self.contentsView)
+        self.contentsView.alpha = 0
         self.contentsView.versoView.delegate = self
         self.contentsView.versoView.dataSource = self
         
+        self.contentsView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            contentsView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentsView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            contentsView.topAnchor.constraint(equalTo: topAnchor),
+            contentsView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            ])
+        
         addSubview(self.loadingView)
+        self.loadingView.alpha = 0
         loadingView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             loadingView.centerXAnchor.constraint(equalTo: layoutMarginsGuide.centerXAnchor),
             loadingView.centerYAnchor.constraint(equalTo: layoutMarginsGuide.centerYAnchor)
+            ])
+        
+        addSubview(self.errorView)
+        self.errorView.alpha = 0
+        self.errorView.retryButton.addTarget(self, action: #selector(didTapErrorRetryButton), for: .touchUpInside)
+        errorView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            errorView.centerXAnchor.constraint(equalTo: layoutMarginsGuide.centerXAnchor),
+            errorView.centerYAnchor.constraint(equalTo: layoutMarginsGuide.centerYAnchor), {
+                let con = errorView.widthAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.widthAnchor)
+                con.priority = .defaultHigh
+                return con
+            }(), {
+                let con = errorView.heightAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.heightAnchor)
+                con.priority = .defaultHigh
+                return con
+            }()
             ])
     }
     
@@ -178,7 +215,7 @@ public class PagedPublicationView: UIView {
                 // the publication failed to load, or the pages failed.
                 // either way, it's an error, so show an error (preferring the publication error)
                 self = .error(bgColor: coreProperties.bgColor, error: error)
-            case (_, _, _) where coreProperties.pageCount == nil:
+            case (_, _, _) where (coreProperties.pageCount ?? 0) == 0:
                 // we dont have a pageCount, so show spinner (even if pages or hotspots have loaded)
                 self = .loading(bgColor: coreProperties.bgColor)
             case (_, _, .loading),
@@ -274,7 +311,7 @@ public class PagedPublicationView: UIView {
     
     let contentsView = PagedPublicationView.ContentsView()
     let loadingView = PagedPublicationView.LoadingView()
-    //    fileprivate let errorView = PagedPublicationView.ErrorView()
+    let errorView = PagedPublicationView.ErrorView()
     let hotspotOverlayView = HotspotOverlayView()
     
     lazy var outroOutsideTapGesture: UITapGestureRecognizer = { [weak self] in
@@ -288,7 +325,7 @@ public class PagedPublicationView: UIView {
     
     // MARK: - Data Loading
     
-    private func publicationDidLoad(forId publicationId: PublicationId, initialPageIndex: Int?, result: Result<PublicationModel>) {
+    private func publicationDidLoad(forId publicationId: PublicationId, result: Result<PublicationModel>) {
         switch result {
         case .success(let publicationModel):
             self.publicationState = .loaded(publicationId, publicationModel)
@@ -311,10 +348,10 @@ public class PagedPublicationView: UIView {
             self.publicationState = .error(publicationId, error)
         }
         
-        self.updateCurrentViewState(initialPageIndex: initialPageIndex)
+        self.updateCurrentViewState(initialPageIndex: self.postReloadPageIndex)
     }
     
-    private func pagesDidLoad(forId publicationId: PublicationId, initialPageIndex: Int?, result: Result<[PageModel]>) {
+    private func pagesDidLoad(forId publicationId: PublicationId, result: Result<[PageModel]>) {
         switch result {
         case .success(let pageModels):
             // generate page view states based on the pageModels
@@ -324,10 +361,10 @@ public class PagedPublicationView: UIView {
             self.pagesState = .error(publicationId, error)
         }
         
-        self.updateCurrentViewState(initialPageIndex: initialPageIndex)
+        self.updateCurrentViewState(initialPageIndex: self.postReloadPageIndex)
     }
     
-    private func hotspotsDidLoad(forId publicationId: PublicationId, initialPageIndex: Int?, result: Result<[HotspotModel]>) {
+    private func hotspotsDidLoad(forId publicationId: PublicationId, result: Result<[HotspotModel]>) {
         switch result {
         case .success(let hotspotModels):
             // key hotspots by their pageLocations
@@ -342,7 +379,7 @@ public class PagedPublicationView: UIView {
             self.hotspotsState = .error(publicationId, error)
         }
         
-        self.updateCurrentViewState(initialPageIndex: initialPageIndex)
+        self.updateCurrentViewState(initialPageIndex: self.postReloadPageIndex)
     }
     
     // MARK: View updating
@@ -362,16 +399,20 @@ public class PagedPublicationView: UIView {
         case .initial:
             self.loadingView.alpha = 0
             self.contentsView.alpha = 0
+            self.errorView.alpha = 0
             self.backgroundColor = .white
+            
         case let .loading(bgColor):
             self.loadingView.alpha = 1
             self.contentsView.alpha = 0
+            self.errorView.alpha = 0
             self.backgroundColor = bgColor
             
             //TODO: change loading foreground color
         case let .contents(coreProperties, _):
             self.loadingView.alpha = 0
             self.contentsView.alpha = 1
+            self.errorView.alpha = 0
             self.backgroundColor = coreProperties.bgColor
             
             // TODO: use additionalLoading value to show mini-spinner
@@ -379,10 +420,11 @@ public class PagedPublicationView: UIView {
         case let .error(bgColor, error):
             self.loadingView.alpha = 0
             self.contentsView.alpha = 0
+            self.errorView.alpha = 1
             self.backgroundColor = bgColor
             
-            // TODO: GET & show error view
-            print("Showing error", error)
+            self.errorView.tintColor = self.isBackgroundDark ? UIColor.white : UIColor(white: 0, alpha: 0.7)
+            self.errorView.update(for: error)
         }
         
         // reload the verso based on the change to the pageCount
@@ -465,6 +507,13 @@ public class PagedPublicationView: UIView {
         if outroView.bounds.contains(location) == false {
             jump(toPageIndex: pageCount-1, animated: true)
         }
+    }
+    
+    @objc
+    fileprivate func didTapErrorRetryButton(_ btn: UIButton) {
+        guard let pubId = self.publicationId else { return }
+        
+        self.reload(publicationId: pubId, initialPageIndex: self.postReloadPageIndex, initialProperties: self.coreProperties)
     }
     
     @objc
@@ -556,8 +605,6 @@ public extension PagedPublicationViewDataSource {
             return "\(first+1)-\(last+1) / \(pageCount)"
         }
     }
-    func errorView(with error: Error?, for pagedPublicationView: PagedPublicationView) -> UIView? {
-        return nil
-    }
 }
+
 extension PagedPublicationView: PagedPublicationViewDataSource { }

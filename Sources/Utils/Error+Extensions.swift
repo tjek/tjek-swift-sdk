@@ -27,4 +27,33 @@ extension Error {
             return false
         }
     }
+    
+}
+
+extension NSError {
+    
+    public var isNetworkError: Bool {
+        guard self.domain == NSURLErrorDomain else {
+            return false
+        }
+        
+        switch self.code {
+        case NSURLErrorTimedOut,
+             NSURLErrorCannotFindHost,
+             NSURLErrorCannotConnectToHost,
+             NSURLErrorNetworkConnectionLost,
+             NSURLErrorDNSLookupFailed,
+             NSURLErrorNotConnectedToInternet,
+             NSURLErrorInternationalRoamingOff,
+             NSURLErrorCallIsActive,
+             NSURLErrorDataNotAllowed,
+             NSURLErrorResourceUnavailable,
+             NSURLErrorBadServerResponse,
+             NSURLErrorFileDoesNotExist,
+             NSURLErrorNoPermissionsToReadFile:
+            return true
+        default:
+            return false
+        }
+    }
 }
