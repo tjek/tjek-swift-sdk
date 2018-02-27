@@ -112,6 +112,9 @@ extension ShopGunSDK_Logging {
         case verbose
         case debug
         case performance
+        
+        public static var criticalLevels: [LogLevel] = [.error, important]
+        public static var allLevels: [LogLevel] = [.error, important, .verbose, .debug, .performance]
     }
     
     public enum LogSource {
