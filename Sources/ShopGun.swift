@@ -11,7 +11,7 @@ import Foundation
 
 public struct ShopGun {
     
-    public typealias LogHandler = (_ message: String, _ level: LogLevel, _ source: LogSource, _ location: (file: String, function: String, line: Int)) -> Void
+    public typealias LogHandler = (_ message: String, _ level: LogLevel, _ source: LogSource, _ location: LogLocation) -> Void
     
     public struct Settings {
         public var coreAPI: CoreAPI.Settings?
@@ -126,6 +126,16 @@ extension ShopGunSDK_Logging {
         case other(name: String)
     }
 
+    public struct LogLocation {
+        public let filePath: String
+        public let functionName: String
+        public let lineNumber: Int
+        
+        public var fileName: String {
+            return filePath.components(separatedBy: "/").last ?? filePath
+        }
+    }
+    
     public static func log(_ message: String, level: LogLevel, source: LogSource, file: String = #file, function: String = #function, line: Int = #line) {
         
         guard let handler = _logHandler else { return }
@@ -146,6 +156,6 @@ extension ShopGunSDK_Logging {
             sourceName = "ShopGunSDK.\(name)"
         }
         
-        handler("[\(sourceName)] \(message)", level, source, (file, function, line))
+        handler("[\(sourceName)] \(message)", level, source, LogLocation(filePath: file, functionName: function, lineNumber: line))
     }
 }
