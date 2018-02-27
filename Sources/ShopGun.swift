@@ -33,7 +33,8 @@ public struct ShopGun {
     
     public static func configure(settings: Settings, logHandler: LogHandler? = nil) {
         
-        // TODO: setup logHandler first
+        _logHandler = logHandler
+        
         let dataStore: ShopGunSDKSecureDataStore
         if ShopGun.isRunningInPlayground {
             dataStore = PlaygroundDataStore()
@@ -55,8 +56,7 @@ public struct ShopGun {
         
         _shared = ShopGun(coreAPI: coreAPI,
                              eventsTracker: eventsTracker,
-                             secureDataStore: dataStore,
-                             logHandler: logHandler)
+                             secureDataStore: dataStore)
     }
     
     // MARK: -
@@ -86,11 +86,11 @@ public struct ShopGun {
     // MARK: -
     
     private static var _shared: ShopGun?
+    private static var _logHandler: LogHandler?
     
-    private init(coreAPI: CoreAPI?, eventsTracker: EventsTracker?, secureDataStore: ShopGunSDKSecureDataStore, logHandler: LogHandler?) {
+    private init(coreAPI: CoreAPI?, eventsTracker: EventsTracker?, secureDataStore: ShopGunSDKSecureDataStore) {
         self.coreAPI = coreAPI
         self.eventsTracker = eventsTracker
-        self.logHandler = logHandler
         self.secureDataStore = secureDataStore
     }
     
@@ -98,7 +98,7 @@ public struct ShopGun {
     private let eventsTracker: EventsTracker?
     
     private let secureDataStore: ShopGunSDKSecureDataStore
-    private let logHandler: LogHandler?
+    
 }
 
 // MARK: -
@@ -128,7 +128,7 @@ extension ShopGunSDK_Logging {
 
     public static func log(_ message: String, level: LogLevel, source: LogSource, file: String = #file, function: String = #function, line: Int = #line) {
         
-        guard let handler = _shared?.logHandler else { return }
+        guard let handler = _logHandler else { return }
         
         let sourceName: String
         switch source {
