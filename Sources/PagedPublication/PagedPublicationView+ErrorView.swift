@@ -85,7 +85,7 @@ extension PagedPublicationView {
         }()
         lazy var retryButton: UIButton = {
             let btn = UIButton()
-            btn.setTitle(PagedPublicationView.localizedString("Try Again"), for: .normal)
+            btn.setTitle(PagedPublicationView.localizedString("errorView.retryButton.title"), for: .normal)
             btn.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .regular)
             btn.layer.borderWidth = 1
             btn.layer.cornerRadius = 8
@@ -104,8 +104,6 @@ extension PagedPublicationView {
             self.messageLabel.text = message
             self.iconImageView.image = iconImage
             self.retryButton.isHidden = !isRetryable
-            
-            print("Showing Error: '\(title)' \(message)")
         }
     }
 }
@@ -119,26 +117,26 @@ extension PagedPublicationView.ErrorView.ErrorType {
     func title(forError error: Error) -> String {
         switch self {
         case .noContent:
-            return PagedPublicationView.localizedString("Contents Unavailable")
+            return PagedPublicationView.localizedString("errorView.noContent.title")
         case .noInternet:
-            return PagedPublicationView.localizedString("No Internet")
+            return PagedPublicationView.localizedString("errorView.noInternet.title")
         case .serviceUnavailable, .unknown:
-            return PagedPublicationView.localizedString("Oops, something went wrong")
+            return PagedPublicationView.localizedString("errorView.serviceUnavailable.title")
         case .plannedMaintenance:
-            return PagedPublicationView.localizedString("Maintenance")
+            return PagedPublicationView.localizedString("errorView.plannedMaintenance.title")
         }
     }
     func message(forError error: Error) -> String {
         var msg: String
         switch self {
         case .noContent:
-            msg = PagedPublicationView.localizedString("We unfortunately could not load your requested publication.")
+            msg = PagedPublicationView.localizedString("errorView.noContent.message")
         case .noInternet:
-            msg = PagedPublicationView.localizedString("Please check your network connection.")
+            msg = PagedPublicationView.localizedString("errorView.noInternet.message")
         case .serviceUnavailable, .unknown:
-            msg = PagedPublicationView.localizedString("Thanks, we have now been informed of the problem and will solve it as soon as possible.")
+            msg = PagedPublicationView.localizedString("errorView.serviceUnavailable.message")
         case .plannedMaintenance:
-            msg = PagedPublicationView.localizedString("We're working to restore normal service. Thanks for your patience.")
+            msg = PagedPublicationView.localizedString("errorView.plannedMaintenance.message")
         }
 
         #if DEBUG
