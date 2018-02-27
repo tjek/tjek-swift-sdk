@@ -32,6 +32,7 @@
 		AE092015203C209A00345009 /* LEGACY_SDKConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */; };
 		AE09204820401E6A00345009 /* CoreAPI+RequestQueryParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE09204720401E6A00345009 /* CoreAPI+RequestQueryParameters.swift */; };
 		AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */; };
+		AE0B85D2204602650092F110 /* Kingfisher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5A973820232098004E0799 /* Kingfisher.framework */; };
 		AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */; };
 		AE2008D5200CE86F004363BE /* ShopGunSDK+UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */; };
 		AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3227204030AD001C75C9 /* Error+Extensions.swift */; };
@@ -77,7 +78,7 @@
 		AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */; };
 		AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B621FF6ABFC0007AAB8 /* Result.swift */; };
 		AEC28B6E1FF6AC2A0007AAB8 /* ShopGunSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AEC3D8571FFD87FB004C5947 /* ShopGunSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3D8551FFD87FB004C5947 /* ShopGunSDKTests.swift */; };
+		AEC3D8571FFD87FB004C5947 /* ShopGunTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3D8551FFD87FB004C5947 /* ShopGunTests.swift */; };
 		AEDCC2F02008BA14002644C2 /* CoreAPI+Dealer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDCC2EF2008BA14002644C2 /* CoreAPI+Dealer.swift */; };
 /* End PBXBuildFile section */
 
@@ -339,7 +340,7 @@
 		AEC28B6F1FF6AC420007AAB8 /* ShopGunSDK.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = ShopGunSDK.playground; sourceTree = "<group>"; };
 		AEC28B711FF6AC8A0007AAB8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AEC3D8541FFD87FB004C5947 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AEC3D8551FFD87FB004C5947 /* ShopGunSDKTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopGunSDKTests.swift; sourceTree = "<group>"; };
+		AEC3D8551FFD87FB004C5947 /* ShopGunTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopGunTests.swift; sourceTree = "<group>"; };
 		AEC3D85D1FFD8E86004C5947 /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		AEC3D85F1FFD8E86004C5947 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
 		AEC3D8601FFD8E86004C5947 /* macOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = macOS.xcconfig; sourceTree = "<group>"; };
@@ -372,6 +373,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE0B85D2204602650092F110 /* Kingfisher.framework in Frameworks */,
 				AEC28B441FF6AAC20007AAB8 /* ShopGunSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -578,7 +580,7 @@
 			isa = PBXGroup;
 			children = (
 				AEC3D8541FFD87FB004C5947 /* Info.plist */,
-				AEC3D8551FFD87FB004C5947 /* ShopGunSDKTests.swift */,
+				AEC3D8551FFD87FB004C5947 /* ShopGunTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1021,7 +1023,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEC3D8571FFD87FB004C5947 /* ShopGunSDKTests.swift in Sources */,
+				AEC3D8571FFD87FB004C5947 /* ShopGunTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

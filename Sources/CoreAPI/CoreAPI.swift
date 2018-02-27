@@ -217,16 +217,10 @@ extension CoreAPI_Settings {
         public var secret: String
         public var baseURL: URL
         
-        public init(key: String, secret: String, baseURL: URL) {
+        public init(key: String, secret: String, baseURL: URL = URL(string: "https://api.etilbudsavis.dk")!) {
             self.key = key
             self.secret = secret
             self.baseURL = baseURL
         }
-    }
-}
-
-extension CoreAPI.Settings {
-    public static func `default`(key: String, secret: String) -> CoreAPI.Settings {
-        return .init(key: key, secret: secret, baseURL: URL(string: "https://api.etilbudsavis.dk")!)
     }
 }

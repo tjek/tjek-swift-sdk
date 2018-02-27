@@ -22,14 +22,13 @@ public final class EventsTracker {
         public var dryRun: Bool
         // TODO: Share location property, default to false
         
-        public init(trackId: String, baseURL: URL, dispatchInterval: TimeInterval, dispatchLimit: Int, dryRun: Bool) {
+        public init(trackId: String, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, dryRun: Bool = false) {
             self.trackId = trackId
             self.baseURL = baseURL
             self.dispatchInterval = dispatchInterval
             self.dispatchLimit = dispatchLimit
             self.dryRun = dryRun
         }
-
     }
     
     public let settings: Settings
@@ -87,12 +86,6 @@ public final class EventsTracker {
         }
     }
     fileprivate var _currentCampaignContext: Context.CampaignContext?
-}
-
-extension EventsTracker.Settings {
-    public static func `default`(trackId: String) -> EventsTracker.Settings {
-        return .init(trackId: trackId, baseURL: URL(string: "https://events.service.shopgun.com")!, dispatchInterval: 120, dispatchLimit: 100, dryRun: false)
-    }
 }
 
 // MARK: - Tracking methods
