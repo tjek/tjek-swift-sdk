@@ -29,7 +29,6 @@
 		AE091FEF203AF24000345009 /* GraphQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD7203AF23F00345009 /* GraphQuery.swift */; };
 		AE091FF0203AF24000345009 /* GraphError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD8203AF23F00345009 /* GraphError.swift */; };
 		AE092011203C1F4D00345009 /* EventsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */; };
-		AE092013203C1F8700345009 /* LEGACY_EventsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE092012203C1F8700345009 /* LEGACY_EventsTracker.swift */; };
 		AE092015203C209A00345009 /* LEGACY_SDKConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */; };
 		AE09204820401E6A00345009 /* CoreAPI+RequestQueryParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE09204720401E6A00345009 /* CoreAPI+RequestQueryParameters.swift */; };
 		AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */; };
@@ -41,6 +40,14 @@
 		AE3B3242204422D5001C75C9 /* Bundle+ShopGunSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */; };
 		AE3B3244204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3243204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift */; };
 		AE3B32452044683D001C75C9 /* PagedPublicationView.strings in Resources */ = {isa = PBXBuildFile; fileRef = AE3B32472044683D001C75C9 /* PagedPublicationView.strings */; };
+		AE3B324C20455859001C75C9 /* EventsTracker+ShippableEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B324B20455859001C75C9 /* EventsTracker+ShippableEvent.swift */; };
+		AE3B324E204559A5001C75C9 /* EventTracker+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B324D204559A5001C75C9 /* EventTracker+Notifications.swift */; };
+		AE3B325020455C11001C75C9 /* EventsTracker+EventsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B324F20455C11001C75C9 /* EventsTracker+EventsCache.swift */; };
+		AE3B325220455CC2001C75C9 /* EventsTracker+EventsShipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325120455CC2001C75C9 /* EventsTracker+EventsShipper.swift */; };
+		AE3B325420455D44001C75C9 /* EventsPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325320455D44001C75C9 /* EventsPool.swift */; };
+		AE3B325620455D64001C75C9 /* EventsTracker+Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325520455D64001C75C9 /* EventsTracker+Context.swift */; };
+		AE3B325820455FD1001C75C9 /* EventsTracker+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325720455FD1001C75C9 /* EventsTracker+Utils.swift */; };
+		AE3B325A20458716001C75C9 /* EventsTracker+IdField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325920458716001C75C9 /* EventsTracker+IdField.swift */; };
 		AE3C38F52019DF7900A92597 /* PagedPublicationView+ContentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38F42019DF7900A92597 /* PagedPublicationView+ContentsView.swift */; };
 		AE3C38FE2019DFD700A92597 /* PagedPublicationView+LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FD2019DFD700A92597 /* PagedPublicationView+LoadingView.swift */; };
 		AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */; };
@@ -268,7 +275,6 @@
 		AE091FD5203AF23F00345009 /* GraphClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphClient.swift; sourceTree = "<group>"; };
 		AE091FD7203AF23F00345009 /* GraphQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQuery.swift; sourceTree = "<group>"; };
 		AE091FD8203AF23F00345009 /* GraphError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphError.swift; sourceTree = "<group>"; };
-		AE092012203C1F8700345009 /* LEGACY_EventsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LEGACY_EventsTracker.swift; sourceTree = "<group>"; };
 		AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LEGACY_SDKConfig.swift; sourceTree = "<group>"; };
 		AE09204720401E6A00345009 /* CoreAPI+RequestQueryParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+RequestQueryParameters.swift"; sourceTree = "<group>"; };
 		AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+PageView.swift"; sourceTree = "<group>"; };
@@ -280,6 +286,14 @@
 		AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+ShopGunSDK.swift"; sourceTree = "<group>"; };
 		AE3B3243204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+ProtocolDefaults.swift"; sourceTree = "<group>"; };
 		AE3B32462044683D001C75C9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PagedPublicationView.strings; sourceTree = "<group>"; };
+		AE3B324B20455859001C75C9 /* EventsTracker+ShippableEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+ShippableEvent.swift"; sourceTree = "<group>"; };
+		AE3B324D204559A5001C75C9 /* EventTracker+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventTracker+Notifications.swift"; sourceTree = "<group>"; };
+		AE3B324F20455C11001C75C9 /* EventsTracker+EventsCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+EventsCache.swift"; sourceTree = "<group>"; };
+		AE3B325120455CC2001C75C9 /* EventsTracker+EventsShipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+EventsShipper.swift"; sourceTree = "<group>"; };
+		AE3B325320455D44001C75C9 /* EventsPool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsPool.swift; sourceTree = "<group>"; };
+		AE3B325520455D64001C75C9 /* EventsTracker+Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EventsTracker+Context.swift"; sourceTree = "<group>"; };
+		AE3B325720455FD1001C75C9 /* EventsTracker+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+Utils.swift"; sourceTree = "<group>"; };
+		AE3B325920458716001C75C9 /* EventsTracker+IdField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+IdField.swift"; sourceTree = "<group>"; };
 		AE3C38F42019DF7900A92597 /* PagedPublicationView+ContentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+ContentsView.swift"; sourceTree = "<group>"; };
 		AE3C38FD2019DFD700A92597 /* PagedPublicationView+LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+LoadingView.swift"; sourceTree = "<group>"; };
 		AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+CoreAPILoader.swift"; sourceTree = "<group>"; };
@@ -483,7 +497,14 @@
 			isa = PBXGroup;
 			children = (
 				AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */,
-				AE092012203C1F8700345009 /* LEGACY_EventsTracker.swift */,
+				AE3B324D204559A5001C75C9 /* EventTracker+Notifications.swift */,
+				AE3B324B20455859001C75C9 /* EventsTracker+ShippableEvent.swift */,
+				AE3B324F20455C11001C75C9 /* EventsTracker+EventsCache.swift */,
+				AE3B325120455CC2001C75C9 /* EventsTracker+EventsShipper.swift */,
+				AE3B325520455D64001C75C9 /* EventsTracker+Context.swift */,
+				AE3B325920458716001C75C9 /* EventsTracker+IdField.swift */,
+				AE3B325320455D44001C75C9 /* EventsPool.swift */,
+				AE3B325720455FD1001C75C9 /* EventsTracker+Utils.swift */,
 				AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */,
 			);
 			name = EventsTracker;
@@ -915,13 +936,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				AEC28B671FF6ABFC0007AAB8 /* CoreAPI.swift in Sources */,
+				AE3B325820455FD1001C75C9 /* EventsTracker+Utils.swift in Sources */,
 				AE8E45582010A38C0042CCE2 /* CoreAPI+Offer.swift in Sources */,
-				AE092013203C1F8700345009 /* LEGACY_EventsTracker.swift in Sources */,
 				AEC28B661FF6ABFC0007AAB8 /* CoreAPIRequest.swift in Sources */,
 				AEDCC2F02008BA14002644C2 /* CoreAPI+Dealer.swift in Sources */,
 				AEC28B6A1FF6ABFC0007AAB8 /* Cancellable.swift in Sources */,
+				AE3B325220455CC2001C75C9 /* EventsTracker+EventsShipper.swift in Sources */,
 				AEC28B681FF6ABFC0007AAB8 /* CoreAPI+APIError.swift in Sources */,
 				AE092015203C209A00345009 /* LEGACY_SDKConfig.swift in Sources */,
+				AE3B324C20455859001C75C9 /* EventsTracker+ShippableEvent.swift in Sources */,
+				AE3B325620455D64001C75C9 /* EventsTracker+Context.swift in Sources */,
 				AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */,
 				AE3B3244204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift in Sources */,
 				AE8E4541200E31E60042CCE2 /* UIColor+Hex.swift in Sources */,
@@ -933,6 +957,7 @@
 				AE8E4548200F6D140042CCE2 /* CGSize+Fitting.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Person.swift in Sources */,
 				AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */,
+				AE3B325020455C11001C75C9 /* EventsTracker+EventsCache.swift in Sources */,
 				AE091FEC203AF24000345009 /* GraphNetworkTransport.swift in Sources */,
 				AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */,
 				AE091FEF203AF24000345009 /* GraphQuery.swift in Sources */,
@@ -951,12 +976,15 @@
 				AE7F6A77201F36F300168C1A /* PagedPublicationView+Verso.swift in Sources */,
 				AE2008D5200CE86F004363BE /* ShopGunSDK+UserAgent.swift in Sources */,
 				AE85C5EF2001884100263F8B /* Result+Map.swift in Sources */,
+				AE3B325A20458716001C75C9 /* EventsTracker+IdField.swift in Sources */,
 				AE091FF0203AF24000345009 /* GraphError.swift in Sources */,
 				AE3C38F52019DF7900A92597 /* PagedPublicationView+ContentsView.swift in Sources */,
+				AE3B325420455D44001C75C9 /* EventsPool.swift in Sources */,
 				AE7F6A79201F5F4900168C1A /* PagedPublicationView+ImageLoader.swift in Sources */,
 				AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */,
 				AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */,
 				AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */,
+				AE3B324E204559A5001C75C9 /* EventTracker+Notifications.swift in Sources */,
 				AE85C5ED20017EE600263F8B /* URLSession+CoreAPI.swift in Sources */,
 				AE85C5F12002B76C00263F8B /* CoreAPI+RequestOperation.swift in Sources */,
 				AE4942C120174406006658CE /* PagedPublicationView.swift in Sources */,

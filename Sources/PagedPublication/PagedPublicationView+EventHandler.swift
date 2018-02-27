@@ -22,52 +22,148 @@ public protocol PagedPublicationViewEventHandler {
     
     func publicationSpreadAppearedEvent(pageIndexes: IndexSet, publication: PagedPublicationView.PublicationModel)
     func publicationSpreadDisappearedEvent(pageIndexes: IndexSet, publication: PagedPublicationView.PublicationModel)
-    func publicationSpreadZoomedIn(pageIndexes: IndexSet, publication: PagedPublicationView.PublicationModel)
-    func publicationSpreadZoomedOut(pageIndexes: IndexSet, publication: PagedPublicationView.PublicationModel)
+    func publicationSpreadZoomedInEvent(pageIndexes: IndexSet, publication: PagedPublicationView.PublicationModel)
+    func publicationSpreadZoomedOutEvent(pageIndexes: IndexSet, publication: PagedPublicationView.PublicationModel)
 }
 
 extension PagedPublicationView {
     class EventsHandler: PagedPublicationViewEventHandler {
+        
+        enum PublicationEvents {
+            typealias PublicationModel = PagedPublicationView.PublicationModel
+            
+            case opened(PublicationModel)
+            
+            case pageLoaded(pageIndex: Int, publication: PublicationModel)
+            case pageClicked(location: CGPoint, pageIndex: Int, publication: PublicationModel)
+            case pageHotspotsClicked(location: CGPoint, pageIndex: Int, publication: PublicationModel)
+            case pageDoubleClicked(location: CGPoint, pageIndex: Int, publication: PublicationModel)
+            case pageLongPressed(location: CGPoint, pageIndex: Int, publication: PublicationModel)
+            
+            case spreadAppeared(pageIndexes: IndexSet, publication: PublicationModel)
+            case spreadDisappeared(pageIndexes: IndexSet, publication: PublicationModel)
+            case spreadZoomedIn(pageIndexes: IndexSet, publication: PublicationModel)
+            case spreadZoomedOut(pageIndexes: IndexSet, publication: PublicationModel)
+
+            // MARK: -
+            
+            var type: EventsTracker.EventType {
+                switch self {
+                case .opened:
+                    return "paged-publication-opened"
+                case .pageLoaded:
+                    return "paged-publication-page-loaded"
+                case .pageClicked:
+                    return "paged-publication-page-clicked"
+                case .pageHotspotsClicked:
+                    return "paged-publication-page-hotspots-clicked"
+                case .pageDoubleClicked:
+                    return "paged-publication-page-double-clicked"
+                case .pageLongPressed:
+                    return "paged-publication-page-long-pressed"
+                case .spreadAppeared:
+                    return "paged-publication-page-spread-appeared"
+                case .spreadDisappeared:
+                    return "paged-publication-page-spread-disappeared"
+                case .spreadZoomedIn:
+                    return "paged-publication-page-spread-zoomed-in"
+                case .spreadZoomedOut:
+                    return "paged-publication-page-spread-zoomed-out"
+                }
+            }
+            
+            var properties: EventsTracker.EventProperties {
+                switch self {
+                case let .opened(publication):
+                    return ["pagedPublication": self.publicationProperties(publication) as AnyObject]
+                    
+                case let .pageLoaded(pageIndex, publication):
+                    return ["pagedPublication": self.publicationProperties(publication) as AnyObject,
+                            "pagedPublicationPage": self.pageProperties(location: nil, pageIndex: pageIndex) as AnyObject]
+                    
+                case let .pageClicked(location, pageIndex, publication),
+                     let .pageHotspotsClicked(location, pageIndex, publication),
+                     let .pageDoubleClicked(location, pageIndex, publication),
+                     let .pageLongPressed(location, pageIndex, publication):
+                    return ["pagedPublication": self.publicationProperties(publication) as AnyObject,
+                            "pagedPublicationPage": self.pageProperties(location: location, pageIndex: pageIndex) as AnyObject]
+                    
+                case let .spreadAppeared(pageIndexes, publication),
+                     let .spreadDisappeared(pageIndexes, publication),
+                     let .spreadZoomedIn(pageIndexes, publication),
+                     let .spreadZoomedOut(pageIndexes, publication):
+                    return ["pagedPublication": self.publicationProperties(publication) as AnyObject,
+                            "pagedPublicationPageSpread": self.spreadProperties(pageIndexes: pageIndexes) as AnyObject]
+
+                }
+            }
+            
+            func track() {
+                guard ShopGun.hasEventsTracker else { return }
+
+                ShopGun.eventsTracker.trackEvent(self.type, properties: self.properties)
+            }
+            
+            private func publicationProperties(_ publication: PublicationModel) -> [String: AnyObject] {
+                return ["id": EventsTracker.IdField.legacy(publication.id.rawValue).jsonArray() as AnyObject,
+                        "ownedBy": EventsTracker.IdField.legacy(publication.dealerId.rawValue).jsonArray() as AnyObject]
+            }
+
+            private func pageProperties(location: CGPoint?, pageIndex: Int) -> [String: AnyObject] {
+                
+                var pageProperties = ["pageNumber": (pageIndex + 1) as AnyObject]
+                if let loc = location {
+                    pageProperties["x"] = loc.x as AnyObject
+                    pageProperties["y"] = loc.y as AnyObject
+                }
+                return pageProperties
+            }
+            
+            private func spreadProperties(pageIndexes: IndexSet) -> [String: AnyObject] {
+                return ["pageNumbers": pageIndexes.map({ $0 + 1 }) as AnyObject]
+            }
+        }
+        
+        // MARK: -
+        
         func publicationOpenedEvent(publication: PagedPublicationView.PublicationModel) {
-            print("Publication Opened")
+            PublicationEvents.opened(publication).track()
         }
         
         func publicationPageLoadedEvent(pageIndex: Int, publication: PagedPublicationView.PublicationModel) {
-            print("Publication Page Loaded", pageIndex)
+            PublicationEvents.pageLoaded(pageIndex: pageIndex, publication: publication).track()
         }
         
         func publicationPageClickedEvent(location: CGPoint, pageIndex: Int, publication: PagedPublicationView.PublicationModel) {
-//            print("Publication Page Clicked", pageIndex)
+            PublicationEvents.pageClicked(location: location, pageIndex: pageIndex, publication: publication).track()
         }
         
         func publicationPageHotspotsClickedEvent(location: CGPoint, pageIndex: Int, publication: PagedPublicationView.PublicationModel) {
-//            print("Publication Page hotspots Clicked", pageIndex)
+            PublicationEvents.pageHotspotsClicked(location: location, pageIndex: pageIndex, publication: publication).track()
         }
         
         func publicationPageDoubleClickedEvent(location: CGPoint, pageIndex: Int, publication: PagedPublicationView.PublicationModel) {
-//            print("Publication Page double Clicked", pageIndex)
+            PublicationEvents.pageDoubleClicked(location: location, pageIndex: pageIndex, publication: publication).track()
         }
         
         func publicationPageLongPressedEvent(location: CGPoint, pageIndex: Int, publication: PagedPublicationView.PublicationModel) {
-//            print("Publication Page long pressed", pageIndex)
-
+            PublicationEvents.pageLongPressed(location: location, pageIndex: pageIndex, publication: publication).track()
         }
         
         func publicationSpreadAppearedEvent(pageIndexes: IndexSet, publication: PagedPublicationView.PublicationModel) {
-            print("Publication spread appeared \(pageIndexes)")
-
+            PublicationEvents.spreadAppeared(pageIndexes: pageIndexes, publication: publication).track()
         }
         
         func publicationSpreadDisappearedEvent(pageIndexes: IndexSet, publication: PagedPublicationView.PublicationModel) {
-//            print("Publication spread disappeared", pageIndexes)
+            PublicationEvents.spreadDisappeared(pageIndexes: pageIndexes, publication: publication).track()
         }
         
-        func publicationSpreadZoomedIn(pageIndexes: IndexSet, publication: PagedPublicationView.PublicationModel) {
-//            print("Publication spread zoomedin", pageIndexes)
+        func publicationSpreadZoomedInEvent(pageIndexes: IndexSet, publication: PagedPublicationView.PublicationModel) {
+            PublicationEvents.spreadZoomedIn(pageIndexes: pageIndexes, publication: publication).track()
         }
         
-        func publicationSpreadZoomedOut(pageIndexes: IndexSet, publication: PagedPublicationView.PublicationModel) {
-//            print("Publication spread zoomedout", pageIndexes)
+        func publicationSpreadZoomedOutEvent(pageIndexes: IndexSet, publication: PagedPublicationView.PublicationModel) {
+            PublicationEvents.spreadZoomedOut(pageIndexes: pageIndexes, publication: publication).track()
         }
     }
 }
@@ -165,7 +261,7 @@ extension PagedPublicationView {
 
             // finally zoom in (if already zoomed in)
             if isZoomedIn {
-                eventHandler.publicationSpreadZoomedIn(pageIndexes: pageIndexes, publication: publicationModel)
+                eventHandler.publicationSpreadZoomedInEvent(pageIndexes: pageIndexes, publication: publicationModel)
             }
 
             hasAppeared = true
@@ -176,7 +272,7 @@ extension PagedPublicationView {
 
             // first zoom out (if zoomed in)
             if isZoomedIn {
-                eventHandler.publicationSpreadZoomedOut(pageIndexes: pageIndexes, publication: publicationModel)
+                eventHandler.publicationSpreadZoomedOutEvent(pageIndexes: pageIndexes, publication: publicationModel)
             }
 
             // disappear the spread
@@ -253,7 +349,7 @@ extension PagedPublicationView {
                 return
             }
 
-            eventHandler.publicationSpreadZoomedIn(pageIndexes: pageIndexes, publication: publicationModel)
+            eventHandler.publicationSpreadZoomedInEvent(pageIndexes: pageIndexes, publication: publicationModel)
         }
 
         public func didZoomOut() {
@@ -269,7 +365,7 @@ extension PagedPublicationView {
                 return
             }
 
-            eventHandler.publicationSpreadZoomedOut(pageIndexes: pageIndexes, publication: publicationModel)
+            eventHandler.publicationSpreadZoomedOutEvent(pageIndexes: pageIndexes, publication: publicationModel)
         }
     }
 }

@@ -35,6 +35,7 @@ public struct ShopGun {
         
         _logHandler = logHandler
         
+        // configure the shared DataStore
         let dataStore: ShopGunSDKSecureDataStore
         if ShopGun.isRunningInPlayground {
             dataStore = PlaygroundDataStore()
@@ -42,21 +43,25 @@ public struct ShopGun {
             dataStore = KeychainDataStore(sharedKeychainGroupId: settings.sharedKeychainGroupId)
         }
         
+        // configure the CoreAPI, if settings provided
         var coreAPI: CoreAPI? = nil
         if let coreAPISettings = settings.coreAPI {
             ShopGun.log("Configuring CoreAPI", level: .verbose, source: .ShopGunSDK)
             coreAPI = CoreAPI(settings: coreAPISettings, secureDataStore: dataStore)
         }
         
+        // configure the EventsTracker, if settings provided
         var eventsTracker: EventsTracker? = nil
         if let eventsTrackerSettings = settings.eventsTracker {
             ShopGun.log("Configuring EventsTracker", level: .verbose, source: .ShopGunSDK)
             eventsTracker = EventsTracker(settings: eventsTrackerSettings)
         }
         
+        // TODO: configure the GraphAPI, if settings provided
+        
         _shared = ShopGun(coreAPI: coreAPI,
-                             eventsTracker: eventsTracker,
-                             secureDataStore: dataStore)
+                          eventsTracker: eventsTracker,
+                          secureDataStore: dataStore)
     }
     
     // MARK: -
