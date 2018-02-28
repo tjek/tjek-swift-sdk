@@ -33,6 +33,7 @@
 		AE09204820401E6A00345009 /* CoreAPI+RequestQueryParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE09204720401E6A00345009 /* CoreAPI+RequestQueryParameters.swift */; };
 		AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */; };
 		AE0B85D2204602650092F110 /* Kingfisher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5A973820232098004E0799 /* Kingfisher.framework */; };
+		AE0B85D4204607370092F110 /* GraphAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B85D3204607370092F110 /* GraphAPI.swift */; };
 		AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */; };
 		AE2008D5200CE86F004363BE /* ShopGunSDK+UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */; };
 		AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3227204030AD001C75C9 /* Error+Extensions.swift */; };
@@ -279,6 +280,7 @@
 		AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LEGACY_SDKConfig.swift; sourceTree = "<group>"; };
 		AE09204720401E6A00345009 /* CoreAPI+RequestQueryParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+RequestQueryParameters.swift"; sourceTree = "<group>"; };
 		AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+PageView.swift"; sourceTree = "<group>"; };
+		AE0B85D3204607370092F110 /* GraphAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphAPI.swift; sourceTree = "<group>"; };
 		AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
 		AE2008D4200CE86F004363BE /* ShopGunSDK+UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShopGunSDK+UserAgent.swift"; sourceTree = "<group>"; };
 		AE3B3227204030AD001C75C9 /* Error+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extensions.swift"; sourceTree = "<group>"; };
@@ -409,6 +411,7 @@
 		AE091FD2203AF23F00345009 /* Graph */ = {
 			isa = PBXGroup;
 			children = (
+				AE0B85D3204607370092F110 /* GraphAPI.swift */,
 				AE091FD3203AF23F00345009 /* GraphRequestResponse.swift */,
 				AE091FD4203AF23F00345009 /* GraphNetworkTransport.swift */,
 				AE091FD5203AF23F00345009 /* GraphClient.swift */,
@@ -1000,6 +1003,7 @@
 				AE8E453F200E29350042CCE2 /* CoreAPI+PagedPublication.swift in Sources */,
 				AE8E4544200E3CA70042CCE2 /* CoreAPI+PagedPublicationRequests.swift in Sources */,
 				AE8E4546200F6CAA0042CCE2 /* ImageURLSet.swift in Sources */,
+				AE0B85D4204607370092F110 /* GraphAPI.swift in Sources */,
 				AE3C38FE2019DFD700A92597 /* PagedPublicationView+LoadingView.swift in Sources */,
 				AE7F6A77201F36F300168C1A /* PagedPublicationView+Verso.swift in Sources */,
 				AE2008D5200CE86F004363BE /* ShopGunSDK+UserAgent.swift in Sources */,

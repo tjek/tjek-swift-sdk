@@ -16,13 +16,15 @@ public struct ShopGun {
     public struct Settings {
         public var coreAPI: CoreAPI.Settings?
         public var eventsTracker: EventsTracker.Settings?
+        public var graphAPI: GraphAPI.Settings?
         
         // if this is set then secure data will available to other apps (check entitlements)
         public var sharedKeychainGroupId: String?
         
-        public init(coreAPI: CoreAPI.Settings?, eventsTracker: EventsTracker.Settings?, sharedKeychainGroupId: String? = nil) {
+        public init(coreAPI: CoreAPI.Settings?, eventsTracker: EventsTracker.Settings?, graphAPI: GraphAPI.Settings?, sharedKeychainGroupId: String? = nil) {
             self.coreAPI = coreAPI
             self.eventsTracker = eventsTracker
+            self.graphAPI = graphAPI
             self.sharedKeychainGroupId = sharedKeychainGroupId
         }
         
@@ -57,10 +59,16 @@ public struct ShopGun {
             eventsTracker = EventsTracker(settings: eventsTrackerSettings)
         }
         
-        // TODO: configure the GraphAPI, if settings provided
+        // configure the GraphAPI, if settings provided
+        var graphAPI: GraphAPI? = nil
+        if let graphAPISettings = settings.graphAPI {
+            ShopGun.log("Configuring GraphAPI", level: .verbose, source: .ShopGunSDK)
+            graphAPI = GraphAPI(settings: graphAPISettings)
+        }
         
         _shared = ShopGun(coreAPI: coreAPI,
                           eventsTracker: eventsTracker,
+                          graphAPI: graphAPI,
                           secureDataStore: dataStore)
     }
     
@@ -90,17 +98,31 @@ public struct ShopGun {
     
     // MARK: -
     
+    public static var graphAPI: GraphAPI {
+        guard let graphAPI = _shared?.graphAPI else {
+            fatalError("Must configure ShopGunSDK with GraphAPI Settings")
+        }
+        return graphAPI
+    }
+    public static var hasGraphAPI: Bool {
+        return _shared?.graphAPI != nil
+    }
+    
+    // MARK: -
+    
     private static var _shared: ShopGun?
     private static var _logHandler: LogHandler?
     
-    private init(coreAPI: CoreAPI?, eventsTracker: EventsTracker?, secureDataStore: ShopGunSDKSecureDataStore) {
+    private init(coreAPI: CoreAPI?, eventsTracker: EventsTracker?, graphAPI: GraphAPI?, secureDataStore: ShopGunSDKSecureDataStore) {
         self.coreAPI = coreAPI
         self.eventsTracker = eventsTracker
+        self.graphAPI = graphAPI
         self.secureDataStore = secureDataStore
     }
     
     private let coreAPI: CoreAPI?
     private let eventsTracker: EventsTracker?
+    private let graphAPI: GraphAPI?
     
     private let secureDataStore: ShopGunSDKSecureDataStore
     
