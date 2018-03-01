@@ -29,7 +29,6 @@
 		AE091FEF203AF24000345009 /* GraphQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD7203AF23F00345009 /* GraphQuery.swift */; };
 		AE091FF0203AF24000345009 /* GraphError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD8203AF23F00345009 /* GraphError.swift */; };
 		AE092011203C1F4D00345009 /* EventsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */; };
-		AE092015203C209A00345009 /* LEGACY_SDKConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */; };
 		AE09204820401E6A00345009 /* CoreAPI+RequestQueryParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE09204720401E6A00345009 /* CoreAPI+RequestQueryParameters.swift */; };
 		AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */; };
 		AE0B85D2204602650092F110 /* Kingfisher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5A973820232098004E0799 /* Kingfisher.framework */; };
@@ -55,6 +54,7 @@
 		AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */; };
 		AE4942C120174406006658CE /* PagedPublicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4942C020174406006658CE /* PagedPublicationView.swift */; };
 		AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */; };
+		AE7D9B63204745C6000F3B7D /* CoreAPI+LegacyMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7D9B62204745C6000F3B7D /* CoreAPI+LegacyMigration.swift */; };
 		AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7F6A72201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift */; };
 		AE7F6A77201F36F300168C1A /* PagedPublicationView+Verso.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7F6A76201F36F300168C1A /* PagedPublicationView+Verso.swift */; };
 		AE7F6A79201F5F4900168C1A /* PagedPublicationView+ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7F6A78201F5F4900168C1A /* PagedPublicationView+ImageLoader.swift */; };
@@ -277,7 +277,6 @@
 		AE091FD5203AF23F00345009 /* GraphClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphClient.swift; sourceTree = "<group>"; };
 		AE091FD7203AF23F00345009 /* GraphQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQuery.swift; sourceTree = "<group>"; };
 		AE091FD8203AF23F00345009 /* GraphError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphError.swift; sourceTree = "<group>"; };
-		AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LEGACY_SDKConfig.swift; sourceTree = "<group>"; };
 		AE09204720401E6A00345009 /* CoreAPI+RequestQueryParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+RequestQueryParameters.swift"; sourceTree = "<group>"; };
 		AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+PageView.swift"; sourceTree = "<group>"; };
 		AE0B85D3204607370092F110 /* GraphAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphAPI.swift; sourceTree = "<group>"; };
@@ -313,6 +312,7 @@
 		AE4942C020174406006658CE /* PagedPublicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagedPublicationView.swift; sourceTree = "<group>"; };
 		AE5A972820232098004E0799 /* Kingfisher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kingfisher.xcodeproj; path = External/Kingfisher/Kingfisher.xcodeproj; sourceTree = "<group>"; };
 		AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+EventHandler.swift"; sourceTree = "<group>"; };
+		AE7D9B62204745C6000F3B7D /* CoreAPI+LegacyMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+LegacyMigration.swift"; sourceTree = "<group>"; };
 		AE7F6A72201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+HotspotOverlayView.swift"; sourceTree = "<group>"; };
 		AE7F6A76201F36F300168C1A /* PagedPublicationView+Verso.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+Verso.swift"; sourceTree = "<group>"; };
 		AE7F6A78201F5F4900168C1A /* PagedPublicationView+ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+ImageLoader.swift"; sourceTree = "<group>"; };
@@ -527,7 +527,6 @@
 				AE3B325920458716001C75C9 /* EventsTracker+IdField.swift */,
 				AE3B325320455D44001C75C9 /* EventsPool.swift */,
 				AE3B325720455FD1001C75C9 /* EventsTracker+Utils.swift */,
-				AE092014203C209A00345009 /* LEGACY_SDKConfig.swift */,
 			);
 			name = EventsTracker;
 			path = Sources/EventsTracker;
@@ -545,6 +544,7 @@
 				AE85C5F02002B76B00263F8B /* CoreAPI+RequestOperation.swift */,
 				AE85C5E32000384500263F8B /* CoreAPI+AuthVault.swift */,
 				AE0654861FFED399009F6F92 /* CoreAPI+Utils.swift */,
+				AE7D9B62204745C6000F3B7D /* CoreAPI+LegacyMigration.swift */,
 				AE85C5EC20017EE600263F8B /* URLSession+CoreAPI.swift */,
 				AE8E4545200F6CAA0042CCE2 /* ImageURLSet.swift */,
 			);
@@ -974,7 +974,6 @@
 				AEC28B6A1FF6ABFC0007AAB8 /* Cancellable.swift in Sources */,
 				AE3B325220455CC2001C75C9 /* EventsTracker+EventsShipper.swift in Sources */,
 				AEC28B681FF6ABFC0007AAB8 /* CoreAPI+APIError.swift in Sources */,
-				AE092015203C209A00345009 /* LEGACY_SDKConfig.swift in Sources */,
 				AE3B324C20455859001C75C9 /* EventsTracker+ShippableEvent.swift in Sources */,
 				AE3B325620455D64001C75C9 /* EventsTracker+Context.swift in Sources */,
 				AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */,
@@ -1017,6 +1016,7 @@
 				AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */,
 				AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */,
 				AE3B324E204559A5001C75C9 /* EventTracker+Notifications.swift in Sources */,
+				AE7D9B63204745C6000F3B7D /* CoreAPI+LegacyMigration.swift in Sources */,
 				AE85C5ED20017EE600263F8B /* URLSession+CoreAPI.swift in Sources */,
 				AE85C5F12002B76C00263F8B /* CoreAPI+RequestOperation.swift in Sources */,
 				AE4942C120174406006658CE /* PagedPublicationView.swift in Sources */,

@@ -150,6 +150,9 @@ extension CoreAPI_CancelRequests {
 
 extension CoreAPI {
     
+    public enum ClientIdentifierType {}
+    public typealias ClientIdentifier = GenericIdentifier<ClientIdentifierType>
+    
     public enum LoginCredentials: Equatable {
         case logout
         case shopgun(email: String, password: String)
@@ -195,6 +198,18 @@ extension CoreAPI {
     
     public var authorizedUser: AuthorizedUser? {
         return self.authVault.currentAuthorizedUser
+    }
+    
+    /// The Id that represents this installation on this device to the CoreAPI.
+    /// This will remain constant until the app is removed, or it is reset.
+    /// It is created the first time the coreAPI communicates with the server
+    public var clientId: ClientIdentifier? {
+        return self.authVault.clientId
+    }
+    
+    /// Reset the cached clientId. The user will also be logged out, and the clientId will only be regenerated on future CoreAPI requests.
+    public func resetClientId() {
+        self.authVault.resetStoredAuthState()
     }
     
     fileprivate func authorizedUserDidChange(prevAuthUser: AuthorizedUser?, newAuthUser: AuthorizedUser?) {

@@ -23,9 +23,6 @@ extension CoreAPI {
         
         typealias SignedRequestCompletion = ((Result<URLRequest>) -> Void)
         
-        enum ClientIdentifierType {}
-        typealias ClientIdentifier = GenericIdentifier<ClientIdentifierType>
-
         // MARK: Funcs
         
         init(baseURL: URL, key: String, secret: String, tokenLife: Int = 7_776_000, urlSession: URLSession, secureDataStore: ShopGunSDKSecureDataStore?) {
@@ -38,12 +35,20 @@ extension CoreAPI {
             self.urlSession = urlSession
             
             self.activeRegenerateTask = nil
-            
+ 
             // load clientId/authState from the store (if provided)
             let storedAuth = AuthVault.loadFromDataStore(secureDataStore)
             if let auth = storedAuth.auth {
+                // Apply stored auth if it exists
                 self.authState = .authorized(token: auth.token, user: auth.user, clientId: storedAuth.clientId)
+            } else if let legacyAuthState = AuthVault.loadLegacyAuthState() {
+                // load, apply & clear any legacy auth from the previous version of the SDK
+                self.authState = legacyAuthState
+                self.updateStore()
+                AuthVault.clearLegacyAuthState()
+                ShopGun.log("Loaded AuthState from Legacy cache: \(legacyAuthState)", level: .debug, source: .CoreAPI)
             } else {
+                // If no stored auth, or legacy auth to migrate, mark as unauthorized.
                 self.authState = .unauthorized(error: nil, clientId: storedAuth.clientId)
             }
         }
@@ -74,9 +79,18 @@ extension CoreAPI {
             }
         }
         
+        func resetStoredAuthState() {
+            self.queue.async { [weak self] in
+                guard let s = self else { return }
+                
+                AuthVault.updateDataStore(s.secureDataStore, data: nil)
+                s.authState = .unauthorized(error: nil, clientId: nil)
+            }
+        }
+        
         // MARK: - Private Types
         
-        private enum AuthState {
+        enum AuthState {
             case unauthorized(error: Error?, clientId: ClientIdentifier?) // we currently have no auth (TODO: `reason` enum insted of error?)
             case authorized(token: String, user: AuthorizedUser?, clientId: ClientIdentifier?) // we have signed headers to return
         }
@@ -100,6 +114,7 @@ extension CoreAPI {
                 // save the current authState to the store
                 updateStore()
                 
+                // TODO: change to 'authStateDidChange', and trigger for _any_ change to the authState
                 guard let authDidChangeCallback = self.authorizedUserDidChangeCallback else { return }
                 
                 var prevAuthUser: AuthorizedUser? = nil
@@ -112,7 +127,7 @@ extension CoreAPI {
             }
         }
         
-        private var clientId: ClientIdentifier? {
+        var clientId: ClientIdentifier? {
             switch self.authState {
             case .authorized(_, _, let clientId),
                  .unauthorized(_, let clientId):
@@ -211,6 +226,8 @@ extension CoreAPI {
             guard let store = self.secureDataStore else { return }
             
             switch self.authState {
+            case .unauthorized(_, nil):
+                AuthVault.updateDataStore(store, data: nil)
             case let .unauthorized(_, clientId):
                 AuthVault.updateDataStore(store, data: StoreData(auth: nil, clientId: clientId))
             case let .authorized(token, user, clientId):
@@ -266,7 +283,7 @@ extension CoreAPI.AuthVault {
     
     /// The response from requests to the API's session endpoint
     fileprivate struct AuthSessionResponse: Decodable {
-        var clientId: ClientIdentifier
+        var clientId: CoreAPI.ClientIdentifier
         var token: String
         var expiry: Date
         var authorizedUser: CoreAPI.AuthorizedUser?
@@ -282,7 +299,7 @@ extension CoreAPI.AuthVault {
         init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             
-            self.clientId = try values.decode(ClientIdentifier.self, forKey: .clientId)
+            self.clientId = try values.decode(CoreAPI.ClientIdentifier.self, forKey: .clientId)
             self.token = try values.decode(String.self, forKey: .token)
             
             if let provider = try? values.decode(CoreAPI.AuthorizedUserProvider.self, forKey: .provider),
@@ -300,7 +317,7 @@ extension CoreAPI.AuthVault {
         
         // MARK: Response-generating requests
         
-        static func createRequest(clientId: CoreAPI.AuthVault.ClientIdentifier?, apiKey: String, tokenLife: Int) -> CoreAPI.Request<AuthSessionResponse> {
+        static func createRequest(clientId: CoreAPI.ClientIdentifier?, apiKey: String, tokenLife: Int) -> CoreAPI.Request<AuthSessionResponse> {
             
             var params: [String: String] = [:]
             params["api_key"] = apiKey
@@ -310,7 +327,7 @@ extension CoreAPI.AuthVault {
             return .init(path: "v2/sessions", method: .POST, requiresAuth: false, parameters: params, timeoutInterval: 10)
         }
         
-        static func renewRequest(clientId: CoreAPI.AuthVault.ClientIdentifier?, additionalParams: [String: String] = [:]) -> CoreAPI.Request<AuthSessionResponse> {
+        static func renewRequest(clientId: CoreAPI.ClientIdentifier?, additionalParams: [String: String] = [:]) -> CoreAPI.Request<AuthSessionResponse> {
             
             var params: [String: String] = additionalParams
             params["clientId"] = clientId?.rawValue
@@ -326,9 +343,10 @@ extension CoreAPI.AuthVault {
     
     fileprivate static let dataStoreKey = "ShopGunSDK.CoreAPI.AuthVault"
     
-    fileprivate static func updateDataStore(_ dataStore: ShopGunSDKSecureDataStore?, data: CoreAPI.AuthVault.StoreData) {
+    fileprivate static func updateDataStore(_ dataStore: ShopGunSDKSecureDataStore?, data: CoreAPI.AuthVault.StoreData?) {
         var authJSON: String? = nil
-        if let authJSONData = try? JSONEncoder().encode(data) {
+        if let data = data,
+            let authJSONData = try? JSONEncoder().encode(data) {
             authJSON = String(data: authJSONData, encoding: .utf8)
         }
         dataStore?.set(value: authJSON, for: CoreAPI.AuthVault.dataStoreKey)
@@ -345,9 +363,9 @@ extension CoreAPI.AuthVault {
     // The data to be saved/read from disk
     fileprivate struct StoreData: Codable {
         var auth: (token: String, user: CoreAPI.AuthorizedUser?)?
-        var clientId: CoreAPI.AuthVault.ClientIdentifier?
+        var clientId: CoreAPI.ClientIdentifier?
         
-        init(auth: (token: String, user: CoreAPI.AuthorizedUser?)?, clientId: CoreAPI.AuthVault.ClientIdentifier?) {
+        init(auth: (token: String, user: CoreAPI.AuthorizedUser?)?, clientId: CoreAPI.ClientIdentifier?) {
             self.auth = auth
             self.clientId = clientId
         }
@@ -376,7 +394,7 @@ extension CoreAPI.AuthVault {
                 self.auth = nil
             }
             
-            self.clientId = try? values.decode(ClientIdentifier.self, forKey: .clientId)
+            self.clientId = try? values.decode(CoreAPI.ClientIdentifier.self, forKey: .clientId)
         }
         
         func encode(to encoder: Encoder) throws {
