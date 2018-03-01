@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Protocols  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a title="Protocols  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">ShopGunSDK Docs</a> (15% documented)</p>
+        <p class="header-right"><a href="https://github.com/shopgun/shopgun-ios-sdk/"><img src="img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">ShopGunSDK Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Protocols  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI.html">CoreAPI</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI.html#/s:10ShopGunSDK7CoreAPIC20ClientIdentifierTypeO">– ClientIdentifierType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI/LoginCredentials.html">– LoginCredentials</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI/AuthorizedUserProvider.html">– AuthorizedUserProvider</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI/Offer.html">– Offer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI/Request.html">– Request</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI/Requests.html">– Requests</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI/Dealer.html">– Dealer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI.html#/s:10ShopGunSDK7CoreAPIC7CountryV">– Country</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI/APIError.html">– APIError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI/Person.html">– Person</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI/PagedPublication.html">– PagedPublication</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoreAPI/Branding.html">– Branding</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/EventsTracker.html">EventsTracker</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/EventsTracker/Settings.html">– Settings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/EventsTracker/IdField.html">– IdField</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/GraphAPI.html">GraphAPI</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/HTTPGraphNetworkTransport.html">HTTPGraphNetworkTransport</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/NetworkGraphClient.html">NetworkGraphClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/PagedPublicationView.html">PagedPublicationView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ShopGun.html">ShopGun</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ShopGun/Settings.html">– Settings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ShopGun/LogLevel.html">– LogLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ShopGun/LogSource.html">– LogSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ShopGun/LogLocation.html">– LogLocation</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/HTTPRequestMethod.html">HTTPRequestMethod</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/Result.html">Result</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Extensions/Bundle.html">Bundle</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/ClientAPIErrorConsts.html">ClientAPIErrorConsts</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/CoreAPI_CancelRequests.html">CoreAPI_CancelRequests</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/CoreAPI_PerformRequests.html">CoreAPI_PerformRequests</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/CoreAPI_Settings.html">CoreAPI_Settings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/CoreAPI_Settings/Settings.html">– Settings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/Error.html">Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/ErrorCodeCategories.html">ErrorCodeCategories</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/ErrorCodeCategories/ErrorCategory.html">– ErrorCategory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/ErrorCodeConsts.html">ErrorCodeConsts</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/ErrorPrettyPrint.html">ErrorPrettyPrint</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/GraphAPI_Settings.html">GraphAPI_Settings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/GraphAPI_Settings/Settings.html">– Settings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/NSError.html">NSError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/Notification.html">Notification</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/Notification/Name.html">– Name</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:10ShopGunSDK13loadQueryFileSSSgSS4name_So6BundleC6bundletF">loadQueryFile(name:bundle:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/Cancellable.html">Cancellable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/CoreAPIMappableRequest.html">CoreAPIMappableRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/CoreAPIRequest.html">CoreAPIRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/GraphClient.html">GraphClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/GraphNetworkTransport.html">GraphNetworkTransport</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/GraphQuery.html">GraphQuery</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/GraphRequestProtocol.html">GraphRequestProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/PagedPublicationViewDataLoader.html">PagedPublicationViewDataLoader</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/PagedPublicationViewDataSource.html">PagedPublicationViewDataSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/PagedPublicationViewDelegate.html">PagedPublicationViewDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/PagedPublicationViewEventHandler.html">PagedPublicationViewEventHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/PagedPublicationViewImageLoader.html">PagedPublicationViewImageLoader</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Structs/GenericIdentifier.html">GenericIdentifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/GraphError.html">GraphError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/GraphRequest.html">GraphRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/GraphResponse.html">GraphResponse</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/ImageURLSet.html">ImageURLSet</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Typealiases.html">Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:10ShopGunSDK20SerializedPoolObjecta">SerializedPoolObject</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Protocols</h1>
+            <p>The following protocols are available globally.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK14CoreAPIRequestP"></a>
+                    <a name="//apple_ref/swift/Protocol/CoreAPIRequest" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK14CoreAPIRequestP">CoreAPIRequest</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Protocols/CoreAPIRequest.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">CoreAPIRequest</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK22CoreAPIMappableRequestP"></a>
+                    <a name="//apple_ref/swift/Protocol/CoreAPIMappableRequest" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK22CoreAPIMappableRequestP">CoreAPIMappableRequest</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Protocols/CoreAPIMappableRequest.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">CoreAPIMappableRequest</span><span class="p">:</span> <span class="kt"><a href="Protocols/CoreAPIRequest.html">CoreAPIRequest</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK11CancellableP"></a>
+                    <a name="//apple_ref/swift/Protocol/Cancellable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK11CancellableP">Cancellable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Protocols/Cancellable.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Cancellable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK28PagedPublicationViewDelegateP"></a>
+                    <a name="//apple_ref/swift/Protocol/PagedPublicationViewDelegate" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK28PagedPublicationViewDelegateP">PagedPublicationViewDelegate</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Protocols/PagedPublicationViewDelegate.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">PagedPublicationViewDelegate</span><span class="p">:</span> <span class="kd">class</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK30PagedPublicationViewDataSourceP"></a>
+                    <a name="//apple_ref/swift/Protocol/PagedPublicationViewDataSource" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK30PagedPublicationViewDataSourceP">PagedPublicationViewDataSource</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Protocols/PagedPublicationViewDataSource.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">PagedPublicationViewDataSource</span><span class="p">:</span> <span class="kd">class</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK30PagedPublicationViewDataLoaderP"></a>
+                    <a name="//apple_ref/swift/Protocol/PagedPublicationViewDataLoader" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK30PagedPublicationViewDataLoaderP">PagedPublicationViewDataLoader</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The object that does the fetching of the publication&rsquo;s</p>
+
+                        <a href="Protocols/PagedPublicationViewDataLoader.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">PagedPublicationViewDataLoader</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Request"></a>
+                <a name="//apple_ref/swift/Section/Request" class="dashAnchor"></a>
+                <a href="#/Request">
+                  <h3 class="section-name">Request</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK20GraphRequestProtocolP"></a>
+                    <a name="//apple_ref/swift/Protocol/GraphRequestProtocol" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK20GraphRequestProtocolP">GraphRequestProtocol</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Protocols/GraphRequestProtocol.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">GraphRequestProtocol</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Graph%20Client"></a>
+                <a name="//apple_ref/swift/Section/Graph Client" class="dashAnchor"></a>
+                <a href="#/Graph%20Client">
+                  <h3 class="section-name">Graph Client</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK11GraphClientP"></a>
+                    <a name="//apple_ref/swift/Protocol/GraphClient" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK11GraphClientP">GraphClient</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A protocol defining a server that handles any GraphRequests</p>
+
+                        <a href="Protocols/GraphClient.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">GraphClient</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK32PagedPublicationViewEventHandlerP"></a>
+                    <a name="//apple_ref/swift/Protocol/PagedPublicationViewEventHandler" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK32PagedPublicationViewEventHandlerP">PagedPublicationViewEventHandler</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>All the possible events that the paged publication can trigger</p>
+
+                        <a href="Protocols/PagedPublicationViewEventHandler.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">PagedPublicationViewEventHandler</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK21GraphNetworkTransportP"></a>
+                    <a name="//apple_ref/swift/Protocol/GraphNetworkTransport" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK21GraphNetworkTransportP">GraphNetworkTransport</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>An abstract Networking Transport connection. Given a request it will callback with a Result</p>
+
+                        <a href="Protocols/GraphNetworkTransport.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">GraphNetworkTransport</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Query"></a>
+                <a name="//apple_ref/swift/Section/Query" class="dashAnchor"></a>
+                <a href="#/Query">
+                  <h3 class="section-name">Query</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK10GraphQueryP"></a>
+                    <a name="//apple_ref/swift/Protocol/GraphQuery" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK10GraphQueryP">GraphQuery</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Protocols/GraphQuery.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">GraphQuery</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK31PagedPublicationViewImageLoaderP"></a>
+                    <a name="//apple_ref/swift/Protocol/PagedPublicationViewImageLoader" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK31PagedPublicationViewImageLoaderP">PagedPublicationViewImageLoader</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The object that knows how to load/cache the page images from a URL
+Loosely based on <code>Kingfisher</code> interface</p>
+
+                        <a href="Protocols/PagedPublicationViewImageLoader.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">PagedPublicationViewImageLoader</span><span class="p">:</span> <span class="kd">class</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-03-01)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ShopGun Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/ShopGun" class="dashAnchor"></a>
+    <a title="ShopGun Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">ShopGunSDK Docs</a> (15% documented)</p>
+        <p class="header-right"><a href="https://github.com/shopgun/shopgun-ios-sdk/"><img src="../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">ShopGunSDK Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        ShopGun Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI.html">CoreAPI</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI.html#/s:10ShopGunSDK7CoreAPIC20ClientIdentifierTypeO">– ClientIdentifierType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI/LoginCredentials.html">– LoginCredentials</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI/AuthorizedUserProvider.html">– AuthorizedUserProvider</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI/Offer.html">– Offer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI/Request.html">– Request</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI/Requests.html">– Requests</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI/Dealer.html">– Dealer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI.html#/s:10ShopGunSDK7CoreAPIC7CountryV">– Country</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI/APIError.html">– APIError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI/Person.html">– Person</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI/PagedPublication.html">– PagedPublication</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoreAPI/Branding.html">– Branding</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/EventsTracker.html">EventsTracker</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/EventsTracker/Settings.html">– Settings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/EventsTracker/IdField.html">– IdField</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/GraphAPI.html">GraphAPI</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPGraphNetworkTransport.html">HTTPGraphNetworkTransport</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetworkGraphClient.html">NetworkGraphClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/PagedPublicationView.html">PagedPublicationView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ShopGun.html">ShopGun</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ShopGun/Settings.html">– Settings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ShopGun/LogLevel.html">– LogLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ShopGun/LogSource.html">– LogSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ShopGun/LogLocation.html">– LogLocation</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/HTTPRequestMethod.html">HTTPRequestMethod</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/Result.html">Result</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/Bundle.html">Bundle</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/ClientAPIErrorConsts.html">ClientAPIErrorConsts</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/CoreAPI_CancelRequests.html">CoreAPI_CancelRequests</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/CoreAPI_PerformRequests.html">CoreAPI_PerformRequests</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/CoreAPI_Settings.html">CoreAPI_Settings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/CoreAPI_Settings/Settings.html">– Settings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Error.html">Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/ErrorCodeCategories.html">ErrorCodeCategories</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/ErrorCodeCategories/ErrorCategory.html">– ErrorCategory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/ErrorCodeConsts.html">ErrorCodeConsts</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/ErrorPrettyPrint.html">ErrorPrettyPrint</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/GraphAPI_Settings.html">GraphAPI_Settings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/GraphAPI_Settings/Settings.html">– Settings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/NSError.html">NSError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Notification.html">Notification</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Notification/Name.html">– Name</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:10ShopGunSDK13loadQueryFileSSSgSS4name_So6BundleC6bundletF">loadQueryFile(name:bundle:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/Cancellable.html">Cancellable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/CoreAPIMappableRequest.html">CoreAPIMappableRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/CoreAPIRequest.html">CoreAPIRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/GraphClient.html">GraphClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/GraphNetworkTransport.html">GraphNetworkTransport</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/GraphQuery.html">GraphQuery</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/GraphRequestProtocol.html">GraphRequestProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/PagedPublicationViewDataLoader.html">PagedPublicationViewDataLoader</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/PagedPublicationViewDataSource.html">PagedPublicationViewDataSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/PagedPublicationViewDelegate.html">PagedPublicationViewDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/PagedPublicationViewEventHandler.html">PagedPublicationViewEventHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/PagedPublicationViewImageLoader.html">PagedPublicationViewImageLoader</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/GenericIdentifier.html">GenericIdentifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/GraphError.html">GraphError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/GraphRequest.html">GraphRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/GraphResponse.html">GraphResponse</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ImageURLSet.html">ImageURLSet</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10ShopGunSDK20SerializedPoolObjecta">SerializedPoolObject</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>ShopGun</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ShopGun</span></code></pre>
+
+                </div>
+              </div>
+            <p>This is the namespace for configuring and accessing the static components of ther Shopgun SDK.
+It cannot be instantiated - all access is via the static functions &amp; variables.</p>
+
+<p>The ShopGun SDK consists of a number of components (eg. <code><a href="../Classes/CoreAPI.html">CoreAPI</a></code>, <code><a href="../Classes/EventsTracker.html">EventsTracker</a></code> etc). They are accessed via the static variables (eg. <code><a href="../Classes/ShopGun.html#/s:10ShopGunSDK0aB0C7coreAPIAA04CoreE0CvZ">ShopGun.coreAPI</a></code>, <code><a href="../Classes/ShopGun.html#/s:10ShopGunSDK0aB0C13eventsTrackerAA06EventsE0CvZ">ShopGun.eventsTracker</a></code> etc).</p>
+
+<p>Before you access any component it must be configured by including it&rsquo;s settings when calling the static function <code><a href="../Classes/ShopGun.html#/s:10ShopGunSDK0aB0C9configureyAC8SettingsV8settings_ySS_AC8LogLevelOAC0G6SourceOAC0G8LocationVtcSg10logHandlertFZ">ShopGun.configure(settings:logHandler:)</a></code>.</p>
+
+<p>If you try to access a component whose settings havn&rsquo;t been included in the settings passed to the configure method, a <code>fatalError</code> will be triggered.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Configuration"></a>
+                <a name="//apple_ref/swift/Section/Configuration" class="dashAnchor"></a>
+                <a href="#/Configuration">
+                  <h3 class="section-name">Configuration</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C8SettingsV"></a>
+                    <a name="//apple_ref/swift/Struct/Settings" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C8SettingsV">Settings</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="../Classes/ShopGun/Settings.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Settings</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C9configureyAC8SettingsV8settings_ySS_AC8LogLevelOAC0G6SourceOAC0G8LocationVtcSg10logHandlertFZ"></a>
+                    <a name="//apple_ref/swift/Method/configure(settings:logHandler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C9configureyAC8SettingsV8settings_ySS_AC8LogLevelOAC0G6SourceOAC0G8LocationVtcSg10logHandlertFZ">configure(settings:logHandler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">configure</span><span class="p">(</span><span class="nv">settings</span><span class="p">:</span> <span class="kt"><a href="../Classes/ShopGun/Settings.html">Settings</a></span><span class="p">,</span> <span class="nv">logHandler</span><span class="p">:</span> <span class="kt"><a href="../Classes/ShopGun.html#/s:10ShopGunSDK0aB0C10LogHandlera">LogHandler</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Components"></a>
+                <a name="//apple_ref/swift/Section/Components" class="dashAnchor"></a>
+                <a href="#/Components">
+                  <h3 class="section-name">Components</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C7coreAPIAA04CoreE0CvZ"></a>
+                    <a name="//apple_ref/swift/Variable/coreAPI" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C7coreAPIAA04CoreE0CvZ">coreAPI</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">coreAPI</span><span class="p">:</span> <span class="kt"><a href="../Classes/CoreAPI.html">CoreAPI</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C10hasCoreAPISbvZ"></a>
+                    <a name="//apple_ref/swift/Variable/hasCoreAPI" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C10hasCoreAPISbvZ">hasCoreAPI</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">hasCoreAPI</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C13eventsTrackerAA06EventsE0CvZ"></a>
+                    <a name="//apple_ref/swift/Variable/eventsTracker" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C13eventsTrackerAA06EventsE0CvZ">eventsTracker</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">eventsTracker</span><span class="p">:</span> <span class="kt"><a href="../Classes/EventsTracker.html">EventsTracker</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C16hasEventsTrackerSbvZ"></a>
+                    <a name="//apple_ref/swift/Variable/hasEventsTracker" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C16hasEventsTrackerSbvZ">hasEventsTracker</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">hasEventsTracker</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C8graphAPIAA05GraphE0CvZ"></a>
+                    <a name="//apple_ref/swift/Variable/graphAPI" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C8graphAPIAA05GraphE0CvZ">graphAPI</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">graphAPI</span><span class="p">:</span> <span class="kt"><a href="../Classes/GraphAPI.html">GraphAPI</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C11hasGraphAPISbvZ"></a>
+                    <a name="//apple_ref/swift/Variable/hasGraphAPI" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C11hasGraphAPISbvZ">hasGraphAPI</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">hasGraphAPI</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Logging"></a>
+                <a name="//apple_ref/swift/Section/Logging" class="dashAnchor"></a>
+                <a href="#/Logging">
+                  <h3 class="section-name">Logging</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C10LogHandlera"></a>
+                    <a name="//apple_ref/swift/Alias/LogHandler" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C10LogHandlera">LogHandler</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The structure of a function that can handle log messages sent from the ShopGun SDK.
+Users of the SDK can define a function that conforms to this signature and pass it into the <code>configure</code> function.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">LogHandler</span> <span class="o">=</span> <span class="p">(</span><span class="n">_</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">_</span> <span class="nv">level</span><span class="p">:</span> <span class="kt"><a href="../Classes/ShopGun/LogLevel.html">LogLevel</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">source</span><span class="p">:</span> <span class="kt"><a href="../Classes/ShopGun/LogSource.html">LogSource</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">location</span><span class="p">:</span> <span class="kt"><a href="../Classes/ShopGun/LogLocation.html">LogLocation</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>message</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The log message generated by the SDK</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>level</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>What &lsquo;kind/severity&rsquo; this log represents. Could be used for filtering. See <code><a href="../Classes/ShopGun/LogLevel.html">LogLevel</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>source</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>What part of the SDK triggered this message. Could be used for filtering. See <code><a href="../Classes/ShopGun/LogSource.html">LogSource</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>location</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Where (file/line/function) in the SDK this message was triggered. See <code><a href="../Classes/ShopGun/LogLocation.html">LogLocation</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C8LogLevelO"></a>
+                    <a name="//apple_ref/swift/Enum/LogLevel" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C8LogLevelO">LogLevel</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="../Classes/ShopGun/LogLevel.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">LogLevel</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C9LogSourceO"></a>
+                    <a name="//apple_ref/swift/Enum/LogSource" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C9LogSourceO">LogSource</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="../Classes/ShopGun/LogSource.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">LogSource</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C11LogLocationV"></a>
+                    <a name="//apple_ref/swift/Struct/LogLocation" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C11LogLocationV">LogLocation</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="../Classes/ShopGun/LogLocation.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">LogLocation</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK0aB0C3logySS_AC8LogLevelO5levelAC0E6SourceO6sourceSS4fileSS8functionSi4linetFZ"></a>
+                    <a name="//apple_ref/swift/Method/log(_:level:source:file:function:line:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK0aB0C3logySS_AC8LogLevelO5levelAC0E6SourceO6sourceSS4fileSS8functionSi4linetFZ">log(_:level:source:file:function:line:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">log</span><span class="p">(</span><span class="n">_</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">level</span><span class="p">:</span> <span class="kt"><a href="../Classes/ShopGun/LogLevel.html">LogLevel</a></span><span class="p">,</span> <span class="nv">source</span><span class="p">:</span> <span class="kt"><a href="../Classes/ShopGun/LogSource.html">LogSource</a></span><span class="p">,</span> <span class="nv">file</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="kd">#file</span><span class="p">,</span> <span class="nv">function</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="kd">#function</span><span class="p">,</span> <span class="nv">line</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kd">#line</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-03-01)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
