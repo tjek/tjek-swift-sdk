@@ -36,7 +36,7 @@ extension CoreAPI.AuthVault {
                     return .unauthorized(error: nil, clientId:
                         clientId)
                 } else {
-                    return nil;
+                    return nil
                 }
         }
         

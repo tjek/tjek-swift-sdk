@@ -22,12 +22,7 @@ extension EventsTracker {
         let uuid: String
         let recordedDate: Date
         let clientId: String
-        let sessionId: String
-        
-        // optional context properties
-        let viewContext: EventsTracker.Context.ViewContext?
-        let campaignContext: EventsTracker.Context.CampaignContext?
-        let personId: IdField?
+        let includeLocation: Bool
         
         init(type: String,
              trackId: String,
@@ -35,10 +30,7 @@ extension EventsTracker {
              uuid: String = UUID().uuidString,
              recordedDate: Date = Date(),
              clientId: String,
-             sessionId: String,
-             personId: IdField? = nil,
-             viewContext: EventsTracker.Context.ViewContext? = nil,
-             campaignContext: EventsTracker.Context.CampaignContext? = nil) {
+             includeLocation: Bool) {
             
             self.type = type
             self.trackId = trackId
@@ -46,14 +38,10 @@ extension EventsTracker {
             self.uuid = uuid
             self.recordedDate = recordedDate
             self.clientId = clientId
-            self.sessionId = sessionId
-            self.viewContext = viewContext
-            self.campaignContext = campaignContext
-            self.personId = personId
+            self.includeLocation = includeLocation
         }
     }
 }
-
 
 // Make the Event work with the pool
 extension EventsTracker.ShippableEvent: PoolableObject {
@@ -78,7 +66,7 @@ extension EventsTracker.ShippableEvent: PoolableObject {
         dict["client"] = clientDict as AnyObject
         
         // context - required
-        let contextDict: [String: AnyObject] = EventsTracker.Context.toDictionary(sessionId: sessionId, personId: personId, viewContext: viewContext, campaignContext: campaignContext) ?? [:]
+        let contextDict: [String: AnyObject] = EventsTracker.Context.toDictionary(includeLocation: self.includeLocation) ?? [:]
         dict["context"] = contextDict as AnyObject
         
         // properties - required

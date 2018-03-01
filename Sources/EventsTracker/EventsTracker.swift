@@ -20,14 +20,15 @@ public final class EventsTracker {
         public var dispatchInterval: TimeInterval
         public var dispatchLimit: Int
         public var dryRun: Bool
-        // TODO: Share location property, default to false
+        public var includeLocation: Bool
         
-        public init(trackId: String, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, dryRun: Bool = false) {
+        public init(trackId: String, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, dryRun: Bool = false, includeLocation: Bool = false) {
             self.trackId = trackId
             self.baseURL = baseURL
             self.dispatchInterval = dispatchInterval
             self.dispatchLimit = dispatchLimit
             self.dryRun = dryRun
+            self.includeLocation = includeLocation
         }
     }
     
@@ -35,6 +36,14 @@ public final class EventsTracker {
     
     internal init(settings: Settings) {
         self.settings = settings
+        
+        if settings.includeLocation {
+            DispatchQueue.main.async {
+                // Make sure we have a locationManager on first initialize (if needed).
+                // This is because the CLLocationManager must be created on the main thread.
+                _ = Context.LocationContext.location
+            }
+        }
         
         let eventsShipper = EventsShipper(baseURL: settings.baseURL, dryRun: settings.dryRun)
         let eventsCache = EventsCache(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.plist")
@@ -46,46 +55,6 @@ public final class EventsTracker {
     }
     
     fileprivate let pool: CachedFlushablePool
-    
-    // MARK: - User Context
-    
-    /// The optional PersonId that will be sent with every event
-    public var personId: PersonId? {
-        didSet {
-            ShopGun.log("PersonId Updated '\(personId?.rawValue ?? "")'", level: .debug, source: .EventsTracker)
-        }
-    }
-    
-    // MARK: - View Context
-    
-    /// Allows the client to attach view information to all future events.
-    public func updateView(_ path: [String]? = nil, uri: String? = nil, previousPath: [String]? = nil) {
-        DispatchQueue.main.async { [weak self] in
-            ShopGun.log("ViewContext Updated '\(path?.joined(separator: ".") ?? "")' (was '\(previousPath?.joined(separator: ".") ?? "")') \(uri ?? "")", level: .debug, source: .EventsTracker)
-            
-            if path == nil && previousPath == nil && uri == nil {
-                self?._currentViewContext = nil
-            } else {
-                self?._currentViewContext = Context.ViewContext(path: path, previousPath: previousPath, uri: uri)
-            }
-        }
-        
-    }
-    fileprivate var _currentViewContext: Context.ViewContext?
-    
-    // MARK: - Campaign Context
-    
-    /// Allows the client to attach campaign information to all future events
-    public func updateCampaign(name: String? = nil, source: String? = nil, medium: String? = nil, term: String? = nil, content: String? = nil) {
-        DispatchQueue.main.async { [weak self] in
-            if name == nil && source == nil && medium == nil && term == nil && content == nil {
-                self?._currentCampaignContext = nil
-            } else {
-                self?._currentCampaignContext = Context.CampaignContext(name: name, source: source, medium: medium, term: term, content: content)
-            }
-        }
-    }
-    fileprivate var _currentCampaignContext: Context.CampaignContext?
 }
 
 // MARK: - Tracking methods
@@ -107,17 +76,13 @@ extension EventsTracker {
     
     /// We expose this method internally so that the SDKConfig can enforce certain events being fired first.
     fileprivate func trackEventSync(_ type: EventType, properties: EventProperties?) {
-        let clientId = "foo"
-        let sessionId = "bar"
+        let clientId = "foo" //TODO: REAL ClientId
         
         let event = ShippableEvent(type: type,
                                    trackId: settings.trackId,
                                    properties: properties,
                                    clientId: clientId,
-                                   sessionId: sessionId,
-                                   personId: IdField.legacy(personId?.rawValue),
-                                   viewContext: _currentViewContext,
-                                   campaignContext: _currentCampaignContext)
+                                   includeLocation: settings.includeLocation)
         ShopGun.log("Event Tracked: '\(type)' \(properties ?? [:])", level: .debug, source: .EventsTracker)
         
         track(event: event)
@@ -127,18 +92,11 @@ extension EventsTracker {
         
         self.pool.push(object: event)
         
+        // save the eventInfo into a dict for sending as a notification
         var eventInfo: [String: AnyObject] = ["type": event.type as AnyObject,
                                               "uuid": event.uuid as AnyObject]
         if event.properties != nil {
             eventInfo["properties"] = event.properties! as AnyObject
-        }
-        
-        if let viewDict = event.viewContext?.toDictionary() {
-            eventInfo["view"] = viewDict as AnyObject
-        }
-        
-        if let personId = event.personId?.id {
-            eventInfo["personId"] = personId as AnyObject
         }
         
         // send a notification for that specific event, a generic one

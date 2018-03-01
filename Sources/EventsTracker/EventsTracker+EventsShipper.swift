@@ -75,7 +75,7 @@ extension EventsTracker {
             request.addValue("application/json", forHTTPHeaderField: "Accept")
             request.httpBody = jsonData
             
-            // print("[SHIPPER] shipping \(orderedEventDicts.count) events (\(String(format:"%.3f", Double(jsonData.count) / 1024.0)) kb)")
+            ShopGun.log("Shipping \(orderedEventDicts.count) events (\(String(format: "%.3f", Double(jsonData.count) / 1024.0)) kb)", level: .debug, source: .EventsTracker)
             
             // actually do the shipping of the events
             let task = EventsShipper.networkSession.dataTask(with: request) { (responseData, response, error) in
@@ -133,6 +133,7 @@ extension EventsTracker {
                         NotificationCenter.default.post(name: .eventShipmentFailed, object: nil, userInfo: notificationUserInfo)
                     }
                 }
+                completion(idsToRemove)
             }
             
             task.resume()

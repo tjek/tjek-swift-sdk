@@ -245,7 +245,7 @@ extension CoreAPI {
             
             switch result {
             case .success(let authSession):
-                ShopGun.log("successfully updated authSession \(authSession)", level: .debug, source: .CoreAPI)
+                ShopGun.log("Successfully updated authSession \(authSession)", level: .debug, source: .CoreAPI)
                 
                 self.authState = .authorized(token: authSession.token, user: authSession.authorizedUser, clientId: authSession.clientId)
                 self.activeRegenerateTask = nil
