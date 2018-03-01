@@ -52,7 +52,7 @@ public final class EventsTracker {
     /// The optional PersonId that will be sent with every event
     public var personId: PersonId? {
         didSet {
-            ShopGun.log("personId Updated '\(personId?.rawValue ?? "-")'", level: .debug, source: .EventsTracker)
+            ShopGun.log("PersonId Updated '\(personId?.rawValue ?? "")'", level: .debug, source: .EventsTracker)
         }
     }
     

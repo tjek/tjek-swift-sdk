@@ -46,7 +46,7 @@ extension CoreAPI {
                 self.authState = legacyAuthState
                 self.updateStore()
                 AuthVault.clearLegacyAuthState()
-                ShopGun.log("Loaded AuthState from Legacy cache: \(legacyAuthState)", level: .debug, source: .CoreAPI)
+                ShopGun.log("Loaded AuthState from Legacy cache", level: .debug, source: .CoreAPI)
             } else {
                 // If no stored auth, or legacy auth to migrate, mark as unauthorized.
                 self.authState = .unauthorized(error: nil, clientId: storedAuth.clientId)
