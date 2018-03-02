@@ -83,7 +83,7 @@ extension ShopGun {
         var eventsTracker: EventsTracker? = nil
         if let eventsTrackerSettings = settings.eventsTracker {
             ShopGun.log("Configuring EventsTracker", level: .verbose, source: .ShopGunSDK)
-            eventsTracker = EventsTracker(settings: eventsTrackerSettings)
+            eventsTracker = EventsTracker(settings: eventsTrackerSettings, secureDataStore: dataStore)
         }
         
         // configure the GraphAPI, if settings provided
