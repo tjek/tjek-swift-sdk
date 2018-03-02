@@ -14,7 +14,7 @@
     <a title="ShopGun Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">ShopGunSDK Docs</a> (15% documented)</p>
+        <p><a href="../index.html">ShopGunSDK Docs</a> (19% documented)</p>
         <p class="header-right"><a href="https://github.com/shopgun/shopgun-ios-sdk/"><img src="../img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
@@ -541,7 +541,7 @@ It cannot be instantiated - all access is via the static functions &amp; variabl
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The structure of a function that can handle log messages sent from the ShopGun SDK.
+                        <p>The signature of a function that can handle log messages sent from the ShopGun SDK.
 Users of the SDK can define a function that conforms to this signature and pass it into the <code>configure</code> function.</p>
 
                       </div>
@@ -624,7 +624,9 @@ Users of the SDK can define a function that conforms to this signature and pass 
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>When logging a message, this defines its &lsquo;type&rsquo; or &lsquo;severity&rsquo;. It is important to pick the correct LogLevel for the type of message that is being logged.</p>
+
+<p>The LogLevel can be used by the <code><a href="../Classes/ShopGun.html#/s:10ShopGunSDK0aB0C10LogHandlera">LogHandler</a></code> to filter messages that are too verbose or not of interest, or to change how the message is printed to the console (eg. prefix an emoji)</p>
 
                         <a href="../Classes/ShopGun/LogLevel.html" class="slightly-smaller">See more</a>
                       </div>
@@ -652,7 +654,9 @@ Users of the SDK can define a function that conforms to this signature and pass 
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>All the possible components of the SDK that can trigger a log.</p>
+
+<p>When logging a message it is important to define which &lsquo;part&rsquo; of the SDK the log came from. This way the <code><a href="../Classes/ShopGun.html#/s:10ShopGunSDK0aB0C10LogHandlera">LogHandler</a></code> can filter out messages from parts of the SDK it is not interested in, or change how it prints the message.</p>
 
                         <a href="../Classes/ShopGun/LogSource.html" class="slightly-smaller">See more</a>
                       </div>
@@ -680,7 +684,7 @@ Users of the SDK can define a function that conforms to this signature and pass 
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Defines the location (path/function/line) from which a log was called.</p>
 
                         <a href="../Classes/ShopGun/LogLocation.html" class="slightly-smaller">See more</a>
                       </div>
@@ -708,7 +712,7 @@ Users of the SDK can define a function that conforms to this signature and pass 
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Forwards a message to the LogHandler that was provided in the <code><a href="../Classes/ShopGun.html#/s:10ShopGunSDK0aB0C9configureyAC8SettingsV8settings_ySS_AC8LogLevelOAC0G6SourceOAC0G8LocationVtcSg10logHandlertFZ">configure(settings:logHandler:)</a></code> function. Prefixes the message with a &lsquo;source name&rsquo; (eg. <q>[ShopGunSDK.CoreAPI]</q>, based on the provided <code><a href="../Classes/ShopGun/LogSource.html">LogSource</a></code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -719,6 +723,85 @@ Users of the SDK can define a function that conforms to this signature and pass 
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>message</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The message to send to the LogHandler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>level</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>What &lsquo;kind/severity&rsquo; this log represents. See <code><a href="../Classes/ShopGun/LogLevel.html">LogLevel</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>source</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>What part of the SDK triggered this message. See <code><a href="../Classes/ShopGun/LogSource.html">LogSource</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>file</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path to the file in which this log function was called. If omitted it will default to the call-site filepath (<code>#file</code>).</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>function</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of the function in which this log function was called. If omitted it will default to the call-site function name (<code>#function</code>).</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>line</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The line number in the file in which this log function was called. If omitted it will  default to the call-site line number (<code>#line</code>).</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </section>
                   </div>
                 </li>
@@ -727,7 +810,7 @@ Users of the SDK can define a function that conforms to this signature and pass 
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-03-01)</p>
+          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-03-02)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

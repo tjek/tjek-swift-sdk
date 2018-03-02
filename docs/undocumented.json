@@ -2634,191 +2634,44 @@
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 108,
+      "line": 107,
       "symbol": "ShopGun.coreAPI",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 114,
+      "line": 113,
       "symbol": "ShopGun.hasCoreAPI",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 120,
+      "line": 119,
       "symbol": "ShopGun.eventsTracker",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 126,
+      "line": 125,
       "symbol": "ShopGun.hasEventsTracker",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 132,
+      "line": 131,
       "symbol": "ShopGun.graphAPI",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 138,
+      "line": 137,
       "symbol": "ShopGun.hasGraphAPI",
       "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 157,
-      "symbol": "ShopGun.LogLevel",
-      "symbol_kind": "source.lang.swift.decl.enum",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 158,
-      "symbol": "ShopGun.LogLevel.error",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 159,
-      "symbol": "ShopGun.LogLevel.important",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 160,
-      "symbol": "ShopGun.LogLevel.verbose",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 161,
-      "symbol": "ShopGun.LogLevel.debug",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 162,
-      "symbol": "ShopGun.LogLevel.performance",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 164,
-      "symbol": "ShopGun.LogLevel.criticalLevels",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 165,
-      "symbol": "ShopGun.LogLevel.allLevels",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 168,
-      "symbol": "ShopGun.LogSource",
-      "symbol_kind": "source.lang.swift.decl.enum",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 169,
-      "symbol": "ShopGun.LogSource.ShopGunSDK",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 170,
-      "symbol": "ShopGun.LogSource.CoreAPI",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 171,
-      "symbol": "ShopGun.LogSource.EventsTracker",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 172,
-      "symbol": "ShopGun.LogSource.GraphAPI",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 173,
-      "symbol": "ShopGun.LogSource.PagedPublicationViewer",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 174,
-      "symbol": "ShopGun.LogSource.other",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 177,
-      "symbol": "ShopGun.LogLocation",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 178,
-      "symbol": "ShopGun.LogLocation.filePath",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 179,
-      "symbol": "ShopGun.LogLocation.functionName",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 180,
-      "symbol": "ShopGun.LogLocation.lineNumber",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 182,
-      "symbol": "ShopGun.LogLocation.fileName",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/ShopGun.swift",
-      "line": 187,
-      "symbol": "ShopGun.log(_:level:source:file:function:line:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     },
     {
