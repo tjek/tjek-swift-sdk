@@ -34,15 +34,14 @@ extension ShopGun {
     }
     
     class KeychainDataStore: ShopGunSDKSecureDataStore {
-        private let valet: VALValet?
+        private let valet: Valet?
 
         init(sharedKeychainGroupId: String?) {
             
-            var valet: VALValet? = nil
+            var valet: Valet? = nil
             
-            if let sharedGroupId = sharedKeychainGroupId {
-                valet = VALValet(sharedAccessGroupIdentifier: sharedGroupId,
-                                      accessibility: .afterFirstUnlock)
+            if let sharedGroupId = Identifier(nonEmpty: sharedKeychainGroupId) {
+                valet = Valet.sharedAccessGroupValet(with: sharedGroupId, accessibility: .afterFirstUnlock)
                 if valet?.canAccessKeychain() == false {
                     valet = nil
                     ShopGun.log("Unable to access shared keychain group '\(sharedGroupId)'. Will attempt to save secure data in an unshared keychain instead.", level: .important, source: .ShopGunSDK)
@@ -51,8 +50,7 @@ extension ShopGun {
             
             // if the valet is unable to access the keychain, revert to a non-shared store
             if valet == nil {
-                valet = VALValet(identifier: "com.shopgun.ios.sdk.keychain-store",
-                                 accessibility: .afterFirstUnlock)
+                valet = Valet.valet(with: Identifier(nonEmpty: "com.shopgun.ios.sdk.keychain-store")!, accessibility: .afterFirstUnlock)
                 
                 if valet?.canAccessKeychain() == false {
                     ShopGun.log("Unable to access keychain. Secure data will not be cached.", level: .error, source: .ShopGunSDK)
@@ -63,7 +61,7 @@ extension ShopGun {
         
         func set(value: String?, for key: String) {
             if let val = value {
-                valet?.setString(val, forKey: key)
+                valet?.set(string: val, forKey: key)
             } else {
                 valet?.removeObject(forKey: key)
             }

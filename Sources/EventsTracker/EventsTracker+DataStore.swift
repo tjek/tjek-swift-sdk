@@ -30,10 +30,12 @@ import Valet
 
 extension EventsTracker {
     
+    private static var legacyKeychain: Valet {
+        return Valet.valet(with: Identifier(nonEmpty: "com.shopgun.ios.sdk.keychain")!, accessibility: .afterFirstUnlock)
+    }
+    
     internal static func loadLegacyClientId() -> ClientIdentifier? {
-        let legacyKeychain = VALValet(identifier: "com.shopgun.ios.sdk.keychain", accessibility: .afterFirstUnlock)
-        
-        guard let clientId = legacyKeychain?.string(forKey: "ClientId"), clientId.count > 0 else {
+        guard let clientId = self.legacyKeychain.string(forKey: "ClientId"), clientId.count > 0 else {
             return nil
         }
         
@@ -41,7 +43,6 @@ extension EventsTracker {
     }
     
     internal static func clearLegacyClientId() {
-        let legacyKeychain = VALValet(identifier: "com.shopgun.ios.sdk.keychain", accessibility: .afterFirstUnlock)
-        legacyKeychain?.removeObject(forKey: "ClientId")
+        self.legacyKeychain.removeObject(forKey: "ClientId")
     }
 }
