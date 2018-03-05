@@ -36,7 +36,6 @@ extension ShopGun {
     class KeychainDataStore: ShopGunSDKSecureDataStore {
         private let valet: VALValet?
 
-        // TODO: will fail if not in entitlements
         init(sharedKeychainGroupId: String?) {
             
             var valet: VALValet? = nil

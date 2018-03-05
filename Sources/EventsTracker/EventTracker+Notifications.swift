@@ -22,10 +22,4 @@ extension Notification.Name {
         }
         return Notification.Name(name)
     }
-    
-    /// This notification is triggered if there is a (non-networking) error when shipping an event.
-    /// A notification will be created for each failed event.
-    /// This notification will not be tied to any specific tracker.
-    /// `userInfo` includes `status`, `response`, `event`, & (optionally) `removingFromCache` keys
-    public static let eventShipmentFailed = Notification.Name("ShopGunSDK.EventsTracker.eventShipmentFailed")
 }

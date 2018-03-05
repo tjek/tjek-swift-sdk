@@ -104,17 +104,11 @@ extension EventsTracker {
                             continue
                         }
                         
-                        // TODO: log error
-                        
                         // need the event details for posting notification
                         guard let eventDict = keyedEventDicts[uuid] else {
+                            idsToRemove.append(uuid)
                             continue
                         }
-                        
-                        var notificationUserInfo: [String: AnyObject] = ["status": status as AnyObject,
-                                                                         "event": eventDict as AnyObject,
-                                                                         "response": eventResponse as AnyObject
-                        ]
                         
                         // nack - check the age of the event, and kill it if it's really old
                         if status == "nack" {
@@ -124,15 +118,22 @@ extension EventsTracker {
                                 recordedDate.timeIntervalSinceNow < -maxAge {
                                 
                                 idsToRemove.append(uuid)
-                                notificationUserInfo["removingFromCache"] = true as AnyObject
+                                
+                                ShopGun.log("Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with 'nack' and event > 7 days old", level: .important, source: .EventsTracker)
                             }
                         } else {
                             // send back all event Ids that were received (even if they were errors)
                             idsToRemove.append(uuid)
-                            notificationUserInfo["removingFromCache"] = true as AnyObject
+
+                            if let firstError = (eventResponse["errors"] as? [[String: AnyObject]])?.first, let errType = firstError["type"] as? String {
+                            
+                                let errPath: [String] = firstError["path"] as? [String] ?? []
+                                
+                                ShopGun.log("Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with '\(status)': \(errType) \(errPath.joined(separator: ", "))", level: .important, source: .EventsTracker)
+                            } else {
+                                ShopGun.log("Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with '\(status)'", level: .important, source: .EventsTracker)
+                            }
                         }
-                        
-                        NotificationCenter.default.post(name: .eventShipmentFailed, object: nil, userInfo: notificationUserInfo)
                     }
                 }
                 completion(idsToRemove)
