@@ -58,6 +58,8 @@ public final class EventsTracker {
             }
         }
         
+        self.sessionLifecycleHandler = SessionLifecycleHandler()
+        
         // Try to get the stored clientId, migrate the legacy clientId, or generate a new one.
         if let storedClientId = EventsTracker.loadClientId(from: secureDataStore) {
             self.clientId = storedClientId
@@ -65,15 +67,25 @@ public final class EventsTracker {
             if let legacyClientId = EventsTracker.loadLegacyClientId() {
                 self.clientId = legacyClientId
                 EventsTracker.clearLegacyClientId()
+                ShopGun.log("Loaded ClientId from Legacy cache", level: .debug, source: .EventsTracker)
             } else {
                 self.clientId = ClientIdentifier.generate()
-                // TODO: trigger "first-client-session-opened"
+
+                // A new clientId was generated, so send an event
+                LifecycleEvents.firstClientSessionOpened.track(self)
             }
+            
             // Save the new clientId back to the store
             EventsTracker.updateDataStore(secureDataStore, clientId: self.clientId)
         }
         
-        // TODO: add session-lifecycle handler to trigger "client-session-opened" events
+        // Assign the callback for the session handler.
+        // Note that the eventy must be triggered manually first time.
+        LifecycleEvents.clientSessionOpened.track(self)
+        self.sessionLifecycleHandler.didStartNewSession = { [weak self] in
+            guard let s = self else { return }
+            LifecycleEvents.clientSessionOpened.track(s)
+        }
     }
     
     fileprivate let pool: CachedFlushablePool
@@ -84,8 +96,12 @@ public final class EventsTracker {
         self.clientId = ClientIdentifier.generate()
         EventsTracker.updateDataStore(self.secureDataStore, clientId: self.clientId)
         
-        // TODO: trigger "first-client-session-opened" & "client-session-opened"
+        LifecycleEvents.firstClientSessionOpened.track(self)
+        
+        LifecycleEvents.clientSessionOpened.track(self)
     }
+    
+    fileprivate let sessionLifecycleHandler: SessionLifecycleHandler
 }
 
 // MARK: - Tracking methods
@@ -133,4 +149,29 @@ extension EventsTracker {
         NotificationCenter.default.post(name: .eventTracked(), object: self, userInfo: eventInfo)
     }
     
+}
+
+// MARK: - Lifecycle events
+
+extension EventsTracker {
+    fileprivate enum LifecycleEvents {
+        case firstClientSessionOpened
+        case clientSessionOpened
+        
+        var type: EventType {
+            switch self {
+            case .firstClientSessionOpened:
+                return "first-client-session-opened"
+            case .clientSessionOpened:
+                return "client-session-opened"
+            }
+        }
+        var properties: EventProperties {
+            return [:]
+        }
+        
+        func track(_ tracker: EventsTracker) {
+            tracker.trackEvent(self.type, properties: self.properties)
+        }
+    }
 }

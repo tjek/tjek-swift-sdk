@@ -104,6 +104,8 @@ extension EventsTracker {
                             continue
                         }
                         
+                        // TODO: log error
+                        
                         // need the event details for posting notification
                         guard let eventDict = keyedEventDicts[uuid] else {
                             continue
