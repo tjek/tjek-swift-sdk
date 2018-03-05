@@ -3,101 +3,127 @@ ShopGunSDK
 
 [![Version](https://img.shields.io/cocoapods/v/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![License](https://img.shields.io/cocoapods/l/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
-[![Platform](https://img.shields.io/cocoapods/p/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
+[![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
+[![Swift](http://img.shields.io/badge/swift-4.0-brightgreen.svg)](https://swift.org)
 
-A framework for interacting with the ShopGun APIs from within your own apps. The SDK has been split into multiple components:
+A framework for interacting with the ShopGun APIs from within your own apps. The SDK has been split into several components:
 
-- `Core`: Used by all other components. Handles basic configuration of the SDK.
-- `GraphKit`: An interface for easily making requests to ShopGun's graph API.
-- `EventsKit`: An events tracker for efficiently sending events to the ShopGun API.
-- `PagedPublication`: A view for fetching and rendering a paged publication.
+- `PagedPublication`: A view for fetching, rendering, and interacting with, a catalog.
+- `CoreAPI`: Simplifies auth & communication with the ShopGun REST API.
+- `GraphAPI`: An interface for easily making requests to ShopGun's GraphQL API.
+- `EventsTracker`: An events tracker for efficiently sending events to the ShopGun API.
 
 ## Requirements
 
-- iOS 8.0+
-- Xcode 8.0+
-- Swift 3.0+
-
-
-## Dependencies
-
-- Core:
-	- [Valet (2.2.2)](https://github.com/Square/Valet) - for easy communication with the KeyChain.
-
-
-- PagedPublication:
-	- [Verso (1.0)](https://github.com/ShopGun/Verso) - a layout engine for presenting book-like views.
-	- [Kingfisher (3.0.1)](https://github.com/onevcat/Kingfisher) - a light-weight library for downloading and caching images.
-
+- iOS 9.3+
+- Xcode 9.0+
+- Swift 4.0+
 
 
 ## Installation
 
-### Cocoapods
-Add the following to your `Podfile` to include the entirety of the SDK to your project:
+#### Dependencies
 
-```ruby
-use_frameworks!
-pod 'ShopGunSDK'
-```
+- [Valet](https://github.com/Square/Valet) - for easy communication with the KeyChain.
+- [Verso](https://github.com/ShopGun/Verso) - a layout engine for presenting book-like views.
+- [Kingfisher](https://github.com/onevcat/Kingfisher) - A lightweight, pure-Swift library for downloading and caching images from the web.
+- [xctoolchain](https://github.com/parse-community/xctoolchain-archive) - Common configuration files and scripts.
 
-If you only need a subset of the SDK's functionality, use one of the subspecs instead: 
 
-```ruby
-# just include the graph-related code:
-pod 'ShopGunSDK/Graph'
-
-# just include the event tracking code:
-pod 'ShopGunSDK/Events'
-
-# just include the paged publication view code:
-pod 'ShopGunSDK/PagedPublication'
-```
-
-For further details see the [CocoaPods Guides](https://guides.cocoapods.org/).
-
-> **Note**: For the legacy _eTilbudsavis SDK_, please use the old [`ETA-SDK`](http://cocoapods.org/pods/ETA-SDK) pod.
+### CocoaPods
 
 ### Carthage
 
-Point your `Cartfile` at the github repo:
-
-```ruby
-github 'shopgun/shopgun-ios-sdk'
-```
-
-Unlike CocoaPods, with Carthage you will not be able to choose which subsets of the functionality you include in your app - it's all or nothing.
-
-For further details see the [Carthage Readme](https://guides.cocoapods.org/)
-
-Furthermore, although the dependencies will be downloaded and built for you, you will need to manually embed the `.framework`s into your app.
+### Manually
 
 
 ## Usage
 
-First you must import the SDK:
-
-```swift
-// Swift
-import ShopGunSDK
-```
-```objc 
-// Obj-C
-@import ShopGunSDK;
-```
-
-
 ### Configuration
 
+You must provide configuration settings for each of the components of the SDK that you are planning on using, before you use them.
+
+If you have added the settings to a `ShopGunSDK-Configuration.plist` file that is included with your app, configuration is as simple as:
 
 ```swift
-// Swift
-ShopGunSDK.SDKConfig.appId = "<myAppId>"
+import ShopGunSDK
+…
+ShopGun.configure()
 ```
-```objc
-// Obj-C
-SGNSDKConfig.appId = @"<myAppId>";
+The best place to do this is probably somewhere in your AppDelegate, so that it is sure to be called before any other calls to the `ShopGunSDK` are made.
+
+> **Note:** If you make calls to ShopGunSDK components before they are configured, the SDK will trigger a fatalError.
+
+For more complex configuration options, including providing a custom log handler, check the [Configuration docs]()
+
+### < TODO: MAKE SEPARATE CONFIGURATION DOCS >
+
+```swift
+let config = ShopGun.Settings(coreAPI: CoreAPI.Settings(key: "<API_KEY>", 
+                                                     secret: "<API_SECRET>"), 
+                        eventsTracker: EventsTracker.Settings(trackId: "<TRACK_ID>"), 
+                             graphAPI: nil, 
+                sharedKeychainGroupId: "com.mycompany.shared-keychain")
+
+ShopGun.configure(config)
 ```
 
+### Paged Publication
 
+The `PagedPublicationView` is a UIView subclass for showing and interacting with a catalog. It also manages all of the loading of the data from our `CoreAPI`.
+
+> **Note:** You must provide `CoreAPI` settings when configuring the SDK, otherwise the SDK will trigger a fatalError. 
+> 
+> If you wish to have usage stats collected you will also need to provide EventsTracker settings when configuring the SDK.
+
+Simply make an instance of `PagedPublicationView` and add it as a subview in your ViewController. Then, when you wish to start loading the catalog into the view (most likely in the `viewDidLoad	` method of your UIViewController), call the following:
+
+```swift
+self.pagedPublication.reload(publicationId: "<PUBLICATION_ID>")
+```
+
+For more complex uses of the `PagedPublicationView`, including setting the pre-loaded state of the view, and showing a custom outro view, check the [PagedPublication docs]()
+
+### < TODO: MAKE SEPARATE PAGED PUB DOCS >
+
+### CoreAPI
+
+The `CoreAPI` component provides typesafe tools for working with the ShopGun API, and removes the need to consider any of the session and auth-related complexity when making requests.
+
+> **Note:** You must provide a `key` and `secret` when configuring the ShopGunSDK, otherwise calls to the CoreAPI will trigger a fatalError. 
+> 
+> These can be requested by signing into the [ShopGun Developers](https://shopgun.com/developers) page.
+
+The interface for making requests is very flexible, but a large number of pre-built requests have been included. For example:
+
+```swift
+// make a request object that will ask for a specific PagedPublication object
+let req = CoreAPI.getPagedPublication(withId: …)
+
+// Perform the request. The completion handler is passed a Result object containing the requested PagedPublication, or an error.
+ShopGun.coreAPI.request(req) { (result) in
+	switch result {
+	case .success(let pagedPublication):
+	   print("👍 '\(pagedPublication.id.rawValue)' loaded")
+	case .error(let err):
+	   print("😭 Load Failed: '\(err.localizedDescription)'")
+}
+
+```
+
+For a more detailed explanation of the `CoreAPI`, check the [CoreAPI docs]()
+
+### < TODO: MAKE SEPARATE COREAPI DOCS >
+
+### EventsTracker
+
+You should not have to use the EventsTracker directly. However, if using the PagedPublication it is recommended that you configure the EventsTracker so that usage stats can be collected from users of your app. 
+
+For more details please read the [EventsTracker docs]()
+### < TODO: MAKE SEPARATE EVENTSTRACKER DOCS >
+
+### GraphAPI
+
+Currently still a work in progress. Please come back later.
+
+For more details please read the [GraphAPI docs]()
