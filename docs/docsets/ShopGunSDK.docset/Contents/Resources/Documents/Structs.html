@@ -13,7 +13,7 @@
     <a title="Structures  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">ShopGunSDK Docs</a> (18% documented)</p>
+        <p><a href="index.html">ShopGunSDK Docs</a> (19% documented)</p>
         <p class="header-right"><a href="https://github.com/shopgun/shopgun-ios-sdk/"><img src="img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
@@ -137,25 +137,7 @@
                 <a href="Extensions/Bundle.html">Bundle</a>
               </li>
               <li class="nav-group-task">
-                <a href="Extensions/ClientAPIErrorConsts.html">ClientAPIErrorConsts</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Extensions/CoreAPI_CancelRequests.html">CoreAPI_CancelRequests</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Extensions/Error.html">Error</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Extensions/ErrorCodeCategories.html">ErrorCodeCategories</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Extensions/ErrorCodeCategories/ErrorCategory.html">– ErrorCategory</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Extensions/ErrorCodeConsts.html">ErrorCodeConsts</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Extensions/ErrorPrettyPrint.html">ErrorPrettyPrint</a>
               </li>
               <li class="nav-group-task">
                 <a href="Extensions/NSError.html">NSError</a>
@@ -408,7 +390,22 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>GenericIdentifier is a phantom type, that uses the generic T for compile-time typesafety.</p>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Person</span><span class="p">:</span> <span class="kt">Codable</span> <span class="p">{</span>
+   <span class="kd">typealias</span> <span class="kt">Identifier</span> <span class="o">=</span> <span class="kt">GenericIdentifier</span><span class="o">&lt;</span><span class="kt">Person</span><span class="o">&gt;</span>
+   <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Identifier</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>So now you cannot accidently interchange one type of identifier for another, even though internally (and when encoded) they are both just strings.</p>
+
+<p>If you need create a T just for defining a secondary Identifier within a type, one way is to use an empty enum. eg:</p>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">AuthVault</span> <span class="p">{</span>
+   <span class="kd">enum</span> <span class="kt">SessionType</span> <span class="p">{}</span>
+   <span class="kd">typealias</span> <span class="kt">SessionIdentifier</span> <span class="o">=</span> <span class="kt">GenericIdentifier</span><span class="o">&lt;</span><span class="kt">SessionType</span><span class="o">&gt;</span>
+   <span class="k">let</span> <span class="nv">sessionId</span><span class="p">:</span> <span class="kt">SessionIdentifier</span>
+<span class="p">}</span>
+</code></pre>
 
                         <a href="Structs/GenericIdentifier.html" class="slightly-smaller">See more</a>
                       </div>

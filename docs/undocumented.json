@@ -3,7 +3,7 @@
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": null,
-      "symbol": "ClientAPIErrorConsts",
+      "symbol": "CoreAPI.APIError",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
@@ -17,21 +17,21 @@
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": null,
-      "symbol": "ErrorCodeCategories",
+      "symbol": "CoreAPI.APIError",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": null,
-      "symbol": "ErrorCodeConsts",
+      "symbol": "CoreAPI.APIError.Code",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": null,
-      "symbol": "ErrorPrettyPrint",
+      "symbol": "CoreAPI.APIError.Code",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
@@ -170,435 +170,435 @@
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 160,
-      "symbol": "ErrorCodeCategories.ErrorCategory",
+      "line": 157,
+      "symbol": "CoreAPI.APIError.Code.ErrorCategory",
       "symbol_kind": "source.lang.swift.decl.enum",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
+      "line": 158,
+      "symbol": "CoreAPI.APIError.Code.ErrorCategory.unknown",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
+      "line": 159,
+      "symbol": "CoreAPI.APIError.Code.ErrorCategory.session",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
+      "line": 160,
+      "symbol": "CoreAPI.APIError.Code.ErrorCategory.authentication",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 161,
-      "symbol": "ErrorCodeCategories.ErrorCategory.unknown",
+      "symbol": "CoreAPI.APIError.Code.ErrorCategory.authorization",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 162,
-      "symbol": "ErrorCodeCategories.ErrorCategory.session",
+      "symbol": "CoreAPI.APIError.Code.ErrorCategory.infoMissing",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 163,
-      "symbol": "ErrorCodeCategories.ErrorCategory.authentication",
+      "symbol": "CoreAPI.APIError.Code.ErrorCategory.infoInvalid",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 164,
-      "symbol": "ErrorCodeCategories.ErrorCategory.authorization",
+      "symbol": "CoreAPI.APIError.Code.ErrorCategory.rateControl",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 165,
-      "symbol": "ErrorCodeCategories.ErrorCategory.infoMissing",
+      "symbol": "CoreAPI.APIError.Code.ErrorCategory.internalIntegrity",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 166,
-      "symbol": "ErrorCodeCategories.ErrorCategory.infoInvalid",
+      "symbol": "CoreAPI.APIError.Code.ErrorCategory.misc",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 167,
-      "symbol": "ErrorCodeCategories.ErrorCategory.rateControl",
+      "symbol": "CoreAPI.APIError.Code.ErrorCategory.maintenance",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 168,
-      "symbol": "ErrorCodeCategories.ErrorCategory.internalIntegrity",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 169,
-      "symbol": "ErrorCodeCategories.ErrorCategory.misc",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 170,
-      "symbol": "ErrorCodeCategories.ErrorCategory.maintenance",
+      "symbol": "CoreAPI.APIError.Code.ErrorCategory.client",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 171,
-      "symbol": "ErrorCodeCategories.ErrorCategory.client",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 174,
-      "symbol": "ErrorCodeCategories.category",
+      "symbol": "CoreAPI.APIError.Code.category",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
+      "line": 195,
+      "symbol": "CoreAPI.APIError.Code.sessionError",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
+      "line": 197,
+      "symbol": "CoreAPI.APIError.Code.sessionTokenExpired",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 199,
-      "symbol": "ErrorCodeConsts.sessionError",
+      "symbol": "CoreAPI.APIError.Code.sessionInvalidAPIKey",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 201,
-      "symbol": "ErrorCodeConsts.sessionTokenExpired",
+      "symbol": "CoreAPI.APIError.Code.sessionMissingSignature",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 203,
-      "symbol": "ErrorCodeConsts.sessionInvalidAPIKey",
+      "symbol": "CoreAPI.APIError.Code.sessionInvalidSignature",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 205,
-      "symbol": "ErrorCodeConsts.sessionMissingSignature",
+      "symbol": "CoreAPI.APIError.Code.sessionTokenNotAllowed",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 207,
-      "symbol": "ErrorCodeConsts.sessionInvalidSignature",
+      "symbol": "CoreAPI.APIError.Code.sessionMissingOrigin",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 209,
-      "symbol": "ErrorCodeConsts.sessionTokenNotAllowed",
+      "symbol": "CoreAPI.APIError.Code.sessionMissingToken",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 211,
-      "symbol": "ErrorCodeConsts.sessionMissingOrigin",
+      "symbol": "CoreAPI.APIError.Code.sessionInvalidToken",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 213,
-      "symbol": "ErrorCodeConsts.sessionMissingToken",
+      "symbol": "CoreAPI.APIError.Code.sessionInvalidOriginHeader",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 215,
-      "symbol": "ErrorCodeConsts.sessionInvalidToken",
+      "line": 218,
+      "symbol": "CoreAPI.APIError.Code.authenticationError",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 217,
-      "symbol": "ErrorCodeConsts.sessionInvalidOriginHeader",
+      "line": 220,
+      "symbol": "CoreAPI.APIError.Code.authenticationInvalidCredentials",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 222,
-      "symbol": "ErrorCodeConsts.authenticationError",
+      "symbol": "CoreAPI.APIError.Code.authenticationNoUser",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 224,
-      "symbol": "ErrorCodeConsts.authenticationInvalidCredentials",
+      "symbol": "CoreAPI.APIError.Code.authenticationEmailNotVerified",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 226,
-      "symbol": "ErrorCodeConsts.authenticationNoUser",
+      "line": 229,
+      "symbol": "CoreAPI.APIError.Code.authorizationError",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 228,
-      "symbol": "ErrorCodeConsts.authenticationEmailNotVerified",
+      "line": 231,
+      "symbol": "CoreAPI.APIError.Code.authorizationActionNotAllowed",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 233,
-      "symbol": "ErrorCodeConsts.authorizationError",
+      "line": 236,
+      "symbol": "CoreAPI.APIError.Code.infoMissingError",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 235,
-      "symbol": "ErrorCodeConsts.authorizationActionNotAllowed",
+      "line": 238,
+      "symbol": "CoreAPI.APIError.Code.infoMissingGeolocation",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 240,
-      "symbol": "ErrorCodeConsts.infoMissingError",
+      "symbol": "CoreAPI.APIError.Code.infoMissingRadius",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 242,
-      "symbol": "ErrorCodeConsts.infoMissingGeolocation",
+      "symbol": "CoreAPI.APIError.Code.infoMissingAuthentication",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 244,
-      "symbol": "ErrorCodeConsts.infoMissingRadius",
+      "line": 245,
+      "symbol": "CoreAPI.APIError.Code.infoMissingEmail",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 246,
-      "symbol": "ErrorCodeConsts.infoMissingAuthentication",
+      "line": 247,
+      "symbol": "CoreAPI.APIError.Code.infoMissingBirthday",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 249,
-      "symbol": "ErrorCodeConsts.infoMissingEmail",
+      "symbol": "CoreAPI.APIError.Code.infoMissingGender",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 251,
-      "symbol": "ErrorCodeConsts.infoMissingBirthday",
+      "symbol": "CoreAPI.APIError.Code.infoMissingLocale",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 253,
-      "symbol": "ErrorCodeConsts.infoMissingGender",
+      "symbol": "CoreAPI.APIError.Code.infoMissingName",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 255,
-      "symbol": "ErrorCodeConsts.infoMissingLocale",
+      "symbol": "CoreAPI.APIError.Code.infoMissingResourceNotFound",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 257,
-      "symbol": "ErrorCodeConsts.infoMissingName",
+      "symbol": "CoreAPI.APIError.Code.infoMissingResourceDeleted",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 259,
-      "symbol": "ErrorCodeConsts.infoMissingResourceNotFound",
+      "line": 262,
+      "symbol": "CoreAPI.APIError.Code.infoInvalid",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 261,
-      "symbol": "ErrorCodeConsts.infoMissingResourceDeleted",
+      "line": 264,
+      "symbol": "CoreAPI.APIError.Code.infoInvalidResourceID",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 266,
-      "symbol": "ErrorCodeConsts.infoInvalid",
+      "symbol": "CoreAPI.APIError.Code.infoInvalidResourceDuplication",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 268,
-      "symbol": "ErrorCodeConsts.infoInvalidResourceID",
+      "symbol": "CoreAPI.APIError.Code.infoInvalidBodyData",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 270,
-      "symbol": "ErrorCodeConsts.infoInvalidResourceDuplication",
+      "symbol": "CoreAPI.APIError.Code.infoInvalidProtocol",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 272,
-      "symbol": "ErrorCodeConsts.infoInvalidBodyData",
+      "line": 275,
+      "symbol": "CoreAPI.APIError.Code.rateControlError",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 274,
-      "symbol": "ErrorCodeConsts.infoInvalidProtocol",
+      "line": 277,
+      "symbol": "CoreAPI.APIError.Code.rateControlLimited",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 279,
-      "symbol": "ErrorCodeConsts.rateControlError",
+      "line": 282,
+      "symbol": "CoreAPI.APIError.Code.internalIntegrityError",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 281,
-      "symbol": "ErrorCodeConsts.rateControlLimited",
+      "line": 284,
+      "symbol": "CoreAPI.APIError.Code.internalSearchError",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 286,
-      "symbol": "ErrorCodeConsts.internalIntegrityError",
+      "symbol": "CoreAPI.APIError.Code.internalNonCriticalError",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 288,
-      "symbol": "ErrorCodeConsts.internalSearchError",
+      "line": 291,
+      "symbol": "CoreAPI.APIError.Code.miscActionNotExists",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 290,
-      "symbol": "ErrorCodeConsts.internalNonCriticalError",
+      "line": 296,
+      "symbol": "CoreAPI.APIError.Code.maintenanceError",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 295,
-      "symbol": "ErrorCodeConsts.miscActionNotExists",
+      "line": 298,
+      "symbol": "CoreAPI.APIError.Code.maintenanceErrorServiceDown",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 300,
-      "symbol": "ErrorCodeConsts.maintenanceError",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 302,
-      "symbol": "ErrorCodeConsts.maintenanceErrorServiceDown",
+      "symbol": "CoreAPI.APIError.Code.maintenanceErrorFeatureDown",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 304,
-      "symbol": "ErrorCodeConsts.maintenanceErrorFeatureDown",
+      "symbol": "CoreAPI.APIError.Code.invalidNetworkResponseError",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
+      "line": 306,
+      "symbol": "CoreAPI.APIError.Code.unknownAPIError",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 308,
-      "symbol": "ErrorCodeConsts.invalidNetworkResponseError",
+      "symbol": "CoreAPI.APIError.Code.requestCancelled",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 310,
-      "symbol": "ErrorCodeConsts.unknownAPIError",
+      "symbol": "CoreAPI.APIError.Code.unableToLogin",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 312,
-      "symbol": "ErrorCodeConsts.requestCancelled",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 314,
-      "symbol": "ErrorCodeConsts.unableToLogin",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 323,
-      "symbol": "ClientAPIErrorConsts.invalidNetworkResponseError(urlResponse:)",
+      "line": 318,
+      "symbol": "CoreAPI.APIError.invalidNetworkResponseError(urlResponse:)",
       "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 326,
-      "symbol": "ClientAPIErrorConsts.unknownAPIError(httpStatusCode:urlResponse:)",
+      "line": 321,
+      "symbol": "CoreAPI.APIError.unknownAPIError(httpStatusCode:urlResponse:)",
       "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
+      "line": 324,
+      "symbol": "CoreAPI.APIError.requestCancelled",
+      "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
       "line": 329,
-      "symbol": "ClientAPIErrorConsts.requestCancelled",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI+APIError.swift",
-      "line": 334,
-      "symbol": "ClientAPIErrorConsts.unableToLogin",
+      "symbol": "CoreAPI.APIError.unableToLogin",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
@@ -738,7 +738,7 @@
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
       "line": null,
-      "symbol": "CoreAPI_CancelRequests",
+      "symbol": "CoreAPI",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
@@ -835,77 +835,77 @@
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
-      "line": 183,
-      "symbol": "CoreAPI_CancelRequests.cancelAll()",
+      "line": 182,
+      "symbol": "CoreAPI.cancelAll()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
-      "line": 194,
+      "line": 193,
       "symbol": "CoreAPI.ClientIdentifierType",
       "symbol_kind": "source.lang.swift.decl.enum",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
-      "line": 197,
+      "line": 196,
       "symbol": "CoreAPI.LoginCredentials",
       "symbol_kind": "source.lang.swift.decl.enum",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
-      "line": 198,
+      "line": 197,
       "symbol": "CoreAPI.LoginCredentials.logout",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
-      "line": 199,
+      "line": 198,
       "symbol": "CoreAPI.LoginCredentials.shopgun",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
-      "line": 200,
+      "line": 199,
       "symbol": "CoreAPI.LoginCredentials.facebook",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
-      "line": 221,
+      "line": 220,
       "symbol": "CoreAPI.AuthorizedUserProvider",
       "symbol_kind": "source.lang.swift.decl.enum",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
-      "line": 222,
+      "line": 221,
       "symbol": "CoreAPI.AuthorizedUserProvider.shopgun",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
-      "line": 223,
+      "line": 222,
       "symbol": "CoreAPI.AuthorizedUserProvider.facebook",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
-      "line": 227,
+      "line": 226,
       "symbol": "CoreAPI.login(credentials:completion:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
-      "line": 240,
+      "line": 239,
       "symbol": "CoreAPI.authorizedUser",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
@@ -2700,41 +2700,6 @@
       "line": 35,
       "symbol": "NSError.isNetworkError",
       "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/GenericIdentifier.swift",
-      "line": null,
-      "symbol": "GenericIdentifier",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/GenericIdentifier.swift",
-      "line": null,
-      "symbol": "GenericIdentifier",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/GenericIdentifier.swift",
-      "line": 22,
-      "symbol": "GenericIdentifier",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/GenericIdentifier.swift",
-      "line": 25,
-      "symbol": "GenericIdentifier.init(rawValue:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/GenericIdentifier.swift",
-      "line": 30,
-      "symbol": "GenericIdentifier.generate(lowercased:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     },
     {
