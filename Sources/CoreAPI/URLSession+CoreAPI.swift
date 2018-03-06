@@ -47,7 +47,7 @@ extension CoreAPI {
             } else {
                 let reason = HTTPURLResponse.localizedString(forStatusCode: httpStatusCode)
 
-                ShopGun.log("Unknown Server/Client Error: '\(reason)'", level: .error, source: .CoreAPI)
+                Logger.log("Unknown Server/Client Error: '\(reason)'", level: .error, source: .CoreAPI)
                 
                 error = APIError.unknownAPIError(httpStatusCode: httpStatusCode, urlResponse: response)
             }

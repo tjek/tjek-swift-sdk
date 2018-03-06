@@ -44,7 +44,7 @@ extension ShopGun {
                 valet = Valet.sharedAccessGroupValet(with: sharedGroupId, accessibility: .afterFirstUnlock)
                 if valet?.canAccessKeychain() == false {
                     valet = nil
-                    ShopGun.log("Unable to access shared keychain group '\(sharedGroupId)'. Will attempt to save secure data in an unshared keychain instead.", level: .important, source: .ShopGunSDK)
+                    Logger.log("Unable to access shared keychain group '\(sharedGroupId)'. Will attempt to save secure data in an unshared keychain instead.", level: .important, source: .ShopGunSDK)
                 }
             }
             
@@ -53,7 +53,7 @@ extension ShopGun {
                 valet = Valet.valet(with: Identifier(nonEmpty: "com.shopgun.ios.sdk.keychain-store")!, accessibility: .afterFirstUnlock)
                 
                 if valet?.canAccessKeychain() == false {
-                    ShopGun.log("Unable to access keychain. Secure data will not be cached.", level: .error, source: .ShopGunSDK)
+                    Logger.log("Unable to access keychain. Secure data will not be cached.", level: .error, source: .ShopGunSDK)
                 }
             }
             self.valet = valet

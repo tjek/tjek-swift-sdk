@@ -67,7 +67,7 @@ public final class EventsTracker {
             if let legacyClientId = EventsTracker.loadLegacyClientId() {
                 self.clientId = legacyClientId
                 EventsTracker.clearLegacyClientId()
-                ShopGun.log("Loaded ClientId from Legacy cache", level: .debug, source: .EventsTracker)
+                Logger.log("Loaded ClientId from Legacy cache", level: .debug, source: .EventsTracker)
             } else {
                 self.clientId = ClientIdentifier.generate()
 
@@ -128,7 +128,7 @@ extension EventsTracker {
                                    properties: properties,
                                    clientId: self.clientId.rawValue,
                                    includeLocation: settings.includeLocation)
-        ShopGun.log("Event Tracked: '\(type)' \(properties ?? [:])", level: .debug, source: .EventsTracker)
+        Logger.log("Event Tracked: '\(type)' \(properties ?? [:])", level: .debug, source: .EventsTracker)
         
         track(event: event)
     }

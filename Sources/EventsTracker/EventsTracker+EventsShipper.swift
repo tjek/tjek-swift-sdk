@@ -75,7 +75,7 @@ extension EventsTracker {
             request.addValue("application/json", forHTTPHeaderField: "Accept")
             request.httpBody = jsonData
             
-            ShopGun.log("Shipping \(orderedEventDicts.count) events (\(String(format: "%.3f", Double(jsonData.count) / 1024.0)) kb)", level: .debug, source: .EventsTracker)
+            Logger.log("Shipping \(orderedEventDicts.count) events (\(String(format: "%.3f", Double(jsonData.count) / 1024.0)) kb)", level: .debug, source: .EventsTracker)
             
             // actually do the shipping of the events
             let task = EventsShipper.networkSession.dataTask(with: request) { (responseData, response, error) in
@@ -119,7 +119,7 @@ extension EventsTracker {
                                 
                                 idsToRemove.append(uuid)
                                 
-                                ShopGun.log("Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with 'nack' and event > 7 days old", level: .important, source: .EventsTracker)
+                                Logger.log("Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with 'nack' and event > 7 days old", level: .important, source: .EventsTracker)
                             }
                         } else {
                             // send back all event Ids that were received (even if they were errors)
@@ -129,9 +129,9 @@ extension EventsTracker {
                             
                                 let errPath: [String] = firstError["path"] as? [String] ?? []
                                 
-                                ShopGun.log("Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with '\(status)': \(errType) \(errPath.joined(separator: ", "))", level: .important, source: .EventsTracker)
+                                Logger.log("Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with '\(status)': \(errType) \(errPath.joined(separator: ", "))", level: .important, source: .EventsTracker)
                             } else {
-                                ShopGun.log("Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with '\(status)'", level: .important, source: .EventsTracker)
+                                Logger.log("Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with '\(status)'", level: .important, source: .EventsTracker)
                             }
                         }
                     }

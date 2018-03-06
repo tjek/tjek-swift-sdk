@@ -63,7 +63,7 @@ extension CoreAPI_PerformRequests {
                     let mappedResult = request.resultMapper(dataResult)
                     
                     let duration = Date().timeIntervalSince(start)
-                    ShopGun.log("Request response parsed: \(String(format: "%.3fs", duration)) '\(request.path)'", level: .performance, source: .CoreAPI)
+                    Logger.log("Request response parsed: \(String(format: "%.3fs", duration)) '\(request.path)'", level: .performance, source: .CoreAPI)
 
                     DispatchQueue.main.async {
                         completion(mappedResult)
@@ -80,7 +80,7 @@ extension CoreAPI_PerformRequests {
         // make a new cancellable token by which we refer to this request from the outside
         let token = CancellableToken(owner: self)
         
-        ShopGun.log("Requesting '\(request.path)' (\(token.id.rawValue))", level: .verbose, source: .CoreAPI)
+        Logger.log("Requesting '\(request.path)' (\(token.id.rawValue))", level: .verbose, source: .CoreAPI)
         let start = Date()
         
         self.queue.async { [weak self] in
@@ -99,7 +99,7 @@ extension CoreAPI_PerformRequests {
                                             // Make sure the completion is always called on main
                                             DispatchQueue.main.async {
                                                 let duration = Date().timeIntervalSince(start)
-                                                ShopGun.log("Request completed: \(String(format: "%.3fs %.3fkb", duration, Double(dataResult.value?.count ?? 0) / 1024 )) '\(request.path)' (\(token.id.rawValue))", level: .performance, source: .CoreAPI)
+                                                Logger.log("Request completed: \(String(format: "%.3fs %.3fkb", duration, Double(dataResult.value?.count ?? 0) / 1024 )) '\(request.path)' (\(token.id.rawValue))", level: .performance, source: .CoreAPI)
 
                                                 completion?(dataResult)
                                             }
@@ -215,9 +215,9 @@ extension CoreAPI {
     fileprivate func authorizedUserDidChange(prevAuthUser: AuthorizedUser?, newAuthUser: AuthorizedUser?) {
         switch newAuthUser {
         case let (person, provider)?:
-            ShopGun.log("User (\(provider)) logged In \(person)", level: .debug, source: .CoreAPI)
+            Logger.log("User (\(provider)) logged In \(person)", level: .debug, source: .CoreAPI)
         case nil:
-            ShopGun.log("User logged out", level: .debug, source: .CoreAPI)
+            Logger.log("User logged out", level: .debug, source: .CoreAPI)
         }
     }
 }

@@ -46,7 +46,7 @@ extension CoreAPI {
                 self.authState = legacyAuthState
                 self.updateStore()
                 AuthVault.clearLegacyAuthState()
-                ShopGun.log("Loaded AuthState from Legacy cache", level: .debug, source: .CoreAPI)
+                Logger.log("Loaded AuthState from Legacy cache", level: .debug, source: .CoreAPI)
             } else {
                 // If no stored auth, or legacy auth to migrate, mark as unauthorized.
                 self.authState = .unauthorized(error: nil, clientId: storedAuth.clientId)
@@ -245,7 +245,7 @@ extension CoreAPI {
             
             switch result {
             case .success(let authSession):
-                ShopGun.log("Successfully updated authSession \(authSession)", level: .debug, source: .CoreAPI)
+                Logger.log("Successfully updated authSession \(authSession)", level: .debug, source: .CoreAPI)
                 
                 self.authState = .authorized(token: authSession.token, user: authSession.authorizedUser, clientId: authSession.clientId)
                 self.activeRegenerateTask = nil
@@ -263,7 +263,7 @@ extension CoreAPI {
                 // if cancelled then ignore
                 break
             case .error(let regenError):
-                ShopGun.log("Failed to update authSession \(regenError)", level: .error, source: .CoreAPI)
+                Logger.log("Failed to update authSession \(regenError)", level: .error, source: .CoreAPI)
                 
                 // TODO: depending upon the error do different things
                 // - what if retryable? network error?

@@ -54,6 +54,7 @@
 		AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */; };
 		AE4942C120174406006658CE /* PagedPublicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4942C020174406006658CE /* PagedPublicationView.swift */; };
 		AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */; };
+		AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6D65EC204ECBF50011E15C /* Logger.swift */; };
 		AE7D9B63204745C6000F3B7D /* CoreAPI+LegacyMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7D9B62204745C6000F3B7D /* CoreAPI+LegacyMigration.swift */; };
 		AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7F6A72201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift */; };
 		AE7F6A77201F36F300168C1A /* PagedPublicationView+Verso.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7F6A76201F36F300168C1A /* PagedPublicationView+Verso.swift */; };
@@ -120,20 +121,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = EAEAA88C1B167A8700F7AA98;
 			remoteInfo = "Valet Mac Tests";
-		};
-		AE0654A31FFEE24C009F6F92 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 26E6827C1BA8B3F900EFF4EA;
-			remoteInfo = "Valet-iOS";
-		};
-		AE0654A51FFEE24C009F6F92 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 26E6828A1BA8B4B200EFF4EA;
-			remoteInfo = "Valet-Mac";
 		};
 		AE0654A71FFEE24C009F6F92 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -261,7 +248,14 @@
 			remoteGlobalIDString = AEC28B391FF6AAC20007AAB8;
 			remoteInfo = ShopGunSDK;
 		};
-		AEC3D8511FFAD0B0004C5947 /* PBXContainerItemProxy */ = {
+		AECC8E48204E8B36007185B0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 16B5856C1F71DBE00038EE30;
+			remoteInfo = "Valet macOS Test Host App";
+		};
+		AECC8E4D204EA491007185B0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AEC28B311FF6AAC20007AAB8 /* Project object */;
 			proxyType = 1;
@@ -314,6 +308,7 @@
 		AE4942C020174406006658CE /* PagedPublicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagedPublicationView.swift; sourceTree = "<group>"; };
 		AE5A972820232098004E0799 /* Kingfisher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kingfisher.xcodeproj; path = External/Kingfisher/Kingfisher.xcodeproj; sourceTree = "<group>"; };
 		AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+EventHandler.swift"; sourceTree = "<group>"; };
+		AE6D65EC204ECBF50011E15C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		AE7D9B62204745C6000F3B7D /* CoreAPI+LegacyMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+LegacyMigration.swift"; sourceTree = "<group>"; };
 		AE7F6A72201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+HotspotOverlayView.swift"; sourceTree = "<group>"; };
 		AE7F6A76201F36F300168C1A /* PagedPublicationView+Verso.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+Verso.swift"; sourceTree = "<group>"; };
@@ -400,14 +395,13 @@
 		AE06548F1FFEE24B009F6F92 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AE06549A1FFEE24C009F6F92 /* libValet.a */,
 				AE06549C1FFEE24C009F6F92 /* Valet iOS Tests.xctest */,
 				AE06549E1FFEE24C009F6F92 /* ValetTouchIDTest.app */,
-				AE0654A01FFEE24C009F6F92 /* libValet.dylib */,
 				AE0654A21FFEE24C009F6F92 /* Valet Mac Tests.xctest */,
-				AE0654A41FFEE24C009F6F92 /* Valet.framework */,
-				AE0654A61FFEE24C009F6F92 /* Valet.framework */,
+				AE06549A1FFEE24C009F6F92 /* Valet.framework */,
+				AE0654A01FFEE24C009F6F92 /* Valet.framework */,
 				AE0654A81FFEE24C009F6F92 /* Valet iOS Test Host App.app */,
+				AECC8E49204E8B36007185B0 /* Valet macOS Test Host App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -561,6 +555,7 @@
 		AEC28B5F1FF6ABFC0007AAB8 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				AE6D65EC204ECBF50011E15C /* Logger.swift */,
 				AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */,
 				AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */,
 				AEC28B621FF6ABFC0007AAB8 /* Result.swift */,
@@ -687,10 +682,10 @@
 			buildRules = (
 			);
 			dependencies = (
+				AECC8E4E204EA491007185B0 /* PBXTargetDependency */,
 				AE5A9757202320AC004E0799 /* PBXTargetDependency */,
 				AE4942A720113A23006658CE /* PBXTargetDependency */,
 				AE0654AA1FFEE266009F6F92 /* PBXTargetDependency */,
-				AEC3D8521FFAD0B0004C5947 /* PBXTargetDependency */,
 			);
 			name = ShopGunSDK;
 			productName = ShopGunSDK;
@@ -783,10 +778,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		AE06549A1FFEE24C009F6F92 /* libValet.a */ = {
+		AE06549A1FFEE24C009F6F92 /* Valet.framework */ = {
 			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libValet.a;
+			fileType = wrapper.framework;
+			path = Valet.framework;
 			remoteRef = AE0654991FFEE24C009F6F92 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -804,10 +799,10 @@
 			remoteRef = AE06549D1FFEE24C009F6F92 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		AE0654A01FFEE24C009F6F92 /* libValet.dylib */ = {
+		AE0654A01FFEE24C009F6F92 /* Valet.framework */ = {
 			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = libValet.dylib;
+			fileType = wrapper.framework;
+			path = Valet.framework;
 			remoteRef = AE06549F1FFEE24C009F6F92 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -816,20 +811,6 @@
 			fileType = wrapper.cfbundle;
 			path = "Valet Mac Tests.xctest";
 			remoteRef = AE0654A11FFEE24C009F6F92 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE0654A41FFEE24C009F6F92 /* Valet.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Valet.framework;
-			remoteRef = AE0654A31FFEE24C009F6F92 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE0654A61FFEE24C009F6F92 /* Valet.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Valet.framework;
-			remoteRef = AE0654A51FFEE24C009F6F92 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		AE0654A81FFEE24C009F6F92 /* Valet iOS Test Host App.app */ = {
@@ -930,6 +911,13 @@
 			remoteRef = AE5A974D20232098004E0799 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		AECC8E49204E8B36007185B0 /* Valet macOS Test Host App.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "Valet macOS Test Host App.app";
+			remoteRef = AECC8E48204E8B36007185B0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -991,6 +979,7 @@
 				AE091FED203AF24000345009 /* GraphClient.swift in Sources */,
 				AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */,
 				AE8E4548200F6D140042CCE2 /* CGSize+Fitting.swift in Sources */,
+				AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Person.swift in Sources */,
 				AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */,
 				AE3B325020455C11001C75C9 /* EventsTracker+EventsCache.swift in Sources */,
@@ -1062,10 +1051,10 @@
 			target = AEC28B391FF6AAC20007AAB8 /* ShopGunSDK */;
 			targetProxy = AEC28B451FF6AAC20007AAB8 /* PBXContainerItemProxy */;
 		};
-		AEC3D8521FFAD0B0004C5947 /* PBXTargetDependency */ = {
+		AECC8E4E204EA491007185B0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AEC3D84C1FFAD075004C5947 /* CommonCryptoModuleMap */;
-			targetProxy = AEC3D8511FFAD0B0004C5947 /* PBXContainerItemProxy */;
+			targetProxy = AECC8E4D204EA491007185B0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

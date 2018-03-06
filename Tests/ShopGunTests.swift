@@ -12,11 +12,11 @@ import XCTest
 class ShopGunTests: XCTestCase {
     
     private func resetSDK() {
-        let emptySettings = ShopGun.Settings(coreAPI: nil, eventsTracker: nil, sharedKeychainGroupId: nil)
+        let emptySettings = ShopGun.Settings(coreAPI: nil, eventsTracker: nil, graphAPI: nil, sharedKeychainGroupId: nil)
         
         ShopGun.configure(settings: emptySettings)
     }
-    
+
     // After resetting the SDK, are the components unavailable
     func testEmptyConfiguration() {
         resetSDK()
@@ -32,7 +32,7 @@ class ShopGunTests: XCTestCase {
         let coreAPISettings = CoreAPI.Settings(key: "test_key", secret: "test_secret", baseURL: URL(string: "https://test.shopgun.com")!)
         let eventsTrackerSettings = EventsTracker.Settings(trackId: "test_trackId", baseURL: URL(string: "https://test.shopgun.com")!, dispatchInterval: 123, dispatchLimit: 456, dryRun: true)
         
-        let fullSettings = ShopGun.Settings(coreAPI: coreAPISettings, eventsTracker: eventsTrackerSettings, sharedKeychainGroupId: nil)
+        let fullSettings = ShopGun.Settings(coreAPI: coreAPISettings, eventsTracker: eventsTrackerSettings, graphAPI: nil, sharedKeychainGroupId: nil)
         
         ShopGun.configure(settings: fullSettings)
         
