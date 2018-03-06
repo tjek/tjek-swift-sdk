@@ -42,7 +42,7 @@ extension ShopGun {
         public var eventsTracker: EventsTracker.Settings?
         public var graphAPI: GraphAPI.Settings?
 
-        public init(coreAPI: CoreAPI.Settings?, eventsTracker: EventsTracker.Settings?, graphAPI: GraphAPI.Settings?, sharedKeychainGroupId: String? = nil) {
+        public init(coreAPI: CoreAPI.Settings?, eventsTracker: EventsTracker.Settings?, graphAPI: GraphAPI.Settings?) {
             self.coreAPI = coreAPI
             self.eventsTracker = eventsTracker
             self.graphAPI = graphAPI
@@ -54,12 +54,7 @@ extension ShopGun {
     public static func configure(settings: Settings) {
         
         // configure the shared DataStore
-        let dataStore: ShopGunSDKDataStore
-        if ShopGun.isRunningInPlayground {
-            dataStore = PlaygroundDataStore()
-        } else {
-            dataStore = KeychainDataStore.shared
-        }
+        let dataStore = KeychainDataStore.shared
         
         // configure the CoreAPI, if settings provided
         var coreAPI: CoreAPI? = nil
