@@ -23,7 +23,7 @@ extension PagedPublicationView {
             self.cancelLoading()
         }
         
-        fileprivate var coreAPI: CoreAPI?
+        fileprivate var coreAPI: CoreAPI = CoreAPI.shared
         fileprivate var cancelTokens: [RequestType: Cancellable] = [:]
         
         typealias PublicationLoadedHandler = ((Result<CoreAPI.PagedPublication>) -> Void)
@@ -32,9 +32,9 @@ extension PagedPublicationView {
         
         func startLoading(publicationId: PagedPublicationView.PublicationId, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler) {
             
-            let coreAPI = self.coreAPI ?? ShopGun.coreAPI
-            
             cancelLoading()
+            
+            let coreAPI = self.coreAPI
             
             let pubReq = CoreAPI.Requests.getPagedPublication(withId: publicationId)
             let pubToken = coreAPI.request(pubReq) { [weak self] (pubResult) in

@@ -15,24 +15,6 @@ public final class EventsTracker {
     public typealias PersonId = CoreAPI.Person.Identifier
     public typealias EventType = String
     public typealias EventProperties = [String: AnyObject]
-
-    public struct Settings {
-        public var trackId: String
-        public var baseURL: URL
-        public var dispatchInterval: TimeInterval
-        public var dispatchLimit: Int
-        public var dryRun: Bool
-        public var includeLocation: Bool
-        
-        public init(trackId: String, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, dryRun: Bool = false, includeLocation: Bool = false) {
-            self.trackId = trackId
-            self.baseURL = baseURL
-            self.dispatchInterval = dispatchInterval
-            self.dispatchLimit = dispatchLimit
-            self.dryRun = dryRun
-            self.includeLocation = includeLocation
-        }
-    }
     
     public let settings: Settings
     
@@ -87,7 +69,8 @@ public final class EventsTracker {
             LifecycleEvents.clientSessionOpened.track(s)
         }
     }
-    
+    private init() { fatalError("You must provide settings when creating an EventsTracker") }
+
     fileprivate let pool: CachedFlushablePool
     
     public private(set) var clientId: ClientIdentifier
@@ -102,6 +85,54 @@ public final class EventsTracker {
     }
     
     fileprivate let sessionLifecycleHandler: SessionLifecycleHandler
+}
+
+// MARK: -
+
+extension EventsTracker {
+    
+    public struct Settings {
+        public var trackId: String
+        public var baseURL: URL
+        public var dispatchInterval: TimeInterval
+        public var dispatchLimit: Int
+        public var dryRun: Bool
+        public var includeLocation: Bool
+        
+        public init(trackId: String, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, dryRun: Bool = false, includeLocation: Bool = false) {
+            self.trackId = trackId
+            self.baseURL = baseURL
+            self.dispatchInterval = dispatchInterval
+            self.dispatchLimit = dispatchLimit
+            self.dryRun = dryRun
+            self.includeLocation = includeLocation
+        }
+    }
+    
+    fileprivate static var _shared: EventsTracker?
+    
+    public static var shared: EventsTracker {
+        guard let eventsTracker = _shared else {
+            fatalError("Must call `EventsTracker.configure(…)` before accessing `shared`")
+        }
+        return eventsTracker
+    }
+    
+    public static var isConfigured: Bool {
+        return _shared != nil
+    }
+    
+    // This will cause a fatalError if KeychainDataStore hasnt been configured
+    public static func configure(_ settings: EventsTracker.Settings, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
+        
+        if isConfigured {
+            Logger.log("Re-configuring", level: .verbose, source: .EventsTracker)
+        } else {
+            Logger.log("Configuring", level: .verbose, source: .EventsTracker)
+        }
+        
+        _shared = EventsTracker(settings: settings, dataStore: dataStore)
+    }
 }
 
 // MARK: - Tracking methods

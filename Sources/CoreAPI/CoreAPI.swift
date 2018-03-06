@@ -23,7 +23,7 @@ final public class CoreAPI {
         // Build the urlSession that requests will be run on
         let config = URLSessionConfiguration.default
         config.httpAdditionalHeaders = ["Accept-Encoding": "gzip",
-                                        "User-Agent": ShopGun.userAgent]
+                                        "User-Agent": userAgent()]
         self.requstURLSession = URLSession(configuration: config)
         self.requstURLSession.sessionDescription = "ShopGunSDK.CoreAPI"
 
@@ -51,8 +51,49 @@ final public class CoreAPI {
 
 // MARK: -
 
-private typealias CoreAPI_PerformRequests = CoreAPI
-extension CoreAPI_PerformRequests {
+extension CoreAPI {
+
+    public struct Settings {
+        public var key: String
+        public var secret: String
+        public var baseURL: URL
+        
+        public init(key: String, secret: String, baseURL: URL = URL(string: "https://api.etilbudsavis.dk")!) {
+            self.key = key
+            self.secret = secret
+            self.baseURL = baseURL
+        }
+    }
+    
+    fileprivate static var _shared: CoreAPI?
+
+    public static var shared: CoreAPI {
+        guard let coreAPI = _shared else {
+            fatalError("Must call `CoreAPI.configure(…)` before accessing `shared`")
+        }
+        return coreAPI
+    }
+
+    public static var isConfigured: Bool {
+        return _shared != nil
+    }
+    
+    // This will cause a fatalError if KeychainDataStore hasnt been configured
+    public static func configure(_ settings: CoreAPI.Settings, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
+        
+        if isConfigured {
+            Logger.log("Re-configuring CoreAPI", level: .verbose, source: .ShopGunSDK)
+        } else {
+            Logger.log("Configuring CoreAPI", level: .verbose, source: .ShopGunSDK)
+        }
+        
+        _shared = CoreAPI(settings: settings, dataStore: dataStore)
+    }
+}
+
+// MARK: -
+
+extension CoreAPI {
     
     @discardableResult public func request<R: CoreAPIMappableRequest>(_ request: R, completion: ((Result<R.ResponseType>) -> Void)?) -> Cancellable {
         if let completion = completion {
@@ -218,24 +259,6 @@ extension CoreAPI {
             Logger.log("User (\(provider)) logged In \(person)", level: .debug, source: .CoreAPI)
         case nil:
             Logger.log("User logged out", level: .debug, source: .CoreAPI)
-        }
-    }
-}
-
-// MARK: -
-
-private typealias CoreAPI_Settings = CoreAPI
-extension CoreAPI_Settings {
-    
-    public struct Settings {
-        public var key: String
-        public var secret: String
-        public var baseURL: URL
-        
-        public init(key: String, secret: String, baseURL: URL = URL(string: "https://api.etilbudsavis.dk")!) {
-            self.key = key
-            self.secret = secret
-            self.baseURL = baseURL
         }
     }
 }

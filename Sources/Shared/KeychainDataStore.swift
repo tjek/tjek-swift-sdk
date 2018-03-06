@@ -1,7 +1,7 @@
 import Foundation
 import Valet
 
-internal protocol ShopGunSDKDataStore: class {
+public protocol ShopGunSDKDataStore: class {
     func set(value: String?, for key: String)
     func get(for key: String) -> String?
 }
@@ -37,11 +37,15 @@ final public class KeychainDataStore {
         }
         self.valet = valet
     }
+    
+    private init() { fatalError("You must provide settings when creating a KeychainDataStore") }
 }
+
+// MARK: -
 
 extension KeychainDataStore: ShopGunSDKDataStore {
 
-    internal func set(value: String?, for key: String) {
+    public func set(value: String?, for key: String) {
         if let val = value {
             valet?.set(string: val, forKey: key)
         } else {
@@ -49,10 +53,12 @@ extension KeychainDataStore: ShopGunSDKDataStore {
         }
     }
     
-    internal func get(for key: String) -> String? {
+    public func get(for key: String) -> String? {
         return valet?.string(forKey: key)
     }
 }
+
+// MARK: -
 
 extension KeychainDataStore {
     fileprivate static var _shared: KeychainDataStore?

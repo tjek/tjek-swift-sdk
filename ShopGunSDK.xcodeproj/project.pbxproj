@@ -33,7 +33,7 @@
 		AE0B85D2204602650092F110 /* Kingfisher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5A973820232098004E0799 /* Kingfisher.framework */; };
 		AE0B85D4204607370092F110 /* GraphAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B85D3204607370092F110 /* GraphAPI.swift */; };
 		AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */; };
-		AE2008D5200CE86F004363BE /* ShopGun+UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2008D4200CE86F004363BE /* ShopGun+UserAgent.swift */; };
+		AE2008D5200CE86F004363BE /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2008D4200CE86F004363BE /* UserAgent.swift */; };
 		AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3227204030AD001C75C9 /* Error+Extensions.swift */; };
 		AE3B323C2044136C001C75C9 /* PagedPublicationView+ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B323B2044136C001C75C9 /* PagedPublicationView+ErrorView.swift */; };
 		AE3B3242204422D5001C75C9 /* Bundle+ShopGunSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */; };
@@ -71,7 +71,6 @@
 		AE8E454F2010941F0042CCE2 /* CoreAPI+DealerRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E454E2010941F0042CCE2 /* CoreAPI+DealerRequests.swift */; };
 		AE8E45582010A38C0042CCE2 /* CoreAPI+Offer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E45572010A38C0042CCE2 /* CoreAPI+Offer.swift */; };
 		AEC28B441FF6AAC20007AAB8 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */; };
-		AEC28B641FF6ABFC0007AAB8 /* ShopGun.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B581FF6ABFC0007AAB8 /* ShopGun.swift */; };
 		AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5A1FF6ABFC0007AAB8 /* CoreAPI+Person.swift */; };
 		AEC28B661FF6ABFC0007AAB8 /* CoreAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5B1FF6ABFC0007AAB8 /* CoreAPIRequest.swift */; };
 		AEC28B671FF6ABFC0007AAB8 /* CoreAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5C1FF6ABFC0007AAB8 /* CoreAPI.swift */; };
@@ -276,7 +275,7 @@
 		AE0AF2E4201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+PageView.swift"; sourceTree = "<group>"; };
 		AE0B85D3204607370092F110 /* GraphAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphAPI.swift; sourceTree = "<group>"; };
 		AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
-		AE2008D4200CE86F004363BE /* ShopGun+UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShopGun+UserAgent.swift"; sourceTree = "<group>"; };
+		AE2008D4200CE86F004363BE /* UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgent.swift; sourceTree = "<group>"; };
 		AE3B3227204030AD001C75C9 /* Error+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extensions.swift"; sourceTree = "<group>"; };
 		AE3B323B2044136C001C75C9 /* PagedPublicationView+ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+ErrorView.swift"; sourceTree = "<group>"; };
 		AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+ShopGunSDK.swift"; sourceTree = "<group>"; };
@@ -327,7 +326,6 @@
 		AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC28B431FF6AAC20007AAB8 /* ShopGunSDK-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunSDK-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTracker.swift; sourceTree = "<group>"; };
-		AEC28B581FF6ABFC0007AAB8 /* ShopGun.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShopGun.swift; path = Sources/ShopGun.swift; sourceTree = "<group>"; };
 		AEC28B5A1FF6ABFC0007AAB8 /* CoreAPI+Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreAPI+Person.swift"; sourceTree = "<group>"; };
 		AEC28B5B1FF6ABFC0007AAB8 /* CoreAPIRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAPIRequest.swift; sourceTree = "<group>"; };
 		AEC28B5C1FF6ABFC0007AAB8 /* CoreAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAPI.swift; sourceTree = "<group>"; };
@@ -490,7 +488,6 @@
 			children = (
 				AEC28B6F1FF6AC420007AAB8 /* ShopGunSDK.playground */,
 				AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */,
-				AEC28B581FF6ABFC0007AAB8 /* ShopGun.swift */,
 				AEC28B591FF6ABFC0007AAB8 /* CoreAPI */,
 				AE4942BF201743FA006658CE /* PagedPublication */,
 				AEC28B561FF6ABFB0007AAB8 /* EventsTracker */,
@@ -562,7 +559,7 @@
 				AEC28B621FF6ABFC0007AAB8 /* Result.swift */,
 				AE85C5EE2001884100263F8B /* Result+Map.swift */,
 				AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */,
-				AE2008D4200CE86F004363BE /* ShopGun+UserAgent.swift */,
+				AE2008D4200CE86F004363BE /* UserAgent.swift */,
 				AE8E4540200E31E60042CCE2 /* UIColor+Hex.swift */,
 				AE8E4547200F6D140042CCE2 /* CGSize+Fitting.swift */,
 				AE3B3227204030AD001C75C9 /* Error+Extensions.swift */,
@@ -974,7 +971,6 @@
 				AE3B3244204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift in Sources */,
 				AE8E4541200E31E60042CCE2 /* UIColor+Hex.swift in Sources */,
 				AE091FEB203AF24000345009 /* GraphRequestResponse.swift in Sources */,
-				AEC28B641FF6ABFC0007AAB8 /* ShopGun.swift in Sources */,
 				AE85C5E42000384500263F8B /* CoreAPI+AuthVault.swift in Sources */,
 				AE091FED203AF24000345009 /* GraphClient.swift in Sources */,
 				AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */,
@@ -1001,7 +997,7 @@
 				AE3C38FE2019DFD700A92597 /* PagedPublicationView+LoadingView.swift in Sources */,
 				AE7F6A77201F36F300168C1A /* PagedPublicationView+Verso.swift in Sources */,
 				AE6D660B204EE2910011E15C /* KeychainDataStore.swift in Sources */,
-				AE2008D5200CE86F004363BE /* ShopGun+UserAgent.swift in Sources */,
+				AE2008D5200CE86F004363BE /* UserAgent.swift in Sources */,
 				AE85C5EF2001884100263F8B /* Result+Map.swift in Sources */,
 				AE3B325A20458716001C75C9 /* EventsTracker+IdField.swift in Sources */,
 				AE091FF0203AF24000345009 /* GraphError.swift in Sources */,

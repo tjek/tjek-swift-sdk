@@ -99,9 +99,9 @@ extension PagedPublicationView {
             }
             
             func track() {
-                guard ShopGun.hasEventsTracker else { return }
+                guard EventsTracker.isConfigured else { return }
 
-                ShopGun.eventsTracker.trackEvent(self.type, properties: self.properties)
+                EventsTracker.shared.trackEvent(self.type, properties: self.properties)
             }
             
             private func publicationProperties(_ publication: PublicationModel) -> [String: AnyObject] {
