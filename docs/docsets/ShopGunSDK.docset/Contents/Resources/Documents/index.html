@@ -73,6 +73,9 @@
                 <a href="Classes/EventsTracker.html">EventsTracker</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/EventsTracker.html#/s:10ShopGunSDK13EventsTrackerC20ClientIdentifierTypeO">– ClientIdentifierType</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/EventsTracker/Settings.html">– Settings</a>
               </li>
               <li class="nav-group-task">
@@ -85,6 +88,18 @@
                 <a href="Classes/HTTPGraphNetworkTransport.html">HTTPGraphNetworkTransport</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/Logger.html">Logger</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Logger/LogLevel.html">– LogLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Logger/LogSource.html">– LogSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Logger/LogLocation.html">– LogLocation</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/NetworkGraphClient.html">NetworkGraphClient</a>
               </li>
               <li class="nav-group-task">
@@ -95,15 +110,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/ShopGun/Settings.html">– Settings</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/ShopGun/LogLevel.html">– LogLevel</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/ShopGun/LogSource.html">– LogSource</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/ShopGun/LogLocation.html">– LogLocation</a>
               </li>
             </ul>
           </li>
@@ -258,95 +264,122 @@
 
 <p><a href="http://cocoapods.org/pods/ShopGunSDK"><img src="https://img.shields.io/cocoapods/v/ShopGunSDK.svg?style=flat" alt="Version"></a>
 <a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage Compatible"></a>
-<a href="http://cocoapods.org/pods/ShopGunSDK"><img src="https://img.shields.io/cocoapods/l/ShopGunSDK.svg?style=flat" alt="License"></a>
-<a href="http://cocoapods.org/pods/ShopGunSDK"><img src="https://img.shields.io/cocoapods/p/ShopGunSDK.svg?style=flat" alt="Platform"></a></p>
+<a href="LICENSE.md"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="License"></a>
+<a href="https://swift.org"><img src="http://img.shields.io/badge/swift-4.0-brightgreen.svg" alt="Swift"></a></p>
 
-<p>A framework for interacting with the ShopGun APIs from within your own apps. The SDK has been split into multiple components:</p>
+<p>A framework for interacting with the ShopGun APIs from within your own apps. The SDK has been split into several components:</p>
 
 <ul>
-<li><code>Core</code>: Used by all other components. Handles basic configuration of the SDK.</li>
-<li><code>GraphKit</code>: An interface for easily making requests to ShopGun&rsquo;s graph API.</li>
-<li><code>EventsKit</code>: An events tracker for efficiently sending events to the ShopGun API.</li>
-<li><code>PagedPublication</code>: A view for fetching and rendering a paged publication.</li>
+<li><code>PagedPublication</code>: A view for fetching, rendering, and interacting with, a catalog.</li>
+<li><code><a href="Classes/CoreAPI.html">CoreAPI</a></code>: Simplifies auth &amp; communication with the ShopGun REST API.</li>
+<li><code><a href="Classes/GraphAPI.html">GraphAPI</a></code>: An interface for easily making requests to ShopGun&rsquo;s GraphQL API.</li>
+<li><code><a href="Classes/EventsTracker.html">EventsTracker</a></code>: An events tracker for efficiently sending events to the ShopGun API.</li>
 </ul>
 <h2 id='requirements' class='heading'>Requirements</h2>
 
 <ul>
-<li>iOS 8.0+</li>
-<li>Xcode 8.0+</li>
-<li>Swift 3.0+</li>
-</ul>
-<h2 id='dependencies' class='heading'>Dependencies</h2>
-
-<ul>
-<li><p>Core:</p>
-
-<ul>
-<li><a href="https://github.com/Square/Valet">Valet (2.2.2)</a> - for easy communication with the KeyChain.</li>
-</ul></li>
-<li><p>PagedPublication:</p>
-
-<ul>
-<li><a href="https://github.com/ShopGun/Verso">Verso (1.0)</a> - a layout engine for presenting book-like views.</li>
-<li><a href="https://github.com/onevcat/Kingfisher">Kingfisher (3.0.1)</a> - a light-weight library for downloading and caching images.</li>
-</ul></li>
+<li>iOS 9.3+</li>
+<li>Xcode 9.0+</li>
+<li>Swift 4.0+</li>
 </ul>
 <h2 id='installation' class='heading'>Installation</h2>
-<h3 id='cocoapods' class='heading'>Cocoapods</h3>
+<h4 id='dependencies' class='heading'>Dependencies</h4>
 
-<p>Add the following to your <code>Podfile</code> to include the entirety of the SDK to your project:</p>
-<pre class="highlight ruby"><code><span class="n">use_frameworks!</span>
-<span class="n">pod</span> <span class="s1">'ShopGunSDK'</span>
+<ul>
+<li><a href="https://github.com/Square/Valet">Valet</a> - for easy communication with the KeyChain.</li>
+<li><a href="https://github.com/ShopGun/Verso">Verso</a> - a layout engine for presenting book-like views.</li>
+<li><a href="https://github.com/onevcat/Kingfisher">Kingfisher</a> - A lightweight, pure-Swift library for downloading and caching images from the web.</li>
+<li><a href="https://github.com/parse-community/xctoolchain-archive">xctoolchain</a> - Common configuration files and scripts.</li>
+</ul>
+<h3 id='cocoapods' class='heading'>CocoaPods</h3>
+<h3 id='carthage' class='heading'>Carthage</h3>
+<h3 id='manually' class='heading'>Manually</h3>
+<h2 id='usage' class='heading'>Usage</h2>
+<h3 id='configuration' class='heading'>Configuration</h3>
+
+<p>You must provide configuration settings for each of the components of the SDK that you are planning on using, before you use them.</p>
+
+<p>If you have added the settings to a <code>ShopGunSDK-Configuration.plist</code> file that is included with your app, configuration is as simple as:</p>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">ShopGunSDK</span>
+<span class="err">…</span>
+<span class="kt">ShopGun</span><span class="o">.</span><span class="nf">configure</span><span class="p">()</span>
 </code></pre>
 
-<p>If you only need a subset of the SDK&rsquo;s functionality, use one of the subspecs instead: </p>
-<pre class="highlight ruby"><code><span class="c1"># just include the graph-related code:</span>
-<span class="n">pod</span> <span class="s1">'ShopGunSDK/Graph'</span>
-
-<span class="c1"># just include the event tracking code:</span>
-<span class="n">pod</span> <span class="s1">'ShopGunSDK/Events'</span>
-
-<span class="c1"># just include the paged publication view code:</span>
-<span class="n">pod</span> <span class="s1">'ShopGunSDK/PagedPublication'</span>
-</code></pre>
-
-<p>For further details see the <a href="https://guides.cocoapods.org/">CocoaPods Guides</a>.</p>
+<p>The best place to do this is probably somewhere in your AppDelegate, so that it is sure to be called before any other calls to the <code>ShopGunSDK</code> are made.</p>
 
 <blockquote>
-<p><strong>Note</strong>: For the legacy <em>eTilbudsavis SDK</em>, please use the old <a href="http://cocoapods.org/pods/ETA-SDK"><code>ETA-SDK</code></a> pod.</p>
+<p><strong>Note:</strong> If you make calls to ShopGunSDK components before they are configured, the SDK will trigger a fatalError.</p>
 </blockquote>
-<h3 id='carthage' class='heading'>Carthage</h3>
 
-<p>Point your <code>Cartfile</code> at the github repo:</p>
-<pre class="highlight ruby"><code><span class="n">github</span> <span class="s1">'shopgun/shopgun-ios-sdk'</span>
+<p>For more complex configuration options, including providing a custom log handler, check the <a href="">Configuration docs</a></p>
+<h3 id='lt-todo-make-separate-configuration-docs-gt' class='heading'>&lt; TODO: MAKE SEPARATE CONFIGURATION DOCS &gt;</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">config</span> <span class="o">=</span> <span class="kt">ShopGun</span><span class="o">.</span><span class="kt">Settings</span><span class="p">(</span><span class="nv">coreAPI</span><span class="p">:</span> <span class="kt">CoreAPI</span><span class="o">.</span><span class="kt">Settings</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="s">"&lt;API_KEY&gt;"</span><span class="p">,</span> 
+                                                     <span class="nv">secret</span><span class="p">:</span> <span class="s">"&lt;API_SECRET&gt;"</span><span class="p">),</span> 
+                        <span class="nv">eventsTracker</span><span class="p">:</span> <span class="kt">EventsTracker</span><span class="o">.</span><span class="kt">Settings</span><span class="p">(</span><span class="nv">trackId</span><span class="p">:</span> <span class="s">"&lt;TRACK_ID&gt;"</span><span class="p">),</span> 
+                             <span class="nv">graphAPI</span><span class="p">:</span> <span class="kc">nil</span><span class="p">,</span> 
+                <span class="nv">sharedKeychainGroupId</span><span class="p">:</span> <span class="s">"com.mycompany.shared-keychain"</span><span class="p">)</span>
+
+<span class="kt">ShopGun</span><span class="o">.</span><span class="nf">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</code></pre>
+<h3 id='paged-publication' class='heading'>Paged Publication</h3>
+
+<p>The <code><a href="Classes/PagedPublicationView.html">PagedPublicationView</a></code> is a UIView subclass for showing and interacting with a catalog. It also manages all of the loading of the data from our <code><a href="Classes/CoreAPI.html">CoreAPI</a></code>.</p>
+
+<blockquote>
+<p><strong>Note:</strong> You must provide <code><a href="Classes/CoreAPI.html">CoreAPI</a></code> settings when configuring the SDK, otherwise the SDK will trigger a fatalError. </p>
+
+<p>If you wish to have usage stats collected you will also need to provide EventsTracker settings when configuring the SDK.</p>
+</blockquote>
+
+<p>Simply make an instance of <code><a href="Classes/PagedPublicationView.html">PagedPublicationView</a></code> and add it as a subview in your ViewController. Then, when you wish to start loading the catalog into the view (most likely in the <code>viewDidLoad</code> method of your UIViewController), call the following:</p>
+<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">pagedPublication</span><span class="o">.</span><span class="nf">reload</span><span class="p">(</span><span class="nv">publicationId</span><span class="p">:</span> <span class="s">"&lt;PUBLICATION_ID&gt;"</span><span class="p">)</span>
 </code></pre>
 
-<p>Unlike CocoaPods, with Carthage you will not be able to choose which subsets of the functionality you include in your app - it&rsquo;s all or nothing.</p>
+<p>For more complex uses of the <code><a href="Classes/PagedPublicationView.html">PagedPublicationView</a></code>, including setting the pre-loaded state of the view, and showing a custom outro view, check the <a href="">PagedPublication docs</a></p>
+<h3 id='lt-todo-make-separate-paged-pub-docs-gt' class='heading'>&lt; TODO: MAKE SEPARATE PAGED PUB DOCS &gt;</h3>
+<h3 id='coreapi' class='heading'>CoreAPI</h3>
 
-<p>For further details see the <a href="https://guides.cocoapods.org/">Carthage Readme</a></p>
+<p>The <code><a href="Classes/CoreAPI.html">CoreAPI</a></code> component provides typesafe tools for working with the ShopGun API, and removes the need to consider any of the session and auth-related complexity when making requests.</p>
 
-<p>Furthermore, although the dependencies will be downloaded and built for you, you will need to manually embed the <code>.framework</code>s into your app.</p>
-<h2 id='usage' class='heading'>Usage</h2>
+<blockquote>
+<p><strong>Note:</strong> You must provide a <code>key</code> and <code>secret</code> when configuring the ShopGunSDK, otherwise calls to the CoreAPI will trigger a fatalError. </p>
 
-<p>First you must import the SDK:</p>
-<pre class="highlight swift"><code><span class="c1">// Swift</span>
-<span class="kd">import</span> <span class="kt">ShopGunSDK</span>
+<p>These can be requested by signing into the <a href="https://shopgun.com/developers">ShopGun Developers</a> page.</p>
+</blockquote>
+
+<p>The interface for making requests is very flexible, but a large number of pre-built requests have been included. For example:</p>
+<pre class="highlight swift"><code><span class="c1">// make a request object that will ask for a specific PagedPublication object</span>
+<span class="k">let</span> <span class="nv">req</span> <span class="o">=</span> <span class="kt">CoreAPI</span><span class="o">.</span><span class="nf">getPagedPublication</span><span class="p">(</span><span class="nv">withId</span><span class="p">:</span> <span class="err">…</span><span class="p">)</span>
+
+<span class="c1">// Perform the request. The completion handler is passed a Result object containing the requested PagedPublication, or an error.</span>
+<span class="kt">ShopGun</span><span class="o">.</span><span class="n">coreAPI</span><span class="o">.</span><span class="nf">request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">in</span>
+    <span class="k">switch</span> <span class="n">result</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="k">let</span> <span class="nv">pagedPublication</span><span class="p">):</span>
+       <span class="nf">print</span><span class="p">(</span><span class="s">"👍 '</span><span class="se">\(</span><span class="n">pagedPublication</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">rawValue</span><span class="se">)</span><span class="s">' loaded"</span><span class="p">)</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nf">error</span><span class="p">(</span><span class="k">let</span> <span class="nv">err</span><span class="p">):</span>
+       <span class="nf">print</span><span class="p">(</span><span class="s">"😭 Load Failed: '</span><span class="se">\(</span><span class="n">err</span><span class="o">.</span><span class="n">localizedDescription</span><span class="se">)</span><span class="s">'"</span><span class="p">)</span>
+<span class="p">}</span>
+
 </code></pre>
-<pre class="highlight objective_c"><code><span class="c1">// Obj-C
-</span><span class="k">@import</span> <span class="n">ShopGunSDK</span><span class="p">;</span>
-</code></pre>
-<h3 id='configuration' class='heading'>Configuration</h3>
-<pre class="highlight swift"><code><span class="c1">// Swift</span>
-<span class="kt">ShopGunSDK</span><span class="o">.</span><span class="kt">SDKConfig</span><span class="o">.</span><span class="n">appId</span> <span class="o">=</span> <span class="s">"&lt;myAppId&gt;"</span>
-</code></pre>
-<pre class="highlight objective_c"><code><span class="c1">// Obj-C
-</span><span class="n">SGNSDKConfig</span><span class="p">.</span><span class="n">appId</span> <span class="o">=</span> <span class="s">@"&lt;myAppId&gt;"</span><span class="p">;</span>
-</code></pre>
+
+<p>For a more detailed explanation of the <code><a href="Classes/CoreAPI.html">CoreAPI</a></code>, check the <a href="">CoreAPI docs</a></p>
+<h3 id='lt-todo-make-separate-coreapi-docs-gt' class='heading'>&lt; TODO: MAKE SEPARATE COREAPI DOCS &gt;</h3>
+<h3 id='eventstracker' class='heading'>EventsTracker</h3>
+
+<p>You should not have to use the EventsTracker directly. However, if using the PagedPublication it is recommended that you configure the EventsTracker so that usage stats can be collected from users of your app. </p>
+
+<p>For more details please read the <a href="">EventsTracker docs</a></p>
+<h3 id='lt-todo-make-separate-eventstracker-docs-gt' class='heading'>&lt; TODO: MAKE SEPARATE EVENTSTRACKER DOCS &gt;</h3>
+<h3 id='graphapi' class='heading'>GraphAPI</h3>
+
+<p>Currently still a work in progress. Please come back later.</p>
+
+<p>For more details please read the <a href="">GraphAPI docs</a></p>
 
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-03-02)</p>
+          <p>&copy; 2018 <a class="link" href="https://github.com/shopgun/shopgun-ios-sdk" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-03-06)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

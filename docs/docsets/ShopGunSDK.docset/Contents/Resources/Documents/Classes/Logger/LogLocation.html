@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>LogSource Enumeration Reference</title>
+    <title>LogLocation Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/LogSource" class="dashAnchor"></a>
-    <a title="LogSource Enumeration Reference"></a>
+    <a name="//apple_ref/swift/Struct/LogLocation" class="dashAnchor"></a>
+    <a title="LogLocation Structure Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../../index.html">ShopGunSDK Docs</a> (19% documented)</p>
@@ -22,7 +22,7 @@
       <p id="breadcrumbs">
         <a href="../../index.html">ShopGunSDK Reference</a>
         <img id="carat" src="../../img/carat.png" />
-        LogSource Enumeration Reference
+        LogLocation Structure Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -74,6 +74,9 @@
                 <a href="../../Classes/EventsTracker.html">EventsTracker</a>
               </li>
               <li class="nav-group-task">
+                <a href="../../Classes/EventsTracker.html#/s:10ShopGunSDK13EventsTrackerC20ClientIdentifierTypeO">– ClientIdentifierType</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../../Classes/EventsTracker/Settings.html">– Settings</a>
               </li>
               <li class="nav-group-task">
@@ -86,6 +89,18 @@
                 <a href="../../Classes/HTTPGraphNetworkTransport.html">HTTPGraphNetworkTransport</a>
               </li>
               <li class="nav-group-task">
+                <a href="../../Classes/Logger.html">Logger</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/Logger/LogLevel.html">– LogLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/Logger/LogSource.html">– LogSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/Logger/LogLocation.html">– LogLocation</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../../Classes/NetworkGraphClient.html">NetworkGraphClient</a>
               </li>
               <li class="nav-group-task">
@@ -96,15 +111,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../../Classes/ShopGun/Settings.html">– Settings</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Classes/ShopGun/LogLevel.html">– LogLevel</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Classes/ShopGun/LogSource.html">– LogSource</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Classes/ShopGun/LogLocation.html">– LogLocation</a>
               </li>
             </ul>
           </li>
@@ -254,16 +260,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>LogSource</h1>
+            <h1>LogLocation</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">LogSource</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">LogLocation</span></code></pre>
 
                 </div>
               </div>
-            <p>All the possible components of the SDK that can trigger a log.</p>
-
-<p>When logging a message it is important to define which &lsquo;part&rsquo; of the SDK the log came from. This way the <code><a href="../../Classes/ShopGun.html#/s:10ShopGunSDK0aB0C10LogHandlera">LogHandler</a></code> can filter out messages from parts of the SDK it is not interested in, or change how it prints the message.</p>
+            <p>Defines the location (path/function/line) from which a log was called.</p>
 
           </section>
           <section class="section task-group-section">
@@ -272,9 +276,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK0aB0C9LogSourceOAa2EmF"></a>
-                    <a name="//apple_ref/swift/Element/ShopGunSDK" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK0aB0C9LogSourceOAa2EmF">ShopGunSDK</a>
+                    <a name="/s:10ShopGunSDK6LoggerC11LogLocationV8filePathSSv"></a>
+                    <a name="//apple_ref/swift/Property/filePath" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK6LoggerC11LogLocationV8filePathSSv">filePath</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -282,30 +286,26 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The main part of the SDK - so not from any specific component.</p>
+                        <p>The file path of where a log was triggered.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="kt">ShopGunSDK</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">filePath</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK0aB0C9LogSourceO7CoreAPIA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/CoreAPI" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK0aB0C9LogSourceO7CoreAPIA2EmF">CoreAPI</a>
+                    <a name="/s:10ShopGunSDK6LoggerC11LogLocationV12functionNameSSv"></a>
+                    <a name="//apple_ref/swift/Property/functionName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK6LoggerC11LogLocationV12functionNameSSv">functionName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -313,30 +313,26 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A message from the CoreAPI component (which talks to the ShopGun API).</p>
+                        <p>The name of the function where a log was triggered.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="kt">CoreAPI</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">functionName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK0aB0C9LogSourceO13EventsTrackerA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/EventsTracker" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK0aB0C9LogSourceO13EventsTrackerA2EmF">EventsTracker</a>
+                    <a name="/s:10ShopGunSDK6LoggerC11LogLocationV10lineNumberSiv"></a>
+                    <a name="//apple_ref/swift/Property/lineNumber" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK6LoggerC11LogLocationV10lineNumberSiv">lineNumber</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -344,30 +340,26 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A message from the EventsTracker component (which caches/sends events to the ShopGun server).</p>
+                        <p>The linenumber within <code><a href="../../Classes/Logger/LogLocation.html#/s:10ShopGunSDK6LoggerC11LogLocationV8filePathSSv">filePath</a></code> where a log was triggered.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="kt">EventsTracker</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">lineNumber</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
 
                         </div>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK0aB0C9LogSourceO8GraphAPIA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/GraphAPI" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK0aB0C9LogSourceO8GraphAPIA2EmF">GraphAPI</a>
+                    <a name="/s:10ShopGunSDK6LoggerC11LogLocationV8fileNameSSv"></a>
+                    <a name="//apple_ref/swift/Property/fileName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK6LoggerC11LogLocationV8fileNameSSv">fileName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -375,76 +367,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A message from the GraphAPI component (which talks to the ShopGun Graph API).</p>
+                        <p>A shortcut for getting the last component of the <code><a href="../../Classes/Logger/LogLocation.html#/s:10ShopGunSDK6LoggerC11LogLocationV8filePathSSv">filePath</a></code>.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="kt">GraphAPI</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10ShopGunSDK0aB0C9LogSourceO22PagedPublicationViewerA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/PagedPublicationViewer" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK0aB0C9LogSourceO22PagedPublicationViewerA2EmF">PagedPublicationViewer</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A message from the PagedPublication view (which renders an interactive catalog).</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="kt">PagedPublicationViewer</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10ShopGunSDK0aB0C9LogSourceO5otherAESS4name_tcAEmF"></a>
-                    <a name="//apple_ref/swift/Element/other" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK0aB0C9LogSourceO5otherAESS4name_tcAEmF">other</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>In case none of the above are relevant, the LogSource can provide its own <code>name</code> (for example if someone outside the SDK wishes to log via the <code><a href="../../Classes/ShopGun.html#/s:10ShopGunSDK0aB0C10LogHandlera">LogHandler</a></code>).</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">other</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">fileName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -456,7 +386,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-03-02)</p>
+          <p>&copy; 2018 <a class="link" href="https://github.com/shopgun/shopgun-ios-sdk" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-03-06)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

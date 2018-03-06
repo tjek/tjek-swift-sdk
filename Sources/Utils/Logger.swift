@@ -9,7 +9,6 @@
 
 import Foundation
 
-
 /**
  `Logger` is where all messages sent from inside the SDK are handled.
  

@@ -73,6 +73,9 @@
                 <a href="Classes/EventsTracker.html">EventsTracker</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/EventsTracker.html#/s:10ShopGunSDK13EventsTrackerC20ClientIdentifierTypeO">– ClientIdentifierType</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/EventsTracker/Settings.html">– Settings</a>
               </li>
               <li class="nav-group-task">
@@ -85,6 +88,18 @@
                 <a href="Classes/HTTPGraphNetworkTransport.html">HTTPGraphNetworkTransport</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/Logger.html">Logger</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Logger/LogLevel.html">– LogLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Logger/LogSource.html">– LogSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Logger/LogLocation.html">– LogLocation</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/NetworkGraphClient.html">NetworkGraphClient</a>
               </li>
               <li class="nav-group-task">
@@ -95,15 +110,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/ShopGun/Settings.html">– Settings</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/ShopGun/LogLevel.html">– LogLevel</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/ShopGun/LogSource.html">– LogSource</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/ShopGun/LogLocation.html">– LogLocation</a>
               </li>
             </ul>
           </li>
@@ -342,7 +348,7 @@ It cannot be instantiated - all access is via the static functions &amp; variabl
 
 <p>The ShopGun SDK consists of a number of components (eg. <code><a href="Classes/CoreAPI.html">CoreAPI</a></code>, <code><a href="Classes/EventsTracker.html">EventsTracker</a></code> etc). They are accessed via the static variables (eg. <code><a href="Classes/ShopGun.html#/s:10ShopGunSDK0aB0C7coreAPIAA04CoreE0CvZ">ShopGun.coreAPI</a></code>, <code><a href="Classes/ShopGun.html#/s:10ShopGunSDK0aB0C13eventsTrackerAA06EventsE0CvZ">ShopGun.eventsTracker</a></code> etc).</p>
 
-<p>Before you access any component it must be configured by including it&rsquo;s settings when calling the static function <code><a href="Classes/ShopGun.html#/s:10ShopGunSDK0aB0C9configureyAC8SettingsV8settings_ySS_AC8LogLevelOAC0G6SourceOAC0G8LocationVtcSg10logHandlertFZ">ShopGun.configure(settings:logHandler:)</a></code>.</p>
+<p>Before you access any component it must be configured by including it&rsquo;s settings when calling the static function <code><a href="Classes/ShopGun.html#/s:10ShopGunSDK0aB0C9configureyAC8SettingsV8settings_tFZ">ShopGun.configure(settings:)</a></code>.</p>
 
 <p>If you try to access a component whose settings havn&rsquo;t been included in the settings passed to the configure method, a <code>fatalError</code> will be triggered.</p>
 
@@ -392,6 +398,40 @@ It cannot be instantiated - all access is via the static functions &amp; variabl
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">NetworkGraphClient</span><span class="p">:</span> <span class="kt"><a href="Protocols/GraphClient.html">GraphClient</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK6LoggerC"></a>
+                    <a name="//apple_ref/swift/Class/Logger" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK6LoggerC">Logger</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p><code>Logger</code> is where all messages sent from inside the SDK are handled.</p>
+
+<p>You can assign your own <code>logHandler</code> callback, which will be notified of any SDK messages. You can then do as you like with these messages (filter them, print them, save to disk, etc.).</p>
+
+                        <a href="Classes/Logger.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">public</span> <span class="kd">class</span> <span class="kt">Logger</span></code></pre>
 
                         </div>
                       </div>
@@ -506,7 +546,7 @@ It cannot be instantiated - all access is via the static functions &amp; variabl
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-03-02)</p>
+          <p>&copy; 2018 <a class="link" href="https://github.com/shopgun/shopgun-ios-sdk" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-03-06)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
