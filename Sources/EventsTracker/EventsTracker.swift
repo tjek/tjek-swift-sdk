@@ -36,11 +36,11 @@ public final class EventsTracker {
     
     public let settings: Settings
     
-    private weak var secureDataStore: ShopGunSDKSecureDataStore?
+    private weak var dataStore: ShopGunSDKDataStore?
 
-    internal init(settings: Settings, secureDataStore: ShopGunSDKSecureDataStore?) {
+    internal init(settings: Settings, dataStore: ShopGunSDKDataStore?) {
         self.settings = settings
-        self.secureDataStore = secureDataStore
+        self.dataStore = dataStore
         
         let eventsShipper = EventsShipper(baseURL: settings.baseURL, dryRun: settings.dryRun)
         let eventsCache = EventsCache(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.plist")
@@ -61,7 +61,7 @@ public final class EventsTracker {
         self.sessionLifecycleHandler = SessionLifecycleHandler()
         
         // Try to get the stored clientId, migrate the legacy clientId, or generate a new one.
-        if let storedClientId = EventsTracker.loadClientId(from: secureDataStore) {
+        if let storedClientId = EventsTracker.loadClientId(from: dataStore) {
             self.clientId = storedClientId
         } else {
             if let legacyClientId = EventsTracker.loadLegacyClientId() {
@@ -76,7 +76,7 @@ public final class EventsTracker {
             }
             
             // Save the new clientId back to the store
-            EventsTracker.updateDataStore(secureDataStore, clientId: self.clientId)
+            EventsTracker.updateDataStore(dataStore, clientId: self.clientId)
         }
         
         // Assign the callback for the session handler.
@@ -94,7 +94,7 @@ public final class EventsTracker {
     
     public func resetClientId() {
         self.clientId = ClientIdentifier.generate()
-        EventsTracker.updateDataStore(self.secureDataStore, clientId: self.clientId)
+        EventsTracker.updateDataStore(self.dataStore, clientId: self.clientId)
         
         LifecycleEvents.firstClientSessionOpened.track(self)
         

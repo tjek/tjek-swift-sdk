@@ -17,7 +17,7 @@ final public class CoreAPI {
         didSet { self.updateAuthVaultParams() }
     }
     
-    internal init(settings: Settings, secureDataStore: ShopGunSDKSecureDataStore) {
+    internal init(settings: Settings, dataStore: ShopGunSDKDataStore) {
         self.settings = settings
         
         // Build the urlSession that requests will be run on
@@ -29,7 +29,7 @@ final public class CoreAPI {
 
         self.requestOpQueue.name = "ShopGunSDK.CoreAPI.Requests"
         
-        self.authVault = AuthVault(baseURL: settings.baseURL, key: settings.key, secret: settings.secret, urlSession: self.requstURLSession, secureDataStore: secureDataStore)
+        self.authVault = AuthVault(baseURL: settings.baseURL, key: settings.key, secret: settings.secret, urlSession: self.requstURLSession, dataStore: dataStore)
         
         self.authVault.authorizedUserDidChangeCallback = { [weak self] in self?.authorizedUserDidChange(prevAuthUser: $0, newAuthUser: $1) }
         self.updateAuthVaultParams()

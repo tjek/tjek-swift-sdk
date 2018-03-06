@@ -13,11 +13,11 @@ extension EventsTracker {
     
     fileprivate static let clientIdDataStoreKey = "ShopGunSDK.EventsTracker.ClientId"
     
-    internal static func updateDataStore(_ dataStore: ShopGunSDKSecureDataStore?, clientId: ClientIdentifier?) {
+    internal static func updateDataStore(_ dataStore: ShopGunSDKDataStore?, clientId: ClientIdentifier?) {
         dataStore?.set(value: clientId?.rawValue, for: clientIdDataStoreKey)
     }
     
-    internal static func loadClientId(from dataStore: ShopGunSDKSecureDataStore?) -> ClientIdentifier? {
+    internal static func loadClientId(from dataStore: ShopGunSDKDataStore?) -> ClientIdentifier? {
         guard let rawClientId = dataStore?.get(for: clientIdDataStoreKey) else { return nil }
         
         return ClientIdentifier(rawValue: rawClientId)

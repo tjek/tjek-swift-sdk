@@ -22,18 +22,15 @@ import Foundation
 public final class ShopGun {
 
     private static var _shared: ShopGun?
-    private init(coreAPI: CoreAPI?, eventsTracker: EventsTracker?, graphAPI: GraphAPI?, secureDataStore: ShopGunSDKSecureDataStore) {
+    private init(coreAPI: CoreAPI?, eventsTracker: EventsTracker?, graphAPI: GraphAPI?) {
         self.coreAPI = coreAPI
         self.eventsTracker = eventsTracker
         self.graphAPI = graphAPI
-        self.secureDataStore = secureDataStore
     }
 
     private let coreAPI: CoreAPI?
     private let eventsTracker: EventsTracker?
     private let graphAPI: GraphAPI?
-    
-    private let secureDataStore: ShopGunSDKSecureDataStore
 }
 
 extension ShopGun {
@@ -44,15 +41,11 @@ extension ShopGun {
         public var coreAPI: CoreAPI.Settings?
         public var eventsTracker: EventsTracker.Settings?
         public var graphAPI: GraphAPI.Settings?
-        
-        // if this is set then secure data will available to other apps (check entitlements)
-        public var sharedKeychainGroupId: String?
-        
+
         public init(coreAPI: CoreAPI.Settings?, eventsTracker: EventsTracker.Settings?, graphAPI: GraphAPI.Settings?, sharedKeychainGroupId: String? = nil) {
             self.coreAPI = coreAPI
             self.eventsTracker = eventsTracker
             self.graphAPI = graphAPI
-            self.sharedKeychainGroupId = sharedKeychainGroupId
         }
         
         // TODO: need a way to get default settings from a .plist file
@@ -61,25 +54,25 @@ extension ShopGun {
     public static func configure(settings: Settings) {
         
         // configure the shared DataStore
-        let dataStore: ShopGunSDKSecureDataStore
+        let dataStore: ShopGunSDKDataStore
         if ShopGun.isRunningInPlayground {
             dataStore = PlaygroundDataStore()
         } else {
-            dataStore = KeychainDataStore(sharedKeychainGroupId: settings.sharedKeychainGroupId)
+            dataStore = KeychainDataStore.shared
         }
         
         // configure the CoreAPI, if settings provided
         var coreAPI: CoreAPI? = nil
         if let coreAPISettings = settings.coreAPI {
             Logger.log("Configuring CoreAPI", level: .verbose, source: .ShopGunSDK)
-            coreAPI = CoreAPI(settings: coreAPISettings, secureDataStore: dataStore)
+            coreAPI = CoreAPI(settings: coreAPISettings, dataStore: dataStore)
         }
         
         // configure the EventsTracker, if settings provided
         var eventsTracker: EventsTracker? = nil
         if let eventsTrackerSettings = settings.eventsTracker {
             Logger.log("Configuring EventsTracker", level: .verbose, source: .ShopGunSDK)
-            eventsTracker = EventsTracker(settings: eventsTrackerSettings, secureDataStore: dataStore)
+            eventsTracker = EventsTracker(settings: eventsTrackerSettings, dataStore: dataStore)
         }
         
         // configure the GraphAPI, if settings provided
@@ -91,8 +84,7 @@ extension ShopGun {
         
         _shared = ShopGun(coreAPI: coreAPI,
                           eventsTracker: eventsTracker,
-                          graphAPI: graphAPI,
-                          secureDataStore: dataStore)
+                          graphAPI: graphAPI)
     }
 }
 

@@ -25,19 +25,19 @@ extension CoreAPI {
         
         // MARK: Funcs
         
-        init(baseURL: URL, key: String, secret: String, tokenLife: Int = 7_776_000, urlSession: URLSession, secureDataStore: ShopGunSDKSecureDataStore?) {
+        init(baseURL: URL, key: String, secret: String, tokenLife: Int = 7_776_000, urlSession: URLSession, dataStore: ShopGunSDKDataStore?) {
             self.baseURL = baseURL
             self.key = key
             self.secret = secret
             self.tokenLife = tokenLife
-            self.secureDataStore = secureDataStore
+            self.dataStore = dataStore
             
             self.urlSession = urlSession
             
             self.activeRegenerateTask = nil
  
             // load clientId/authState from the store (if provided)
-            let storedAuth = AuthVault.loadFromDataStore(secureDataStore)
+            let storedAuth = AuthVault.loadFromDataStore(dataStore)
             if let auth = storedAuth.auth {
                 // Apply stored auth if it exists
                 self.authState = .authorized(token: auth.token, user: auth.user, clientId: storedAuth.clientId)
@@ -83,7 +83,7 @@ extension CoreAPI {
             self.queue.async { [weak self] in
                 guard let s = self else { return }
                 
-                AuthVault.updateDataStore(s.secureDataStore, data: nil)
+                AuthVault.updateDataStore(s.dataStore, data: nil)
                 s.authState = .unauthorized(error: nil, clientId: nil)
             }
         }
@@ -101,7 +101,7 @@ extension CoreAPI {
         private let key: String
         private let secret: String
         private let tokenLife: Int
-        private weak var secureDataStore: ShopGunSDKSecureDataStore?
+        private weak var dataStore: ShopGunSDKDataStore?
         private let urlSession: URLSession
         private let queue = DispatchQueue(label: "ShopGunSDK.CoreAPI.AuthVault.Queue")
         // if we are in the process of regenerating the token, this is set
@@ -223,7 +223,7 @@ extension CoreAPI {
         
         /// Save the current AuthState to the store
         private func updateStore() {
-            guard let store = self.secureDataStore else { return }
+            guard let store = self.dataStore else { return }
             
             switch self.authState {
             case .unauthorized(_, nil):
@@ -343,7 +343,7 @@ extension CoreAPI.AuthVault {
     
     fileprivate static let dataStoreKey = "ShopGunSDK.CoreAPI.AuthVault"
     
-    fileprivate static func updateDataStore(_ dataStore: ShopGunSDKSecureDataStore?, data: CoreAPI.AuthVault.StoreData?) {
+    fileprivate static func updateDataStore(_ dataStore: ShopGunSDKDataStore?, data: CoreAPI.AuthVault.StoreData?) {
         var authJSON: String? = nil
         if let data = data,
             let authJSONData = try? JSONEncoder().encode(data) {
@@ -352,7 +352,7 @@ extension CoreAPI.AuthVault {
         dataStore?.set(value: authJSON, for: CoreAPI.AuthVault.dataStoreKey)
     }
     
-    fileprivate static func loadFromDataStore(_ dataStore: ShopGunSDKSecureDataStore?) -> CoreAPI.AuthVault.StoreData {
+    fileprivate static func loadFromDataStore(_ dataStore: ShopGunSDKDataStore?) -> CoreAPI.AuthVault.StoreData {
         guard let authJSONData = dataStore?.get(for: CoreAPI.AuthVault.dataStoreKey)?.data(using: .utf8),
             let auth = try? JSONDecoder().decode(CoreAPI.AuthVault.StoreData.self, from: authJSONData) else {
                 return .init(auth: nil, clientId: nil)
