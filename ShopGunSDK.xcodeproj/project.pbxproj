@@ -495,7 +495,7 @@
 				AE4942BF201743FA006658CE /* PagedPublication */,
 				AEC28B561FF6ABFB0007AAB8 /* EventsTracker */,
 				AE091FD2203AF23F00345009 /* Graph */,
-				AEC28B5F1FF6ABFC0007AAB8 /* Utils */,
+				AEC28B5F1FF6ABFC0007AAB8 /* Shared */,
 				AEC28B701FF6AC8A0007AAB8 /* Resources */,
 				AEC3D8531FFD87FB004C5947 /* Tests */,
 				AEC3D85B1FFD8E86004C5947 /* Configurations */,
@@ -552,7 +552,7 @@
 			path = Sources/CoreAPI;
 			sourceTree = "<group>";
 		};
-		AEC28B5F1FF6ABFC0007AAB8 /* Utils */ = {
+		AEC28B5F1FF6ABFC0007AAB8 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
 				AE6D65EC204ECBF50011E15C /* Logger.swift */,
@@ -568,8 +568,8 @@
 				AE3B3227204030AD001C75C9 /* Error+Extensions.swift */,
 				AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */,
 			);
-			name = Utils;
-			path = Sources/Utils;
+			name = Shared;
+			path = Sources/Shared;
 			sourceTree = "<group>";
 		};
 		AEC28B701FF6AC8A0007AAB8 /* Resources */ = {
