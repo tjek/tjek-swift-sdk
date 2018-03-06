@@ -45,7 +45,7 @@ class ExampleViewController: UIViewController, PagedPublicationViewDataSource {
 
 PlaygroundPage.current.needsIndefiniteExecution = true
 
-ShopGunSDK.configureForPlaygroundDevelopment()
+Logger.logHandler = playgroundLogHandler
 
 let vc = ExampleViewController()
 

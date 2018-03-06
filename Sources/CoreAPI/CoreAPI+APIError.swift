@@ -87,8 +87,7 @@ extension Error where Self == CoreAPI.APIError {
 
 // MARK: -
 
-private typealias CalculatedErrorAttributes = CoreAPI.APIError
-extension CalculatedErrorAttributes {
+extension CoreAPI.APIError {
     
     var isRetryable: Bool {
         switch self.code {
@@ -125,8 +124,7 @@ extension CalculatedErrorAttributes {
 
 // MARK: -
 
-private typealias ErrorPrettyPrint = CoreAPI.APIError
-extension ErrorPrettyPrint: CustomStringConvertible {
+extension CoreAPI.APIError: CustomStringConvertible {
     public var description: String {
         // "CoreAPI.APIError [session: 1107] 'missing token' (httpStatus: 400 / id: 00jbhp0ycrq192uwcxnzs56wt00wdprf) 'Missing token. No token found in request to an endpoint that requires a valid token.'"
         var string = "CoreAPI.APIError [\(String(describing: code.category)): \(code.rawValue)]"
@@ -154,8 +152,7 @@ extension ErrorPrettyPrint: CustomStringConvertible {
 
 // MARK: -
 
-private typealias ErrorCodeCategories = CoreAPI.APIError.Code
-extension ErrorCodeCategories {
+extension CoreAPI.APIError.Code {
     
     public enum ErrorCategory {
         case unknown
@@ -190,8 +187,7 @@ extension ErrorCodeCategories {
 
 // MARK: -
 
-private typealias ErrorCodeConsts = CoreAPI.APIError.Code
-extension ErrorCodeConsts {
+extension CoreAPI.APIError.Code {
     
     // MARK: - Session errors
     
@@ -316,8 +312,7 @@ extension ErrorCodeConsts {
 
 // MARK: -
 
-private typealias ClientAPIErrorConsts = CoreAPI.APIError
-extension ClientAPIErrorConsts {
+extension CoreAPI.APIError {
     
     // When API responds with no status code & no data & no error (this is an unlikely situation
     public static func invalidNetworkResponseError(urlResponse: URLResponse?) -> CoreAPI.APIError { return .init(code: .invalidNetworkResponseError, id: nil, message: "Unknown network error", details: "The API responded with no HTTP status code, no data, and no error", previous: nil, note: nil, httpResponse: urlResponse) }

@@ -82,9 +82,9 @@ extension CoreAPI {
     public static func configure(_ settings: CoreAPI.Settings, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
         
         if isConfigured {
-            Logger.log("Re-configuring CoreAPI", level: .verbose, source: .ShopGunSDK)
+            Logger.log("Re-configuring CoreAPI", level: .verbose, source: .CoreAPI)
         } else {
-            Logger.log("Configuring CoreAPI", level: .verbose, source: .ShopGunSDK)
+            Logger.log("Configuring CoreAPI", level: .verbose, source: .CoreAPI)
         }
         
         _shared = CoreAPI(settings: settings, dataStore: dataStore)
@@ -154,8 +154,7 @@ extension CoreAPI {
 
 // MARK: -
 
-private typealias CoreAPI_CancelRequests = CoreAPI
-extension CoreAPI_CancelRequests {
+extension CoreAPI {
     fileprivate struct CancellableToken: Cancellable {
         
         var id: RequestOperation.Identifier

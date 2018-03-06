@@ -18,7 +18,7 @@ extension EventsTracker {
         static func toDictionary(includeLocation: Bool) -> [String: AnyObject]? {
             var dict = [String: AnyObject]()
             
-            dict["userAgent"] = ShopGun.userAgent as AnyObject
+            dict["userAgent"] = userAgent() as AnyObject
             
             if includeLocation {
                 dict["location"] = LocationContext.toDictionary() as AnyObject?
