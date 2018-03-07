@@ -8,7 +8,7 @@ ShopGunSDK
 
 A framework for interacting with the ShopGun APIs from within your own apps. The SDK has been split into several components:
 
-- `PagedPublication`: A view for fetching, rendering, and interacting with, a catalog.
+- `PagedPublicationView`: A view for fetching, rendering, and interacting with, a catalog.
 - `CoreAPI`: Simplifies auth & communication with the ShopGun REST API.
 - `GraphAPI`: An interface for easily making requests to ShopGun's GraphQL API.
 - `EventsTracker`: An events tracker for efficiently sending events to the ShopGun API.
@@ -68,7 +68,7 @@ let config = ShopGun.Settings(coreAPI: CoreAPI.Settings(key: "<API_KEY>",
 ShopGun.configure(config)
 ```
 
-### Paged Publication
+### PagedPublicationView
 
 The `PagedPublicationView` is a UIView subclass for showing and interacting with a catalog. It also manages all of the loading of the data from our `CoreAPI`.
 
