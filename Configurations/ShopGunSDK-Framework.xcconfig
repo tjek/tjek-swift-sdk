@@ -23,8 +23,6 @@ INFOPLIST_FILE = $(SRCROOT)/Resources/Info.plist
 // Enable testability to make internal things visible with @testable import
 ENABLE_TESTABILITY = YES
 
-HEADER_SEARCH_PATHS = $(inherited) ${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap
-
 INSTALL_PATH = $(LOCAL_LIBRARY_DIR)/Frameworks
 DYLIB_COMPATIBILITY_VERSION = 1
 DYLIB_CURRENT_VERSION = 1

@@ -8,7 +8,7 @@
 //  Copyright (c) 2018 ShopGun. All rights reserved.
 
 import Foundation
-import CommonCrypto
+import CryptoSwift
 
 extension CoreAPI {
     
@@ -416,17 +416,7 @@ extension URLRequest {
     /// Generates a new URLRequest that includes the signed HTTPHeaders, given a token & secret
     fileprivate func signedForCoreAPI(withToken token: String, secret: String) -> URLRequest {
         // make an SHA256 Hex string
-        let hashString: String?
-        if let data = (secret + token).data(using: .utf8) {
-            hashString = data.withUnsafeBytes({ (bytes: UnsafePointer<UInt8>) -> String in
-                var hash: [UInt8] = .init(repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
-                _ = CC_SHA256(bytes, CC_LONG(data.count), &hash)
-                
-                return hash.reduce("", { $0 + String(format: "%02x", $1) })
-            })
-        } else {
-            hashString = nil
-        }
+        let hashString = (secret + token).sha256()
         
         var signedRequest = self
         signedRequest.setValue(token, forHTTPHeaderField: "X-Token")

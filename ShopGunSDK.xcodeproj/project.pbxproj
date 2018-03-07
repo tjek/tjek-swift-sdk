@@ -6,20 +6,6 @@
 	objectVersion = 48;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		AEC3D84C1FFAD075004C5947 /* CommonCryptoModuleMap */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = AEC3D84D1FFAD075004C5947 /* Build configuration list for PBXAggregateTarget "CommonCryptoModuleMap" */;
-			buildPhases = (
-				AEC3D8501FFAD089004C5947 /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = CommonCryptoModuleMap;
-			productName = CommonCryptoModuleMap;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		AE0654871FFED399009F6F92 /* CoreAPI+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0654861FFED399009F6F92 /* CoreAPI+Utils.swift */; };
 		AE091FEB203AF24000345009 /* GraphRequestResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE091FD3203AF23F00345009 /* GraphRequestResponse.swift */; };
@@ -70,6 +56,8 @@
 		AE8E454F2010941F0042CCE2 /* CoreAPI+DealerRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E454E2010941F0042CCE2 /* CoreAPI+DealerRequests.swift */; };
 		AE8E45582010A38C0042CCE2 /* CoreAPI+Offer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E45572010A38C0042CCE2 /* CoreAPI+Offer.swift */; };
 		AE95FDC0204FEC6C0002C1CE /* CGSize+Fitting.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE95FDBF204FEC6C0002C1CE /* CGSize+Fitting.swift */; };
+		AE95FDCF205014AF0002C1CE /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE95FDC8205014080002C1CE /* CryptoSwift.framework */; };
+		AE95FDD0205014BC0002C1CE /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE95FDC8205014080002C1CE /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEC28B441FF6AAC20007AAB8 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */; };
 		AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5A1FF6ABFC0007AAB8 /* CoreAPI+Person.swift */; };
 		AEC28B661FF6ABFC0007AAB8 /* CoreAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5B1FF6ABFC0007AAB8 /* CoreAPIRequest.swift */; };
@@ -240,6 +228,27 @@
 			remoteGlobalIDString = D1ED2D341AD2D09F00CFC3EB;
 			remoteInfo = "Kingfisher-iOS";
 		};
+		AE95FDC7205014080002C1CE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 754BE45519693E190098E6F3;
+			remoteInfo = CryptoSwift;
+		};
+		AE95FDC9205014080002C1CE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 754BE46019693E190098E6F3;
+			remoteInfo = Tests;
+		};
+		AE95FDCB2050141D0002C1CE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 754BE45419693E190098E6F3;
+			remoteInfo = CryptoSwift;
+		};
 		AEC28B451FF6AAC20007AAB8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AEC28B311FF6AAC20007AAB8 /* Project object */;
@@ -254,14 +263,21 @@
 			remoteGlobalIDString = 16B5856C1F71DBE00038EE30;
 			remoteInfo = "Valet macOS Test Host App";
 		};
-		AECC8E4D204EA491007185B0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AEC28B311FF6AAC20007AAB8 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AEC3D84C1FFAD075004C5947;
-			remoteInfo = CommonCryptoModuleMap;
-		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AE95FDCE205014880002C1CE /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				AE95FDD0205014BC0002C1CE /* CryptoSwift.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		AE0654861FFED399009F6F92 /* CoreAPI+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+Utils.swift"; sourceTree = "<group>"; };
@@ -324,6 +340,7 @@
 		AE8E45572010A38C0042CCE2 /* CoreAPI+Offer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+Offer.swift"; sourceTree = "<group>"; };
 		AE95FDBF204FEC6C0002C1CE /* CGSize+Fitting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+Fitting.swift"; sourceTree = "<group>"; };
 		AE95FDC1204FEE710002C1CE /* ShopGunSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShopGunSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CryptoSwift.xcodeproj; path = External/CryptoSwift/CryptoSwift.xcodeproj; sourceTree = "<group>"; };
 		AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC28B431FF6AAC20007AAB8 /* ShopGunSDK-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunSDK-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTracker.swift; sourceTree = "<group>"; };
@@ -366,6 +383,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE95FDCF205014AF0002C1CE /* CryptoSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +402,7 @@
 		AE06548D1FFEE23D009F6F92 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */,
 				AE49429920113A0F006658CE /* Verso.xcodeproj */,
 				AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */,
 				AE5A972820232098004E0799 /* Kingfisher.xcodeproj */,
@@ -483,6 +502,15 @@
 				AE8E454E2010941F0042CCE2 /* CoreAPI+DealerRequests.swift */,
 			);
 			path = Requests;
+			sourceTree = "<group>";
+		};
+		AE95FDC3205014080002C1CE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AE95FDC8205014080002C1CE /* CryptoSwift.framework */,
+				AE95FDCA205014080002C1CE /* Tests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		AEC28B301FF6AAC20007AAB8 = {
@@ -677,11 +705,12 @@
 				AEC28B361FF6AAC20007AAB8 /* Frameworks */,
 				AEC28B371FF6AAC20007AAB8 /* Headers */,
 				AEC28B381FF6AAC20007AAB8 /* Resources */,
+				AE95FDCE205014880002C1CE /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				AECC8E4E204EA491007185B0 /* PBXTargetDependency */,
+				AE95FDCC2050141D0002C1CE /* PBXTargetDependency */,
 				AE5A9757202320AC004E0799 /* PBXTargetDependency */,
 				AE4942A720113A23006658CE /* PBXTargetDependency */,
 				AE0654AA1FFEE266009F6F92 /* PBXTargetDependency */,
@@ -728,10 +757,6 @@
 						CreatedOnToolsVersion = 9.1;
 						ProvisioningStyle = Automatic;
 					};
-					AEC3D84C1FFAD075004C5947 = {
-						CreatedOnToolsVersion = 9.1;
-						ProvisioningStyle = Automatic;
-					};
 				};
 			};
 			buildConfigurationList = AEC28B341FF6AAC20007AAB8 /* Build configuration list for PBXProject "ShopGunSDK" */;
@@ -755,6 +780,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = AE95FDC3205014080002C1CE /* Products */;
+					ProjectRef = AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */;
+				},
+				{
 					ProductGroup = AE5A972920232098004E0799 /* Products */;
 					ProjectRef = AE5A972820232098004E0799 /* Kingfisher.xcodeproj */;
 				},
@@ -771,7 +800,6 @@
 			targets = (
 				AEC28B391FF6AAC20007AAB8 /* ShopGunSDK */,
 				AEC28B421FF6AAC20007AAB8 /* ShopGunSDKTests */,
-				AEC3D84C1FFAD075004C5947 /* CommonCryptoModuleMap */,
 			);
 		};
 /* End PBXProject section */
@@ -910,6 +938,20 @@
 			remoteRef = AE5A974D20232098004E0799 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		AE95FDC8205014080002C1CE /* CryptoSwift.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CryptoSwift.framework;
+			remoteRef = AE95FDC7205014080002C1CE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE95FDCA205014080002C1CE /* Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = Tests.xctest;
+			remoteRef = AE95FDC9205014080002C1CE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		AECC8E49204E8B36007185B0 /* Valet macOS Test Host App.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
@@ -937,22 +979,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		AEC3D8501FFAD089004C5947 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This if-statement means we'll only run the main script if the CommonCryptoModuleMap directory doesn't exist\n# Because otherwise the rest of the script causes a full recompile for anything where CommonCrypto is a dependency\n# Do a \"Clean Build Folder\" to remove this directory and trigger the rest of the script to run\nif [ -d \"${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap\" ]; then\necho \"${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap directory already exists, so skipping the rest of the script.\"\nexit 0\nfi\n\nmkdir -p \"${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap\"\ncat <<EOF > \"${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap/module.modulemap\"\nmodule CommonCrypto [system] {\n    header \"${SDKROOT}/usr/include/CommonCrypto/CommonCrypto.h\"\n    export *\n}\nEOF";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AEC28B351FF6AAC20007AAB8 /* Sources */ = {
@@ -1044,15 +1070,15 @@
 			name = "Kingfisher-iOS";
 			targetProxy = AE5A9756202320AC004E0799 /* PBXContainerItemProxy */;
 		};
+		AE95FDCC2050141D0002C1CE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CryptoSwift;
+			targetProxy = AE95FDCB2050141D0002C1CE /* PBXContainerItemProxy */;
+		};
 		AEC28B461FF6AAC20007AAB8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AEC28B391FF6AAC20007AAB8 /* ShopGunSDK */;
 			targetProxy = AEC28B451FF6AAC20007AAB8 /* PBXContainerItemProxy */;
-		};
-		AECC8E4E204EA491007185B0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AEC3D84C1FFAD075004C5947 /* CommonCryptoModuleMap */;
-			targetProxy = AECC8E4D204EA491007185B0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1222,24 +1248,6 @@
 			};
 			name = Release;
 		};
-		AEC3D84E1FFAD075004C5947 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = MN86AVA6GX;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		AEC3D84F1FFAD075004C5947 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = MN86AVA6GX;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1266,15 +1274,6 @@
 			buildConfigurations = (
 				AEC28B521FF6AAC20007AAB8 /* Debug */,
 				AEC28B531FF6AAC20007AAB8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AEC3D84D1FFAD075004C5947 /* Build configuration list for PBXAggregateTarget "CommonCryptoModuleMap" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AEC3D84E1FFAD075004C5947 /* Debug */,
-				AEC3D84F1FFAD075004C5947 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
