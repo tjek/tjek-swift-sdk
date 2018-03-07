@@ -58,23 +58,13 @@ For more complex configuration options, including providing a custom log handler
 
 ### < TODO: MAKE SEPARATE CONFIGURATION DOCS >
 
-```swift
-let config = ShopGun.Settings(coreAPI: CoreAPI.Settings(key: "<API_KEY>", 
-                                                     secret: "<API_SECRET>"), 
-                        eventsTracker: EventsTracker.Settings(trackId: "<TRACK_ID>"), 
-                             graphAPI: nil, 
-                sharedKeychainGroupId: "com.mycompany.shared-keychain")
-
-ShopGun.configure(config)
-```
-
 ### PagedPublicationView
 
 The `PagedPublicationView` is a UIView subclass for showing and interacting with a catalog. It also manages all of the loading of the data from our `CoreAPI`.
 
-> **Note:** You must provide `CoreAPI` settings when configuring the SDK, otherwise the SDK will trigger a fatalError. 
+> **Note:** You must configure the `CoreAPI` before using the PagedPublicationView, otherwise the SDK will trigger a fatalError.
 > 
-> If you wish to have usage stats collected you will also need to provide EventsTracker settings when configuring the SDK.
+> If you wish to have usage stats collected you will also need to configure the EventsTracker.
 
 Simply make an instance of `PagedPublicationView` and add it as a subview in your ViewController. Then, when you wish to start loading the catalog into the view (most likely in the `viewDidLoad	` method of your UIViewController), call the following:
 
@@ -101,7 +91,7 @@ The interface for making requests is very flexible, but a large number of pre-bu
 let req = CoreAPI.getPagedPublication(withId: …)
 
 // Perform the request. The completion handler is passed a Result object containing the requested PagedPublication, or an error.
-ShopGun.coreAPI.request(req) { (result) in
+CoreAPI.shared.request(req) { (result) in
 	switch result {
 	case .success(let pagedPublication):
 	   print("👍 '\(pagedPublication.id.rawValue)' loaded")

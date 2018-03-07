@@ -67,9 +67,9 @@
 		AE8E4541200E31E60042CCE2 /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E4540200E31E60042CCE2 /* UIColor+Hex.swift */; };
 		AE8E4544200E3CA70042CCE2 /* CoreAPI+PagedPublicationRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E4543200E3CA70042CCE2 /* CoreAPI+PagedPublicationRequests.swift */; };
 		AE8E4546200F6CAA0042CCE2 /* ImageURLSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E4545200F6CAA0042CCE2 /* ImageURLSet.swift */; };
-		AE8E4548200F6D140042CCE2 /* CGSize+Fitting.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E4547200F6D140042CCE2 /* CGSize+Fitting.swift */; };
 		AE8E454F2010941F0042CCE2 /* CoreAPI+DealerRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E454E2010941F0042CCE2 /* CoreAPI+DealerRequests.swift */; };
 		AE8E45582010A38C0042CCE2 /* CoreAPI+Offer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E45572010A38C0042CCE2 /* CoreAPI+Offer.swift */; };
+		AE95FDC0204FEC6C0002C1CE /* CGSize+Fitting.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE95FDBF204FEC6C0002C1CE /* CGSize+Fitting.swift */; };
 		AEC28B441FF6AAC20007AAB8 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */; };
 		AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5A1FF6ABFC0007AAB8 /* CoreAPI+Person.swift */; };
 		AEC28B661FF6ABFC0007AAB8 /* CoreAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5B1FF6ABFC0007AAB8 /* CoreAPIRequest.swift */; };
@@ -320,9 +320,10 @@
 		AE8E4540200E31E60042CCE2 /* UIColor+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
 		AE8E4543200E3CA70042CCE2 /* CoreAPI+PagedPublicationRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+PagedPublicationRequests.swift"; sourceTree = "<group>"; };
 		AE8E4545200F6CAA0042CCE2 /* ImageURLSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageURLSet.swift; sourceTree = "<group>"; };
-		AE8E4547200F6D140042CCE2 /* CGSize+Fitting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+Fitting.swift"; sourceTree = "<group>"; };
 		AE8E454E2010941F0042CCE2 /* CoreAPI+DealerRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+DealerRequests.swift"; sourceTree = "<group>"; };
 		AE8E45572010A38C0042CCE2 /* CoreAPI+Offer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreAPI+Offer.swift"; sourceTree = "<group>"; };
+		AE95FDBF204FEC6C0002C1CE /* CGSize+Fitting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+Fitting.swift"; sourceTree = "<group>"; };
+		AE95FDC1204FEE710002C1CE /* ShopGunSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShopGunSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC28B431FF6AAC20007AAB8 /* ShopGunSDK-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunSDK-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTracker.swift; sourceTree = "<group>"; };
@@ -449,6 +450,7 @@
 				AE7F6A78201F5F4900168C1A /* PagedPublicationView+ImageLoader.swift */,
 				AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */,
 				AE3B3243204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift */,
+				AE95FDBF204FEC6C0002C1CE /* CGSize+Fitting.swift */,
 				AE3B32DA2045F8A6001C75C9 /* Resources */,
 			);
 			name = PagedPublication;
@@ -486,6 +488,7 @@
 		AEC28B301FF6AAC20007AAB8 = {
 			isa = PBXGroup;
 			children = (
+				AE95FDC1204FEE710002C1CE /* ShopGunSDK.podspec */,
 				AEC28B6F1FF6AC420007AAB8 /* ShopGunSDK.playground */,
 				AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */,
 				AEC28B591FF6ABFC0007AAB8 /* CoreAPI */,
@@ -544,6 +547,7 @@
 				AE7D9B62204745C6000F3B7D /* CoreAPI+LegacyMigration.swift */,
 				AE85C5EC20017EE600263F8B /* URLSession+CoreAPI.swift */,
 				AE8E4545200F6CAA0042CCE2 /* ImageURLSet.swift */,
+				AE8E4540200E31E60042CCE2 /* UIColor+Hex.swift */,
 			);
 			name = CoreAPI;
 			path = Sources/CoreAPI;
@@ -560,8 +564,6 @@
 				AE85C5EE2001884100263F8B /* Result+Map.swift */,
 				AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */,
 				AE2008D4200CE86F004363BE /* UserAgent.swift */,
-				AE8E4540200E31E60042CCE2 /* UIColor+Hex.swift */,
-				AE8E4547200F6D140042CCE2 /* CGSize+Fitting.swift */,
 				AE3B3227204030AD001C75C9 /* Error+Extensions.swift */,
 				AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */,
 			);
@@ -974,7 +976,6 @@
 				AE85C5E42000384500263F8B /* CoreAPI+AuthVault.swift in Sources */,
 				AE091FED203AF24000345009 /* GraphClient.swift in Sources */,
 				AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */,
-				AE8E4548200F6D140042CCE2 /* CGSize+Fitting.swift in Sources */,
 				AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI+Person.swift in Sources */,
 				AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */,
@@ -994,6 +995,7 @@
 				AE8E4546200F6CAA0042CCE2 /* ImageURLSet.swift in Sources */,
 				AE0B85D4204607370092F110 /* GraphAPI.swift in Sources */,
 				AECC8E07204987B5007185B0 /* EventsTracker+DataStore.swift in Sources */,
+				AE95FDC0204FEC6C0002C1CE /* CGSize+Fitting.swift in Sources */,
 				AE3C38FE2019DFD700A92597 /* PagedPublicationView+LoadingView.swift in Sources */,
 				AE7F6A77201F36F300168C1A /* PagedPublicationView+Verso.swift in Sources */,
 				AE6D660B204EE2910011E15C /* KeychainDataStore.swift in Sources */,
