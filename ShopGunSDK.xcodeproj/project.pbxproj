@@ -436,7 +436,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		AE091FD2203AF23F00345009 /* Graph */ = {
+		AE091FD2203AF23F00345009 /* GraphAPI */ = {
 			isa = PBXGroup;
 			children = (
 				AE0B85D3204607370092F110 /* GraphAPI.swift */,
@@ -446,8 +446,8 @@
 				AE091FD7203AF23F00345009 /* GraphQuery.swift */,
 				AE091FD8203AF23F00345009 /* GraphError.swift */,
 			);
-			name = Graph;
-			path = Sources/Graph;
+			name = GraphAPI;
+			path = Sources/GraphAPI;
 			sourceTree = "<group>";
 		};
 		AE3B32DA2045F8A6001C75C9 /* Resources */ = {
@@ -533,7 +533,7 @@
 				AEC28B591FF6ABFC0007AAB8 /* CoreAPI */,
 				AE4942BF201743FA006658CE /* PagedPublication */,
 				AEC28B561FF6ABFB0007AAB8 /* EventsTracker */,
-				AE091FD2203AF23F00345009 /* Graph */,
+				AE091FD2203AF23F00345009 /* GraphAPI */,
 				AEC28B5F1FF6ABFC0007AAB8 /* Shared */,
 				AEC28B701FF6AC8A0007AAB8 /* Resources */,
 				AEC3D8531FFD87FB004C5947 /* Tests */,

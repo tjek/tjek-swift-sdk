@@ -14,6 +14,7 @@ Pod::Spec.new do |s|
 
     s.platform         = :ios, "9.3"
     s.swift_version    = "4.1"
+    s.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.1' }
 
     s.source       = { :git => "https://github.com/shopgun/shopgun-ios-sdk.git", :tag => "v#{s.version}" }
     
@@ -38,6 +39,13 @@ Pod::Spec.new do |s|
         ss.dependency "CryptoSwift", "~> 0.8.3"
     end
 
+    s.subspec 'GraphAPI' do |ss|
+        ss.source_files = "Sources/GraphAPI/**/*.swift"
+        ss.frameworks   = "Foundation"
+        
+        ss.dependency "ShopGunSDK/Shared"
+    end
+
     s.subspec 'EventsTracker' do |ss|
         ss.source_files = "Sources/EventsTracker/**/*.swift"
         ss.frameworks   = "Foundation", "UIKit", "CoreLocation"
@@ -51,5 +59,4 @@ Pod::Spec.new do |s|
 
         ss.dependency "Valet", "~> 3.0.0"
     end
-
 end
