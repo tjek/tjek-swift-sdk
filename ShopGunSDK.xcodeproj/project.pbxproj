@@ -71,6 +71,12 @@
 		AECC8E07204987B5007185B0 /* EventsTracker+DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC8E06204987B5007185B0 /* EventsTracker+DataStore.swift */; };
 		AECC8E1B204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */; };
 		AEDCC2F02008BA14002644C2 /* CoreAPI_Dealer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDCC2EF2008BA14002644C2 /* CoreAPI_Dealer.swift */; };
+		AEE37C6C20513835008E71D8 /* Kingfisher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5A973820232098004E0799 /* Kingfisher.framework */; };
+		AEE37C6D20513855008E71D8 /* Kingfisher.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE5A973820232098004E0799 /* Kingfisher.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AEE37C6E20513862008E71D8 /* Verso.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4942A520113A0F006658CE /* Verso.framework */; };
+		AEE37C6F20513867008E71D8 /* Verso.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE4942A520113A0F006658CE /* Verso.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AEE37C7020513878008E71D8 /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06549A1FFEE24C009F6F92 /* Valet.framework */; };
+		AEE37C7120513881008E71D8 /* Valet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE06549A1FFEE24C009F6F92 /* Valet.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -272,7 +278,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				AEE37C6F20513867008E71D8 /* Verso.framework in Embed Frameworks */,
 				AE95FDD0205014BC0002C1CE /* CryptoSwift.framework in Embed Frameworks */,
+				AEE37C6D20513855008E71D8 /* Kingfisher.framework in Embed Frameworks */,
+				AEE37C7120513881008E71D8 /* Valet.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,6 +392,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEE37C7020513878008E71D8 /* Valet.framework in Frameworks */,
+				AEE37C6E20513862008E71D8 /* Verso.framework in Frameworks */,
+				AEE37C6C20513835008E71D8 /* Kingfisher.framework in Frameworks */,
 				AE95FDCF205014AF0002C1CE /* CryptoSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
