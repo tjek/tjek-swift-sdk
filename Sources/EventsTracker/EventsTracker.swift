@@ -12,7 +12,6 @@ import Foundation
 public final class EventsTracker {
     public enum ClientIdentifierType {}
     public typealias ClientIdentifier = GenericIdentifier<ClientIdentifierType>
-    public typealias PersonId = CoreAPI.Person.Identifier
     public typealias EventType = String
     public typealias EventProperties = [String: AnyObject]
     

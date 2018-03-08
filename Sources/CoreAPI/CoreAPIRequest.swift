@@ -93,8 +93,3 @@ extension CoreAPI.Request where T: Decodable {
         self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: { $0.decodeJSON() })
     }
 }
-
-extension CoreAPI {
-    // Simple namespace for keeping Requests
-    public struct Requests { private init() {} }
-}

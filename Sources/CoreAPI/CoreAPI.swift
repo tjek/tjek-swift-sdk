@@ -261,3 +261,8 @@ extension CoreAPI {
         }
     }
 }
+
+extension CoreAPI {
+    /// Simple namespace for keeping Requests
+    public struct Requests { private init() {} }
+}

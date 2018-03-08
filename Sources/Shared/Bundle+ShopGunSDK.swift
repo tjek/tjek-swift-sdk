@@ -13,6 +13,6 @@ import Foundation
 extension Bundle {
     @objc
     public static var shopgunSDK: Bundle {
-        return Bundle(identifier: "com.shopgun.ios.sdk")!
+        return Bundle(for: Logger.self)
     }
 }
