@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
         ss.dependency "ShopGunSDK/Shared"
         ss.dependency "ShopGunSDK/CoreAPI"
         ss.dependency "ShopGunSDK/EventsTracker"
-        ss.dependency "Verso", "~> 1.0.0"
+        ss.dependency "Verso", "~> 1.0.1"
         ss.dependency "Kingfisher", "~> 4.6.3"
         
         ss.resources = ["Sources/PagedPublication/Resources/**/*"]
