@@ -8,11 +8,11 @@ public protocol ShopGunSDKDataStore: class {
 
 final public class KeychainDataStore {
     
-    public let settings: Settings
+    public let settings: Settings.KeychainDataStore
     
     fileprivate let valet: Valet?
 
-    internal init(settings: Settings) {
+    internal init(settings: Settings.KeychainDataStore) {
         self.settings = settings
         
         var valet: Valet? = nil
@@ -62,17 +62,12 @@ extension KeychainDataStore: ShopGunSDKDataStore {
 
 extension KeychainDataStore {
     fileprivate static var _shared: KeychainDataStore?
-    
-    public enum Settings {
-        case privateKeychain
-        case sharedKeychain(groupId: String)
-    }
 
     // TODO test thread safety. What if access shared while calling `configure`
     public static var shared: KeychainDataStore {
         if _shared == nil {
-            // first time non-configured dataStore is requested it is configured as a private  keychain.
-            configure(.privateKeychain)
+            // first time non-configured dataStore is requested it is configured based on the shared config file (if available).
+            configure((try? Settings.loadShared())?.keychainDataStore ?? .privateKeychain)
         }
         return _shared!
     }
@@ -80,8 +75,8 @@ extension KeychainDataStore {
     public static var isConfigured: Bool {
         return _shared != nil
     }
-
-    public static func configure(_ settings: KeychainDataStore.Settings) {
+    
+    public static func configure(_ settings: Settings.KeychainDataStore) {
         guard isConfigured == false else {
             Logger.log("Cannot re-configure KeychainDataStore", level: .error, source: .ShopGunSDK)
             return

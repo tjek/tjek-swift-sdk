@@ -15,15 +15,15 @@ public final class EventsTracker {
     public typealias EventType = String
     public typealias EventProperties = [String: AnyObject]
     
-    public let settings: Settings
+    public let settings: Settings.EventsTracker
     
     private weak var dataStore: ShopGunSDKDataStore?
 
-    internal init(settings: Settings, dataStore: ShopGunSDKDataStore?) {
+    internal init(settings: Settings.EventsTracker, dataStore: ShopGunSDKDataStore?) {
         self.settings = settings
         self.dataStore = dataStore
         
-        let eventsShipper = EventsShipper(baseURL: settings.baseURL, dryRun: settings.dryRun)
+        let eventsShipper = EventsShipper(baseURL: settings.baseURL, dryRun: settings.enabled == false)
         let eventsCache = EventsCache(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.plist")
         
         self.pool = CachedFlushablePool(dispatchInterval: settings.dispatchInterval,
@@ -89,25 +89,6 @@ public final class EventsTracker {
 // MARK: -
 
 extension EventsTracker {
-    
-    public struct Settings {
-        public var trackId: String
-        public var baseURL: URL
-        public var dispatchInterval: TimeInterval
-        public var dispatchLimit: Int
-        public var dryRun: Bool
-        public var includeLocation: Bool
-        
-        public init(trackId: String, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, dryRun: Bool = false, includeLocation: Bool = false) {
-            self.trackId = trackId
-            self.baseURL = baseURL
-            self.dispatchInterval = dispatchInterval
-            self.dispatchLimit = dispatchLimit
-            self.dryRun = dryRun
-            self.includeLocation = includeLocation
-        }
-    }
-    
     fileprivate static var _shared: EventsTracker?
     
     public static var shared: EventsTracker {
@@ -121,8 +102,21 @@ extension EventsTracker {
         return _shared != nil
     }
     
-    // This will cause a fatalError if KeychainDataStore hasnt been configured
-    public static func configure(_ settings: EventsTracker.Settings, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
+    /// This will cause a fatalError if KeychainDataStore hasnt been configured
+    public static func configure() {
+        do {
+            guard let settings = try Settings.loadShared().eventsTracker else {
+                fatalError("Required EventsTracker settings missing from '\(Settings.defaultSettingsFileName)'")
+            }
+            
+            configure(settings)
+        } catch let error {
+            fatalError(String(describing: error))
+        }
+    }
+    
+    /// This will cause a fatalError if KeychainDataStore hasnt been configured
+    public static func configure(_ settings: Settings.EventsTracker, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
         
         if isConfigured {
             Logger.log("Re-configuring", level: .verbose, source: .EventsTracker)

@@ -10,9 +10,9 @@
 import Foundation
 
 final public class GraphAPI {
-    public let settings: Settings
+    public let settings: Settings.GraphAPI
     
-    internal init(settings: Settings) {
+    internal init(settings: Settings.GraphAPI) {
         self.settings = settings
     }
     
@@ -22,17 +22,6 @@ final public class GraphAPI {
 // MARK: -
 
 extension GraphAPI {
-    
-    public struct Settings {
-        public var key: String
-        public var baseURL: URL
-        
-        public init(key: String, baseURL: URL = URL(string: "https://graph.service.shopgun.com")!) {
-            self.key = key
-            self.baseURL = baseURL
-        }
-    }
-    
     fileprivate static var _shared: GraphAPI?
     
     public static var shared: GraphAPI {
@@ -46,8 +35,19 @@ extension GraphAPI {
         return _shared != nil
     }
     
-    // This will cause a fatalError if KeychainDataStore hasnt been configured
-    public static func configure(_ settings: GraphAPI.Settings) {
+    public static func configure() {
+        do {
+            guard let settings = try Settings.loadShared().graphAPI else {
+                fatalError("Required GraphAPI settings missing from '\(Settings.defaultSettingsFileName)'")
+            }
+            
+            configure(settings)
+        } catch let error {
+            fatalError(String(describing: error))
+        }
+    }
+    
+    public static func configure(_ settings: Settings.GraphAPI) {
         
         if isConfigured {
             Logger.log("Re-configuring GraphAPI", level: .verbose, source: .GraphAPI)

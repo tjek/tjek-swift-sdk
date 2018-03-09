@@ -115,7 +115,7 @@ final public class Logger {
     }
     
     /**
-     Forwards a message to the static ShopGun.logHandler callback (on the main queue). Prefixes the message with a 'source name' (eg. "[ShopGunSDK.CoreAPI]", based on the provided `LogSource`.
+     Forwards a message to the static ShopGun.logHandler callback (on the current queue). Prefixes the message with a 'source name' (eg. "[ShopGunSDK.CoreAPI]", based on the provided `LogSource`.
      - parameter message: The message to send to the LogHandler.
      - parameter level: What 'kind/severity' this log represents. See `LogLevel`.
      - parameter source: What part of the SDK triggered this message. See `LogSource`.
@@ -126,11 +126,8 @@ final public class Logger {
     public static func log(_ message: String, level: LogLevel, source: LogSource, file: String = #file, function: String = #function, line: Int = #line) {
         guard let handler = logHandler else { return }
         
-        DispatchQueue.main.async {
-            
-            let sourceName = source.sourceName
-            handler("[\(sourceName)] \(message)", level, source, LogLocation(filePath: file, functionName: function, lineNumber: line))
-        }
+        let sourceName = source.sourceName
+        handler("[\(sourceName)] \(message)", level, source, LogLocation(filePath: file, functionName: function, lineNumber: line))
     }
     
     /// A default log handler for printing only critical messages to the console.

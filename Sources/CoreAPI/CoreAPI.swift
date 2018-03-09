@@ -11,13 +11,13 @@ import Foundation
 
 final public class CoreAPI {
     
-    public let settings: Settings
+    public let settings: Settings.CoreAPI
     
     public var locale: Locale = Locale.autoupdatingCurrent {
         didSet { self.updateAuthVaultParams() }
     }
     
-    internal init(settings: Settings, dataStore: ShopGunSDKDataStore) {
+    internal init(settings: Settings.CoreAPI, dataStore: ShopGunSDKDataStore) {
         self.settings = settings
         
         // Build the urlSession that requests will be run on
@@ -52,19 +52,6 @@ final public class CoreAPI {
 // MARK: -
 
 extension CoreAPI {
-
-    public struct Settings {
-        public var key: String
-        public var secret: String
-        public var baseURL: URL
-        
-        public init(key: String, secret: String, baseURL: URL = URL(string: "https://api.etilbudsavis.dk")!) {
-            self.key = key
-            self.secret = secret
-            self.baseURL = baseURL
-        }
-    }
-    
     fileprivate static var _shared: CoreAPI?
 
     public static var shared: CoreAPI {
@@ -78,9 +65,21 @@ extension CoreAPI {
         return _shared != nil
     }
     
-    // This will cause a fatalError if KeychainDataStore hasnt been configured
-    public static func configure(_ settings: CoreAPI.Settings, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
-        
+    public static func configure() {
+        do {
+            guard let settings = try Settings.loadShared().coreAPI else {
+                fatalError("Required CoreAPI settings missing from '\(Settings.defaultSettingsFileName)'")
+            }
+            
+            configure(settings)
+        } catch let error {
+            fatalError(String(describing: error))
+        }
+    }
+    
+    /// This will cause a fatalError if KeychainDataStore hasnt been configured
+    public static func configure(_ settings: Settings.CoreAPI, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
+
         if isConfigured {
             Logger.log("Re-configuring CoreAPI", level: .verbose, source: .CoreAPI)
         } else {
