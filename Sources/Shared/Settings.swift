@@ -44,7 +44,6 @@ public class Settings: Decodable {
     }
     private static var _shared: Settings?
     
-    
     // MARK: Decodable
     
     enum CodingKeys: String, CodingKey {
