@@ -221,7 +221,6 @@ extension CoreAPI {
         case facebook   = "facebook"
     }
 
-    // TODO: login completion?
     public func login(credentials: LoginCredentials, completion: ((Result<AuthorizedUser>) -> Void)?) {
         self.queue.async { [weak self] in
             
@@ -252,13 +251,29 @@ extension CoreAPI {
     }
     
     fileprivate func authorizedUserDidChange(prevAuthUser: AuthorizedUser?, newAuthUser: AuthorizedUser?) {
+        
         switch newAuthUser {
         case let (person, provider)?:
             Logger.log("User (\(provider)) logged In \(person)", level: .debug, source: .CoreAPI)
         case nil:
             Logger.log("User logged out", level: .debug, source: .CoreAPI)
         }
+        
+        var userInfo: [AnyHashable: Any] = [:]
+        userInfo["previous"] = prevAuthUser
+        userInfo["current"] = newAuthUser
+        
+        NotificationCenter.default.post(name: CoreAPI.authorizedUserDidChangeNotification, object: self, userInfo: userInfo)
     }
+    
+    /**
+     The name of the notification that is posted when the authorized user changes.
+     
+     The UserInfo contains the `previous` and `current` AuthorizedUser tuples.
+     - If we are logging in, the `previous` authorized user is nil.
+     - If we are logging out, the `current` authorized user is nil.
+     */
+    public static let authorizedUserDidChangeNotification = Notification.Name("com.shopgun.ios.sdk.coreAPI.authorizedUserDidChange")
 }
 
 extension CoreAPI {
