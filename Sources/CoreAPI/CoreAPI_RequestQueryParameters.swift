@@ -22,7 +22,7 @@ extension CoreAPI.Requests {
             self.itemCount = count
         }
         
-        internal var requestParams: [String: String] {
+        public var requestParams: [String: String] {
             return ["offset": String(self.startCursor),
                     "limit": String(self.itemCount)]
         }

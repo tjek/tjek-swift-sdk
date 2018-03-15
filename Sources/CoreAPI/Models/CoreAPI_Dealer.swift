@@ -14,12 +14,6 @@ extension CoreAPI {
     public struct Dealer: Decodable {
         public typealias Identifier = GenericIdentifier<Dealer>
         
-        public enum SocialMediaIdentity {
-            case facebook(pageId: String)
-            case youtube(userId: String)
-            case twitter(handle: String)
-        }
-        
         public var id: Identifier
         public var name: String
         public var website: URL?
@@ -29,7 +23,6 @@ extension CoreAPI {
         public var color: UIColor?
         public var country: Country
         public var favoriteCount: Int
-        public var socialMediaIds: [SocialMediaIdentity]
         
         // TODO: missing fields: PageFlip color&logo / category_ids /
         
@@ -43,9 +36,6 @@ extension CoreAPI {
             case colorStr = "color"
             case country
             case favoriteCount = "favorite_count"
-            case facebookPageId = "facebook_page_id"
-            case youtubeUserId = "youtube_user_id"
-            case twitterHandle = "twitter_handle"
         }
         
         public init(from decoder: Decoder) throws {
@@ -62,16 +52,6 @@ extension CoreAPI {
             }
             self.country = try values.decode(Country.self, forKey: .country)
             self.favoriteCount = try values.decode(Int.self, forKey: .favoriteCount)
-            
-            self.socialMediaIds = [CodingKeys.facebookPageId, .youtubeUserId, .twitterHandle].flatMap({
-                guard let socialId = try? values.decode(String.self, forKey: $0) else { return nil }
-                switch $0 {
-                case .facebookPageId: return .facebook(pageId: socialId)
-                case .youtubeUserId: return .youtube(userId: socialId)
-                case .twitterHandle: return .twitter(handle: socialId)
-                default: return nil
-                }
-            })
         }
     }
     
