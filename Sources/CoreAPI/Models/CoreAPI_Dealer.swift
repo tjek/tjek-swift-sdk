@@ -58,8 +58,8 @@ extension CoreAPI {
     // MARK: -
     
     public struct Country: Decodable {
-        typealias Identifier = GenericIdentifier<Country>
-        var id: Identifier
+        public typealias Identifier = GenericIdentifier<Country>
+        public var id: Identifier
     }
 }
 

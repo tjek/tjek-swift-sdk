@@ -98,7 +98,7 @@ extension CoreAPI {
         if let completion = completion {
             // convert the Result<Data> into Result<R.ResponseType>
             return requestData(request, completion: { [weak self] (dataResult) in
-                self?.queue.async {
+                DispatchQueue.global().async {
                     let start = Date()
                     let mappedResult = request.resultMapper(dataResult)
                     

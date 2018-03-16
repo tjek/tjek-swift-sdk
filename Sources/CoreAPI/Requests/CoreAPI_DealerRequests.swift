@@ -22,7 +22,7 @@ extension CoreAPI.Requests {
                      requiresAuth: true)
     }
     
-    // TODO: include a LocationQuery
+    // TODO: include a LocationQuery. Sort order? Paginatate only when no ids?
     /**
      A request to fetch `Dealer` objects.
      
@@ -34,7 +34,7 @@ extension CoreAPI.Requests {
         // If we have only a single dealer Id, use the 'getDealer' request, and map the result into an array
         if let firstDealerId = dealerIds?.first, dealerIds?.count == 1 {
             return .init(request: self.getDealer(withId: firstDealerId)) {
-                $0.map({ [$0] })
+                $0.mapValue({ [$0] })
             }
         }
         

@@ -24,10 +24,10 @@ extension CoreAPI {
         public var branding: Branding
         public var frontPageImages: ImageURLSet
         public var dealerId: CoreAPI.Dealer.Identifier
-        
+        public var storeId: CoreAPI.Store.Identifier?
+
         // MARK: Decodable
         
-        //"store_id", "store_url", "dealer_url"
         enum CodingKeys: String, CodingKey {
             case id
             case label
@@ -37,6 +37,7 @@ extension CoreAPI {
             case runFromDateStr     = "run_from"
             case runTillDateStr     = "run_till"
             case dealerId           = "dealer_id"
+            case storeId            = "store_id"
             case dimensions
             case frontPageImageURLs = "images"
         }
@@ -73,6 +74,8 @@ extension CoreAPI {
             }
             
             self.dealerId = try values.decode(Dealer.Identifier.self, forKey: .dealerId)
+            
+            self.storeId = try? values.decode(Store.Identifier.self, forKey: .storeId)
 
             if let frontPageImageURLs = try? values.decode(ImageURLSet.CoreAPIImageURLs.self, forKey: .frontPageImageURLs) {
                 self.frontPageImages = ImageURLSet(fromCoreAPI: frontPageImageURLs, aspectRatio: self.aspectRatio)
@@ -166,38 +169,6 @@ extension CoreAPI {
                 } else {
                     self.pageLocations = [:]
                 }
-            }
-        }
-    }
-}
-// MARK: -
-
-extension CoreAPI {
-    
-    public struct Branding: Decodable {
-        public var name: String?
-        public var website: URL?
-        public var description: String?
-        public var logoURL: URL?
-        public var color: UIColor?
-        
-        enum CodingKeys: String, CodingKey {
-            case name
-            case website
-            case description
-            case logoURL        = "logo"
-            case colorStr       = "color"
-        }
-        
-        public init(from decoder: Decoder) throws {
-            let values = try decoder.container(keyedBy: CodingKeys.self)
-            
-            self.name = try? values.decode(String.self, forKey: .name)
-            self.website = try? values.decode(URL.self, forKey: .website)
-            self.description = try? values.decode(String.self, forKey: .description)
-            self.logoURL = try? values.decode(URL.self, forKey: .logoURL)
-            if let colorStr = try? values.decode(String.self, forKey: .colorStr) {
-                self.color = UIColor(hex: colorStr)
             }
         }
     }
