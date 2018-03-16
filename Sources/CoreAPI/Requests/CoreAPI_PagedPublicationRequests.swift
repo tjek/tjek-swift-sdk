@@ -13,12 +13,12 @@ extension CoreAPI.Requests {
     
     /// Fetch the details about the specified publication
     public static func getPagedPublication(withId pubId: CoreAPI.PagedPublication.Identifier) -> CoreAPI.Request<CoreAPI.PagedPublication> {
-        return .init(path: "/v2/catalogs/\(pubId.rawValue)", method: .GET, timeoutInterval: 30)
+        return .init(path: "/v2/catalogs/\(pubId.rawValue)", method: .GET)
     }
     
     /// Fetch all the pages for the specified publication
     public static func getPagedPublicationPages(withId pubId: CoreAPI.PagedPublication.Identifier, aspectRatio: Double? = nil) -> CoreAPI.Request<[CoreAPI.PagedPublication.Page]> {
-        return .init(path: "/v2/catalogs/\(pubId.rawValue)/pages", method: .GET, timeoutInterval: 30, resultMapper: {
+        return .init(path: "/v2/catalogs/\(pubId.rawValue)/pages", method: .GET, resultMapper: {
             return $0.mapValue {
                 // map the raw array of imageURLSets into objects containing page indexes
                 let pageURLs = try JSONDecoder().decode([ImageURLSet.CoreAPIImageURLs].self, from: $0)
@@ -34,7 +34,7 @@ extension CoreAPI.Requests {
     /// Fetch all hotspots for the specified publication
     /// The `aspectRatio` (w/h) of the publication is needed in order to position the hotspots correctly
     public static func getPagedPublicationHotspots(withId pubId: CoreAPI.PagedPublication.Identifier, aspectRatio: Double) -> CoreAPI.Request<[CoreAPI.PagedPublication.Hotspot]> {
-        return .init(path: "/v2/catalogs/\(pubId.rawValue)/hotspots", method: .GET, timeoutInterval: 30, resultMapper: {
+        return .init(path: "/v2/catalogs/\(pubId.rawValue)/hotspots", method: .GET, resultMapper: {
             return $0.mapValue {
                 return try JSONDecoder().decode([CoreAPI.PagedPublication.Hotspot].self, from: $0).map {
                     /// We do this to convert out of the awful old V2 coord system (which was x: 0->1, y: 0->(h/w))
@@ -53,8 +53,7 @@ extension CoreAPI.Requests {
         return .init(path: "/v2/catalogs/suggest",
                      method: .GET,
                      requiresAuth: true,
-                     parameters: params,
-                     timeoutInterval: 30)
+                     parameters: params)
     }
     
     public enum PublicationSortOrder {
@@ -89,8 +88,7 @@ extension CoreAPI.Requests {
         return .init(path: "/v2/catalogs",
                      method: .GET,
                      requiresAuth: true,
-                     parameters: params,
-                     timeoutInterval: 30)
+                     parameters: params)
     }
     
     public static func getFavoritedPublications(sortedBy: PublicationSortOrder, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
@@ -101,7 +99,29 @@ extension CoreAPI.Requests {
         return .init(path: "/v2/catalogs/favorites",
                      method: .GET,
                      requiresAuth: true,
-                     parameters: params,
-                     timeoutInterval: 30)
+                     parameters: params)
+    }
+    
+    // TODO: LocationQuery
+    public static func getPublications(matchingSearch searchString: String, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+        
+        var params = ["query": searchString]
+        params.merge(pagination.requestParams) { (_, new) in new }
+        
+        return .init(path: "/v2/catalogs/search",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params)
+    }
+    
+    public static func getPublications(forStores storeIds: [CoreAPI.Store.Identifier], pagination: PaginatedQuery = PaginatedQuery(count: 24)) ->
+        CoreAPI.Request<[CoreAPI.PagedPublication]> {
+            var params = ["store_ids": storeIds.map({ $0.rawValue }).joined(separator: ",")]
+            params.merge(pagination.requestParams) { (_, new) in new }
+
+            return .init(path: "/v2/catalogs",
+                         method: .GET,
+                         requiresAuth: true,
+                         parameters: params)
     }
 }
