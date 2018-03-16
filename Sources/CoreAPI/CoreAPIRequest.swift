@@ -84,6 +84,19 @@ extension CoreAPI {
             self.maxRetryCount = maxRetryCount
             self.resultMapper = resultMapper
         }
+        
+        /**
+         Create a request based on another request, with the ResponseType remapped using the resultMapper.
+         */
+        public init<U>(request: Request<U>, resultMapper: @escaping ((Result<U>) -> (Result<T>))) {
+            self.path = request.path
+            self.method = request.method
+            self.parameters = request.parameters
+            self.timeoutInterval = request.timeoutInterval
+            self.requiresAuth = request.requiresAuth
+            self.maxRetryCount = request.maxRetryCount
+            self.resultMapper = { resultMapper(request.resultMapper($0)) }
+        }
     }
 }
 

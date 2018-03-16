@@ -10,31 +10,44 @@
 import Foundation
 
 extension CoreAPI.Requests {
-    // TODO: include a LocationQuery. Maybe split into 2 requests?
+    
+    /**
+     A request to fetch a specific dealer.
+     
+     - parameter dealerId: The Id of the dealer to request.
+     */
+    public static func getDealer(withId dealerId: CoreAPI.Dealer.Identifier) -> CoreAPI.Request<CoreAPI.Dealer> {
+        return .init(path: "/v2/dealers/\(dealerId.rawValue)",
+                     method: .GET,
+                     requiresAuth: true)
+    }
+    
+    // TODO: include a LocationQuery
     /**
      A request to fetch `Dealer` objects.
      
      - parameter dealerIds: An optional array of dealer ids to fetch. If included (and not empty) the resulting list of dealers will be limited to those with the specified ids.
      - parameter pagination: Use to specify how many objects to fetch, and with what start cursor (offset). Defaults to the first 100 objects.
      */
-    public static func dealers(withIds dealerIds: [CoreAPI.Dealer.Identifier]? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 100)) -> CoreAPI.Request<[CoreAPI.Dealer]> {
+    public static func getDealers(withIds dealerIds: [CoreAPI.Dealer.Identifier]? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 100)) -> CoreAPI.Request<[CoreAPI.Dealer]> {
+        
+        // If we have only a single dealer Id, use the 'getDealer' request, and map the result into an array
+        if let firstDealerId = dealerIds?.first, dealerIds?.count == 1 {
+            return .init(request: self.getDealer(withId: firstDealerId)) {
+                $0.map({ [$0] })
+            }
+        }
         
         var params: [String: String] = [:]
         params.merge(pagination.requestParams) { (_, new) in new }
 
-        var path = "/v2/dealers"
         if let dealerIds = dealerIds {
-            if dealerIds.count == 1, let dealerId = dealerIds.first {
-                path += "/\(dealerId)"
-            } else {
-                params["dealer_ids"] = dealerIds.map({ $0.rawValue }).joined(separator: ",")
-            }
+            params["dealer_ids"] = dealerIds.map({ $0.rawValue }).joined(separator: ",")
         }
         
-        return .init(path: path,
+        return .init(path: "/v2/dealers",
                      method: .GET,
                      requiresAuth: true,
-                     parameters: params,
-                     timeoutInterval: 30)
+                     parameters: params)
     }
 }
