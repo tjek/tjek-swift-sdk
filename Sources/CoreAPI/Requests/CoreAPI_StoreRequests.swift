@@ -10,6 +10,18 @@
 import UIKit
 
 extension CoreAPI.Requests {
+    
+    public enum StoresSortOrder {
+        case nearest
+        
+        fileprivate var sortKeys: [String] {
+            switch self {
+            case .nearest:
+                return ["distance"]
+            }
+        }
+    }
+    
     /**
      A request to fetch a specific `Store`.
      
@@ -21,28 +33,112 @@ extension CoreAPI.Requests {
             requiresAuth: true)
     }
     
-    // TODO: include a LocationQuery. Sort order? Paginatate only when no ids?
     /**
-     A request to fetch `Store` objects.
+     A request to fetch specific `Store` objects.
      
-     - parameter storeIds: An optional array of store ids to fetch. If included (and not empty) the resulting list of stores will be limited to those with the specified ids.
-     - parameter pagination: Use to specify how many objects to fetch, and with what start cursor (offset). Defaults to the first 100 objects.
+     - parameter storeIds: An array of store ids to fetch.
+     - parameter pagination:  How many stores to include in the results, and with what offset. Defaults to the first 100.
      */
+    public static func getStores(withIds storeIds: [CoreAPI.Store.Identifier], pagination: PaginatedQuery = PaginatedQuery(count: 100)) -> CoreAPI.Request<[CoreAPI.Store]> {
+        var params = ["store_ids": storeIds.map({ $0.rawValue }).joined(separator: ",")]
+        params.merge(pagination.requestParams) { (_, new) in new }
 
-    public static func getStores(withIds storeIds: [CoreAPI.Store.Identifier]? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 100)) -> CoreAPI.Request<[CoreAPI.Store]> {
-        
-        // If we have only a single store Id, use the 'getStore' request, and map the result into an array
-        if let firstStoreId = storeIds?.first, storeIds?.count == 1 {
-            return .init(request: self.getStore(withId: firstStoreId)) {
-                $0.mapValue({ [$0] })
-            }
-        }
+        return .init(path: "/v2/stores",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params)
+    }
+    
+    /**
+     Request all stores, optionally near a specific location.
+     
+     - parameter locationQuery: Optionally filter results to a specific location.
+     - parameter pagination: How many stores to include in the results, and with what offset. Defaults to the first 24.
+     */
+    public static func getStores(near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Store]> {
         
         var params: [String: String] = [:]
         params.merge(pagination.requestParams) { (_, new) in new }
         
-        if let storeIds = storeIds {
-            params["store_ids"] = storeIds.map({ $0.rawValue }).joined(separator: ",")
+        if let locationQParams = locationQuery?.requestParams {
+            params.merge(locationQParams) { (_, new) in new }
+        }
+
+        return .init(path: "/v2/stores",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params)
+    }
+    
+    /**
+     Get all the stores that match the specified search string, optionally limited to a specific location.
+     */
+    public static func getStores(matchingSearch searchString: String, near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Store]> {
+        
+        guard searchString.count > 0 else {
+            return CoreAPI.Requests.getStores(near: locationQuery, pagination: pagination)
+        }
+        
+        var params = ["query": searchString]
+        
+        params.merge(pagination.requestParams) { (_, new) in new }
+        
+        if let locationQParams = locationQuery?.requestParams {
+            params.merge(locationQParams) { (_, new) in new }
+        }
+        
+        return .init(path: "/v2/stores/search",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params)
+    }
+    
+    /**
+     Get all the stores for the specified list of dealers.
+     */
+    public static func getStores(withDealerIds dealerIds: [CoreAPI.Dealer.Identifier], near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Store]> {
+        
+        var params = ["dealer_ids": dealerIds.map({ $0.rawValue }).joined(separator: ",")]
+        if let locationQParams = locationQuery?.requestParams {
+            params.merge(locationQParams) { (_, new) in new }
+        }
+        params.merge(pagination.requestParams) { (_, new) in new }
+        
+        return .init(path: "/v2/stores",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params)
+    }
+    
+    /**
+     Get all the stores for the specified list of publications.
+     */
+    public static func getStores(withPublicationIds publicationIds: [CoreAPI.PagedPublication.Identifier], near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Store]> {
+        
+        var params = ["catalog_ids": publicationIds.map({ $0.rawValue }).joined(separator: ",")]
+        if let locationQParams = locationQuery?.requestParams {
+            params.merge(locationQParams) { (_, new) in new }
+        }
+        params.merge(pagination.requestParams) { (_, new) in new }
+        
+        return .init(path: "/v2/stores",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params)
+    }
+    
+    /**
+     Get all the stores for the specified list of offers.
+     */
+    public static func getStores(withOfferIds offerIds: [CoreAPI.Offer.Identifier], near locationQuery: LocationQuery? = nil, sortedBy: StoresSortOrder? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Store]> {
+        
+        var params = ["offer_ids": offerIds.map({ $0.rawValue }).joined(separator: ",")]
+        params.merge(pagination.requestParams) { (_, new) in new }
+        if let locationQParams = locationQuery?.requestParams {
+            params.merge(locationQParams) { (_, new) in new }
+        }
+        if let sortKeys = sortedBy?.sortKeys {
+            params["order_by"] = sortKeys.joined(separator: ",")
         }
         
         return .init(path: "/v2/stores",
