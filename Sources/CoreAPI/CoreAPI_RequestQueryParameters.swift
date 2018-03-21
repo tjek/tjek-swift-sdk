@@ -32,12 +32,10 @@ extension CoreAPI.Requests {
     public struct LocationQuery {
         public var coordinate: CLLocationCoordinate2D
         public var radius: CLLocationDistance?
-        public var isFromSensor: Bool
         
-        public init(coordinate: CLLocationCoordinate2D, radius: CLLocationDistance?, isFromSensor: Bool) {
+        public init(coordinate: CLLocationCoordinate2D, radius: CLLocationDistance?) {
             self.coordinate = coordinate
             self.radius = radius
-            self.isFromSensor = isFromSensor
         }
         
         internal var requestParams: [String: String] {
@@ -45,7 +43,6 @@ extension CoreAPI.Requests {
             
             params["r_lat"] = String(self.coordinate.latitude)
             params["r_lng"] = String(self.coordinate.longitude)
-            params["r_sensor"] = self.isFromSensor ? "true" : "false"
             
             if let radius = self.radius {
                 params["r_radius"] = String(radius)

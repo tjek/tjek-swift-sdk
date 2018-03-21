@@ -55,6 +55,11 @@ extension CoreAPI.Requests {
                      requiresAuth: true,
                      parameters: params)
     }
+}
+
+// MARK: - Publication Lists
+
+extension CoreAPI.Requests {
     
     public enum PublicationSortOrder {
         case nameAtoZ
@@ -91,23 +96,14 @@ extension CoreAPI.Requests {
                      parameters: params)
     }
     
-    public static func getFavoritedPublications(sortedBy: PublicationSortOrder, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
-        
-        var params = ["order_by": sortedBy.sortKeys.joined(separator: ",")]
-        params.merge(pagination.requestParams) { (_, new) in new }
-        
-        return .init(path: "/v2/catalogs/favorites",
-                     method: .GET,
-                     requiresAuth: true,
-                     parameters: params)
-    }
-    
-    // TODO: LocationQuery
-    public static func getPublications(matchingSearch searchString: String, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+    public static func getPublications(matchingSearch searchString: String, near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
         
         var params = ["query": searchString]
+        if let locationQParams = locationQuery?.requestParams {
+            params.merge(locationQParams) { (_, new) in new }
+        }
         params.merge(pagination.requestParams) { (_, new) in new }
-        
+
         return .init(path: "/v2/catalogs/search",
                      method: .GET,
                      requiresAuth: true,
@@ -118,10 +114,24 @@ extension CoreAPI.Requests {
         CoreAPI.Request<[CoreAPI.PagedPublication]> {
             var params = ["store_ids": storeIds.map({ $0.rawValue }).joined(separator: ",")]
             params.merge(pagination.requestParams) { (_, new) in new }
-
+            
             return .init(path: "/v2/catalogs",
                          method: .GET,
                          requiresAuth: true,
                          parameters: params)
+    }
+    
+    public static func getFavoritedPublications(near locationQuery: LocationQuery? = nil, sortedBy: PublicationSortOrder, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+        
+        var params = ["order_by": sortedBy.sortKeys.joined(separator: ",")]
+        params.merge(pagination.requestParams) { (_, new) in new }
+        if let locationQParams = locationQuery?.requestParams {
+            params.merge(locationQParams) { (_, new) in new }
+        }
+        
+        return .init(path: "/v2/catalogs/favorites",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params)
     }
 }
