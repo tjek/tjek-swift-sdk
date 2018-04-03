@@ -28,6 +28,8 @@ extension CoreAPI {
         public var price: Price?
         public var quantity: Quantity?
         
+        public var branding: Branding?
+        
         public var publication: (id: CoreAPI.PagedPublication.Identifier, pageIndex: Int)?
         public var dealerId: CoreAPI.Dealer.Identifier?
         /// The id of the nearest store. Only available if a location was provided when fetching the offer.
@@ -45,6 +47,7 @@ extension CoreAPI {
                 && lhs.publishDate == rhs.publishDate
                 && lhs.price == rhs.price
                 && lhs.quantity == rhs.quantity
+                && lhs.branding == rhs.branding
                 && lhs.publication?.id == rhs.publication?.id
                 && lhs.publication?.pageIndex == rhs.publication?.pageIndex
                 && lhs.dealerId == rhs.dealerId
@@ -64,6 +67,7 @@ extension CoreAPI {
             case publishDateStr     = "publish"
             case price              = "pricing"
             case quantity
+            case branding
             case catalogId          = "catalog_id"
             case catalogPage        = "catalog_page"
             case dealerId           = "dealer_id"
@@ -104,6 +108,8 @@ extension CoreAPI {
             
             self.price = try? values.decode(CoreAPI.Offer.Price.self, forKey: .price)
             self.quantity = try? values.decode(CoreAPI.Offer.Quantity.self, forKey: .quantity)
+            
+            self.branding = try? values.decode(CoreAPI.Branding.self, forKey: .branding)
             
             if let catalogId = try? values.decode(CoreAPI.PagedPublication.Identifier.self, forKey: .catalogId),
                 let catalogPageNum = try? values.decode(Int.self, forKey: .catalogPage),
