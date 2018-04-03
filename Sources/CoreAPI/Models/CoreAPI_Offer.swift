@@ -10,7 +10,6 @@
 import Foundation
 
 public typealias CurrencyCode = String
-public typealias UnitSymbol = String
 
 extension CoreAPI {
     
@@ -18,22 +17,38 @@ extension CoreAPI {
         public typealias Identifier = GenericIdentifier<Offer>
         
         public var id: Identifier
-        public var heading: String?
+        public var heading: String
+        public var description: String?
+        public var images: ImageURLSet?
+        public var webshopURL: URL?
+        
         public var runDateRange: Range<Date>
         public var publishDate: Date?
         
         public var price: Price?
         public var quantity: Quantity?
         
+        public var publication: (id: CoreAPI.PagedPublication.Identifier, pageIndex: Int)?
+        public var dealerId: CoreAPI.Dealer.Identifier?
+        /// The id of the nearest store. Only available if a location was provided when fetching the offer.
+        public var storeId: CoreAPI.Store.Identifier?
+
         // MARK: Equatable
         
         public static func == (lhs: CoreAPI.Offer, rhs: CoreAPI.Offer) -> Bool {
             return lhs.id == rhs.id
                 && lhs.heading == rhs.heading
+                && lhs.description == rhs.description
+                && lhs.images == rhs.images
+                && lhs.webshopURL == rhs.webshopURL
                 && lhs.runDateRange == rhs.runDateRange
                 && lhs.publishDate == rhs.publishDate
                 && lhs.price == rhs.price
                 && lhs.quantity == rhs.quantity
+                && lhs.publication?.id == rhs.publication?.id
+                && lhs.publication?.pageIndex == rhs.publication?.pageIndex
+                && lhs.dealerId == rhs.dealerId
+                && lhs.storeId == rhs.storeId
         }
         
         // MARK: Decodable
@@ -41,19 +56,35 @@ extension CoreAPI {
         enum CodingKeys: String, CodingKey {
             case id
             case heading
+            case description
+            case images
+            case links
             case runFromDateStr     = "run_from"
             case runTillDateStr     = "run_till"
             case publishDateStr     = "publish"
             case price              = "pricing"
-            case quantity           = "quantity"
+            case quantity
+            case catalogId          = "catalog_id"
+            case catalogPage        = "catalog_page"
+            case dealerId           = "dealer_id"
+            case storeId            = "store_id"
         }
         
         public init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             
             self.id = try values.decode(Identifier.self, forKey: .id)
-            self.heading = try? values.decode(String.self, forKey: .heading)
-
+            self.heading = try values.decode(String.self, forKey: .heading)
+            self.description = try? values.decode(String.self, forKey: .description)
+            
+            if let imageURLs = try? values.decode(ImageURLSet.CoreAPIImageURLs.self, forKey: .images) {
+                self.images = ImageURLSet(fromCoreAPI: imageURLs, aspectRatio: nil)
+            }
+            
+            if let links = try? values.decode([String: URL].self, forKey: .links) {
+                self.webshopURL = links["webshop"]
+            }
+            
             var fromDate = Date.distantPast
             if let fromDateStr = try? values.decode(String.self, forKey: .runFromDateStr),
                 let from = CoreAPI.dateFormatter.date(from: fromDateStr) {
@@ -73,6 +104,15 @@ extension CoreAPI {
             
             self.price = try? values.decode(CoreAPI.Offer.Price.self, forKey: .price)
             self.quantity = try? values.decode(CoreAPI.Offer.Quantity.self, forKey: .quantity)
+            
+            if let catalogId = try? values.decode(CoreAPI.PagedPublication.Identifier.self, forKey: .catalogId),
+                let catalogPageNum = try? values.decode(Int.self, forKey: .catalogPage),
+                catalogPageNum > 0 {
+                self.publication = (id: catalogId, pageIndex: catalogPageNum - 1)
+            }
+            
+            self.dealerId = try? values.decode(CoreAPI.Dealer.Identifier.self, forKey: .dealerId)
+            self.storeId = try? values.decode(CoreAPI.Store.Identifier.self, forKey: .storeId)
         }
     }
 }
@@ -98,7 +138,7 @@ extension CoreAPI.Offer {
     }
     
     public struct Quantity: Decodable, Equatable {
-        public var unit: UnitSymbol?
+        public var unit: QuantityUnit?
         public var size: (from: Double?, to: Double?)
         public var pieces: (from: Double?, to: Double?)
         
@@ -119,7 +159,7 @@ extension CoreAPI.Offer {
         public init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             
-            self.unit = try? values.decode(UnitSymbol.self, forKey: .unit)
+            self.unit = try? values.decode(QuantityUnit.self, forKey: .unit)
             
             if let sizeDict = try? values.decode([String: Double].self, forKey: .size) {
                 self.size = (from: sizeDict["from"], to: sizeDict["to"])
@@ -132,6 +172,40 @@ extension CoreAPI.Offer {
             } else {
                 self.pieces = (from: nil, to:nil)
             }
+        }
+    }
+    
+    public struct QuantityUnit: Decodable, Equatable {
+        
+        public var symbol: String
+        public var siUnit: (symbol: String, factor: Double)
+        
+        public static func == (lhs: CoreAPI.Offer.QuantityUnit, rhs: CoreAPI.Offer.QuantityUnit) -> Bool {
+            return lhs.symbol == rhs.symbol
+                && lhs.siUnit.symbol == rhs.siUnit.symbol
+                && lhs.siUnit.factor == rhs.siUnit.factor
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case symbol
+            case si
+        }
+        enum SICodingKeys: String, CodingKey {
+            case symbol
+            case factor
+        }
+        
+        public init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            
+            self.symbol = try values.decode(String.self, forKey: .symbol)
+            
+            let siValues = try values.nestedContainer(keyedBy: SICodingKeys.self, forKey: .si)
+            
+            let siSymbol = try siValues.decode(String.self, forKey: .symbol)
+            let siFactor = try siValues.decode(Double.self, forKey: .factor)
+            
+            self.siUnit = (siSymbol, siFactor)
         }
     }
 }

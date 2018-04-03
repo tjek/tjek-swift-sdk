@@ -98,6 +98,7 @@ extension CoreAPI {
         public struct Hotspot: Decodable, Equatable {
             
             public var offer: CoreAPI.Offer?
+            /// The 0->1 range bounds of the hotspot, keyed by the pageIndex.
             public var pageLocations: [Int: CGRect]
             
             /// This returns a new hotspot whose pageLocation bounds is scaled.
