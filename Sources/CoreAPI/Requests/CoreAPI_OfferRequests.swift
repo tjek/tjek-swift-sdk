@@ -56,4 +56,54 @@ extension CoreAPI.Requests {
                      parameters: params)
     }
     
+    public static func getOffers(matchingSearch searchString: String, near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Offer]> {
+        
+        guard searchString.count > 0 else {
+            return CoreAPI.Requests.getOffers(near: locationQuery, pagination: pagination)
+        }
+        
+        var params: [String: String] = [:]
+        
+        params["query"] = searchString
+        if let locationQParams = locationQuery?.requestParams {
+            params.merge(locationQParams) { (_, new) in new }
+        }
+        
+        return .init(path: "/v2/offers/search",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params)
+    }
+    
+    public static func getOffers(withStoreIds storeIds: [CoreAPI.Store.Identifier], near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Offer]> {
+        
+        var params: [String: String] = [:]
+        
+        params["store_ids"] = storeIds.map({ $0.rawValue }).joined(separator: ",")
+        if let locationQParams = locationQuery?.requestParams {
+            params.merge(locationQParams) { (_, new) in new }
+        }
+        params.merge(pagination.requestParams) { (_, new) in new }
+
+        return .init(path: "/v2/offers",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params)
+    }
+    
+    public static func getOffers(withPublicationIds publicationIds: [CoreAPI.PagedPublication.Identifier], near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Offer]> {
+        
+        var params: [String: String] = [:]
+        
+        params["catalog_ids"] = publicationIds.map({ $0.rawValue }).joined(separator: ",")
+        if let locationQParams = locationQuery?.requestParams {
+            params.merge(locationQParams) { (_, new) in new }
+        }
+        params.merge(pagination.requestParams) { (_, new) in new }
+        
+        return .init(path: "/v2/offers",
+                     method: .GET,
+                     requiresAuth: true,
+                     parameters: params)
+    }
 }

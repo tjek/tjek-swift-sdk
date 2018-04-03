@@ -38,7 +38,7 @@ extension CoreAPI.Requests {
             self.radius = radius
         }
         
-        internal var requestParams: [String: String] {
+        public var requestParams: [String: String] {
             var params: [String: String] = [:]
             
             params["r_lat"] = String(self.coordinate.latitude)
