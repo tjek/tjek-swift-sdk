@@ -430,6 +430,7 @@ public class PagedPublicationView: UIView {
         switch (currentViewState, oldViewState) {
         case let (.contents(coreProperties, _), .contents(oldProperties, _)) where oldProperties.pageCount == coreProperties.pageCount:
             self.contentsView.versoView.reconfigureVisiblePages()
+            self.contentsView.versoView.reconfigureSpreadOverlay()
         default:
             self.contentsView.versoView.reloadPages(targetPageIndex: initialPageIndex)
         }
