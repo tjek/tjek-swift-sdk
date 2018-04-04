@@ -106,3 +106,10 @@ extension CoreAPI.Request where T: Decodable {
         self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: { $0.decodeJSON() })
     }
 }
+
+extension CoreAPI.Request where T == Void {
+    /// If we know the responseType is Void then map the result data into a void
+    public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String]? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
+        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: { $0.mapValue({ _ in return () }) })
+    }
+}
