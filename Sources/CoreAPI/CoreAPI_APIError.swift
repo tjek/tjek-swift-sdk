@@ -308,6 +308,8 @@ extension CoreAPI.APIError.Code {
     public static var requestCancelled: CoreAPI.APIError.Code { return .init(rawValue: -1002) }
     
     public static var unableToLogin: CoreAPI.APIError.Code { return .init(rawValue: -1003) }
+    
+    public static var unableToDecodeResponseData: CoreAPI.APIError.Code { return .init(rawValue: -1004) }
 }
 
 // MARK: -
@@ -325,8 +327,13 @@ extension CoreAPI.APIError {
         return .init(code: .requestCancelled, id: nil, message: "Request Cancelled", details: nil, previous: nil, note: nil, httpResponse: nil)
     }
     
-    // A non-specific failure to login
+    /// A non-specific failure to login
     public static var unableToLogin: CoreAPI.APIError {
         return .init(code: .unableToLogin, id: nil, message: "Unable to Login", details: nil, previous: nil, note: nil, httpResponse: nil)
+    }
+    
+    /// Response data was malformed, and we were unable to decode it.
+    public static var unableToDecodeResponseData: CoreAPI.APIError {
+        return .init(code: .unableToDecodeResponseData, id: nil, message: "Unable to decode response data", details: nil, previous: nil, note: nil, httpResponse: nil)
     }
 }

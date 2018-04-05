@@ -139,7 +139,7 @@ extension CoreAPI {
                                             // Make sure the completion is always called on main
                                             DispatchQueue.main.async {
                                                 let duration = Date().timeIntervalSince(start)
-                                                Logger.log("Request completed: \(String(format: "%.3fs %.3fkb", duration, Double(dataResult.value?.count ?? 0) / 1024 )) '\(request.path)' (\(token.id.rawValue))", level: .performance, source: .CoreAPI)
+                                                Logger.log("\(dataResult.value != nil ? "✅" : "❌") Request completed: \(String(format: "%.3fs %.3fkb", duration, Double(dataResult.value?.count ?? 0) / 1024 )) '\(request.path)' (\(token.id.rawValue))", level: .performance, source: .CoreAPI)
 
                                                 completion?(dataResult)
                                             }

@@ -120,7 +120,7 @@ extension CoreAPI.Request where T == [String: Any] {
         self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: {
             $0.mapValue({ data in
                 guard let jsonDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-                    throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "Error!"))
+                    throw CoreAPI.APIError.unableToDecodeResponseData
                 }
                 return jsonDict
             })
