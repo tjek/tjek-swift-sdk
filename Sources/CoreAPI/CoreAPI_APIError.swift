@@ -152,6 +152,18 @@ extension CoreAPI.APIError: CustomStringConvertible {
 
 // MARK: -
 
+extension CoreAPI.APIError: CustomNSError {
+    public var errorCode: Int {
+        return self.code.rawValue
+    }
+    
+    public static var errorDomain: String {
+        return "ShopGunSDK.CoreAPI.APIError.Domain"
+    }
+}
+
+// MARK: -
+
 extension CoreAPI.APIError.Code {
     
     public enum ErrorCategory {
