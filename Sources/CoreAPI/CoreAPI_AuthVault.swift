@@ -82,7 +82,7 @@ extension CoreAPI {
         func resetStoredAuthState() {
             self.queue.async { [weak self] in
                 guard let s = self else { return }
-                
+                AuthVault.clearLegacyAuthState()
                 AuthVault.updateDataStore(s.dataStore, data: nil)
                 s.authState = .unauthorized(error: nil, clientId: nil)
             }
@@ -174,7 +174,8 @@ extension CoreAPI {
             }
             
             var urlRequest = request.urlRequest(for: self.baseURL, additionalParameters: self.additionalRequestParams)
-            if case .authorized(let token, _, _) = self.authState {
+            if case .authorized(let token, _, _) = self.authState,
+                request.requiresAuth == true {
                 urlRequest = urlRequest.signedForCoreAPI(withToken: token, secret: self.secret)
             }
             
@@ -265,11 +266,18 @@ extension CoreAPI {
             case .error(let regenError):
                 Logger.log("Failed to update authSession \(regenError)", level: .error, source: .CoreAPI)
                 
-                // TODO: depending upon the error do different things
-                // - what if retryable? network error?
-                for (_, completion) in self.pendingSignedRequests {
-                    DispatchQueue.main.async {
-                        completion(.error(regenError))
+                let type = activeRegenerateTask?.type
+                self.activeRegenerateTask = nil
+
+                // we weren't creating, and the error isnt a network error, so try to just create the token.
+                if type != .create
+                    && (regenError as NSError).isNetworkError == false {
+                    self.regenerateOnQueue(.create)
+                } else {
+                    for (_, completion) in self.pendingSignedRequests {
+                        DispatchQueue.main.async {
+                            completion(.error(regenError))
+                        }
                     }
                 }
             }
