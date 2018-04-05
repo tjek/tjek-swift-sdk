@@ -113,3 +113,17 @@ extension CoreAPI.Request where T == Void {
         self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: { $0.mapValue({ _ in return () }) })
     }
 }
+
+extension CoreAPI.Request where T == [String: Any] {
+    /// If we know the responseType is a generic dictionary then map the result data using the JSONSerialization Foundation api
+    public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String]? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
+        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: {
+            $0.mapValue({ data in
+                guard let jsonDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
+                    throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "Error!"))
+                }
+                return jsonDict
+            })
+        })
+    }
+}
