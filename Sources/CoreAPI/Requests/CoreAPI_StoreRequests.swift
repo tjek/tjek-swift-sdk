@@ -44,7 +44,7 @@ extension CoreAPI.Requests {
      - parameter pagination:  How many stores to include in the results, and with what offset. Defaults to the first 100.
      */
     public static func getStores(withIds storeIds: [CoreAPI.Store.Identifier], sortedBy sortOrder: [StoresSortOrder]? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 100)) -> CoreAPI.Request<[CoreAPI.Store]> {
-        var params = ["store_ids": storeIds.map({ $0.rawValue }).joined(separator: ",")]
+        var params = ["store_ids": storeIds.map(String.init).joined(separator: ",")]
         params.merge(pagination.requestParams) { (_, new) in new }
 
         return .init(path: "/v2/stores",
@@ -111,7 +111,7 @@ extension CoreAPI.Requests {
      */
     public static func getStores(withDealerIds dealerIds: [CoreAPI.Dealer.Identifier], near locationQuery: LocationQuery? = nil, sortedBy sortOrder: [StoresSortOrder]? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Store]> {
         
-        var params = ["dealer_ids": dealerIds.map({ $0.rawValue }).joined(separator: ",")]
+        var params = ["dealer_ids": dealerIds.map(String.init).joined(separator: ",")]
         if let locationQParams = locationQuery?.requestParams {
             params.merge(locationQParams) { (_, new) in new }
         }
@@ -133,7 +133,7 @@ extension CoreAPI.Requests {
      */
     public static func getStores(withPublicationIds publicationIds: [CoreAPI.PagedPublication.Identifier], near locationQuery: LocationQuery? = nil, sortedBy sortOrder: [StoresSortOrder]? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Store]> {
         
-        var params = ["catalog_ids": publicationIds.map({ $0.rawValue }).joined(separator: ",")]
+        var params = ["catalog_ids": publicationIds.map(String.init).joined(separator: ",")]
         if let locationQParams = locationQuery?.requestParams {
             params.merge(locationQParams) { (_, new) in new }
         }
@@ -155,7 +155,7 @@ extension CoreAPI.Requests {
      */
     public static func getStores(withOfferIds offerIds: [CoreAPI.Offer.Identifier], near locationQuery: LocationQuery? = nil, sortedBy sortOrder: [StoresSortOrder]? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Store]> {
         
-        var params = ["offer_ids": offerIds.map({ $0.rawValue }).joined(separator: ",")]
+        var params = ["offer_ids": offerIds.map(String.init).joined(separator: ",")]
         if let locationQParams = locationQuery?.requestParams {
             params.merge(locationQParams) { (_, new) in new }
         }

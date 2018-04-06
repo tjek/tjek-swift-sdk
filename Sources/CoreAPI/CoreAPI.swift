@@ -97,7 +97,7 @@ extension CoreAPI {
     @discardableResult public func request<R: CoreAPIMappableRequest>(_ request: R, completion: ((Result<R.ResponseType>) -> Void)?) -> Cancellable {
         if let completion = completion {
             // convert the Result<Data> into Result<R.ResponseType>
-            return requestData(request, completion: { [weak self] (dataResult) in
+            return requestData(request, completion: { (dataResult) in
                 DispatchQueue.global().async {
                     let start = Date()
                     let mappedResult = request.resultMapper(dataResult)

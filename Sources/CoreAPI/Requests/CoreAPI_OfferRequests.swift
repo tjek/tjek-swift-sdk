@@ -79,7 +79,7 @@ extension CoreAPI.Requests {
         
         var params: [String: String] = [:]
         
-        params["store_ids"] = storeIds.map({ $0.rawValue }).joined(separator: ",")
+        params["store_ids"] = storeIds.map(String.init).joined(separator: ",")
         if let locationQParams = locationQuery?.requestParams {
             params.merge(locationQParams) { (_, new) in new }
         }
@@ -95,7 +95,7 @@ extension CoreAPI.Requests {
         
         var params: [String: String] = [:]
         
-        params["catalog_ids"] = publicationIds.map({ $0.rawValue }).joined(separator: ",")
+        params["catalog_ids"] = publicationIds.map(String.init).joined(separator: ",")
         if let locationQParams = locationQuery?.requestParams {
             params.merge(locationQParams) { (_, new) in new }
         }

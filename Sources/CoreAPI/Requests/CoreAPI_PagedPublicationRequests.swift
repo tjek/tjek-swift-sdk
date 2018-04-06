@@ -112,7 +112,7 @@ extension CoreAPI.Requests {
     
     public static func getPublications(forStores storeIds: [CoreAPI.Store.Identifier], pagination: PaginatedQuery = PaginatedQuery(count: 24)) ->
         CoreAPI.Request<[CoreAPI.PagedPublication]> {
-            var params = ["store_ids": storeIds.map({ $0.rawValue }).joined(separator: ",")]
+            var params = ["store_ids": storeIds.map(String.init).joined(separator: ",")]
             params.merge(pagination.requestParams) { (_, new) in new }
             
             return .init(path: "/v2/catalogs",

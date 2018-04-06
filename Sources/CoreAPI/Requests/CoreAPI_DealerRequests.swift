@@ -44,7 +44,7 @@ extension CoreAPI.Requests {
         var params: [String: String] = [:]
         params.merge(pagination.requestParams) { (_, new) in new }
 
-        params["dealer_ids"] = dealerIds.map({ $0.rawValue }).joined(separator: ",")
+        params["dealer_ids"] = dealerIds.map(String.init).joined(separator: ",")
         
         return .init(path: "/v2/dealers",
                      method: .GET,
