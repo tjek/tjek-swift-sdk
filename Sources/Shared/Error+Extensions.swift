@@ -32,6 +32,7 @@ extension Error {
 
 extension NSError {
     
+    @objc
     public var isNetworkError: Bool {
         guard self.domain == NSURLErrorDomain else {
             return false
