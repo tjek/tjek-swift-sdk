@@ -16,13 +16,14 @@ public enum HTTPRequestMethod: String {
 public protocol CoreAPIRequest {
     var path: String { get }
     var method: HTTPRequestMethod { get }
-    var parameters: [String: String]? { get }
+    var parameters: [String: String?]? { get }
+    var httpBody: Any? { get }
     var timeoutInterval: TimeInterval { get }
     
     var requiresAuth: Bool { get }
     var maxRetryCount: Int { get }
     
-    func urlRequest(for baseURL: URL, additionalParameters: [String: String]) -> URLRequest
+    func urlRequest(for baseURL: URL, additionalParameters: [String: String?]) -> URLRequest
 }
 
 public protocol CoreAPIMappableRequest: CoreAPIRequest {
@@ -34,7 +35,7 @@ public protocol CoreAPIMappableRequest: CoreAPIRequest {
 
 extension CoreAPIRequest {
     // default implementation of the urlRequest generator
-    public func urlRequest(for baseURL: URL, additionalParameters: [String: String] = [:]) -> URLRequest {
+    public func urlRequest(for baseURL: URL, additionalParameters: [String: String?] = [:]) -> URLRequest {
         var requestURL = baseURL.appendingPathComponent(path)
         
         // put parameters into url of request
@@ -46,9 +47,10 @@ extension CoreAPIRequest {
             urlComps.queryItems = allParams.map { (key, value) in
                 URLQueryItem(name: key, value: value)
             }
-            
-            urlComps.percentEncodedQuery = urlComps.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
-            
+            // percent-encode the path & query using the allowed char sets (BUT DO encode `@` and `+` for when we send emails)
+            urlComps.percentEncodedQuery = urlComps.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed.subtracting(CharacterSet(charactersIn: "@+"))) ?? urlComps.percentEncodedQuery
+            urlComps.percentEncodedPath = urlComps.percentEncodedPath.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlPathAllowed.subtracting(CharacterSet(charactersIn: "@+"))) ?? urlComps.percentEncodedPath
+
             if let urlWithParams = urlComps.url {
                 requestURL = urlWithParams
             }
@@ -56,6 +58,15 @@ extension CoreAPIRequest {
 
         var urlRequest = URLRequest(url: requestURL, timeoutInterval: timeoutInterval)
         urlRequest.httpMethod = method.rawValue
+        
+        if let httpBody = self.httpBody {
+            do {
+                urlRequest.httpBody = try JSONSerialization.data(withJSONObject: httpBody, options: [])
+                urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            } catch let error {
+                Logger.log("Unable to JSONSerialize the Request's httpBody \(error.localizedDescription)", level: .error, source: .CoreAPI)
+            }
+        }
         
         return urlRequest
     }
@@ -69,16 +80,18 @@ extension CoreAPI {
 
         public var path: String
         public var method: HTTPRequestMethod
-        public var parameters: [String: String]?
+        public var parameters: [String: String?]?
+        public var httpBody: Any?
         public var timeoutInterval: TimeInterval
         public var requiresAuth: Bool
         public var maxRetryCount: Int
         public var resultMapper: ((Result<Data>) -> (Result<T>))
 
-        public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String]? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3, resultMapper: @escaping ResultMapper) {
+        public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String?]? = nil, httpBody: Any? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3, resultMapper: @escaping ResultMapper) {
             self.path = path
             self.method = method
             self.parameters = parameters
+            self.httpBody = httpBody
             self.timeoutInterval = timeoutInterval
             self.requiresAuth = requiresAuth
             self.maxRetryCount = maxRetryCount
@@ -92,6 +105,7 @@ extension CoreAPI {
             self.path = request.path
             self.method = request.method
             self.parameters = request.parameters
+            self.httpBody = request.httpBody
             self.timeoutInterval = request.timeoutInterval
             self.requiresAuth = request.requiresAuth
             self.maxRetryCount = request.maxRetryCount
@@ -102,27 +116,41 @@ extension CoreAPI {
 
 extension CoreAPI.Request where T: Decodable {
     /// If we know the responseType is decodable then allow for Request creation with a default jsonDecoder resultMapper.
-    public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String]? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
-        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: { $0.decodeJSON() })
+    public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String?]? = nil, httpBody: Any? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
+        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, httpBody: httpBody, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: { $0.decodeJSON() })
     }
 }
 
 extension CoreAPI.Request where T == Void {
     /// If we know the responseType is Void then map the result data into a void
-    public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String]? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
-        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: { $0.mapValue({ _ in return () }) })
+    public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String?]? = nil, httpBody: Any? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
+        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, httpBody: httpBody, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: { $0.mapValue({ _ in return () }) })
     }
 }
 
 extension CoreAPI.Request where T == [String: Any] {
     /// If we know the responseType is a generic dictionary then map the result data using the JSONSerialization Foundation api
-    public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String]? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
-        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: {
+    public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String?]? = nil, httpBody: Any? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
+        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, httpBody: httpBody, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: {
             $0.mapValue({ data in
                 guard let jsonDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
                     throw CoreAPI.APIError.unableToDecodeResponseData
                 }
                 return jsonDict
+            })
+        })
+    }
+}
+
+extension CoreAPI.Request where T == [[String: Any]] {
+    /// If we know the responseType is an array of generic dictionaries then map the result data using the JSONSerialization Foundation api
+    public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String?]? = nil, httpBody: Any? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
+        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, httpBody: httpBody, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: {
+            $0.mapValue({ data in
+                guard let jsonArr = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else {
+                    throw CoreAPI.APIError.unableToDecodeResponseData
+                }
+                return jsonArr
             })
         })
     }
