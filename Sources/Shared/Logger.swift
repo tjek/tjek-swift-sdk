@@ -112,6 +112,12 @@ final public class Logger {
         public var fileName: String {
             return filePath.components(separatedBy: "/").last ?? filePath
         }
+        
+        public init(filePath: String, functionName: String, lineNumber: Int) {
+            self.filePath = filePath
+            self.functionName = functionName
+            self.lineNumber = lineNumber
+        }
     }
     
     /**
