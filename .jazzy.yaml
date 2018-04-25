@@ -1,0 +1,62 @@
+output: Docs
+author: ShopGun
+author_url: https://shopgun.com/developers
+github_url: https://github.com/shopgun/shopgun-ios-sdk/
+module: ShopGunSDK
+module_version: 1.0
+documentation: Guides/*.md
+xcodebuild_arguments: [-project, ShopGunSDK.xcodeproj, -scheme, ShopGunSDK, -sdk, iphoneos]
+theme: fullwidth
+
+abstract: Guides/Sections/*.md
+custom_categories: 
+
+  - name: Guides
+    children:
+    - Installation
+    - Getting Started
+    
+  - name: Configuration
+    children:
+    - Settings
+    
+  - name: PagedPublicationView
+    children:
+    - PagedPublicationView
+    - PagedPublicationViewDataLoader
+    - PagedPublicationViewDataSource
+    - PagedPublicationViewDelegate
+    - PagedPublicationViewEventHandler
+    - PagedPublicationViewImageLoader
+    
+  - name: CoreAPI
+    children:
+    - CoreAPI
+    - HTTPRequestMethod
+    - CoreAPIMappableRequest
+    - CoreAPIRequest
+    - ImageURLSet
+    
+  - name: Logging
+    children:
+    - Logger
+    
+  - name: GraphAPI
+    children:
+    - GraphAPI
+    - GraphRequestProtocol
+    - GraphQuery
+    - loadQueryFile(name:bundle:)
+    - GraphClient
+    - NetworkGraphClient
+    - GraphNetworkTransport
+    - HTTPGraphNetworkTransport
+    - GraphError
+    - GraphRequest
+    - GraphResponse
+    
+  - name: EventsTracker
+    children:
+    - EventsTracker
+    - SerializedPoolObject
+    - Notification
