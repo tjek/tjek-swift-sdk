@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
         ss.dependency "ShopGunSDK/CoreAPI"
         ss.dependency "ShopGunSDK/EventsTracker"
         ss.dependency "Verso", "~> 1.0.1"
-        ss.dependency "Kingfisher", "~> 4.6.3"
+        ss.dependency "Kingfisher", "~> 4.6.4"
         
         ss.resources = ["Sources/PagedPublication/Resources/**/*"]
     end
@@ -57,6 +57,6 @@ Pod::Spec.new do |s|
         ss.source_files = "Sources/Shared/**/*.swift"
         ss.frameworks   = "Foundation", "UIKit"
 
-        ss.dependency "Valet", "~> 3.0.0"
+        ss.dependency "Valet", "~> 3.1.3"
     end
 end
