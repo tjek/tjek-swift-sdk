@@ -1,0 +1,16 @@
+[submodule "External/xctoolchain"]
+	path = External/xctoolchain
+	url = https://github.com/ParsePlatform/xctoolchain.git
+[submodule "External/Valet"]
+	path = External/Valet
+	url = https://github.com/square/Valet.git
+[submodule "External/Verso"]
+	path = External/Verso
+	url = https://lozhuf@github.com/shopgun/verso-ios.git
+	branch = develop
+[submodule "External/Kingfisher"]
+	path = External/Kingfisher
+	url = https://github.com/onevcat/Kingfisher.git
+[submodule "External/CryptoSwift"]
+	path = External/CryptoSwift
+	url = https://github.com/krzyzanowskim/CryptoSwift.git

@@ -1,0 +1,28 @@
+//
+//  ┌────┬─┐         ┌─────┐
+//  │  ──┤ └─┬───┬───┤  ┌──┼─┬─┬───┐
+//  ├──  │ ╷ │ · │ · │  ╵  │ ╵ │ ╷ │
+//  └────┴─┴─┴───┤ ┌─┴─────┴───┴─┴─┘
+//               └─┘
+//
+//  Copyright (c) 2018 ShopGun. All rights reserved.
+
+#include "Shared/Platform/iOS.xcconfig"
+#include "Shared/Product/DynamicFramework.xcconfig"
+#include "Version.xcconfig"
+
+PRODUCT_NAME = ShopGunSDK
+PRODUCT_BUNDLE_IDENTIFIER = com.shopgun.ios.sdk
+
+SWIFT_VERSION = 4.0
+
+IPHONEOS_DEPLOYMENT_TARGET = 9.3
+
+INFOPLIST_FILE = $(SRCROOT)/Resources/Info.plist
+
+// Enable testability to make internal things visible with @testable import
+ENABLE_TESTABILITY = YES
+
+INSTALL_PATH = $(LOCAL_LIBRARY_DIR)/Frameworks
+DYLIB_COMPATIBILITY_VERSION = 1
+DYLIB_CURRENT_VERSION = 1

@@ -1,0 +1,18 @@
+// Requested catalog is unavailable
+"errorView.noContent.title" = "Contents Unavailable";
+"errorView.noContent.message" = "We unfortunately could not load your requested publication.";
+
+// No Internet connection
+"errorView.noInternet.title" = "Ej Internet";
+"errorView.noInternet.message" = "Kontrollera din nätverksanslutning.";
+
+// Service unavailable
+"errorView.serviceUnavailable.title" = "Hoppsan, något gick fel";
+"errorView.serviceUnavailable.message" = "Tack, vi har informerats om problemet och kommer att lösa det så snart som möjligt.";
+
+// Planned Maintenance
+"errorView.plannedMaintenance.title" = "Underhåll";
+"errorView.plannedMaintenance.message" = "Vi håller på att återställa vanlig service. Tack för ditt tålamod.";
+
+// Retry Button
+"errorView.retryButton.title" = "Försök igen";
