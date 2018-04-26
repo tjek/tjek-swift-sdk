@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
     s.version         = "4.0.0"
     s.summary         = "ShopGun SDK for iOS."
     s.description     = <<-DESC
-                         An SDK that makes it easy to talk to the eTilbudsavis API.
+                         An SDK that makes it easy to talk to the ShopGun API.
                          Also allows you to easily embed an interactive catalog view into your own iOS app.
                         DESC
     s.homepage         = "https://github.com/shopgun/shopgun-ios-sdk"
