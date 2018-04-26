@@ -314,6 +314,29 @@
 <li>Cancelling requests</li>
 </ul>
 </blockquote>
+
+<p>The <code>CoreAPI</code> component provides typesafe tools for working with the ShopGun API, and removes the need to consider any of the session and auth-related complexity when making requests.</p>
+
+<blockquote>
+<p><strong>Note:</strong> You must provide a <code>key</code> and <code>secret</code> when configuring the ShopGunSDK, otherwise calls to the CoreAPI will trigger a fatalError. </p>
+
+<p>These can be requested by signing into the <a href="https://shopgun.com/developers">ShopGun Developers</a> page.</p>
+</blockquote>
+
+<p>The interface for making requests is very flexible, but a large number of pre-built requests have been included. For example:</p>
+<pre class="highlight swift"><code><span class="c1">// make a request object that will ask for a specific PagedPublication object</span>
+<span class="k">let</span> <span class="nv">req</span> <span class="o">=</span> <span class="kt">CoreAPI</span><span class="o">.</span><span class="nf">getPagedPublication</span><span class="p">(</span><span class="nv">withId</span><span class="p">:</span> <span class="err">…</span><span class="p">)</span>
+
+<span class="c1">// Perform the request. The completion handler is passed a Result object containing the requested PagedPublication, or an error.</span>
+<span class="kt">CoreAPI</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">in</span>
+    <span class="k">switch</span> <span class="n">result</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="k">let</span> <span class="nv">pagedPublication</span><span class="p">):</span>
+       <span class="nf">print</span><span class="p">(</span><span class="s">"👍 '</span><span class="se">\(</span><span class="n">pagedPublication</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">rawValue</span><span class="se">)</span><span class="s">' loaded"</span><span class="p">)</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nf">error</span><span class="p">(</span><span class="k">let</span> <span class="nv">err</span><span class="p">):</span>
+       <span class="nf">print</span><span class="p">(</span><span class="s">"😭 Load Failed: '</span><span class="se">\(</span><span class="n">err</span><span class="o">.</span><span class="n">localizedDescription</span><span class="se">)</span><span class="s">'"</span><span class="p">)</span>
+<span class="p">}</span>
+
+</code></pre>
 <p>Undocumented</p>
 
           </div>

@@ -1,25 +1,36 @@
 # 💡 Getting Started
 
-### Configuration
+This document is intended to provide an initial starting point for the `ShopGunSDK`. 
+
+It will focus on the basics of adding a `PagedPublicationView` to your app (though there is much more you can do with the SDK if you dig deeper).
+
+## ⚙️ Configuration
 
 You must provide configuration settings for each of the components of the SDK that you are planning on using, before you use them.
 
-If you have added the settings to a `ShopGunSDK-Configuration.plist` file that is included with your app, configuration is as simple as:
+
+The recommended way to configure the ShopGunSDK is by adding a `ShopGunSDK-Config.plist` file as a resource of the main bundle of your app.
+
+Then, somewhere in your code (before you make any other calls to the SDK - so probably in your `AppDelegate`), you will need to call `configure()` on all the components you intend to use.
 
 ```swift
-import ShopGunSDK
-…
-ShopGun.configure()
+PagedPublicationView.configure()
 ```
-The best place to do this is probably somewhere in your AppDelegate, so that it is sure to be called before any other calls to the `ShopGunSDK` are made.
 
-> **Note:** If you make calls to ShopGunSDK components before they are configured, the SDK will trigger a fatalError.
+> **Note:** If you make calls to `ShopGunSDK` components before they are configured, the SDK will trigger a **fatalError**.
 
-For more complex configuration options, including providing a custom log handler, check the [Configuration docs]()
+In this example we are configuring the `PagedPublicationView`, which configures both the `CoreAPI` & `EventsTracker` components. For these components the following settings are required in your `ShopGunSDK-Config.plist` file:
 
-### < TODO: MAKE SEPARATE CONFIGURATION DOCS >
+- `CoreAPI`/`key`
+- `CoreAPI`/`secret`
+- `EventsTracker`/`trackId`
 
-### PagedPublicationView
+You can get these values from the [ShopGun Developer](https://shopgun.com/developers) page.
+
+For details of the required and optional settings you can add to the config file, and for how to manually configure the components, see the [Configuration](Configuration.html) guide.
+
+
+## 📖 PagedPublicationView
 
 The `PagedPublicationView` is a UIView subclass for showing and interacting with a catalog. It also manages all of the loading of the data from our `CoreAPI`.
 
@@ -27,54 +38,20 @@ The `PagedPublicationView` is a UIView subclass for showing and interacting with
 > 
 > If you wish to have usage stats collected you will also need to configure the EventsTracker.
 
-Simply make an instance of `PagedPublicationView` and add it as a subview in your ViewController. Then, when you wish to start loading the catalog into the view (most likely in the `viewDidLoad	` method of your UIViewController), call the following:
+### Adding to your view hierarchy
+
+You can treat the `PagedPublicationView` like any other UIView, and add an instance as a subview of your UIViewController's view.
+
+### Loading the contents
+
+When you wish to start loading the publication into the view (most likely in the `viewDidLoad	` method of your UIViewController), call the following:
 
 ```swift
-self.pagedPublication.reload(publicationId: "<PUBLICATION_ID>")
+// pagedPublication is the PagedPublicationView instance.
+pagedPublication.reload(publicationId: "<PUBLICATION_ID>")
 ```
+> **Note:** You can get the *`<PUBLICATION_ID>`* from either a `CoreAPI` query that returns a list of publications, or from the [ShopGun website](https://shopgun.com/) (simply open a publication and look at the `Id` in the  URL eg. "shopgun.com/catalogs/**`abc123`**").
 
-For more complex uses of the `PagedPublicationView`, including setting the pre-loaded state of the view, and showing a custom outro view, check the [PagedPublication docs]()
+### Next steps
 
-### < TODO: MAKE SEPARATE PAGED PUB DOCS >
-
-### CoreAPI
-
-The `CoreAPI` component provides typesafe tools for working with the ShopGun API, and removes the need to consider any of the session and auth-related complexity when making requests.
-
-> **Note:** You must provide a `key` and `secret` when configuring the ShopGunSDK, otherwise calls to the CoreAPI will trigger a fatalError. 
-> 
-> These can be requested by signing into the [ShopGun Developers](https://shopgun.com/developers) page.
-
-The interface for making requests is very flexible, but a large number of pre-built requests have been included. For example:
-
-```swift
-// make a request object that will ask for a specific PagedPublication object
-let req = CoreAPI.getPagedPublication(withId: …)
-
-// Perform the request. The completion handler is passed a Result object containing the requested PagedPublication, or an error.
-CoreAPI.shared.request(req) { (result) in
-	switch result {
-	case .success(let pagedPublication):
-	   print("👍 '\(pagedPublication.id.rawValue)' loaded")
-	case .error(let err):
-	   print("😭 Load Failed: '\(err.localizedDescription)'")
-}
-
-```
-
-For a more detailed explanation of the `CoreAPI`, check the [CoreAPI docs]()
-
-### < TODO: MAKE SEPARATE COREAPI DOCS >
-
-### EventsTracker
-
-You should not have to use the EventsTracker directly. However, if using the PagedPublication it is recommended that you configure the EventsTracker so that usage stats can be collected from users of your app. 
-
-For more details please read the [EventsTracker docs]()
-### < TODO: MAKE SEPARATE EVENTSTRACKER DOCS >
-
-### GraphAPI
-
-Currently still a work in progress. Please come back later.
-
-For more details please read the [GraphAPI docs]()
+For more complex uses of the `PagedPublicationView`, including setting the pre-loaded state of the view, and showing a custom outro view, check the [PagedPublicationView](PagedPublicationView.html) guide.

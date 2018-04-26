@@ -2599,105 +2599,105 @@
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 65,
+      "line": 75,
       "symbol": "PagedPublicationView.delegate",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 66,
+      "line": 76,
       "symbol": "PagedPublicationView.dataSource",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 70,
+      "line": 80,
       "symbol": "PagedPublicationView.reload(publicationId:initialPageIndex:initialProperties:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 96,
+      "line": 106,
       "symbol": "PagedPublicationView.jump(toPageIndex:animated:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 128,
+      "line": 138,
       "symbol": "PagedPublicationView.init(frame:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 170,
+      "line": 180,
       "symbol": "PagedPublicationView.init(coder:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 179,
+      "line": 189,
       "symbol": "PagedPublicationView.backgroundColor",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 235,
+      "line": 245,
       "symbol": "PagedPublicationView.coreProperties",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 242,
+      "line": 252,
       "symbol": "PagedPublicationView.dataLoader",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 243,
+      "line": 253,
       "symbol": "PagedPublicationView.imageLoader",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 244,
+      "line": 254,
       "symbol": "PagedPublicationView.eventHandler",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 260,
+      "line": 270,
       "symbol": "PagedPublicationView.isOutroPageVisible",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 264,
+      "line": 274,
       "symbol": "PagedPublicationView.pageCount",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 290,
+      "line": 300,
       "symbol": "PagedPublicationView.hotspotModels(onPageIndexes:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.sdk_update/External/shopgun-ios-sdk/Sources/PagedPublication/PagedPublicationView.swift",
-      "line": 302,
+      "line": 312,
       "symbol": "PagedPublicationView.pageModels",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"

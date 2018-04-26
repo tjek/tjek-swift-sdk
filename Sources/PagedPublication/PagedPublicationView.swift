@@ -62,6 +62,16 @@ public class PagedPublicationView: UIView {
     
     public typealias CoreProperties = (pageCount: Int?, bgColor: UIColor, aspectRatio: Double)
     
+    /**
+     * This will configure the `CoreAPI` and `EventsTracker` components using the `Settings` from the default SettingsFile.
+     *
+     * If you dont call this (or at least `CoreAPI.configure()`) before you start using the `PagedPublicationView`, there will be a `fatalError`.
+     */
+    public static func configure() {
+        CoreAPI.configure()
+        EventsTracker.configure()
+    }
+    
     public weak var delegate: PagedPublicationViewDelegate?
     public weak var dataSource: PagedPublicationViewDataSource?
     

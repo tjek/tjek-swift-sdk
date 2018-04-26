@@ -297,25 +297,36 @@
           <div class="section-content">
             
             <h1 id='getting-started' class='heading'>💡 Getting Started</h1>
-<h3 id='configuration' class='heading'>Configuration</h3>
+
+<p>This document is intended to provide an initial starting point for the <code>ShopGunSDK</code>. </p>
+
+<p>It will focus on the basics of adding a <code><a href="Classes/PagedPublicationView.html">PagedPublicationView</a></code> to your app (though there is much more you can do with the SDK if you dig deeper).</p>
+<h2 id='configuration' class='heading'>⚙️ Configuration</h2>
 
 <p>You must provide configuration settings for each of the components of the SDK that you are planning on using, before you use them.</p>
 
-<p>If you have added the settings to a <code>ShopGunSDK-Configuration.plist</code> file that is included with your app, configuration is as simple as:</p>
-<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">ShopGunSDK</span>
-<span class="err">…</span>
-<span class="kt">ShopGun</span><span class="o">.</span><span class="nf">configure</span><span class="p">()</span>
+<p>The recommended way to configure the ShopGunSDK is by adding a <code>ShopGunSDK-Config.plist</code> file as a resource of the main bundle of your app.</p>
+
+<p>Then, somewhere in your code (before you make any other calls to the SDK - so probably in your <code>AppDelegate</code>), you will need to call <code>configure()</code> on all the components you intend to use.</p>
+<pre class="highlight swift"><code><span class="kt">PagedPublicationView</span><span class="o">.</span><span class="nf">configure</span><span class="p">()</span>
 </code></pre>
 
-<p>The best place to do this is probably somewhere in your AppDelegate, so that it is sure to be called before any other calls to the <code>ShopGunSDK</code> are made.</p>
-
 <blockquote>
-<p><strong>Note:</strong> If you make calls to ShopGunSDK components before they are configured, the SDK will trigger a fatalError.</p>
+<p><strong>Note:</strong> If you make calls to <code>ShopGunSDK</code> components before they are configured, the SDK will trigger a <strong>fatalError</strong>.</p>
 </blockquote>
 
-<p>For more complex configuration options, including providing a custom log handler, check the <a href="">Configuration docs</a></p>
-<h3 id='lt-todo-make-separate-configuration-docs-gt' class='heading'>&lt; TODO: MAKE SEPARATE CONFIGURATION DOCS &gt;</h3>
-<h3 id='pagedpublicationview' class='heading'>PagedPublicationView</h3>
+<p>In this example we are configuring the <code><a href="Classes/PagedPublicationView.html">PagedPublicationView</a></code>, which configures both the <code><a href="Classes/CoreAPI.html">CoreAPI</a></code> &amp; <code><a href="Classes/EventsTracker.html">EventsTracker</a></code> components. For these components the following settings are required in your <code>ShopGunSDK-Config.plist</code> file:</p>
+
+<ul>
+<li><code>CoreAPI</code>/<code>key</code></li>
+<li><code>CoreAPI</code>/<code>secret</code></li>
+<li><code>EventsTracker</code>/<code>trackId</code></li>
+</ul>
+
+<p>You can get these values from the <a href="https://shopgun.com/developers">ShopGun Developer</a> page.</p>
+
+<p>For details of the required and optional settings you can add to the config file, and for how to manually configure the components, see the <a href="Configuration.html">Configuration</a> guide.</p>
+<h2 id='pagedpublicationview' class='heading'>📖 PagedPublicationView</h2>
 
 <p>The <code><a href="Classes/PagedPublicationView.html">PagedPublicationView</a></code> is a UIView subclass for showing and interacting with a catalog. It also manages all of the loading of the data from our <code><a href="Classes/CoreAPI.html">CoreAPI</a></code>.</p>
 
@@ -324,51 +335,22 @@
 
 <p>If you wish to have usage stats collected you will also need to configure the EventsTracker.</p>
 </blockquote>
+<h3 id='adding-to-your-view-hierarchy' class='heading'>Adding to your view hierarchy</h3>
 
-<p>Simply make an instance of <code><a href="Classes/PagedPublicationView.html">PagedPublicationView</a></code> and add it as a subview in your ViewController. Then, when you wish to start loading the catalog into the view (most likely in the <code>viewDidLoad</code> method of your UIViewController), call the following:</p>
-<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">pagedPublication</span><span class="o">.</span><span class="nf">reload</span><span class="p">(</span><span class="nv">publicationId</span><span class="p">:</span> <span class="s">"&lt;PUBLICATION_ID&gt;"</span><span class="p">)</span>
+<p>You can treat the <code><a href="Classes/PagedPublicationView.html">PagedPublicationView</a></code> like any other UIView, and add an instance as a subview of your UIViewController&rsquo;s view.</p>
+<h3 id='loading-the-contents' class='heading'>Loading the contents</h3>
+
+<p>When you wish to start loading the publication into the view (most likely in the <code>viewDidLoad</code> method of your UIViewController), call the following:</p>
+<pre class="highlight swift"><code><span class="c1">// pagedPublication is the PagedPublicationView instance.</span>
+<span class="n">pagedPublication</span><span class="o">.</span><span class="nf">reload</span><span class="p">(</span><span class="nv">publicationId</span><span class="p">:</span> <span class="s">"&lt;PUBLICATION_ID&gt;"</span><span class="p">)</span>
 </code></pre>
-
-<p>For more complex uses of the <code><a href="Classes/PagedPublicationView.html">PagedPublicationView</a></code>, including setting the pre-loaded state of the view, and showing a custom outro view, check the <a href="">PagedPublication docs</a></p>
-<h3 id='lt-todo-make-separate-paged-pub-docs-gt' class='heading'>&lt; TODO: MAKE SEPARATE PAGED PUB DOCS &gt;</h3>
-<h3 id='coreapi' class='heading'>CoreAPI</h3>
-
-<p>The <code><a href="Classes/CoreAPI.html">CoreAPI</a></code> component provides typesafe tools for working with the ShopGun API, and removes the need to consider any of the session and auth-related complexity when making requests.</p>
 
 <blockquote>
-<p><strong>Note:</strong> You must provide a <code>key</code> and <code>secret</code> when configuring the ShopGunSDK, otherwise calls to the CoreAPI will trigger a fatalError. </p>
-
-<p>These can be requested by signing into the <a href="https://shopgun.com/developers">ShopGun Developers</a> page.</p>
+<p><strong>Note:</strong> You can get the <em><code>&lt;PUBLICATION_ID&gt;</code></em> from either a <code><a href="Classes/CoreAPI.html">CoreAPI</a></code> query that returns a list of publications, or from the <a href="https://shopgun.com/">ShopGun website</a> (simply open a publication and look at the <code>Id</code> in the  URL eg. <q>shopgun.com/catalogs/**`abc123`**</q>).</p>
 </blockquote>
+<h3 id='next-steps' class='heading'>Next steps</h3>
 
-<p>The interface for making requests is very flexible, but a large number of pre-built requests have been included. For example:</p>
-<pre class="highlight swift"><code><span class="c1">// make a request object that will ask for a specific PagedPublication object</span>
-<span class="k">let</span> <span class="nv">req</span> <span class="o">=</span> <span class="kt">CoreAPI</span><span class="o">.</span><span class="nf">getPagedPublication</span><span class="p">(</span><span class="nv">withId</span><span class="p">:</span> <span class="err">…</span><span class="p">)</span>
-
-<span class="c1">// Perform the request. The completion handler is passed a Result object containing the requested PagedPublication, or an error.</span>
-<span class="kt">CoreAPI</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">in</span>
-    <span class="k">switch</span> <span class="n">result</span> <span class="p">{</span>
-    <span class="k">case</span> <span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="k">let</span> <span class="nv">pagedPublication</span><span class="p">):</span>
-       <span class="nf">print</span><span class="p">(</span><span class="s">"👍 '</span><span class="se">\(</span><span class="n">pagedPublication</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">rawValue</span><span class="se">)</span><span class="s">' loaded"</span><span class="p">)</span>
-    <span class="k">case</span> <span class="o">.</span><span class="nf">error</span><span class="p">(</span><span class="k">let</span> <span class="nv">err</span><span class="p">):</span>
-       <span class="nf">print</span><span class="p">(</span><span class="s">"😭 Load Failed: '</span><span class="se">\(</span><span class="n">err</span><span class="o">.</span><span class="n">localizedDescription</span><span class="se">)</span><span class="s">'"</span><span class="p">)</span>
-<span class="p">}</span>
-
-</code></pre>
-
-<p>For a more detailed explanation of the <code><a href="Classes/CoreAPI.html">CoreAPI</a></code>, check the <a href="">CoreAPI docs</a></p>
-<h3 id='lt-todo-make-separate-coreapi-docs-gt' class='heading'>&lt; TODO: MAKE SEPARATE COREAPI DOCS &gt;</h3>
-<h3 id='eventstracker' class='heading'>EventsTracker</h3>
-
-<p>You should not have to use the EventsTracker directly. However, if using the PagedPublication it is recommended that you configure the EventsTracker so that usage stats can be collected from users of your app. </p>
-
-<p>For more details please read the <a href="">EventsTracker docs</a></p>
-<h3 id='lt-todo-make-separate-eventstracker-docs-gt' class='heading'>&lt; TODO: MAKE SEPARATE EVENTSTRACKER DOCS &gt;</h3>
-<h3 id='graphapi' class='heading'>GraphAPI</h3>
-
-<p>Currently still a work in progress. Please come back later.</p>
-
-<p>For more details please read the <a href="">GraphAPI docs</a></p>
+<p>For more complex uses of the <code><a href="Classes/PagedPublicationView.html">PagedPublicationView</a></code>, including setting the pre-loaded state of the view, and showing a custom outro view, check the <a href="PagedPublicationView.html">PagedPublicationView</a> guide.</p>
 
           </div>
         </section>
