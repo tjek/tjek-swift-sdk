@@ -20,12 +20,19 @@ This is a framework for interacting with the ShopGun APIs from within your own a
 
 ## Guides
 
-#### 💾 [Installation](http://shopgun.github.io/shopgun-ios-sdk/installation.html) 
+#### 💾 [Installation](Guides/Installation.md) 
 
-#### 💡[Getting Started](http://shopgun.github.io/shopgun-ios-sdk/getting-started.html)
+#### 💡[Getting Started](Guides/Getting Started.md)
 
-#### 📚 [Full Documentation](http://shopgun.github.io/shopgun-ios-sdk/) 
+#### 📚 [API Documentation](http://shopgun.github.io/shopgun-ios-sdk/) 
 
+### Detailed Guides
+- [Configuration](Guides/Configuration.md)
+- [PagedPublicationView](Guides/PagedPublicationView.md)
+- [CoreAPI](Guides/CoreAPI.md)
+- [GraphAPI](Guides/GraphAPI.md)
+- [EventsTracker](Guides/EventsTracker.md)
+- [Logging](Guides/Logging.md)
 
 ## Quick Start
 
@@ -43,7 +50,7 @@ The preferred way to install the `ShopGunSDK` framework into your own app is usi
 pod 'ShopGunSDK'
 ```
 
-For more detailed instructions, see the [Installation](http://shopgun.github.io/shopgun-ios-sdk/installation.html) guide.
+For more detailed instructions, see the [Installation](Guides/Installation.md) guide.
 
 ### Examples
 
@@ -56,7 +63,7 @@ The repo uses a swift playground to demonstrate example uses of the components.
 
 > Note: In order to use the components properly they must be configured with the correct API keys. Set the values in the playground's `Resources/ShopGunSDK-Config.plist` file with your own API keys (accessible from the [ShopGun Developer page](https://shopgun.com/developers))
 
-For a more detailed guide, see the [Getting Started](http://shopgun.github.io/shopgun-ios-sdk/getting-started.html) guide.
+For a more detailed guide, see the [Getting Started](Guides/Getting Started.md) guide.
 
 
 ## Changelog

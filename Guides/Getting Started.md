@@ -27,7 +27,7 @@ In this example we are configuring the `PagedPublicationView`, which configures 
 
 You can get these values from the [ShopGun Developer](https://shopgun.com/developers) page.
 
-For details of the required and optional settings you can add to the config file, and for how to manually configure the components, see the [Configuration](Configuration.html) guide.
+For details of the required and optional settings you can add to the config file, and for how to manually configure the components, see the [Configuration](Configuration.md) guide.
 
 
 ## 📖 PagedPublicationView
@@ -54,4 +54,6 @@ pagedPublication.reload(publicationId: "<PUBLICATION_ID>")
 
 ### Next steps
 
-For more complex uses of the `PagedPublicationView`, including setting the pre-loaded state of the view, and showing a custom outro view, check the [PagedPublicationView](PagedPublicationView.html) guide.
+For more complex uses of the `PagedPublicationView`, including setting the pre-loaded state of the view, and showing a custom outro view, check the [PagedPublicationView](PagedPublicationView.md) guide.
+
+If you wish to delve deeper into the SDK, you can read [API documentation](http://shopgun.github.io/shopgun-ios-sdk/).
