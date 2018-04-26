@@ -49,11 +49,3 @@ No matter if you are installing separate components, or the entire SDK, importin
 ```swift
 import ShopGunSDK
 ```
-
-## Carthage
-
-If using [Carthage](https://github.com/Carthage/Carthage), add the following to your `Cartfile`:
-
-```ogdl
-github "ShopGun/shopgun-ios-sdk"
-```
