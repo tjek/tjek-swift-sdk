@@ -4,251 +4,303 @@
     <title>Code Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../../../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../../../css/highlight.css" />
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <script src="../../../js/jquery.min.js" defer></script>
     <script src="../../../js/jazzy.js" defer></script>
     
+    <script src="../../../js/lunr.min.js" defer></script>
+    <script src="../../../js/typeahead.jquery.js" defer></script>
+    <script src="../../../js/jazzy.search.js" defer></script>
   </head>
   <body>
+
     <a name="//apple_ref/swift/Struct/Code" class="dashAnchor"></a>
+
     <a title="Code Structure Reference"></a>
-    <header>
-      <div class="content-wrapper">
-        <p><a href="../../../index.html">ShopGunSDK Docs</a> (19% documented)</p>
-        <p class="header-right"><a href="https://github.com/shopgun/shopgun-ios-sdk/"><img src="../../../img/gh.png"/>View on GitHub</a></p>
-      </div>
-    </header>
-    <div class="content-wrapper">
-      <p id="breadcrumbs">
-        <a href="../../../index.html">ShopGunSDK Reference</a>
-        <img id="carat" src="../../../img/carat.png" />
-        Code Structure Reference
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../../../index.html">
+          ShopGunSDK Docs
+        </a>
+         (25% documented)
       </p>
-    </div>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../../../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/shopgun/shopgun-ios-sdk/">
+            <img class="header-icon" src="../../../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../../../index.html">ShopGunSDK Reference</a>
+      <img class="carat" src="../../../img/carat.png" />
+      Code Structure Reference
+    </p>
+
     <div class="content-wrapper">
-      <nav class="sidebar">
+      <nav class="navigation">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a href="../../../Classes.html">Classes</a>
+            <a class="nav-group-name-link" href="../../../Configuration.html">Configuration</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI.html">CoreAPI</a>
+                <a class="nav-group-task-link" href="../../../Classes/Settings.html">Settings</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI/Settings.html">– Settings</a>
+                <a class="nav-group-task-link" href="../../../Classes/Settings/KeychainDataStore.html">– KeychainDataStore</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI.html#/s:10ShopGunSDK7CoreAPIC20ClientIdentifierTypeO">– ClientIdentifierType</a>
+                <a class="nav-group-task-link" href="../../../Classes/Settings/CoreAPI.html">– CoreAPI</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI/LoginCredentials.html">– LoginCredentials</a>
+                <a class="nav-group-task-link" href="../../../Classes/Settings/GraphAPI.html">– GraphAPI</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI/AuthorizedUserProvider.html">– AuthorizedUserProvider</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI/Offer.html">– Offer</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI/Request.html">– Request</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI/Requests.html">– Requests</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI/Dealer.html">– Dealer</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI.html#/s:10ShopGunSDK7CoreAPIC7CountryV">– Country</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI/APIError.html">– APIError</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI/Person.html">– Person</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI/PagedPublication.html">– PagedPublication</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/CoreAPI/Branding.html">– Branding</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/EventsTracker.html">EventsTracker</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/EventsTracker.html#/s:10ShopGunSDK13EventsTrackerC20ClientIdentifierTypeO">– ClientIdentifierType</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/EventsTracker/Settings.html">– Settings</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/EventsTracker/IdField.html">– IdField</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/GraphAPI.html">GraphAPI</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/GraphAPI/Settings.html">– Settings</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/HTTPGraphNetworkTransport.html">HTTPGraphNetworkTransport</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/KeychainDataStore.html">KeychainDataStore</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/KeychainDataStore/Settings.html">– Settings</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/Logger.html">Logger</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/Logger/LogLevel.html">– LogLevel</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/Logger/LogSource.html">– LogSource</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/Logger/LogLocation.html">– LogLocation</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/NetworkGraphClient.html">NetworkGraphClient</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Classes/PagedPublicationView.html">PagedPublicationView</a>
+                <a class="nav-group-task-link" href="../../../Classes/Settings/EventsTracker.html">– EventsTracker</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../../../Enums.html">Enumerations</a>
+            <a class="nav-group-name-link" href="../../../PagedPublicationView.html">PagedPublicationView</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../../../Enums/HTTPRequestMethod.html">HTTPRequestMethod</a>
+                <a class="nav-group-task-link" href="../../../Classes/PagedPublicationView.html">PagedPublicationView</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Enums/Result.html">Result</a>
+                <a class="nav-group-task-link" href="../../../Protocols/PagedPublicationViewDataLoader.html">PagedPublicationViewDataLoader</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Protocols/PagedPublicationViewDataSource.html">PagedPublicationViewDataSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Protocols/PagedPublicationViewDelegate.html">PagedPublicationViewDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Protocols/PagedPublicationViewEventHandler.html">PagedPublicationViewEventHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Protocols/PagedPublicationViewImageLoader.html">PagedPublicationViewImageLoader</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../../../Extensions.html">Extensions</a>
+            <a class="nav-group-name-link" href="../../../CoreAPI.html">CoreAPI</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../../../Extensions/Bundle.html">Bundle</a>
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI.html">CoreAPI</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Extensions/Error.html">Error</a>
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI.html#/s:10ShopGunSDK7CoreAPIC20ClientIdentifierTypeO">– ClientIdentifierType</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Extensions/NSError.html">NSError</a>
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI/LoginCredentials.html">– LoginCredentials</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Extensions/Notification.html">Notification</a>
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI/AuthorizedUserProvider.html">– AuthorizedUserProvider</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Extensions/Notification/Name.html">– Name</a>
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI/Requests.html">– Requests</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI/Request.html">– Request</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI/APIError.html">– APIError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI/Branding.html">– Branding</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI/Dealer.html">– Dealer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI/Country.html">– Country</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI/Offer.html">– Offer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI/PagedPublication.html">– PagedPublication</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI/Person.html">– Person</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Classes/CoreAPI/Store.html">– Store</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Enums/HTTPRequestMethod.html">HTTPRequestMethod</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Protocols/CoreAPIMappableRequest.html">CoreAPIMappableRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Protocols/CoreAPIRequest.html">CoreAPIRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Structs/ImageURLSet.html">ImageURLSet</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../../../Functions.html">Functions</a>
+            <a class="nav-group-name-link" href="../../../Logging.html">Logging</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../../../Functions.html#/s:10ShopGunSDK13loadQueryFileSSSgSS4name_So6BundleC6bundletF">loadQueryFile(name:bundle:)</a>
+                <a class="nav-group-task-link" href="../../../Classes/Logger.html">Logger</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Classes/Logger/LogLevel.html">– LogLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Classes/Logger/LogSource.html">– LogSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Classes/Logger/LogLocation.html">– LogLocation</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../../../Protocols.html">Protocols</a>
+            <a class="nav-group-name-link" href="../../../GraphAPI.html">GraphAPI</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../../../Protocols/Cancellable.html">Cancellable</a>
+                <a class="nav-group-task-link" href="../../../Classes/GraphAPI.html">GraphAPI</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Protocols/CoreAPIMappableRequest.html">CoreAPIMappableRequest</a>
+                <a class="nav-group-task-link" href="../../../Protocols/GraphRequestProtocol.html">GraphRequestProtocol</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Protocols/CoreAPIRequest.html">CoreAPIRequest</a>
+                <a class="nav-group-task-link" href="../../../Protocols/GraphQuery.html">GraphQuery</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Protocols/GraphClient.html">GraphClient</a>
+                <a class="nav-group-task-link" href="../../../GraphAPI.html#/s:10ShopGunSDK13loadQueryFileSSSgSS4name_So6BundleC6bundletF">loadQueryFile(name:bundle:)</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Protocols/GraphNetworkTransport.html">GraphNetworkTransport</a>
+                <a class="nav-group-task-link" href="../../../Protocols/GraphClient.html">GraphClient</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Protocols/GraphQuery.html">GraphQuery</a>
+                <a class="nav-group-task-link" href="../../../Classes/NetworkGraphClient.html">NetworkGraphClient</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Protocols/GraphRequestProtocol.html">GraphRequestProtocol</a>
+                <a class="nav-group-task-link" href="../../../Protocols/GraphNetworkTransport.html">GraphNetworkTransport</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Protocols/PagedPublicationViewDataLoader.html">PagedPublicationViewDataLoader</a>
+                <a class="nav-group-task-link" href="../../../Classes/HTTPGraphNetworkTransport.html">HTTPGraphNetworkTransport</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Protocols/PagedPublicationViewDataSource.html">PagedPublicationViewDataSource</a>
+                <a class="nav-group-task-link" href="../../../Structs/GraphError.html">GraphError</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Protocols/PagedPublicationViewDelegate.html">PagedPublicationViewDelegate</a>
+                <a class="nav-group-task-link" href="../../../Structs/GraphRequest.html">GraphRequest</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Protocols/PagedPublicationViewEventHandler.html">PagedPublicationViewEventHandler</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Protocols/PagedPublicationViewImageLoader.html">PagedPublicationViewImageLoader</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../../Protocols/ShopGunSDKDataStore.html">ShopGunSDKDataStore</a>
+                <a class="nav-group-task-link" href="../../../Structs/GraphResponse.html">GraphResponse</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../../../Structs.html">Structures</a>
+            <a class="nav-group-name-link" href="../../../EventsTracker.html">EventsTracker</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../../../Structs/GenericIdentifier.html">GenericIdentifier</a>
+                <a class="nav-group-task-link" href="../../../Classes/EventsTracker.html">EventsTracker</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Structs/GraphError.html">GraphError</a>
+                <a class="nav-group-task-link" href="../../../Classes/EventsTracker.html#/s:10ShopGunSDK13EventsTrackerC20ClientIdentifierTypeO">– ClientIdentifierType</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Structs/GraphRequest.html">GraphRequest</a>
+                <a class="nav-group-task-link" href="../../../Classes/EventsTracker/IdField.html">– IdField</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Structs/GraphResponse.html">GraphResponse</a>
+                <a class="nav-group-task-link" href="../../../EventsTracker.html#/s:10ShopGunSDK20SerializedPoolObjecta">SerializedPoolObject</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../../Structs/ImageURLSet.html">ImageURLSet</a>
+                <a class="nav-group-task-link" href="../../../Extensions/Notification.html">Notification</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Extensions/Notification/Name.html">– Name</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../../../Typealiases.html">Type Aliases</a>
+            <a class="nav-group-name-link" href="../../../Other Classes.html">Other Classes</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../../../Typealiases.html#/s:10ShopGunSDK20SerializedPoolObjecta">SerializedPoolObject</a>
+                <a class="nav-group-task-link" href="../../../Classes/KeychainDataStore.html">KeychainDataStore</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../../../Other Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Enums/Result.html">Result</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../../../Other Extensions.html">Other Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Extensions/Bundle.html">Bundle</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Extensions/Error.html">Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Extensions/NSError.html">NSError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../../../Other Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Protocols/Cancellable.html">Cancellable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Protocols/ShopGunSDKDataStore.html">ShopGunSDKDataStore</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../../../Other Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Structs/GenericIdentifier.html">GenericIdentifier</a>
               </li>
             </ul>
           </li>
         </ul>
       </nav>
       <article class="main-content">
-        <section>
-          <section class="section">
+
+        <section class="section">
+          <div class="section-content">
             <h1>Code</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Code</span><span class="p">:</span> <span class="kt">RawRepresentable</span><span class="p">,</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt">Decodable</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Code</span> <span class="p">:</span> <span class="kt">RawRepresentable</span><span class="p">,</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt">Decodable</span></code></pre>
 
                 </div>
               </div>
             <p>Undocumented</p>
 
-          </section>
-          <section class="section task-group-section">
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
             <div class="task-group">
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -320,7 +372,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">hashValue</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">hashValue</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -330,7 +382,7 @@
               </ul>
             </div>
             <div class="task-group">
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -379,7 +431,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">category</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI/APIError/Code/ErrorCategory.html">ErrorCategory</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">category</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI/APIError/Code/ErrorCategory.html">ErrorCategory</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -396,7 +448,7 @@
                   <h3 class="section-name">Session errors</h3>
                 </a>
               </div>
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -417,7 +469,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -444,7 +496,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionTokenExpired</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionTokenExpired</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -471,7 +523,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionInvalidAPIKey</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionInvalidAPIKey</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -498,7 +550,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionMissingSignature</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionMissingSignature</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -525,7 +577,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionInvalidSignature</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionInvalidSignature</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -552,7 +604,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionTokenNotAllowed</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionTokenNotAllowed</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -579,7 +631,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionMissingOrigin</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionMissingOrigin</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -606,7 +658,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionMissingToken</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionMissingToken</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -633,7 +685,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionInvalidToken</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionInvalidToken</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -660,7 +712,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionInvalidOriginHeader</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">sessionInvalidOriginHeader</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -677,7 +729,7 @@
                   <h3 class="section-name">Authentication</h3>
                 </a>
               </div>
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -698,7 +750,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authenticationError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authenticationError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -725,7 +777,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authenticationInvalidCredentials</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authenticationInvalidCredentials</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -752,7 +804,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authenticationNoUser</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authenticationNoUser</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -779,7 +831,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authenticationEmailNotVerified</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authenticationEmailNotVerified</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -796,7 +848,7 @@
                   <h3 class="section-name">Authorization</h3>
                 </a>
               </div>
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -817,7 +869,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authorizationError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authorizationError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -844,7 +896,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authorizationActionNotAllowed</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">authorizationActionNotAllowed</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -861,7 +913,7 @@
                   <h3 class="section-name">Missing Information</h3>
                 </a>
               </div>
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -882,7 +934,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -909,7 +961,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingGeolocation</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingGeolocation</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -936,7 +988,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingRadius</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingRadius</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -963,7 +1015,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingAuthentication</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingAuthentication</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -990,7 +1042,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingEmail</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingEmail</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1017,7 +1069,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingBirthday</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingBirthday</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1044,7 +1096,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingGender</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingGender</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1071,7 +1123,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingLocale</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingLocale</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1098,7 +1150,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingName</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingName</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1125,7 +1177,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingResourceNotFound</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingResourceNotFound</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1152,7 +1204,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingResourceDeleted</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoMissingResourceDeleted</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1169,7 +1221,7 @@
                   <h3 class="section-name">Invalid Information</h3>
                 </a>
               </div>
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -1190,7 +1242,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoInvalid</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoInvalid</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1217,7 +1269,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoInvalidResourceID</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoInvalidResourceID</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1244,7 +1296,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoInvalidResourceDuplication</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoInvalidResourceDuplication</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1271,7 +1323,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoInvalidBodyData</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoInvalidBodyData</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1298,7 +1350,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoInvalidProtocol</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">infoInvalidProtocol</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1315,7 +1367,7 @@
                   <h3 class="section-name">Rate Control</h3>
                 </a>
               </div>
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -1336,7 +1388,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">rateControlError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">rateControlError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1363,7 +1415,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">rateControlLimited</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">rateControlLimited</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1380,7 +1432,7 @@
                   <h3 class="section-name">Internal Corruption Of Data</h3>
                 </a>
               </div>
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -1401,7 +1453,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">internalIntegrityError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">internalIntegrityError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1428,7 +1480,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">internalSearchError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">internalSearchError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1455,7 +1507,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">internalNonCriticalError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">internalNonCriticalError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1472,7 +1524,7 @@
                   <h3 class="section-name">Misc.</h3>
                 </a>
               </div>
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -1493,7 +1545,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">miscActionNotExists</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">miscActionNotExists</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1510,7 +1562,7 @@
                   <h3 class="section-name">Maintenance</h3>
                 </a>
               </div>
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -1531,7 +1583,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">maintenanceError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">maintenanceError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1558,7 +1610,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">maintenanceErrorServiceDown</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">maintenanceErrorServiceDown</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1585,7 +1637,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">maintenanceErrorFeatureDown</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">maintenanceErrorFeatureDown</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1602,7 +1654,7 @@
                   <h3 class="section-name">Client</h3>
                 </a>
               </div>
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -1623,7 +1675,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">invalidNetworkResponseError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">invalidNetworkResponseError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1650,7 +1702,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">unknownAPIError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">unknownAPIError</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1677,7 +1729,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">requestCancelled</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">requestCancelled</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1704,7 +1756,34 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">unableToLogin</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">unableToLogin</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26unableToDecodeResponseDataAGvZ"></a>
+                    <a name="//apple_ref/swift/Variable/unableToDecodeResponseData" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26unableToDecodeResponseDataAGvZ">unableToDecodeResponseData</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">unableToDecodeResponseData</span><span class="p">:</span> <span class="kt"><a href="../../../Classes/CoreAPI.html">CoreAPI</a></span><span class="o">.</span><span class="kt"><a href="../../../Classes/CoreAPI/APIError.html">APIError</a></span><span class="o">.</span><span class="kt">Code</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1713,14 +1792,15 @@
                 </li>
               </ul>
             </div>
-          </section>
+          </div>
         </section>
-        <section id="footer">
-          <p>&copy; 2018 <a class="link" href="https://github.com/shopgun/shopgun-ios-sdk" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-03-07)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
-        </section>
+
       </article>
     </div>
+    <section class="footer">
+      <p>&copy; 2018 <a class="link" href="https://shopgun.com/developers" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-04-26)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
   </body>
 </div>
 </html>

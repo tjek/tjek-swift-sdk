@@ -1,8 +1,8 @@
 # Change Log
 
 
-## v4
-
+## v4.0.0
+This is a complete re-write of the SDK in Swift 4.0.
 
 
 ## v3.1.0
