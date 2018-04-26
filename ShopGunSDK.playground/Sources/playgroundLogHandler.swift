@@ -1,5 +1,6 @@
 import Foundation
-import ShopGunSDK
+import ShopGunSDK // NOTE: you must build this targetting an iOS simulator
+
 
 public let playgroundLogHandler: Logger.LogHandler = { (message, level, source, location) in
     

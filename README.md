@@ -61,7 +61,9 @@ The repo uses a swift playground to demonstrate example uses of the components.
 - Open the `ShopGunSDK.xcodeproj`, and build the ShopGunSDK scheme (using a simulator destination)
 - Open the `ShopGunSDK.playground` that is referenced inside the project. From here, you will be able experiment with the SDK.
 
-> Note: In order to use the components properly they must be configured with the correct API keys. Set the values in the playground's `Resources/ShopGunSDK-Config.plist` file with your own API keys (accessible from the [ShopGun Developer page](https://shopgun.com/developers))
+> **Note:** In order to use the components properly they must be configured with the correct API keys. Set the values in the playground's `Resources/ShopGunSDK-Config.plist` file with your own API keys (accessible from the [ShopGun Developer page](https://shopgun.com/developers))
+> 
+> **Also Note:** Xcode Playgrounds can be a bit flaky when it comes to importing external frameworks. If it complains, try cleaning the build folder and rebuilding the SDK (targetting a simulator), and if it continues, restart Xcode. Also sometimes commenting out contents of the `playgroundLogHandler.swift` file, and then uncommenting again, helps.
 
 For a more detailed guide, see the [Getting Started](Guides/Getting-Started.md) guide.
 

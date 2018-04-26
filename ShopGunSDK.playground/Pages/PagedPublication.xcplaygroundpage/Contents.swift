@@ -47,6 +47,8 @@ PlaygroundPage.current.needsIndefiniteExecution = true
 
 Logger.logHandler = playgroundLogHandler
 
+PagedPublicationView.configure()
+
 let vc = ExampleViewController()
 
 PlaygroundPage.current.liveView = vc
