@@ -71,7 +71,7 @@
 		AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */; };
 		AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B621FF6ABFC0007AAB8 /* Result.swift */; };
 		AEC28B6E1FF6AC2A0007AAB8 /* ShopGunSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AEC3D8571FFD87FB004C5947 /* ShopGunTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3D8551FFD87FB004C5947 /* ShopGunTests.swift */; };
+		AEC3D8571FFD87FB004C5947 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3D8551FFD87FB004C5947 /* SettingsTests.swift */; };
 		AECC8E07204987B5007185B0 /* EventsTracker+DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC8E06204987B5007185B0 /* EventsTracker+DataStore.swift */; };
 		AECC8E1B204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */; };
 		AED992852063008300671F48 /* CoreAPI_OfferRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED992842063008300671F48 /* CoreAPI_OfferRequests.swift */; };
@@ -359,7 +359,7 @@
 		AEC28B6F1FF6AC420007AAB8 /* ShopGunSDK.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = ShopGunSDK.playground; sourceTree = "<group>"; };
 		AEC28B711FF6AC8A0007AAB8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AEC3D8541FFD87FB004C5947 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AEC3D8551FFD87FB004C5947 /* ShopGunTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopGunTests.swift; sourceTree = "<group>"; };
+		AEC3D8551FFD87FB004C5947 /* SettingsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
 		AEC3D85D1FFD8E86004C5947 /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		AEC3D85F1FFD8E86004C5947 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
 		AEC3D8601FFD8E86004C5947 /* macOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = macOS.xcconfig; sourceTree = "<group>"; };
@@ -620,7 +620,7 @@
 			isa = PBXGroup;
 			children = (
 				AEC3D8541FFD87FB004C5947 /* Info.plist */,
-				AEC3D8551FFD87FB004C5947 /* ShopGunTests.swift */,
+				AEC3D8551FFD87FB004C5947 /* SettingsTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1050,7 +1050,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEC3D8571FFD87FB004C5947 /* ShopGunTests.swift in Sources */,
+				AEC3D8571FFD87FB004C5947 /* SettingsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
