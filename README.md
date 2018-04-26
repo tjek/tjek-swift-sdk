@@ -22,7 +22,7 @@ This is a framework for interacting with the ShopGun APIs from within your own a
 
 #### 💾 [Installation](Guides/Installation.md) 
 
-#### 💡[Getting Started](Guides/Getting Started.md)
+#### 💡[Getting Started](Guides/Getting-Started.md)
 
 #### 📚 [API Documentation](http://shopgun.github.io/shopgun-ios-sdk/) 
 
