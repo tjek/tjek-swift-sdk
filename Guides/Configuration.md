@@ -1,3 +1,5 @@
+# Configuration
+
 Before you use any component of the SDK it must be configured.
 
 > TODO:

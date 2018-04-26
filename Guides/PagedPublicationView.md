@@ -1,1 +1,3 @@
+# PagedPublicationView
+
 > TODO: Example uses

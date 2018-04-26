@@ -1,3 +1,5 @@
+# CoreAPI
+
 The CoreAPI simplifies auth & communication with the ShopGun REST API.
 
 > TODO:

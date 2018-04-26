@@ -63,7 +63,7 @@ The repo uses a swift playground to demonstrate example uses of the components.
 
 > Note: In order to use the components properly they must be configured with the correct API keys. Set the values in the playground's `Resources/ShopGunSDK-Config.plist` file with your own API keys (accessible from the [ShopGun Developer page](https://shopgun.com/developers))
 
-For a more detailed guide, see the [Getting Started](Guides/Getting Started.md) guide.
+For a more detailed guide, see the [Getting Started](Guides/Getting-Started.md) guide.
 
 
 ## Changelog
