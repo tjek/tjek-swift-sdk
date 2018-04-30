@@ -1,3 +1,0 @@
-target 'ETA-SDK Example'
-
-pod "ETA-SDK/CatalogReader", :path => "../"
