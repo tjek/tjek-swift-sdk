@@ -226,25 +226,4 @@ class SettingsTests: XCTestCase {
             XCTAssert(false, "Unable to decode settings: \(error.localizedDescription)")
         }
     }
-    
-    // MARK: - Combined Settings
-    
-    func testEmptyCombinedSettings() {
-        
-        // 1. given
-        let defaultKeychainDataStore = Settings.KeychainDataStore.privateKeychain
-        
-        // 2. when
-        let emptySettings = Settings()
-        
-        // 3. then
-        XCTAssertEqual(emptySettings.keychainDataStore, defaultKeychainDataStore)
-        XCTAssertEqual(emptySettings.coreAPI, nil)
-        XCTAssertEqual(emptySettings.graphAPI, nil)
-        XCTAssertEqual(emptySettings.eventsTracker, nil)
-    }
-    
-    func testSharedCombinedSettings() {
-        
-    }
 }
