@@ -31,7 +31,7 @@ import Foundation
  }
  ```
  */
-public struct GenericIdentifier<T>: RawRepresentable {
+public struct GenericIdentifier<T>: RawRepresentable, Codable, Hashable {
     
     /// The internal string value of the GenericIdentifier.
     public let rawValue: String
@@ -69,14 +69,6 @@ public struct GenericIdentifier<T>: RawRepresentable {
 }
 
 /// Allow identifier to be Encoded & decoded using the rawValue
-extension GenericIdentifier: Codable { }
-
-extension GenericIdentifier: Hashable {
-    /// Allow identifier to be used as a key
-    public var hashValue: Int {
-        return rawValue.hashValue
-    }
-}
 
 extension GenericIdentifier: CustomStringConvertible {
     public var description: String {

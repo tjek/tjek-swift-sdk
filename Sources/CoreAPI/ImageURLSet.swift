@@ -56,7 +56,7 @@ extension ImageURLSet {
             (imageURLs.zoom, CGSize(width: 1536, height: 2008))
         ]
         
-        let sizedURLs: [SizedURL] = possibleURLs.flatMap { (maybeURL, maxSize) in
+        let sizedURLs: [SizedURL] = possibleURLs.compactMap { (maybeURL, maxSize) in
             guard let url = maybeURL else { return nil }
             
             var fittingSize = maxSize
