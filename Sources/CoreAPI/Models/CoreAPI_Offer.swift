@@ -30,28 +30,14 @@ extension CoreAPI {
         
         public var branding: Branding?
         
-        public var publication: (id: CoreAPI.PagedPublication.Identifier, pageIndex: Int)?
+        public var publication: PublicationPageReference?
         public var dealerId: CoreAPI.Dealer.Identifier?
         /// The id of the nearest store. Only available if a location was provided when fetching the offer.
         public var storeId: CoreAPI.Store.Identifier?
-
-        // MARK: Equatable
         
-        public static func == (lhs: CoreAPI.Offer, rhs: CoreAPI.Offer) -> Bool {
-            return lhs.id == rhs.id
-                && lhs.heading == rhs.heading
-                && lhs.description == rhs.description
-                && lhs.images == rhs.images
-                && lhs.webshopURL == rhs.webshopURL
-                && lhs.runDateRange == rhs.runDateRange
-                && lhs.publishDate == rhs.publishDate
-                && lhs.price == rhs.price
-                && lhs.quantity == rhs.quantity
-                && lhs.branding == rhs.branding
-                && lhs.publication?.id == rhs.publication?.id
-                && lhs.publication?.pageIndex == rhs.publication?.pageIndex
-                && lhs.dealerId == rhs.dealerId
-                && lhs.storeId == rhs.storeId
+        public struct PublicationPageReference: Equatable {
+            public var id: CoreAPI.PagedPublication.Identifier
+            public var pageIndex: Int
         }
         
         // MARK: Decodable
@@ -114,7 +100,7 @@ extension CoreAPI {
             if let catalogId = try? values.decode(CoreAPI.PagedPublication.Identifier.self, forKey: .catalogId),
                 let catalogPageNum = try? values.decode(Int.self, forKey: .catalogPage),
                 catalogPageNum > 0 {
-                self.publication = (id: catalogId, pageIndex: catalogPageNum - 1)
+                self.publication = PublicationPageReference(id: catalogId, pageIndex: catalogPageNum - 1)
             }
             
             self.dealerId = try? values.decode(CoreAPI.Dealer.Identifier.self, forKey: .dealerId)
@@ -135,25 +121,16 @@ extension CoreAPI.Offer {
             case price
             case prePrice = "pre_price"
         }
-
-        public static func == (lhs: CoreAPI.Offer.Price, rhs: CoreAPI.Offer.Price) -> Bool {
-            return lhs.currency == rhs.currency
-                && lhs.price == rhs.price
-                && lhs.prePrice == rhs.prePrice
-        }
     }
     
     public struct Quantity: Decodable, Equatable {
         public var unit: QuantityUnit?
-        public var size: (from: Double?, to: Double?)
-        public var pieces: (from: Double?, to: Double?)
+        public var size: QuantityRange
+        public var pieces: QuantityRange
         
-        public static func == (lhs: CoreAPI.Offer.Quantity, rhs: CoreAPI.Offer.Quantity) -> Bool {
-            return lhs.unit == rhs.unit
-                && lhs.size.from == rhs.size.from
-                && lhs.size.to == rhs.size.to
-                && lhs.pieces.from == rhs.pieces.from
-                && lhs.pieces.from == rhs.pieces.from
+        public struct QuantityRange: Equatable {
+            public var from: Double?
+            public var to: Double?
         }
         
         enum CodingKeys: String, CodingKey {
@@ -168,15 +145,15 @@ extension CoreAPI.Offer {
             self.unit = try? values.decode(QuantityUnit.self, forKey: .unit)
             
             if let sizeDict = try? values.decode([String: Double].self, forKey: .size) {
-                self.size = (from: sizeDict["from"], to: sizeDict["to"])
+                self.size = QuantityRange(from: sizeDict["from"], to: sizeDict["to"])
             } else {
-                self.size = (from: nil, to:nil)
+                self.size = QuantityRange(from: nil, to:nil)
             }
             
             if let piecesDict = try? values.decode([String: Double].self, forKey: .pieces) {
-                self.pieces = (from: piecesDict["from"], to: piecesDict["to"])
+                self.pieces = QuantityRange(from: piecesDict["from"], to: piecesDict["to"])
             } else {
-                self.pieces = (from: nil, to:nil)
+                self.pieces = QuantityRange(from: nil, to:nil)
             }
         }
     }
@@ -184,34 +161,23 @@ extension CoreAPI.Offer {
     public struct QuantityUnit: Decodable, Equatable {
         
         public var symbol: String
-        public var siUnit: (symbol: String, factor: Double)
+        public var siUnit: SIUnit
         
-        public static func == (lhs: CoreAPI.Offer.QuantityUnit, rhs: CoreAPI.Offer.QuantityUnit) -> Bool {
-            return lhs.symbol == rhs.symbol
-                && lhs.siUnit.symbol == rhs.siUnit.symbol
-                && lhs.siUnit.factor == rhs.siUnit.factor
+        public struct SIUnit: Decodable, Equatable {
+            public var symbol: String
+            public var factor: Double
         }
         
         enum CodingKeys: String, CodingKey {
             case symbol
             case si
         }
-        enum SICodingKeys: String, CodingKey {
-            case symbol
-            case factor
-        }
         
         public init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             
             self.symbol = try values.decode(String.self, forKey: .symbol)
-            
-            let siValues = try values.nestedContainer(keyedBy: SICodingKeys.self, forKey: .si)
-            
-            let siSymbol = try siValues.decode(String.self, forKey: .symbol)
-            let siFactor = try siValues.decode(Double.self, forKey: .factor)
-            
-            self.siUnit = (siSymbol, siFactor)
+            self.siUnit = try values.decode(SIUnit.self, forKey: .si)
         }
     }
 }

@@ -11,7 +11,7 @@ import UIKit
 
 extension CoreAPI {
     
-    public struct PagedPublication: Decodable {
+    public struct PagedPublication: Decodable, Equatable {
         
         public typealias Identifier = GenericIdentifier<PagedPublication>
         
@@ -86,7 +86,7 @@ extension CoreAPI {
         
         // MARK: -
         
-        public struct Page {
+        public struct Page: Equatable {
             public var index: Int
             public var title: String?
             public var aspectRatio: Double
@@ -113,13 +113,6 @@ extension CoreAPI {
                     return bounds
                 })
                 return newHotspot
-            }
-            
-            // MARK: Equatable
-            
-            public static func == (lhs: CoreAPI.PagedPublication.Hotspot, rhs: CoreAPI.PagedPublication.Hotspot) -> Bool {
-                return lhs.offer == rhs.offer
-                    && lhs.pageLocations == rhs.pageLocations
             }
             
             // MARK: Decoding

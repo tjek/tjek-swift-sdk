@@ -51,15 +51,5 @@ extension CoreAPI {
             self.gender = try? values.decode(Gender.self, forKey: .gender)
             self.birthYear = try? values.decode(Int.self, forKey: .birthYear)
         }
-        
-        // MARK: - Equatable
-        
-        public static func == (lhs: CoreAPI.Person, rhs: CoreAPI.Person) -> Bool {
-            return lhs.id == rhs.id
-                && lhs.name == rhs.name
-                && lhs.email == rhs.email
-                && lhs.gender == rhs.gender
-                && lhs.birthYear == rhs.birthYear
-        }
     }
 }

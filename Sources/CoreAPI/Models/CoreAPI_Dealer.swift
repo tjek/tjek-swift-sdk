@@ -11,7 +11,7 @@ import UIKit
 
 extension CoreAPI {
     
-    public struct Dealer: Decodable {
+    public struct Dealer: Decodable, Equatable {
         public typealias Identifier = GenericIdentifier<Dealer>
         
         public var id: Identifier
@@ -57,7 +57,7 @@ extension CoreAPI {
     
     // MARK: -
     
-    public struct Country: Decodable {
+    public struct Country: Decodable, Equatable {
         public typealias Identifier = GenericIdentifier<Country>
         public var id: Identifier
     }
