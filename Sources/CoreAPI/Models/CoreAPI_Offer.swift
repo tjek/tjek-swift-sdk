@@ -147,13 +147,13 @@ extension CoreAPI.Offer {
             if let sizeDict = try? values.decode([String: Double].self, forKey: .size) {
                 self.size = QuantityRange(from: sizeDict["from"], to: sizeDict["to"])
             } else {
-                self.size = QuantityRange(from: nil, to:nil)
+                self.size = QuantityRange(from: nil, to: nil)
             }
             
             if let piecesDict = try? values.decode([String: Double].self, forKey: .pieces) {
                 self.pieces = QuantityRange(from: piecesDict["from"], to: piecesDict["to"])
             } else {
-                self.pieces = QuantityRange(from: nil, to:nil)
+                self.pieces = QuantityRange(from: nil, to: nil)
             }
         }
     }
