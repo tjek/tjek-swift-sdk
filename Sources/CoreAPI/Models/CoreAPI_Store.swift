@@ -12,8 +12,7 @@ import CoreLocation
 
 extension CoreAPI {
     
-    public struct Store: Decodable {
-        
+    public struct Store: Decodable, Equatable {
         public typealias Identifier = GenericIdentifier<Store>
         
         public var id: Identifier

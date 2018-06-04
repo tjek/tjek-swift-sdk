@@ -15,14 +15,11 @@ extension CoreAPI {
         
         public typealias Identifier = String
         
-        public struct Code: RawRepresentable, Hashable, Decodable {
+        public struct Code: RawRepresentable, Hashable, Equatable, Decodable {
             public let rawValue: Int
             
             public init(rawValue: Int) {
                 self.rawValue = rawValue
-            }
-            public var hashValue: Int {
-                return self.rawValue.hashValue
             }
         }
         

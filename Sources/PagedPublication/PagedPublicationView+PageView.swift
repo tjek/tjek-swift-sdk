@@ -33,13 +33,6 @@ extension PagedPublicationView {
             var images: ImageURLSet?
             
             static var empty = Properties(pageTitle: "", isBackgroundDark: false, aspectRatio: 1.0, images: nil)
-            
-            static func == (lhs: PagedPublicationView.PageView.Properties, rhs: PagedPublicationView.PageView.Properties) -> Bool {
-                return lhs.pageTitle == rhs.pageTitle
-                    && lhs.isBackgroundDark == rhs.isBackgroundDark
-                    && lhs.aspectRatio == rhs.aspectRatio
-                    && lhs.images == rhs.images
-            }
         }
         
         weak var delegate: PagedPublicationPageViewDelegate?

@@ -1,5 +1,14 @@
 # Change Log
 
+## v4.0.1
+**Swift 4.1 now required**
+
+- Migrate SDK code from Swift 4.0 to 4.1.
+- Update 3rd party dependencies:
+	- `Verso` 1.0.1 -> 1.0.2
+	- `Kingfisher` 4.6.4 -> 4.7.0
+	- `CryptoSwift` 0.8.3 -> 0.9.0
+- Changes to the CoreAPI.Dealer model object.
 
 ## v4.0.0
 This is a complete re-write of the SDK in Swift 4.0.

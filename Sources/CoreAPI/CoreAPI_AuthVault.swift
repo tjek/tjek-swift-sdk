@@ -15,7 +15,7 @@ extension CoreAPI {
     final class AuthVault {
         // MARK: - Types
         
-        enum AuthRegenerationType {
+        enum AuthRegenerationType: Equatable {
             case create // destroy and recreate a new token
             case renewOrCreate // just renew the current token's expiry (performs `create` if no token)
             case reauthorize(LoginCredentials) // renew the current token the specified credentials (fails if no token)
@@ -447,24 +447,6 @@ extension CoreAPI.LoginCredentials {
                     "password": password]
         case let .facebook(token):
             return ["facebook_token": token]
-        }
-    }
-}
-
-// MARK: -
-
-extension CoreAPI.AuthVault.AuthRegenerationType: Equatable {
-    static func == (lhs: CoreAPI.AuthVault.AuthRegenerationType, rhs: CoreAPI.AuthVault.AuthRegenerationType) -> Bool {
-        switch (lhs, rhs) {
-        case (.create, .create): return true
-        case (.renewOrCreate, .renewOrCreate): return true
-        case (.reauthorize(let lhsCred), .reauthorize(let rhsCred)):
-            return lhsCred == rhsCred
-            
-        case (.create, _),
-             (.renewOrCreate, _),
-             (.reauthorize(_), _):
-            return false
         }
     }
 }

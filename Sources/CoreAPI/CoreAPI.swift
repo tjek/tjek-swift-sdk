@@ -196,22 +196,6 @@ extension CoreAPI {
         case logout
         case shopgun(email: String, password: String)
         case facebook(token: String)
-        
-        public static func == (lhs: CoreAPI.LoginCredentials, rhs: CoreAPI.LoginCredentials) -> Bool {
-            switch (lhs, rhs) {
-            case (.logout, .logout):
-                return true
-            case let (.shopgun(lhsEmail, lhsPass), .shopgun(rhsEmail, rhsPass)):
-                return lhsEmail == rhsEmail && lhsPass == rhsPass
-            case let (.facebook(lhsToken), .facebook(rhsToken)):
-                return lhsToken == rhsToken
-                
-            case (.logout, _),
-                 (.shopgun(_), _),
-                 (.facebook(_), _):
-                return false
-            }
-        }
     }
     
     // A user/provider pair

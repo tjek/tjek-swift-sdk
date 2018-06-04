@@ -18,16 +18,6 @@ extension CoreAPI {
         public var description: String?
         public var logoURL: URL?
         public var color: UIColor?
-
-        // MARK: Equatable
-        
-        public static func == (lhs: CoreAPI.Branding, rhs: CoreAPI.Branding) -> Bool {
-            return lhs.name == rhs.name
-                && lhs.description == rhs.description
-                && lhs.website == rhs.website
-                && lhs.logoURL == rhs.logoURL
-                && lhs.color == rhs.color
-        }
         
         // MARK: Decodable
         
