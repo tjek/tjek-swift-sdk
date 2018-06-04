@@ -1,7 +1,7 @@
 ShopGunSDK
 ==========
 
-[![Build Status](https://img.shields.io/travis/shopgun/shopgun-ios-sdk.svg)](https://travis-ci.com/shopgun/shopgun-ios-sdk)
+[![Build Status](https://travis-ci.com/shopgun/shopgun-ios-sdk.svg?branch=master)](https://travis-ci.com/shopgun/shopgun-ios-sdk)
 [![Version](https://img.shields.io/cocoapods/v/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![Swift](http://img.shields.io/badge/swift-4.1-brightgreen.svg)](https://swift.org)
