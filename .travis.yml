@@ -5,4 +5,4 @@ before_install:
 - gem install cocoapods
 - pod repo update
 script: 
-- pod lib lint
+- pod lib lint --verbose
