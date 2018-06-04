@@ -42,6 +42,7 @@
 		AE3C38FE2019DFD700A92597 /* PagedPublicationView+LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FD2019DFD700A92597 /* PagedPublicationView+LoadingView.swift */; };
 		AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */; };
 		AE4942C120174406006658CE /* PagedPublicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4942C020174406006658CE /* PagedPublicationView.swift */; };
+		AE50A3BE2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */; };
 		AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */; };
 		AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6D65EC204ECBF50011E15C /* Logger.swift */; };
 		AE6D660B204EE2910011E15C /* KeychainDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6D65F9204EE2910011E15C /* KeychainDataStore.swift */; };
@@ -133,6 +134,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 26E6827B1BA8B3F900EFF4EA;
 			remoteInfo = "Valet-iOS";
+		};
+		AE0EC9532098E70500FEA06C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 754BE45419693E190098E6F3;
+			remoteInfo = CryptoSwift;
 		};
 		AE4942A420113A0F006658CE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -239,13 +247,6 @@
 			remoteGlobalIDString = 754BE46019693E190098E6F3;
 			remoteInfo = Tests;
 		};
-		AE95FDCB2050141D0002C1CE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 754BE45419693E190098E6F3;
-			remoteInfo = CryptoSwift;
-		};
 		AEC28B451FF6AAC20007AAB8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AEC28B311FF6AAC20007AAB8 /* Project object */;
@@ -324,6 +325,7 @@
 		AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+CoreAPILoader.swift"; sourceTree = "<group>"; };
 		AE49429920113A0F006658CE /* Verso.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Verso.xcodeproj; path = External/Verso/Verso.xcodeproj; sourceTree = "<group>"; };
 		AE4942C020174406006658CE /* PagedPublicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagedPublicationView.swift; sourceTree = "<group>"; };
+		AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D_Equatable.swift; sourceTree = "<group>"; };
 		AE5A972820232098004E0799 /* Kingfisher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kingfisher.xcodeproj; path = External/Kingfisher/Kingfisher.xcodeproj; sourceTree = "<group>"; };
 		AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+EventHandler.swift"; sourceTree = "<group>"; };
 		AE6D65EC204ECBF50011E15C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
@@ -584,6 +586,7 @@
 				AE8E4545200F6CAA0042CCE2 /* ImageURLSet.swift */,
 				AE95FDBF204FEC6C0002C1CE /* CGSize_Fitting.swift */,
 				AE8E4540200E31E60042CCE2 /* UIColor_Hex.swift */,
+				AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */,
 			);
 			name = CoreAPI;
 			path = Sources/CoreAPI;
@@ -721,7 +724,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				AE95FDCC2050141D0002C1CE /* PBXTargetDependency */,
+				AE0EC9542098E70500FEA06C /* PBXTargetDependency */,
 				AE5A9757202320AC004E0799 /* PBXTargetDependency */,
 				AE4942A720113A23006658CE /* PBXTargetDependency */,
 				AE0654AA1FFEE266009F6F92 /* PBXTargetDependency */,
@@ -756,7 +759,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0910;
-				LastUpgradeCheck = 0910;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = ShopGun;
 				TargetAttributes = {
 					AEC28B391FF6AAC20007AAB8 = {
@@ -1024,6 +1027,7 @@
 				AE7F6A77201F36F300168C1A /* PagedPublicationView+Verso.swift in Sources */,
 				AE6D660B204EE2910011E15C /* KeychainDataStore.swift in Sources */,
 				AE2008D5200CE86F004363BE /* UserAgent.swift in Sources */,
+				AE50A3BE2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift in Sources */,
 				AE85C5EF2001884100263F8B /* Result+MapValue.swift in Sources */,
 				AE3B325A20458716001C75C9 /* EventsTracker+IdField.swift in Sources */,
 				AE091FF0203AF24000345009 /* GraphError.swift in Sources */,
@@ -1062,6 +1066,11 @@
 			name = "Valet-iOS";
 			targetProxy = AE0654A91FFEE266009F6F92 /* PBXContainerItemProxy */;
 		};
+		AE0EC9542098E70500FEA06C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CryptoSwift;
+			targetProxy = AE0EC9532098E70500FEA06C /* PBXContainerItemProxy */;
+		};
 		AE4942A720113A23006658CE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Verso;
@@ -1071,11 +1080,6 @@
 			isa = PBXTargetDependency;
 			name = "Kingfisher-iOS";
 			targetProxy = AE5A9756202320AC004E0799 /* PBXContainerItemProxy */;
-		};
-		AE95FDCC2050141D0002C1CE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = CryptoSwift;
-			targetProxy = AE95FDCB2050141D0002C1CE /* PBXContainerItemProxy */;
 		};
 		AEC28B461FF6AAC20007AAB8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1128,6 +1132,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -1190,6 +1195,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

@@ -308,7 +308,7 @@ extension PagedPublicationView {
             
             let minSize = CGSize(width: min(bounds.size.width * 0.02, 20), height: min(bounds.size.height * 0.02, 20))
             
-            self.hotspotDetails = hotspots.flatMap {
+            self.hotspotDetails = hotspots.compactMap {
                 guard let hotspotFrame = _frameForHotspot($0),
                     hotspotFrame.isEmpty == false,
                     hotspotFrame.width > minSize.width,

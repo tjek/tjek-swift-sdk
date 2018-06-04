@@ -11,7 +11,7 @@ import UIKit
 
 extension CoreAPI {
     
-    public struct Dealer: Decodable {
+    public struct Dealer: Decodable, Equatable {
         public typealias Identifier = GenericIdentifier<Dealer>
         
         public var id: Identifier
@@ -19,12 +19,11 @@ extension CoreAPI {
         public var website: URL?
         public var description: String?
         public var descriptionMarkdown: String?
-        public var logoURL: URL
-        public var color: UIColor?
+        public var logoOnWhite: URL
+        public var logoOnBrandColor: URL
+        public var brandColor: UIColor?
         public var country: Country
         public var favoriteCount: Int
-        
-        // TODO: missing fields: PageFlip color&logo / category_ids /
         
         enum CodingKeys: String, CodingKey {
             case id
@@ -32,10 +31,16 @@ extension CoreAPI {
             case website
             case description
             case descriptionMarkdown = "description_markdown"
-            case logoURL = "logo"
+            case logoOnWhite = "logo"
             case colorStr = "color"
+            case pageFlip = "pageflip"
             case country
             case favoriteCount = "favorite_count"
+            
+            enum PageFlipKeys: String, CodingKey {
+                case logo
+                case colorStr = "color"
+            }
         }
         
         public init(from decoder: Decoder) throws {
@@ -46,10 +51,14 @@ extension CoreAPI {
             self.website = try? values.decode(URL.self, forKey: .website)
             self.description = try? values.decode(String.self, forKey: .description)
             self.descriptionMarkdown = try? values.decode(String.self, forKey: .descriptionMarkdown)
-            self.logoURL = try values.decode(URL.self, forKey: .logoURL)
+            self.logoOnWhite = try values.decode(URL.self, forKey: .logoOnWhite)
             if let colorStr = try? values.decode(String.self, forKey: .colorStr) {
-                self.color = UIColor(hex: colorStr)
+                self.brandColor = UIColor(hex: colorStr)
             }
+            
+            let pageflipValues = try values.nestedContainer(keyedBy: CodingKeys.PageFlipKeys.self, forKey: .pageFlip)
+            self.logoOnBrandColor = try pageflipValues.decode(URL.self, forKey: .logo)
+            
             self.country = try values.decode(Country.self, forKey: .country)
             self.favoriteCount = try values.decode(Int.self, forKey: .favoriteCount)
         }
@@ -57,7 +66,7 @@ extension CoreAPI {
     
     // MARK: -
     
-    public struct Country: Decodable {
+    public struct Country: Decodable, Equatable {
         public typealias Identifier = GenericIdentifier<Country>
         public var id: Identifier
     }

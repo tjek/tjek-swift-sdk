@@ -1,7 +1,6 @@
 import Foundation
 import ShopGunSDK // NOTE: you must build this targetting an iOS simulator
 
-
 Logger.logHandler = playgroundLogHandler
 
 // Using the default `configure` methods will use values in the `ShopGunSDK-Config.plist` to setup each component

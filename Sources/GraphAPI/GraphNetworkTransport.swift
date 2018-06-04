@@ -54,7 +54,7 @@ public class HTTPGraphNetworkTransport: GraphNetworkTransport {
             var errors: [GraphError]?
             
             if let jsonErrors = jsonDict?["errors"] as? [[String: Any]] {
-                let possibleErrors = jsonErrors.flatMap { GraphError(json: $0) }
+                let possibleErrors = jsonErrors.compactMap(GraphError.init(json:))
                 if possibleErrors.count > 0 {
                     errors = possibleErrors
                 }

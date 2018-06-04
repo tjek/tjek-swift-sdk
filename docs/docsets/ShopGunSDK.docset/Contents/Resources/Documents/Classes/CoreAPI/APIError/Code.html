@@ -23,7 +23,7 @@
         <a class="header-link" href="../../../index.html">
           ShopGunSDK Docs
         </a>
-         (25% documented)
+         (22% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -150,6 +150,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../../../Structs/ImageURLSet.html">ImageURLSet</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Structs/ImageURLSet/SizedImageURL.html">– SizedImageURL</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -220,9 +223,6 @@
                 <a class="nav-group-task-link" href="../../../Classes/EventsTracker/IdField.html">– IdField</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../../../EventsTracker.html#/s:10ShopGunSDK20SerializedPoolObjecta">SerializedPoolObject</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../../../Extensions/Notification.html">Notification</a>
               </li>
               <li class="nav-group-task">
@@ -253,6 +253,9 @@
                 <a class="nav-group-task-link" href="../../../Extensions/Bundle.html">Bundle</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Extensions/CLLocationCoordinate2D.html">CLLocationCoordinate2D</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../../../Extensions/Error.html">Error</a>
               </li>
               <li class="nav-group-task">
@@ -279,6 +282,20 @@
               </li>
             </ul>
           </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../../../Other Typealiases.html">Other Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Other Typealiases.html#/s:10ShopGunSDK12CurrencyCodea">CurrencyCode</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Other Typealiases.html#/s:10ShopGunSDK9GraphDicta">GraphDict</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../../Other Typealiases.html#/s:10ShopGunSDK13JSONEncodablea">JSONEncodable</a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <article class="main-content">
@@ -288,7 +305,7 @@
             <h1>Code</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Code</span> <span class="p">:</span> <span class="kt">RawRepresentable</span><span class="p">,</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt">Decodable</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Code</span> <span class="p">:</span> <span class="kt">RawRepresentable</span><span class="p">,</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">Decodable</span></code></pre>
 
                 </div>
               </div>
@@ -304,9 +321,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:s16RawRepresentableP8rawValue0aD0Qzv"></a>
+                    <a name="/s:s16RawRepresentableP8rawValue0aD0Qzvp"></a>
                     <a name="//apple_ref/swift/Property/rawValue" class="dashAnchor"></a>
-                    <a class="token" href="#/s:s16RawRepresentableP8rawValue0aD0Qzv">rawValue</a>
+                    <a class="token" href="#/s:s16RawRepresentableP8rawValue0aD0Qzvp">rawValue</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -353,32 +370,6 @@
                     </section>
                   </div>
                 </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:s8HashableP9hashValueSiv"></a>
-                    <a name="//apple_ref/swift/Property/hashValue" class="dashAnchor"></a>
-                    <a class="token" href="#/s:s8HashableP9hashValueSiv">hashValue</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">hashValue</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
               </ul>
             </div>
             <div class="task-group">
@@ -414,9 +405,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV8categoryAG13ErrorCategoryOv"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV8categoryAG13ErrorCategoryOvp"></a>
                     <a name="//apple_ref/swift/Property/category" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV8categoryAG13ErrorCategoryOv">category</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV8categoryAG13ErrorCategoryOvp">category</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -452,9 +443,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV12sessionErrorAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV12sessionErrorAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/sessionError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV12sessionErrorAGvZ">sessionError</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV12sessionErrorAGvpZ">sessionError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -479,9 +470,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19sessionTokenExpiredAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19sessionTokenExpiredAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/sessionTokenExpired" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19sessionTokenExpiredAGvZ">sessionTokenExpired</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19sessionTokenExpiredAGvpZ">sessionTokenExpired</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -506,9 +497,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV20sessionInvalidAPIKeyAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV20sessionInvalidAPIKeyAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/sessionInvalidAPIKey" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV20sessionInvalidAPIKeyAGvZ">sessionInvalidAPIKey</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV20sessionInvalidAPIKeyAGvpZ">sessionInvalidAPIKey</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -533,9 +524,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV23sessionMissingSignatureAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV23sessionMissingSignatureAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/sessionMissingSignature" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV23sessionMissingSignatureAGvZ">sessionMissingSignature</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV23sessionMissingSignatureAGvpZ">sessionMissingSignature</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -560,9 +551,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV23sessionInvalidSignatureAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV23sessionInvalidSignatureAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/sessionInvalidSignature" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV23sessionInvalidSignatureAGvZ">sessionInvalidSignature</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV23sessionInvalidSignatureAGvpZ">sessionInvalidSignature</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -587,9 +578,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV22sessionTokenNotAllowedAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV22sessionTokenNotAllowedAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/sessionTokenNotAllowed" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV22sessionTokenNotAllowedAGvZ">sessionTokenNotAllowed</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV22sessionTokenNotAllowedAGvpZ">sessionTokenNotAllowed</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -614,9 +605,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV20sessionMissingOriginAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV20sessionMissingOriginAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/sessionMissingOrigin" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV20sessionMissingOriginAGvZ">sessionMissingOrigin</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV20sessionMissingOriginAGvpZ">sessionMissingOrigin</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -641,9 +632,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19sessionMissingTokenAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19sessionMissingTokenAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/sessionMissingToken" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19sessionMissingTokenAGvZ">sessionMissingToken</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19sessionMissingTokenAGvpZ">sessionMissingToken</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -668,9 +659,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19sessionInvalidTokenAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19sessionInvalidTokenAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/sessionInvalidToken" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19sessionInvalidTokenAGvZ">sessionInvalidToken</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19sessionInvalidTokenAGvpZ">sessionInvalidToken</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -695,9 +686,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26sessionInvalidOriginHeaderAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26sessionInvalidOriginHeaderAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/sessionInvalidOriginHeader" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26sessionInvalidOriginHeaderAGvZ">sessionInvalidOriginHeader</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26sessionInvalidOriginHeaderAGvpZ">sessionInvalidOriginHeader</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -733,9 +724,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19authenticationErrorAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19authenticationErrorAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/authenticationError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19authenticationErrorAGvZ">authenticationError</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19authenticationErrorAGvpZ">authenticationError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -760,9 +751,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV32authenticationInvalidCredentialsAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV32authenticationInvalidCredentialsAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/authenticationInvalidCredentials" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV32authenticationInvalidCredentialsAGvZ">authenticationInvalidCredentials</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV32authenticationInvalidCredentialsAGvpZ">authenticationInvalidCredentials</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -787,9 +778,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV20authenticationNoUserAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV20authenticationNoUserAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/authenticationNoUser" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV20authenticationNoUserAGvZ">authenticationNoUser</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV20authenticationNoUserAGvpZ">authenticationNoUser</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -814,9 +805,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV30authenticationEmailNotVerifiedAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV30authenticationEmailNotVerifiedAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/authenticationEmailNotVerified" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV30authenticationEmailNotVerifiedAGvZ">authenticationEmailNotVerified</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV30authenticationEmailNotVerifiedAGvpZ">authenticationEmailNotVerified</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -852,9 +843,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV18authorizationErrorAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV18authorizationErrorAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/authorizationError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV18authorizationErrorAGvZ">authorizationError</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV18authorizationErrorAGvpZ">authorizationError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -879,9 +870,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV29authorizationActionNotAllowedAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV29authorizationActionNotAllowedAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/authorizationActionNotAllowed" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV29authorizationActionNotAllowedAGvZ">authorizationActionNotAllowed</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV29authorizationActionNotAllowedAGvpZ">authorizationActionNotAllowed</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -917,9 +908,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16infoMissingErrorAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16infoMissingErrorAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoMissingError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16infoMissingErrorAGvZ">infoMissingError</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16infoMissingErrorAGvpZ">infoMissingError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -944,9 +935,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV22infoMissingGeolocationAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV22infoMissingGeolocationAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoMissingGeolocation" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV22infoMissingGeolocationAGvZ">infoMissingGeolocation</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV22infoMissingGeolocationAGvpZ">infoMissingGeolocation</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -971,9 +962,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV17infoMissingRadiusAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV17infoMissingRadiusAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoMissingRadius" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV17infoMissingRadiusAGvZ">infoMissingRadius</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV17infoMissingRadiusAGvpZ">infoMissingRadius</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -998,9 +989,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV25infoMissingAuthenticationAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV25infoMissingAuthenticationAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoMissingAuthentication" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV25infoMissingAuthenticationAGvZ">infoMissingAuthentication</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV25infoMissingAuthenticationAGvpZ">infoMissingAuthentication</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1025,9 +1016,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16infoMissingEmailAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16infoMissingEmailAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoMissingEmail" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16infoMissingEmailAGvZ">infoMissingEmail</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16infoMissingEmailAGvpZ">infoMissingEmail</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1052,9 +1043,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19infoMissingBirthdayAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19infoMissingBirthdayAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoMissingBirthday" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19infoMissingBirthdayAGvZ">infoMissingBirthday</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19infoMissingBirthdayAGvpZ">infoMissingBirthday</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1079,9 +1070,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV17infoMissingGenderAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV17infoMissingGenderAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoMissingGender" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV17infoMissingGenderAGvZ">infoMissingGender</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV17infoMissingGenderAGvpZ">infoMissingGender</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1106,9 +1097,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV17infoMissingLocaleAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV17infoMissingLocaleAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoMissingLocale" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV17infoMissingLocaleAGvZ">infoMissingLocale</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV17infoMissingLocaleAGvpZ">infoMissingLocale</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1133,9 +1124,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV15infoMissingNameAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV15infoMissingNameAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoMissingName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV15infoMissingNameAGvZ">infoMissingName</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV15infoMissingNameAGvpZ">infoMissingName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1160,9 +1151,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27infoMissingResourceNotFoundAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27infoMissingResourceNotFoundAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoMissingResourceNotFound" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27infoMissingResourceNotFoundAGvZ">infoMissingResourceNotFound</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27infoMissingResourceNotFoundAGvpZ">infoMissingResourceNotFound</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1187,9 +1178,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26infoMissingResourceDeletedAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26infoMissingResourceDeletedAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoMissingResourceDeleted" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26infoMissingResourceDeletedAGvZ">infoMissingResourceDeleted</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26infoMissingResourceDeletedAGvpZ">infoMissingResourceDeleted</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1225,9 +1216,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV11infoInvalidAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV11infoInvalidAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoInvalid" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV11infoInvalidAGvZ">infoInvalid</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV11infoInvalidAGvpZ">infoInvalid</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1252,9 +1243,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV21infoInvalidResourceIDAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV21infoInvalidResourceIDAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoInvalidResourceID" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV21infoInvalidResourceIDAGvZ">infoInvalidResourceID</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV21infoInvalidResourceIDAGvpZ">infoInvalidResourceID</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1279,9 +1270,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV30infoInvalidResourceDuplicationAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV30infoInvalidResourceDuplicationAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoInvalidResourceDuplication" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV30infoInvalidResourceDuplicationAGvZ">infoInvalidResourceDuplication</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV30infoInvalidResourceDuplicationAGvpZ">infoInvalidResourceDuplication</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1306,9 +1297,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19infoInvalidBodyDataAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19infoInvalidBodyDataAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoInvalidBodyData" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19infoInvalidBodyDataAGvZ">infoInvalidBodyData</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19infoInvalidBodyDataAGvpZ">infoInvalidBodyData</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1333,9 +1324,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19infoInvalidProtocolAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19infoInvalidProtocolAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/infoInvalidProtocol" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19infoInvalidProtocolAGvZ">infoInvalidProtocol</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19infoInvalidProtocolAGvpZ">infoInvalidProtocol</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1371,9 +1362,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16rateControlErrorAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16rateControlErrorAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/rateControlError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16rateControlErrorAGvZ">rateControlError</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16rateControlErrorAGvpZ">rateControlError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1398,9 +1389,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV18rateControlLimitedAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV18rateControlLimitedAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/rateControlLimited" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV18rateControlLimitedAGvZ">rateControlLimited</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV18rateControlLimitedAGvpZ">rateControlLimited</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1436,9 +1427,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV22internalIntegrityErrorAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV22internalIntegrityErrorAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/internalIntegrityError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV22internalIntegrityErrorAGvZ">internalIntegrityError</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV22internalIntegrityErrorAGvpZ">internalIntegrityError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1463,9 +1454,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19internalSearchErrorAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19internalSearchErrorAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/internalSearchError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19internalSearchErrorAGvZ">internalSearchError</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19internalSearchErrorAGvpZ">internalSearchError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1490,9 +1481,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV24internalNonCriticalErrorAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV24internalNonCriticalErrorAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/internalNonCriticalError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV24internalNonCriticalErrorAGvZ">internalNonCriticalError</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV24internalNonCriticalErrorAGvpZ">internalNonCriticalError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1528,9 +1519,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19miscActionNotExistsAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19miscActionNotExistsAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/miscActionNotExists" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19miscActionNotExistsAGvZ">miscActionNotExists</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV19miscActionNotExistsAGvpZ">miscActionNotExists</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1566,9 +1557,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16maintenanceErrorAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16maintenanceErrorAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/maintenanceError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16maintenanceErrorAGvZ">maintenanceError</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16maintenanceErrorAGvpZ">maintenanceError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1593,9 +1584,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27maintenanceErrorServiceDownAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27maintenanceErrorServiceDownAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/maintenanceErrorServiceDown" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27maintenanceErrorServiceDownAGvZ">maintenanceErrorServiceDown</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27maintenanceErrorServiceDownAGvpZ">maintenanceErrorServiceDown</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1620,9 +1611,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27maintenanceErrorFeatureDownAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27maintenanceErrorFeatureDownAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/maintenanceErrorFeatureDown" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27maintenanceErrorFeatureDownAGvZ">maintenanceErrorFeatureDown</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27maintenanceErrorFeatureDownAGvpZ">maintenanceErrorFeatureDown</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1658,9 +1649,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27invalidNetworkResponseErrorAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27invalidNetworkResponseErrorAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/invalidNetworkResponseError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27invalidNetworkResponseErrorAGvZ">invalidNetworkResponseError</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV27invalidNetworkResponseErrorAGvpZ">invalidNetworkResponseError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1685,9 +1676,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV07unknownF0AGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV07unknownF0AGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/unknownAPIError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV07unknownF0AGvZ">unknownAPIError</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV07unknownF0AGvpZ">unknownAPIError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1712,9 +1703,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16requestCancelledAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16requestCancelledAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/requestCancelled" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16requestCancelledAGvZ">requestCancelled</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV16requestCancelledAGvpZ">requestCancelled</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1739,9 +1730,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV13unableToLoginAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV13unableToLoginAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/unableToLogin" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV13unableToLoginAGvZ">unableToLogin</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV13unableToLoginAGvpZ">unableToLogin</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1766,9 +1757,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26unableToDecodeResponseDataAGvZ"></a>
+                    <a name="/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26unableToDecodeResponseDataAGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/unableToDecodeResponseData" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26unableToDecodeResponseDataAGvZ">unableToDecodeResponseData</a>
+                    <a class="token" href="#/s:10ShopGunSDK7CoreAPIC8APIErrorV4CodeV26unableToDecodeResponseDataAGvpZ">unableToDecodeResponseData</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1798,7 +1789,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="https://shopgun.com/developers" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-04-30)</p>
+      <p>&copy; 2018 <a class="link" href="https://shopgun.com/developers" target="_blank" rel="external">ShopGun</a>. All rights reserved. (Last updated: 2018-06-04)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
