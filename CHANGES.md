@@ -1,5 +1,8 @@
 # Change Log
 
+## v4.0.2
+- Fix issue when building for Release (`GenericIdentifier` was not decoding correctly)
+
 ## v4.0.1
 **Swift 4.1 now required**
 
