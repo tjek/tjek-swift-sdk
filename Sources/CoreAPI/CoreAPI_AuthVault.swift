@@ -332,7 +332,7 @@ extension CoreAPI.AuthVault {
             params["token_ttl"] = String(tokenLife)
             params["clientId"] = clientId?.rawValue
             
-            return .init(path: "v2/sessions", method: .POST, requiresAuth: false, parameters: params, timeoutInterval: 10)
+            return .init(path: "v2/sessions", method: .POST, requiresAuth: false, httpBody: params, timeoutInterval: 10)
         }
         
         static func renewRequest(clientId: CoreAPI.ClientIdentifier?, additionalParams: [String: String] = [:]) -> CoreAPI.Request<AuthSessionResponse> {
@@ -340,7 +340,7 @@ extension CoreAPI.AuthVault {
             var params: [String: String] = additionalParams
             params["clientId"] = clientId?.rawValue
             
-            return .init(path: "v2/sessions", method: .PUT, requiresAuth: true, parameters: params, timeoutInterval: 10)
+            return .init(path: "v2/sessions", method: .PUT, requiresAuth: true, httpBody: params, timeoutInterval: 10)
         }
     }
 }

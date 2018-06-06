@@ -40,17 +40,17 @@ extension CoreAPIRequest {
         
         // put parameters into url of request
         if var urlComps = URLComponents(url: requestURL, resolvingAgainstBaseURL: false) {
-            // merge the requests params and the additionalParams, favoring the reqs params
-            var allParams = self.parameters ?? [:]
-            allParams.merge(additionalParameters) { (reqParam, _) in reqParam }
             
+            let allParams = (self.parameters ?? [:]).merging(additionalParameters) { (reqParam, _) in reqParam }
+
             urlComps.queryItems = allParams.map { (key, value) in
                 URLQueryItem(name: key, value: value)
             }
-            // percent-encode the path & query using the allowed char sets (BUT DO encode `@` and `+` for when we send emails)
-            urlComps.percentEncodedQuery = urlComps.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed.subtracting(CharacterSet(charactersIn: "@+"))) ?? urlComps.percentEncodedQuery
-            urlComps.percentEncodedPath = urlComps.percentEncodedPath.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlPathAllowed.subtracting(CharacterSet(charactersIn: "@+"))) ?? urlComps.percentEncodedPath
-
+            
+            // This is a super-hacky hack because for some reason our server doesn't accept unencoded `+` characters
+            // Server-side fix is pending.
+            urlComps.percentEncodedPath = urlComps.percentEncodedPath.replacingOccurrences(of: "+", with: "%2B")
+            
             if let urlWithParams = urlComps.url {
                 requestURL = urlWithParams
             }
