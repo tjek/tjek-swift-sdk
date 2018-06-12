@@ -121,6 +121,23 @@ extension CoreAPI.Requests {
                          parameters: params)
     }
     
+    /**
+     * Builds a request that, when performed, will fetch all the actively published `PagedPublication`s for a list of specified `Dealer` ids.
+     *
+     * - parameter dealerIds: A list of `Dealer` identifiers defining which dealer's publications you want to fetch.
+     * - parameter pagination: A `PaginationQuery` that lets you specify how many publications you wish to fetch, and with what page offset.
+     */
+    public static func getPublications(forDealers dealerIds: [CoreAPI.Dealer.Identifier], pagination: PaginatedQuery = PaginatedQuery(count: 24)) ->
+        CoreAPI.Request<[CoreAPI.PagedPublication]> {
+            var params = ["dealer_ids": dealerIds.map(String.init).joined(separator: ",")]
+            params.merge(pagination.requestParams) { (_, new) in new }
+            
+            return .init(path: "/v2/catalogs",
+                         method: .GET,
+                         requiresAuth: true,
+                         parameters: params)
+    }
+    
     public static func getFavoritedPublications(near locationQuery: LocationQuery? = nil, sortedBy: PublicationSortOrder, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
         
         var params = ["order_by": sortedBy.sortKeys.joined(separator: ",")]
