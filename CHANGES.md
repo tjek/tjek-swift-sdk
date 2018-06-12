@@ -1,4 +1,7 @@
 # Change Log
+## v4.0.3
+- Added new `getPagedPublication` CoreAPI request.
+- Fix issue related to request parameter url-encoding
 
 ## v4.0.2
 - Fix issue when building for Release (`GenericIdentifier` was not decoding correctly)
