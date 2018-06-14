@@ -56,7 +56,15 @@ extension CoreAPI.Requests {
                      parameters: params)
     }
     
-    public static func getOffers(matchingSearch searchString: String, near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Offer]> {
+    /**
+     * Builds a request that, when performed, will fetch all the active offers matching a `searchString`. The results can optionally be limited to those that have been published by a list of specified `Dealer` ids, and by their proximity to a location.
+     *
+     * - parameter searchString: The string to search for.
+     * - parameter dealerIds: A list of `Dealer` identifiers defining which dealer's offers you want to fetch. Defaults to `nil`.
+     * - parameter locationQuery: A `LocationQuery` that lets you filter the results around a specific location/radius. Defaults to `nil`.
+     * - parameter pagination: A `PaginationQuery` that lets you specify how many publications you wish to fetch, and with what page offset.  Defaults to the first 24.
+     */
+    public static func getOffers(matchingSearch searchString: String, dealerIds: [CoreAPI.Dealer.Identifier]? = nil, near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Offer]> {
         
         guard searchString.count > 0 else {
             return CoreAPI.Requests.getOffers(near: locationQuery, pagination: pagination)
@@ -67,6 +75,9 @@ extension CoreAPI.Requests {
         params["query"] = searchString
         if let locationQParams = locationQuery?.requestParams {
             params.merge(locationQParams) { (_, new) in new }
+        }
+        if let dealerIds = dealerIds {
+            params["dealer_ids"] = dealerIds.map(String.init).joined(separator: ",")
         }
         
         return .init(path: "/v2/offers/search",
