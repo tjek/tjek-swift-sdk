@@ -11,21 +11,35 @@ import UIKit
 
 extension CoreAPI {
     
+    /// A `PagedPublication` is a catalog that has static images for each `Page`, with possible `Hotspot`s referencing `Offer`s on each page, that is published by a `Dealer`.
     public struct PagedPublication: Decodable, Equatable {
         
+        /// The type of a PagedPublication's unique identifier.
         public typealias Identifier = GenericIdentifier<PagedPublication>
         
+        /// The unique identifier of this PagedPublication.
         public var id: Identifier
+        /// The name of the publication. eg. "Christmas Special".
         public var label: String?
+        /// How many pages this publication has.
         public var pageCount: Int
+        /// How many `Offer`s are in this publication.
         public var offerCount: Int
+        /// The range of dates that this publication is valid from and until.
         public var runDateRange: Range<Date>
-        public var aspectRatio: Double // (width / height)
+        /// The ratio of width to height for the page-images. So if an image is (w:100, h:200), the aspectRatio is 0.5 (width/height).
+        public var aspectRatio: Double
+        /// The branding information for the publication's dealer.
         public var branding: Branding
+        /// A set of URLs for the different sized images for the cover of the publication.
         public var frontPageImages: ImageURLSet
+        /// Whether this publication is available in all stores, or just in a select few stores.
+        public var isAvailableInAllStores: Bool
+        /// The unique identifier of the dealer that published this publication.
         public var dealerId: CoreAPI.Dealer.Identifier
+        /// The unique identifier of the nearest store. This will only contain a value if the `PagedPublication` was fetched with a request that includes store information (eg. one that takes a precise location as a parameter).
         public var storeId: CoreAPI.Store.Identifier?
-
+        
         // MARK: Decodable
         
         enum CodingKeys: String, CodingKey {
@@ -38,6 +52,7 @@ extension CoreAPI {
             case runTillDateStr     = "run_till"
             case dealerId           = "dealer_id"
             case storeId            = "store_id"
+            case availableAllStores = "all_stores"
             case dimensions
             case frontPageImageURLs = "images"
         }
@@ -72,6 +87,8 @@ extension CoreAPI {
             } else {
                 self.aspectRatio = 1.0
             }
+            
+            self.isAvailableInAllStores = (try? values.decode(Bool.self, forKey: .availableAllStores)) ?? true
             
             self.dealerId = try values.decode(Dealer.Identifier.self, forKey: .dealerId)
             
