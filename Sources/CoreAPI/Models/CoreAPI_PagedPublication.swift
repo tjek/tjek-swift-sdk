@@ -44,7 +44,7 @@ extension CoreAPI {
         
         enum CodingKeys: String, CodingKey {
             case id
-            case label
+            case label              = "label"
             case branding
             case pageCount          = "page_count"
             case offerCount         = "offer_count"
