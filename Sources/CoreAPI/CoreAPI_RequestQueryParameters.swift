@@ -29,7 +29,7 @@ extension CoreAPI.Requests {
     }
     
     /// How to define a geographic location query constraint
-    public struct LocationQuery {
+    public struct LocationQuery: Equatable {
         public var coordinate: CLLocationCoordinate2D
         public var radius: CLLocationDistance?
         
