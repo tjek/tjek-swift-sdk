@@ -1,6 +1,6 @@
 // Requested catalog is unavailable
-"errorView.noContent.title" = "Contents Unavailable";
-"errorView.noContent.message" = "We unfortunately could not load your requested publication.";
+"errorView.noContent.title" = "Innhold ikke tilgjengelig";
+"errorView.noContent.message" = "Vi kunne dessverre ikke laste inn ønsket publikasjon.";
 
 // No Internet connection
 "errorView.noInternet.title" = "Ingen internettilgang";
