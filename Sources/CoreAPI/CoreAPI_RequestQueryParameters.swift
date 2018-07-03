@@ -26,6 +26,21 @@ extension CoreAPI.Requests {
             return ["offset": String(self.startCursor),
                     "limit": String(self.itemCount)]
         }
+        
+        public static let defaultItemCount: Int = 24
+        
+        public static func first(_ count: Int) -> CoreAPI.Requests.PaginatedQuery {
+            return CoreAPI.Requests.PaginatedQuery(count: count)
+        }
+        public static var firstPage: CoreAPI.Requests.PaginatedQuery {
+            return first(defaultItemCount)
+        }
+        
+        public var nextPage: CoreAPI.Requests.PaginatedQuery {
+            var nextPage = self
+            nextPage.startCursor += nextPage.itemCount
+            return nextPage
+        }
     }
     
     /// How to define a geographic location query constraint

@@ -82,6 +82,12 @@ extension Error where Self == CoreAPI.APIError {
     }
 }
 
+extension CoreAPI.APIError: Equatable {
+    public static func == (lhs: CoreAPI.APIError, rhs: CoreAPI.APIError) -> Bool {
+        return lhs.code == rhs.code
+    }
+}
+
 // MARK: -
 
 extension CoreAPI.APIError {
