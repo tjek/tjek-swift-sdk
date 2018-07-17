@@ -45,10 +45,14 @@ extension CoreAPI.Requests {
     }
     
     /// Given a publication's Id, this will return
-    public static func getSuggestedPublications(relatedTo pubId: CoreAPI.PagedPublication.Identifier, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+    public static func getSuggestedPublications(relatedTo pubId: CoreAPI.PagedPublication.Identifier, near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
         
         var params = ["catalog_id": pubId.rawValue]
         params.merge(pagination.requestParams) { (_, new) in new }
+        
+        if let locationQParams = locationQuery?.requestParams {
+            params.merge(locationQParams) { (_, new) in new }
+        }
 
         return .init(path: "/v2/catalogs/suggest",
                      method: .GET,
