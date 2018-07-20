@@ -351,6 +351,17 @@ public class PagedPublicationView: UIView {
                 lifecycleEventTracker = PagedPublicationView.LifecycleEventTracker(publicationModel: publicationModel, eventHandler: eventHandler)
                 lifecycleEventTracker?.opened()
                 lifecycleEventTracker?.didAppear()
+                
+                // page has already been changed selected before load, so make a new spread tracker, and register page-loads if they already have been loaded
+                if self.currentPageIndexes.count > 0 {
+                    lifecycleEventTracker?.newSpreadLifecycleTracker(for: self.currentPageIndexes)
+                    
+                    currentPageIndexes.forEach {
+                        if let pageView = self.contentsView.versoView.getPageViewIfLoaded($0) as? PagedPublicationView.PageView, pageView.isViewImageLoaded {
+                            lifecycleEventTracker?.spreadLifecycleTracker?.pageLoaded(pageIndex: $0)
+                        }
+                    }
+                }
             }
             
             delegate?.didLoad(publication: publicationModel, in: self)
