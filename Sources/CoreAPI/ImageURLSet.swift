@@ -41,17 +41,11 @@ public struct ImageURLSet: Equatable {
 
 extension ImageURLSet {
     
-    struct CoreAPIImageURLs: Decodable {
-        let thumb: URL?
-        let view: URL?
-        let zoom: URL?
-    }
-    
-    init(fromCoreAPI imageURLs: CoreAPIImageURLs, aspectRatio: Double?) {
+    init(fromCoreAPI imageURLs: CoreAPI.ImageURLs, aspectRatio: Double?) {
         let possibleURLs: [(url: URL?, maxSize: CGSize)] = [
-            (imageURLs.thumb, CGSize(width: 177, height: 212)),
-            (imageURLs.view, CGSize(width: 768, height: 1004)),
-            (imageURLs.zoom, CGSize(width: 1536, height: 2008))
+            (imageURLs.thumb, CoreAPI.thumbSize),
+            (imageURLs.view, CoreAPI.viewSize),
+            (imageURLs.zoom, CoreAPI.zoomSize)
         ]
         
         let sizedURLs: [SizedImageURL] = possibleURLs.compactMap { (maybeURL, maxSize) in
@@ -67,5 +61,17 @@ extension ImageURLSet {
                 url: url)
         }
         self.init(sizedUrls: sizedURLs)
+    }
+    
+    public struct CoreAPI {
+        public static var thumbSize = CGSize(width: 177, height: 212)
+        public static var viewSize = CGSize(width: 768, height: 1004)
+        public static var zoomSize = CGSize(width: 1536, height: 2008)
+        
+        struct ImageURLs: Decodable {
+            let thumb: URL?
+            let view: URL?
+            let zoom: URL?
+        }
     }
 }

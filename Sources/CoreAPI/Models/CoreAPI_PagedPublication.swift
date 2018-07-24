@@ -94,7 +94,7 @@ extension CoreAPI {
             
             self.storeId = try? values.decode(Store.Identifier.self, forKey: .storeId)
 
-            if let frontPageImageURLs = try? values.decode(ImageURLSet.CoreAPIImageURLs.self, forKey: .frontPageImageURLs) {
+            if let frontPageImageURLs = try? values.decode(ImageURLSet.CoreAPI.ImageURLs.self, forKey: .frontPageImageURLs) {
                 self.frontPageImages = ImageURLSet(fromCoreAPI: frontPageImageURLs, aspectRatio: self.aspectRatio)
             } else {
                 self.frontPageImages = ImageURLSet(sizedUrls: [])

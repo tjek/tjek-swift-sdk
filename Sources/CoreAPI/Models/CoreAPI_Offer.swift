@@ -67,7 +67,7 @@ extension CoreAPI {
             self.heading = try values.decode(String.self, forKey: .heading)
             self.description = try? values.decode(String.self, forKey: .description)
             
-            if let imageURLs = try? values.decode(ImageURLSet.CoreAPIImageURLs.self, forKey: .images) {
+            if let imageURLs = try? values.decode(ImageURLSet.CoreAPI.ImageURLs.self, forKey: .images) {
                 self.images = ImageURLSet(fromCoreAPI: imageURLs, aspectRatio: nil)
             }
             

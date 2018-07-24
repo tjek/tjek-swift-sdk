@@ -21,7 +21,7 @@ extension CoreAPI.Requests {
         return .init(path: "/v2/catalogs/\(pubId.rawValue)/pages", method: .GET, resultMapper: {
             return $0.mapValue {
                 // map the raw array of imageURLSets into objects containing page indexes
-                let pageURLs = try JSONDecoder().decode([ImageURLSet.CoreAPIImageURLs].self, from: $0)
+                let pageURLs = try JSONDecoder().decode([ImageURLSet.CoreAPI.ImageURLs].self, from: $0)
                 return pageURLs.enumerated().map {
                     let images = ImageURLSet(fromCoreAPI: $0.element, aspectRatio: aspectRatio)
                     let pageIndex = $0.offset
