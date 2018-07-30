@@ -12,7 +12,7 @@ final public class KeychainDataStore {
     
     fileprivate let valet: Valet?
 
-    internal init(settings: Settings.KeychainDataStore) {
+    public init(settings: Settings.KeychainDataStore) {
         self.settings = settings
         
         self.valet = {
@@ -26,8 +26,7 @@ final public class KeychainDataStore {
                     Logger.log("Unable to access shared keychain group. Secure data will not be cached.", level: .important, source: .ShopGunSDK)
                     return nil
                 }
-            }
-            else if case .privateKeychain(let privateId) = settings,
+            } else if case .privateKeychain(let privateId) = settings,
                 let keychainId = Identifier(nonEmpty: privateId ?? "com.shopgun.ios.sdk.keychain-store") {
                 
                 let valet = Valet.valet(with: keychainId, accessibility: .afterFirstUnlock)
