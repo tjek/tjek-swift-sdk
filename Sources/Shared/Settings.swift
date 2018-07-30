@@ -48,6 +48,7 @@ public class Settings: Decodable {
     
     enum CodingKeys: String, CodingKey {
         case keychainGroupId = "KeychainGroupId"
+        case keychainPrivateId = "KeychainPrivateId"
         case coreAPI         = "CoreAPI"
         case graphAPI        = "GraphAPI"
         case eventsTracker   = "EventsTracker"
@@ -59,7 +60,8 @@ public class Settings: Decodable {
         if let keychainGroupId = try? container.decode(String.self, forKey: .keychainGroupId) {
             self.keychainDataStore = .sharedKeychain(groupId: keychainGroupId)
         } else {
-            self.keychainDataStore = .privateKeychain
+            let privateId = try? container.decode(String.self, forKey: .keychainPrivateId)
+            self.keychainDataStore = .privateKeychain(id: nil)
         }
         
         self.coreAPI = try? container.decode(Settings.CoreAPI.self, forKey: .coreAPI)
@@ -78,7 +80,7 @@ extension Settings {
      The settings for the KeychainDataStore.
      */
     public enum KeychainDataStore {
-        case privateKeychain
+        case privateKeychain(id: String?)
         case sharedKeychain(groupId: String)
     }
 }
