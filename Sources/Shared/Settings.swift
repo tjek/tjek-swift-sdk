@@ -61,7 +61,7 @@ public class Settings: Decodable {
             self.keychainDataStore = .sharedKeychain(groupId: keychainGroupId)
         } else {
             let privateId = try? container.decode(String.self, forKey: .keychainPrivateId)
-            self.keychainDataStore = .privateKeychain(id: nil)
+            self.keychainDataStore = .privateKeychain(id: privateId)
         }
         
         self.coreAPI = try? container.decode(Settings.CoreAPI.self, forKey: .coreAPI)
