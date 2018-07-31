@@ -79,6 +79,7 @@ extension CoreAPI.Requests {
         if let dealerIds = dealerIds {
             params["dealer_ids"] = dealerIds.map(String.init).joined(separator: ",")
         }
+        params.merge(pagination.requestParams) { (_, new) in new }
         
         return .init(path: "/v2/offers/search",
                      method: .GET,
