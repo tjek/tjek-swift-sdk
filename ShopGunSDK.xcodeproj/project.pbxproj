@@ -28,13 +28,11 @@
 		AE3B323C2044136C001C75C9 /* PagedPublicationView+ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B323B2044136C001C75C9 /* PagedPublicationView+ErrorView.swift */; };
 		AE3B3242204422D5001C75C9 /* Bundle+ShopGunSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */; };
 		AE3B3244204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3243204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift */; };
-		AE3B324C20455859001C75C9 /* EventsTracker+ShippableEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B324B20455859001C75C9 /* EventsTracker+ShippableEvent.swift */; };
-		AE3B324E204559A5001C75C9 /* EventTracker+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B324D204559A5001C75C9 /* EventTracker+Notifications.swift */; };
+		AE3B324E204559A5001C75C9 /* EventsTracker+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B324D204559A5001C75C9 /* EventsTracker+Notifications.swift */; };
 		AE3B325020455C11001C75C9 /* EventsTracker+EventsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B324F20455C11001C75C9 /* EventsTracker+EventsCache.swift */; };
 		AE3B325220455CC2001C75C9 /* EventsTracker+EventsShipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325120455CC2001C75C9 /* EventsTracker+EventsShipper.swift */; };
 		AE3B325420455D44001C75C9 /* EventsPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325320455D44001C75C9 /* EventsPool.swift */; };
 		AE3B325820455FD1001C75C9 /* EventsTracker+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325720455FD1001C75C9 /* EventsTracker+Utils.swift */; };
-		AE3B325A20458716001C75C9 /* EventsTracker+IdField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325920458716001C75C9 /* EventsTracker+IdField.swift */; };
 		AE3B32E72045F8A6001C75C9 /* PagedPublicationView.strings in Resources */ = {isa = PBXBuildFile; fileRef = AE3B32DB2045F8A6001C75C9 /* PagedPublicationView.strings */; };
 		AE3B32E82045F8A6001C75C9 /* PagedPublicationView.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3B32DE2045F8A6001C75C9 /* PagedPublicationView.xcassets */; };
 		AE3C38F52019DF7900A92597 /* PagedPublicationView+ContentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38F42019DF7900A92597 /* PagedPublicationView+ContentsView.swift */; };
@@ -308,13 +306,11 @@
 		AE3B323B2044136C001C75C9 /* PagedPublicationView+ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+ErrorView.swift"; sourceTree = "<group>"; };
 		AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+ShopGunSDK.swift"; sourceTree = "<group>"; };
 		AE3B3243204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+ProtocolDefaults.swift"; sourceTree = "<group>"; };
-		AE3B324B20455859001C75C9 /* EventsTracker+ShippableEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+ShippableEvent.swift"; sourceTree = "<group>"; };
-		AE3B324D204559A5001C75C9 /* EventTracker+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventTracker+Notifications.swift"; sourceTree = "<group>"; };
+		AE3B324D204559A5001C75C9 /* EventsTracker+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+Notifications.swift"; sourceTree = "<group>"; };
 		AE3B324F20455C11001C75C9 /* EventsTracker+EventsCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+EventsCache.swift"; sourceTree = "<group>"; };
 		AE3B325120455CC2001C75C9 /* EventsTracker+EventsShipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+EventsShipper.swift"; sourceTree = "<group>"; };
 		AE3B325320455D44001C75C9 /* EventsPool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsPool.swift; sourceTree = "<group>"; };
 		AE3B325720455FD1001C75C9 /* EventsTracker+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+Utils.swift"; sourceTree = "<group>"; };
-		AE3B325920458716001C75C9 /* EventsTracker+IdField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+IdField.swift"; sourceTree = "<group>"; };
 		AE3B32DC2045F8A6001C75C9 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/PagedPublicationView.strings; sourceTree = "<group>"; };
 		AE3B32DD2045F8A6001C75C9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PagedPublicationView.strings; sourceTree = "<group>"; };
 		AE3B32DE2045F8A6001C75C9 /* PagedPublicationView.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = PagedPublicationView.xcassets; sourceTree = "<group>"; };
@@ -570,11 +566,9 @@
 				AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */,
 				AECC8E06204987B5007185B0 /* EventsTracker+DataStore.swift */,
 				AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */,
-				AE3B324D204559A5001C75C9 /* EventTracker+Notifications.swift */,
-				AE3B324B20455859001C75C9 /* EventsTracker+ShippableEvent.swift */,
+				AE3B324D204559A5001C75C9 /* EventsTracker+Notifications.swift */,
 				AE3B324F20455C11001C75C9 /* EventsTracker+EventsCache.swift */,
 				AE3B325120455CC2001C75C9 /* EventsTracker+EventsShipper.swift */,
-				AE3B325920458716001C75C9 /* EventsTracker+IdField.swift */,
 				AE3B325320455D44001C75C9 /* EventsPool.swift */,
 				AE3B325720455FD1001C75C9 /* EventsTracker+Utils.swift */,
 				AE448F9A21147CF6000E5A28 /* Event.swift */,
@@ -1015,7 +1009,6 @@
 				AE3B325220455CC2001C75C9 /* EventsTracker+EventsShipper.swift in Sources */,
 				AEC28B681FF6ABFC0007AAB8 /* CoreAPI_APIError.swift in Sources */,
 				AE22AAFA20527DFA008601EB /* Settings.swift in Sources */,
-				AE3B324C20455859001C75C9 /* EventsTracker+ShippableEvent.swift in Sources */,
 				AEEE540C21187F1D00528E3B /* UniqueViewTokenizer.swift in Sources */,
 				AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */,
 				AE3B3244204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift in Sources */,
@@ -1057,7 +1050,6 @@
 				AE2008D5200CE86F004363BE /* UserAgent.swift in Sources */,
 				AE50A3BE2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift in Sources */,
 				AE85C5EF2001884100263F8B /* Result+MapValue.swift in Sources */,
-				AE3B325A20458716001C75C9 /* EventsTracker+IdField.swift in Sources */,
 				AE091FF0203AF24000345009 /* GraphError.swift in Sources */,
 				AE3C38F52019DF7900A92597 /* PagedPublicationView+ContentsView.swift in Sources */,
 				AE043057205BC15000F5D8C9 /* CoreAPI_Branding.swift in Sources */,
@@ -1066,7 +1058,7 @@
 				AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */,
 				AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */,
 				AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */,
-				AE3B324E204559A5001C75C9 /* EventTracker+Notifications.swift in Sources */,
+				AE3B324E204559A5001C75C9 /* EventsTracker+Notifications.swift in Sources */,
 				AE04305F205BE24000F5D8C9 /* CoreAPI_StoreRequests.swift in Sources */,
 				AED992852063008300671F48 /* CoreAPI_OfferRequests.swift in Sources */,
 				AE7D9B63204745C6000F3B7D /* CoreAPI_LegacyMigration.swift in Sources */,

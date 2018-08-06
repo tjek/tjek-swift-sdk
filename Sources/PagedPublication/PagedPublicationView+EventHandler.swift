@@ -107,8 +107,9 @@ extension PagedPublicationView {
             }
             
             private func publicationProperties(_ publication: PublicationModel) -> [String: AnyObject] {
-                return ["id": EventsTracker.IdField.legacy(publication.id.rawValue).jsonArray() as AnyObject,
-                        "ownedBy": EventsTracker.IdField.legacy(publication.dealerId.rawValue).jsonArray() as AnyObject]
+                return [:]
+//                return ["id": EventsTracker.IdField.legacy(publication.id.rawValue).jsonArray() as AnyObject,
+//                        "ownedBy": EventsTracker.IdField.legacy(publication.dealerId.rawValue).jsonArray() as AnyObject]
             }
 
             private func pageProperties(location: CGPoint?, pageIndex: Int) -> [String: AnyObject] {
