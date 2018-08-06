@@ -88,6 +88,8 @@
 		AEEE540C21187F1D00528E3B /* UniqueViewTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE540B21187F1D00528E3B /* UniqueViewTokenizer.swift */; };
 		AEEE540E211889E400528E3B /* Event+EventsTrackerContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE540D211889E400528E3B /* Event+EventsTrackerContext.swift */; };
 		AEEE541021188C6200528E3B /* Event+SDKEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE540F21188C6100528E3B /* Event+SDKEvents.swift */; };
+		AEEE54122118983500528E3B /* Geohash.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE54112118983500528E3B /* Geohash.swift */; };
+		AEEE541421189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE541321189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -393,6 +395,8 @@
 		AEEE540B21187F1D00528E3B /* UniqueViewTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniqueViewTokenizer.swift; sourceTree = "<group>"; };
 		AEEE540D211889E400528E3B /* Event+EventsTrackerContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+EventsTrackerContext.swift"; sourceTree = "<group>"; };
 		AEEE540F21188C6100528E3B /* Event+SDKEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+SDKEvents.swift"; sourceTree = "<group>"; };
+		AEEE54112118983500528E3B /* Geohash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geohash.swift; sourceTree = "<group>"; };
+		AEEE541321189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTrackerContext+CoreLocation.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -577,7 +581,9 @@
 				AEEE540921187EEA00528E3B /* Event+CommonPayloads.swift */,
 				AEEE540D211889E400528E3B /* Event+EventsTrackerContext.swift */,
 				AEEE540F21188C6100528E3B /* Event+SDKEvents.swift */,
+				AEEE541321189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift */,
 				AEEE540B21187F1D00528E3B /* UniqueViewTokenizer.swift */,
+				AEEE54112118983500528E3B /* Geohash.swift */,
 			);
 			name = EventsTracker;
 			path = Sources/EventsTracker;
@@ -1019,7 +1025,9 @@
 				AE85C5E42000384500263F8B /* CoreAPI_AuthVault.swift in Sources */,
 				AE091FED203AF24000345009 /* GraphClient.swift in Sources */,
 				AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */,
+				AEEE54122118983500528E3B /* Geohash.swift in Sources */,
 				AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */,
+				AEEE541421189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift in Sources */,
 				AE448F9B21147CF6000E5A28 /* Event.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI_Person.swift in Sources */,
 				AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */,

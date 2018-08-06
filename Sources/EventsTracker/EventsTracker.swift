@@ -16,7 +16,12 @@ public final class EventsTracker {
 
     public struct Context {
         public var countryCode: String?
-        // TODO: location & timestamp
+        public private(set) var location: (geohash: String, timestamp: Date)? = nil
+        
+        public mutating func updateLocation(latitude: Double, longitude: Double, timestamp: Date) {
+            let hash = Geohash.encode(latitude: latitude, longitude: longitude, length: 4) // ±20km
+            self.location = (hash, timestamp)
+        }
     }
     
     public enum ClientIdentifierType {}

@@ -20,9 +20,10 @@ extension Event {
             event = event.addingCountryCode(countryCode)
         }
         
-        // add geohash
-        // TODO ...
-        //        event = event.addingLocation(geohash: "abc", timestamp: Date())
+        // add geohash & timestamp (if available)
+        if let location = context.location {
+            event = event.addingLocation(geohash: location.geohash, timestamp: location.timestamp)
+        }
         
         return event
     }
