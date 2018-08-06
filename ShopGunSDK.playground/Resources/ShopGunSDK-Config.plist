@@ -22,8 +22,8 @@
 	</dict>
 	<key>EventsTracker</key>
 	<dict>
-		<key>trackId</key>
-		<string>events-file-trackid</string>
+		<key>appId</key>
+		<string>events-file-appid</string>
 		<key>baseURL(?)</key>
 		<string>events-file-url</string>
 		<key>dispatchInterval(?)</key>
@@ -32,8 +32,6 @@
 		<integer>10</integer>
 		<key>enabled(?)</key>
 		<false/>
-		<key>includeLocation(?)</key>
-		<true/>
 	</dict>
 </dict>
 </plist>

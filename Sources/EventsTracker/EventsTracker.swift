@@ -9,6 +9,7 @@
 
 import Foundation
 
+@available(*, deprecated)
 public final class EventsTracker {
     public enum ClientIdentifierType {}
     public typealias ClientIdentifier = GenericIdentifier<ClientIdentifierType>
@@ -30,14 +31,6 @@ public final class EventsTracker {
                                         dispatchLimit: settings.dispatchLimit,
                                         shipper: eventsShipper,
                                         cache: eventsCache)
-        
-        if settings.includeLocation {
-            DispatchQueue.main.async {
-                // Make sure we have a locationManager on first initialize (if needed).
-                // This is because the CLLocationManager must be created on the main thread.
-                _ = Context.LocationContext.location
-            }
-        }
         
         self.sessionLifecycleHandler = SessionLifecycleHandler()
         
@@ -148,10 +141,10 @@ extension EventsTracker {
     /// We expose this method internally so that the SDKConfig can enforce certain events being fired first.
     fileprivate func trackEventSync(_ type: EventType, properties: EventProperties?) {
         let event = ShippableEvent(type: type,
-                                   trackId: settings.trackId,
+                                   trackId: settings.appId,
                                    properties: properties,
                                    clientId: self.clientId.rawValue,
-                                   includeLocation: settings.includeLocation)
+                                   includeLocation: false)
         Logger.log("Event Tracked: '\(type)' \(properties ?? [:])", level: .debug, source: .EventsTracker)
         
         track(event: event)
