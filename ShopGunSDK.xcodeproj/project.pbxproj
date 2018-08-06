@@ -41,6 +41,7 @@
 		AE3C38F52019DF7900A92597 /* PagedPublicationView+ContentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38F42019DF7900A92597 /* PagedPublicationView+ContentsView.swift */; };
 		AE3C38FE2019DFD700A92597 /* PagedPublicationView+LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FD2019DFD700A92597 /* PagedPublicationView+LoadingView.swift */; };
 		AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */; };
+		AE448F9B21147CF6000E5A28 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448F9A21147CF6000E5A28 /* Event.swift */; };
 		AE4942C120174406006658CE /* PagedPublicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4942C020174406006658CE /* PagedPublicationView.swift */; };
 		AE50A3BE2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */; };
 		AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */; };
@@ -83,6 +84,9 @@
 		AEE37C6F20513867008E71D8 /* Verso.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE4942A520113A0F006658CE /* Verso.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEE37C7020513878008E71D8 /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06549A1FFEE24C009F6F92 /* Valet.framework */; };
 		AEE37C7120513881008E71D8 /* Valet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE06549A1FFEE24C009F6F92 /* Valet.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AEEE53F821187C5B00528E3B /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE53F721187C5B00528E3B /* JSONValue.swift */; };
+		AEEE540A21187EEA00528E3B /* Event+CommonPayloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE540921187EEA00528E3B /* Event+CommonPayloads.swift */; };
+		AEEE540C21187F1D00528E3B /* UniqueViewTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE540B21187F1D00528E3B /* UniqueViewTokenizer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -323,6 +327,7 @@
 		AE3C38F42019DF7900A92597 /* PagedPublicationView+ContentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+ContentsView.swift"; sourceTree = "<group>"; };
 		AE3C38FD2019DFD700A92597 /* PagedPublicationView+LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+LoadingView.swift"; sourceTree = "<group>"; };
 		AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+CoreAPILoader.swift"; sourceTree = "<group>"; };
+		AE448F9A21147CF6000E5A28 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		AE49429920113A0F006658CE /* Verso.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Verso.xcodeproj; path = External/Verso/Verso.xcodeproj; sourceTree = "<group>"; };
 		AE4942C020174406006658CE /* PagedPublicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagedPublicationView.swift; sourceTree = "<group>"; };
 		AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D_Equatable.swift; sourceTree = "<group>"; };
@@ -383,6 +388,9 @@
 		AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+SessionLifecycleHandler.swift"; sourceTree = "<group>"; };
 		AED992842063008300671F48 /* CoreAPI_OfferRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAPI_OfferRequests.swift; sourceTree = "<group>"; };
 		AEDCC2EF2008BA14002644C2 /* CoreAPI_Dealer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAPI_Dealer.swift; sourceTree = "<group>"; };
+		AEEE53F721187C5B00528E3B /* JSONValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValue.swift; sourceTree = "<group>"; };
+		AEEE540921187EEA00528E3B /* Event+CommonPayloads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+CommonPayloads.swift"; sourceTree = "<group>"; };
+		AEEE540B21187F1D00528E3B /* UniqueViewTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniqueViewTokenizer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -564,6 +572,9 @@
 				AE3B325920458716001C75C9 /* EventsTracker+IdField.swift */,
 				AE3B325320455D44001C75C9 /* EventsPool.swift */,
 				AE3B325720455FD1001C75C9 /* EventsTracker+Utils.swift */,
+				AE448F9A21147CF6000E5A28 /* Event.swift */,
+				AEEE540921187EEA00528E3B /* Event+CommonPayloads.swift */,
+				AEEE540B21187F1D00528E3B /* UniqueViewTokenizer.swift */,
 			);
 			name = EventsTracker;
 			path = Sources/EventsTracker;
@@ -606,6 +617,7 @@
 				AE2008D4200CE86F004363BE /* UserAgent.swift */,
 				AE3B3227204030AD001C75C9 /* Error+Extensions.swift */,
 				AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */,
+				AEEE53F721187C5B00528E3B /* JSONValue.swift */,
 			);
 			name = Shared;
 			path = Sources/Shared;
@@ -996,14 +1008,17 @@
 				AE22AAFA20527DFA008601EB /* Settings.swift in Sources */,
 				AE3B324C20455859001C75C9 /* EventsTracker+ShippableEvent.swift in Sources */,
 				AE3B325620455D64001C75C9 /* EventsTracker+Context.swift in Sources */,
+				AEEE540C21187F1D00528E3B /* UniqueViewTokenizer.swift in Sources */,
 				AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */,
 				AE3B3244204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift in Sources */,
 				AE8E4541200E31E60042CCE2 /* UIColor_Hex.swift in Sources */,
 				AE091FEB203AF24000345009 /* GraphRequestResponse.swift in Sources */,
+				AEEE540A21187EEA00528E3B /* Event+CommonPayloads.swift in Sources */,
 				AE85C5E42000384500263F8B /* CoreAPI_AuthVault.swift in Sources */,
 				AE091FED203AF24000345009 /* GraphClient.swift in Sources */,
 				AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */,
 				AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */,
+				AE448F9B21147CF6000E5A28 /* Event.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI_Person.swift in Sources */,
 				AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */,
 				AE3B325020455C11001C75C9 /* EventsTracker+EventsCache.swift in Sources */,
@@ -1017,6 +1032,7 @@
 				AE3B323C2044136C001C75C9 /* PagedPublicationView+ErrorView.swift in Sources */,
 				AE09204820401E6A00345009 /* CoreAPI_RequestQueryParameters.swift in Sources */,
 				AE8E454F2010941F0042CCE2 /* CoreAPI_DealerRequests.swift in Sources */,
+				AEEE53F821187C5B00528E3B /* JSONValue.swift in Sources */,
 				AE8E453F200E29350042CCE2 /* CoreAPI_PagedPublication.swift in Sources */,
 				AE8E4544200E3CA70042CCE2 /* CoreAPI_PagedPublicationRequests.swift in Sources */,
 				AE8E4546200F6CAA0042CCE2 /* ImageURLSet.swift in Sources */,
