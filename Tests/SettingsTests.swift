@@ -174,13 +174,11 @@ class SettingsTests: XCTestCase {
         let testDispatchInterval: TimeInterval = 111
         let testDispatchLimit: Int = 222
         let testEnabled: Bool = false
-        let testIncludeLocation: Bool = true
         
         let defaultURL = URL(string: "https://events.service.shopgun.com")!
         let defaultDispatchInterval: TimeInterval = 120
         let defaultDispatchLimit: Int = 100
         let defaultEnabled: Bool = true
-        let defaultIncludeLocation: Bool = false
         
         let fullJson = """
             {

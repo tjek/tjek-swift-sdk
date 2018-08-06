@@ -24,8 +24,6 @@ public final class EventsTracker {
         }
     }
     
-    public enum ClientIdentifierType {}
-    public typealias ClientIdentifier = GenericIdentifier<ClientIdentifierType>
     public typealias EventType = String
     public typealias EventProperties = [String: AnyObject]
     
@@ -34,8 +32,6 @@ public final class EventsTracker {
     /// The `Context` that will be attached to all future events (at the moment of tracking).
     /// Modifying the context will only change events that are tracked in the future
     public var context: Context = Context()
-    
-    private weak var dataStore: ShopGunSDKDataStore?
 
     internal init(settings: Settings.EventsTracker, dataStore: ShopGunSDKDataStore?) {
         self.settings = settings
@@ -49,26 +45,8 @@ public final class EventsTracker {
                                         shipper: eventsShipper,
                                         cache: eventsCache)
         
-        self.sessionLifecycleHandler = SessionLifecycleHandler()
-        
-        // Try to get the stored clientId, migrate the legacy clientId, or generate a new one.
-        if let storedClientId = EventsTracker.loadClientId(from: dataStore) {
-            self.clientId = storedClientId
-        } else {
-            if let legacyClientId = EventsTracker.loadLegacyClientId() {
-                self.clientId = legacyClientId
-                EventsTracker.clearLegacyClientId()
-                Logger.log("Loaded ClientId from Legacy cache", level: .debug, source: .EventsTracker)
-            } else {
-                self.clientId = ClientIdentifier.generate()
-
-                // A new clientId was generated, so send an event
-                LifecycleEvents.firstClientSessionOpened.track(self)
-            }
-            
-            // Save the new clientId back to the store
-            EventsTracker.updateDataStore(dataStore, clientId: self.clientId)
-        }
+        // Make sure we've cleaned up any legacy data that is no longer needed
+        EventsTracker.clearUnusedLegacyData(from: dataStore)
         
         // Assign the callback for the session handler.
         // Note that the eventy must be triggered manually first time.
@@ -78,21 +56,12 @@ public final class EventsTracker {
         }
     }
     private init() { fatalError("You must provide settings when creating an EventsTracker") }
+    
+    private weak var dataStore: ShopGunSDKDataStore?
 
     fileprivate let pool: CachedFlushablePool
     
-    public private(set) var clientId: ClientIdentifier
-    
-    public func resetClientId() {
-        self.clientId = ClientIdentifier.generate()
-        EventsTracker.updateDataStore(self.dataStore, clientId: self.clientId)
-        
-        LifecycleEvents.firstClientSessionOpened.track(self)
-        
-        LifecycleEvents.clientSessionOpened.track(self)
-    }
-    
-    fileprivate let sessionLifecycleHandler: SessionLifecycleHandler
+    private let sessionLifecycleHandler = SessionLifecycleHandler()
 }
 
 // MARK: -
@@ -184,7 +153,7 @@ extension EventsTracker {
         let event = ShippableEvent(type: type,
                                    trackId: settings.appId,
                                    properties: properties,
-                                   clientId: self.clientId.rawValue,
+                                   clientId: "removed",
                                    includeLocation: false)
         Logger.log("Event Tracked: '\(type)' \(properties ?? [:])", level: .debug, source: .EventsTracker)
         
