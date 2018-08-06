@@ -9,9 +9,6 @@
 
 import Foundation
 
-public enum AppIdentiferType { }
-public typealias AppIdentifier = GenericIdentifier<AppIdentiferType> // TODO
-
 public struct Event {
     public typealias Identifier = GenericIdentifier<Event>
     public typealias PayloadType = [String: JSONValue]
@@ -23,7 +20,7 @@ public struct Event {
     
     public private(set) var payload: PayloadType
     
-    public init(id: Identifier = Identifier.generate(), version: Int, timestamp: Date = Date(), type: Int, payload: PayloadType = [:]) {
+    public init(id: Identifier = Identifier.generate(), version: Int = 2, timestamp: Date = Date(), type: Int, payload: PayloadType = [:]) {
         self.id = id
         self.version = version
         self.timestamp = timestamp

@@ -9,14 +9,26 @@
 
 import Foundation
 
-@available(*, deprecated)
 public final class EventsTracker {
+    
+    public enum AppIdentiferType {}
+    public typealias AppIdentifier = GenericIdentifier<AppIdentiferType>
+
+    public struct Context {
+        public var countryCode: String?
+        // TODO: location & timestamp
+    }
+    
     public enum ClientIdentifierType {}
     public typealias ClientIdentifier = GenericIdentifier<ClientIdentifierType>
     public typealias EventType = String
     public typealias EventProperties = [String: AnyObject]
     
     public let settings: Settings.EventsTracker
+    
+    /// The `Context` that will be attached to all future events (at the moment of tracking).
+    /// Modifying the context will only change events that are tracked in the future
+    public var context: Context = Context()
     
     private weak var dataStore: ShopGunSDKDataStore?
 
@@ -55,10 +67,9 @@ public final class EventsTracker {
         
         // Assign the callback for the session handler.
         // Note that the eventy must be triggered manually first time.
-        LifecycleEvents.clientSessionOpened.track(self)
+        self.trackEvent(Event.clientSessionOpened())
         self.sessionLifecycleHandler.didStartNewSession = { [weak self] in
-            guard let s = self else { return }
-            LifecycleEvents.clientSessionOpened.track(s)
+            self?.trackEvent(Event.clientSessionOpened())
         }
     }
     private init() { fatalError("You must provide settings when creating an EventsTracker") }
@@ -125,10 +136,34 @@ extension EventsTracker {
 
 extension EventsTracker {
     
+    public func trackEvent(_ event: Event) {
+        
+        // TODO: Do on shared queue?
+        
+        // Mark the event with the tracker's context & appId
+        let eventToTrack = event
+            .addingAppIdentifier(AppIdentifier(rawValue: self.settings.appId))
+            .addingContext(self.context)
+        
+        Logger.log("Event Tracked: '\(event)'", level: .debug, source: .EventsTracker)
+        
+        // push the event to the cached pool
+//        self.pool.push(object: event)
+        
+        // send a notification for that specific event, a generic one
+//        NotificationCenter.default.post(name: .eventTracked(type: event.type), object: self, userInfo: eventInfo)
+//        NotificationCenter.default.post(name: .eventTracked(), object: self, userInfo: eventInfo)
+    }
+}
+
+extension EventsTracker {
+    
+    @available(*, deprecated)
     public func trackEvent(_ type: EventType) {
         trackEvent(type, properties: nil)
     }
     
+    @available(*, deprecated)
     public func trackEvent(_ type: EventType, properties: EventProperties?) {
         // make sure that all events are initially triggered on the main thread, to guarantee order.
         DispatchQueue.main.async { [weak self] in
@@ -139,6 +174,7 @@ extension EventsTracker {
     }
     
     /// We expose this method internally so that the SDKConfig can enforce certain events being fired first.
+    @available(*, deprecated)
     fileprivate func trackEventSync(_ type: EventType, properties: EventProperties?) {
         let event = ShippableEvent(type: type,
                                    trackId: settings.appId,
@@ -150,6 +186,7 @@ extension EventsTracker {
         track(event: event)
     }
     
+    @available(*, deprecated)
     fileprivate func track(event: EventsTracker.ShippableEvent) {
         
         self.pool.push(object: event)
@@ -171,6 +208,8 @@ extension EventsTracker {
 // MARK: - Lifecycle events
 
 extension EventsTracker {
+    
+    @available(*, deprecated)
     fileprivate enum LifecycleEvents {
         case firstClientSessionOpened
         case clientSessionOpened

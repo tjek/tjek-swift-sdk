@@ -10,8 +10,10 @@
 import Foundation
 
 extension EventsTracker {
+    
     /// This is a concrete implementation of an Event.
     // It defines everything that an event, as seen by the server
+    @available(*, deprecated)
     internal class ShippableEvent {
         
         let version: String = "1.0.0"
@@ -64,10 +66,6 @@ extension EventsTracker.ShippableEvent: PoolableObject {
         // client - required
         let clientDict: [String: String] = ["id": clientId, "trackId": trackId]
         dict["client"] = clientDict as AnyObject
-        
-        // context - required
-        let contextDict: [String: AnyObject] = EventsTracker.Context.toDictionary(includeLocation: self.includeLocation) ?? [:]
-        dict["context"] = contextDict as AnyObject
         
         // properties - required
         let propertiesDict: [String: AnyObject] = prepareForJSON(properties as AnyObject?) as? [String: AnyObject] ?? [:]

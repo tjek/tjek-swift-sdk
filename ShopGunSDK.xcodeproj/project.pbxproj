@@ -33,7 +33,6 @@
 		AE3B325020455C11001C75C9 /* EventsTracker+EventsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B324F20455C11001C75C9 /* EventsTracker+EventsCache.swift */; };
 		AE3B325220455CC2001C75C9 /* EventsTracker+EventsShipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325120455CC2001C75C9 /* EventsTracker+EventsShipper.swift */; };
 		AE3B325420455D44001C75C9 /* EventsPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325320455D44001C75C9 /* EventsPool.swift */; };
-		AE3B325620455D64001C75C9 /* EventsTracker+Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325520455D64001C75C9 /* EventsTracker+Context.swift */; };
 		AE3B325820455FD1001C75C9 /* EventsTracker+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325720455FD1001C75C9 /* EventsTracker+Utils.swift */; };
 		AE3B325A20458716001C75C9 /* EventsTracker+IdField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325920458716001C75C9 /* EventsTracker+IdField.swift */; };
 		AE3B32E72045F8A6001C75C9 /* PagedPublicationView.strings in Resources */ = {isa = PBXBuildFile; fileRef = AE3B32DB2045F8A6001C75C9 /* PagedPublicationView.strings */; };
@@ -87,6 +86,8 @@
 		AEEE53F821187C5B00528E3B /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE53F721187C5B00528E3B /* JSONValue.swift */; };
 		AEEE540A21187EEA00528E3B /* Event+CommonPayloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE540921187EEA00528E3B /* Event+CommonPayloads.swift */; };
 		AEEE540C21187F1D00528E3B /* UniqueViewTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE540B21187F1D00528E3B /* UniqueViewTokenizer.swift */; };
+		AEEE540E211889E400528E3B /* Event+EventsTrackerContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE540D211889E400528E3B /* Event+EventsTrackerContext.swift */; };
+		AEEE541021188C6200528E3B /* Event+SDKEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE540F21188C6100528E3B /* Event+SDKEvents.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -310,7 +311,6 @@
 		AE3B324F20455C11001C75C9 /* EventsTracker+EventsCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+EventsCache.swift"; sourceTree = "<group>"; };
 		AE3B325120455CC2001C75C9 /* EventsTracker+EventsShipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+EventsShipper.swift"; sourceTree = "<group>"; };
 		AE3B325320455D44001C75C9 /* EventsPool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsPool.swift; sourceTree = "<group>"; };
-		AE3B325520455D64001C75C9 /* EventsTracker+Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EventsTracker+Context.swift"; sourceTree = "<group>"; };
 		AE3B325720455FD1001C75C9 /* EventsTracker+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+Utils.swift"; sourceTree = "<group>"; };
 		AE3B325920458716001C75C9 /* EventsTracker+IdField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+IdField.swift"; sourceTree = "<group>"; };
 		AE3B32DC2045F8A6001C75C9 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/PagedPublicationView.strings; sourceTree = "<group>"; };
@@ -391,6 +391,8 @@
 		AEEE53F721187C5B00528E3B /* JSONValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValue.swift; sourceTree = "<group>"; };
 		AEEE540921187EEA00528E3B /* Event+CommonPayloads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+CommonPayloads.swift"; sourceTree = "<group>"; };
 		AEEE540B21187F1D00528E3B /* UniqueViewTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniqueViewTokenizer.swift; sourceTree = "<group>"; };
+		AEEE540D211889E400528E3B /* Event+EventsTrackerContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+EventsTrackerContext.swift"; sourceTree = "<group>"; };
+		AEEE540F21188C6100528E3B /* Event+SDKEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+SDKEvents.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -568,12 +570,13 @@
 				AE3B324B20455859001C75C9 /* EventsTracker+ShippableEvent.swift */,
 				AE3B324F20455C11001C75C9 /* EventsTracker+EventsCache.swift */,
 				AE3B325120455CC2001C75C9 /* EventsTracker+EventsShipper.swift */,
-				AE3B325520455D64001C75C9 /* EventsTracker+Context.swift */,
 				AE3B325920458716001C75C9 /* EventsTracker+IdField.swift */,
 				AE3B325320455D44001C75C9 /* EventsPool.swift */,
 				AE3B325720455FD1001C75C9 /* EventsTracker+Utils.swift */,
 				AE448F9A21147CF6000E5A28 /* Event.swift */,
 				AEEE540921187EEA00528E3B /* Event+CommonPayloads.swift */,
+				AEEE540D211889E400528E3B /* Event+EventsTrackerContext.swift */,
+				AEEE540F21188C6100528E3B /* Event+SDKEvents.swift */,
 				AEEE540B21187F1D00528E3B /* UniqueViewTokenizer.swift */,
 			);
 			name = EventsTracker;
@@ -1007,7 +1010,6 @@
 				AEC28B681FF6ABFC0007AAB8 /* CoreAPI_APIError.swift in Sources */,
 				AE22AAFA20527DFA008601EB /* Settings.swift in Sources */,
 				AE3B324C20455859001C75C9 /* EventsTracker+ShippableEvent.swift in Sources */,
-				AE3B325620455D64001C75C9 /* EventsTracker+Context.swift in Sources */,
 				AEEE540C21187F1D00528E3B /* UniqueViewTokenizer.swift in Sources */,
 				AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */,
 				AE3B3244204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift in Sources */,
@@ -1029,11 +1031,13 @@
 				AE3B3242204422D5001C75C9 /* Bundle+ShopGunSDK.swift in Sources */,
 				AE0654871FFED399009F6F92 /* CoreAPI_Utils.swift in Sources */,
 				AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */,
+				AEEE540E211889E400528E3B /* Event+EventsTrackerContext.swift in Sources */,
 				AE3B323C2044136C001C75C9 /* PagedPublicationView+ErrorView.swift in Sources */,
 				AE09204820401E6A00345009 /* CoreAPI_RequestQueryParameters.swift in Sources */,
 				AE8E454F2010941F0042CCE2 /* CoreAPI_DealerRequests.swift in Sources */,
 				AEEE53F821187C5B00528E3B /* JSONValue.swift in Sources */,
 				AE8E453F200E29350042CCE2 /* CoreAPI_PagedPublication.swift in Sources */,
+				AEEE541021188C6200528E3B /* Event+SDKEvents.swift in Sources */,
 				AE8E4544200E3CA70042CCE2 /* CoreAPI_PagedPublicationRequests.swift in Sources */,
 				AE8E4546200F6CAA0042CCE2 /* ImageURLSet.swift in Sources */,
 				AE0B85D4204607370092F110 /* GraphAPI.swift in Sources */,
