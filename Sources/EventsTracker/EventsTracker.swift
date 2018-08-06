@@ -24,9 +24,6 @@ public final class EventsTracker {
         }
     }
     
-    public typealias EventType = String
-    public typealias EventProperties = [String: AnyObject]
-    
     public let settings: Settings.EventsTracker
     
     /// The `Context` that will be attached to all future events (at the moment of tracking).
@@ -127,81 +124,5 @@ extension EventsTracker {
         // send a notification for that specific event, a generic one
 //        NotificationCenter.default.post(name: .eventTracked(type: event.type), object: self, userInfo: eventInfo)
 //        NotificationCenter.default.post(name: .eventTracked(), object: self, userInfo: eventInfo)
-    }
-}
-
-extension EventsTracker {
-    
-    @available(*, deprecated)
-    public func trackEvent(_ type: EventType) {
-        trackEvent(type, properties: nil)
-    }
-    
-    @available(*, deprecated)
-    public func trackEvent(_ type: EventType, properties: EventProperties?) {
-        // make sure that all events are initially triggered on the main thread, to guarantee order.
-        DispatchQueue.main.async { [weak self] in
-            guard let s = self else { return }
-            
-            s.trackEventSync(type, properties: properties)
-        }
-    }
-    
-    /// We expose this method internally so that the SDKConfig can enforce certain events being fired first.
-    @available(*, deprecated)
-    fileprivate func trackEventSync(_ type: EventType, properties: EventProperties?) {
-        let event = ShippableEvent(type: type,
-                                   trackId: settings.appId,
-                                   properties: properties,
-                                   clientId: "removed",
-                                   includeLocation: false)
-        Logger.log("Event Tracked: '\(type)' \(properties ?? [:])", level: .debug, source: .EventsTracker)
-        
-        track(event: event)
-    }
-    
-    @available(*, deprecated)
-    fileprivate func track(event: EventsTracker.ShippableEvent) {
-        
-        self.pool.push(object: event)
-        
-        // save the eventInfo into a dict for sending as a notification
-        var eventInfo: [String: AnyObject] = ["type": event.type as AnyObject,
-                                              "uuid": event.uuid as AnyObject]
-        if event.properties != nil {
-            eventInfo["properties"] = event.properties! as AnyObject
-        }
-        
-        // send a notification for that specific event, a generic one
-        NotificationCenter.default.post(name: .eventTracked(type: event.type), object: self, userInfo: eventInfo)
-        NotificationCenter.default.post(name: .eventTracked(), object: self, userInfo: eventInfo)
-    }
-    
-}
-
-// MARK: - Lifecycle events
-
-extension EventsTracker {
-    
-    @available(*, deprecated)
-    fileprivate enum LifecycleEvents {
-        case firstClientSessionOpened
-        case clientSessionOpened
-        
-        var type: EventType {
-            switch self {
-            case .firstClientSessionOpened:
-                return "first-client-session-opened"
-            case .clientSessionOpened:
-                return "client-session-opened"
-            }
-        }
-        var properties: EventProperties {
-            return [:]
-        }
-        
-        func track(_ tracker: EventsTracker) {
-            tracker.trackEvent(self.type, properties: self.properties)
-        }
     }
 }

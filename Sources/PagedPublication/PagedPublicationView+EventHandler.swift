@@ -10,6 +10,7 @@
 import UIKit
 
 /// All the possible events that the paged publication can trigger
+@available(*, deprecated)
 public protocol PagedPublicationViewEventHandler {
     
     func publicationOpenedEvent(publication: PagedPublicationView.PublicationModel)
@@ -29,6 +30,7 @@ public protocol PagedPublicationViewEventHandler {
 extension PagedPublicationView {
     class EventsHandler: PagedPublicationViewEventHandler {
         
+        @available(*, deprecated)
         enum PublicationEvents {
             typealias PublicationModel = PagedPublicationView.PublicationModel
             
@@ -47,7 +49,7 @@ extension PagedPublicationView {
 
             // MARK: -
             
-            var type: EventsTracker.EventType {
+            var type: String {
                 switch self {
                 case .opened:
                     return "paged-publication-opened"
@@ -72,7 +74,7 @@ extension PagedPublicationView {
                 }
             }
             
-            var properties: EventsTracker.EventProperties {
+            var properties: [String: AnyObject] {
                 switch self {
                 case let .opened(publication):
                     return ["pagedPublication": self.publicationProperties(publication) as AnyObject]
@@ -101,7 +103,7 @@ extension PagedPublicationView {
             func track() {
                 guard EventsTracker.isConfigured else { return }
 
-                EventsTracker.shared.trackEvent(self.type, properties: self.properties)
+//                EventsTracker.shared.trackEvent(self.type, properties: self.properties)
             }
             
             private func publicationProperties(_ publication: PublicationModel) -> [String: AnyObject] {
@@ -127,11 +129,15 @@ extension PagedPublicationView {
         // MARK: -
         
         func publicationOpenedEvent(publication: PagedPublicationView.PublicationModel) {
-            PublicationEvents.opened(publication).track()
+            guard EventsTracker.isConfigured else { return }
+
+            EventsTracker.shared.trackEvent(.pagedPublicationOpened(publication.id))
         }
         
         func publicationPageLoadedEvent(pageIndex: Int, publication: PagedPublicationView.PublicationModel) {
-            PublicationEvents.pageLoaded(pageIndex: pageIndex, publication: publication).track()
+            guard EventsTracker.isConfigured else { return }
+            
+            EventsTracker.shared.trackEvent(.pagedPublicationPageOpened(publication.id, pageNumber: pageIndex + 1))
         }
         
         func publicationPageClickedEvent(location: CGPoint, pageIndex: Int, publication: PagedPublicationView.PublicationModel) {
@@ -170,6 +176,7 @@ extension PagedPublicationView {
 
 extension PagedPublicationView {
     
+    @available(*, deprecated)
     class LifecycleEventTracker {
         
         let eventHandler: PagedPublicationViewEventHandler
