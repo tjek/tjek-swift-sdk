@@ -12,7 +12,7 @@ import Foundation
 extension EventsTracker {
     
     /// A class that handles the Caching of the events to disk
-    class EventsCache: PoolCacheProtocol {
+    class EventsCache_v1: PoolCacheProtocol {
         
         let diskCachePath: String?
         

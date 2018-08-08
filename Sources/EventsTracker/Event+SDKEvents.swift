@@ -12,9 +12,15 @@ import Foundation
 extension Event {
     
     private enum ReservedSDKType: Int {
+        case dummy                          = 0
         case pagedPublicationOpened         = 1
         case pagedPublicationPageOpened     = 2
         case clientSessionOpened            = 4
+    }
+    
+    internal static func dummy(timestamp: Date = Date()) -> Event {
+        return Event(timestamp: timestamp,
+                     type: ReservedSDKType.dummy.rawValue)
     }
     
     internal static func pagedPublicationOpened(_ publicationId: CoreAPI.PagedPublication.Identifier, timestamp: Date = Date()) -> Event {

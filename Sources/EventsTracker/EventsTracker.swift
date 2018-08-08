@@ -34,8 +34,8 @@ public final class EventsTracker {
         self.settings = settings
         self.dataStore = dataStore
         
-        let eventsShipper = EventsShipper(baseURL: settings.baseURL, dryRun: settings.enabled == false)
-        let eventsCache = EventsCache(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.plist")
+        let eventsShipper = EventsShipper_v1(baseURL: settings.baseURL, dryRun: settings.enabled == false)
+        let eventsCache = EventsCache_v1(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.plist")
         
         self.pool = CachedFlushablePool(dispatchInterval: settings.dispatchInterval,
                                         dispatchLimit: settings.dispatchLimit,
