@@ -44,9 +44,7 @@ extension PagedPublicationView {
         func startLoadingZoomImageIfNotLoaded() {
             guard zoomImageLoadState == .notLoaded else { return }
             
-            let pageSize = self.bounds.size
-            let maxScaleFactor: CGFloat = 4
-            guard let zoomImageURL = properties?.images?.url(fitting: CGSize(width: pageSize.width * maxScaleFactor, height: pageSize.height * maxScaleFactor)) else { return }
+            guard let zoomImageURL = properties?.images?.url(fitting: ImageURLSet.CoreAPI.zoomSize) else { return }
             
             self.startLoadingZoomImage(fromURL: zoomImageURL)
         }
@@ -71,16 +69,8 @@ extension PagedPublicationView {
             pageLabel.textColor = properties.isBackgroundDark ? UIColor.white : UIColor(white: 0, alpha: 0.7)
             backgroundColor = properties.isBackgroundDark ? UIColor(white: 1, alpha: 0.1) : UIColor(white: 0.8, alpha: 0.15)
             
-            let imageSize: CGSize = {
-                var size = bounds.size
-                guard size != .zero else {
-                    return ImageURLSet.CoreAPI.viewSize
-                }
-                size.width *= UIScreen.main.scale
-                size.height *= UIScreen.main.scale
-                return size
-            }()
-            
+            let pagePixelWidth = bounds.width * UIScreen.main.scale
+            let imageSize: CGSize = pagePixelWidth > 1500 ? ImageURLSet.CoreAPI.zoomSize : ImageURLSet.CoreAPI.viewSize
             if let imageURL = properties.images?.url(fitting: imageSize) {
                 startLoadingViewImage(fromURL: imageURL)
             }
