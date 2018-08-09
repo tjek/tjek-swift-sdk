@@ -38,7 +38,7 @@ extension Event {
         return event
     }
     
-    func addingViewToken(content: String, tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize) -> Event {
+    func addingViewToken(content: String, tokenizer: Tokenizer) -> Event {
         var event = self
         event.mergePayload([CommonPayloadKeys.viewToken.rawValue: .string(tokenizer(content))])
         return event

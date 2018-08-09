@@ -30,12 +30,11 @@ public final class EventsTracker {
     /// Modifying the context will only change events that are tracked in the future
     public var context: Context = Context()
 
-    let viewTokenizer: UniqueViewTokenizer
+    internal let viewTokenizer: UniqueViewTokenizer
     
     internal init(settings: Settings.EventsTracker, dataStore: ShopGunSDKDataStore?) {
         self.settings = settings
         self.dataStore = dataStore
-        
         self.viewTokenizer = UniqueViewTokenizer.load(from: dataStore)
         
         let eventsShipper = EventsShipper_v1(baseURL: settings.baseURL, dryRun: settings.enabled == false)

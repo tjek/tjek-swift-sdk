@@ -65,6 +65,7 @@
 		AE95FDD0205014BC0002C1CE /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE95FDC8205014080002C1CE /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEBA9C23211C2C6800516744 /* UniqueViewTokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA9C21211C2C1000516744 /* UniqueViewTokenizerTests.swift */; };
 		AEBA9C25211C623C00516744 /* GeohashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA9C24211C623C00516744 /* GeohashTests.swift */; };
+		AEBA9C27211CB07E00516744 /* SDKEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA9C26211CB07E00516744 /* SDKEventsTests.swift */; };
 		AEC28B441FF6AAC20007AAB8 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */; };
 		AEC28B651FF6ABFC0007AAB8 /* CoreAPI_Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5A1FF6ABFC0007AAB8 /* CoreAPI_Person.swift */; };
 		AEC28B661FF6ABFC0007AAB8 /* CoreAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5B1FF6ABFC0007AAB8 /* CoreAPIRequest.swift */; };
@@ -358,6 +359,7 @@
 		AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CryptoSwift.xcodeproj; path = External/CryptoSwift/CryptoSwift.xcodeproj; sourceTree = "<group>"; };
 		AEBA9C21211C2C1000516744 /* UniqueViewTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniqueViewTokenizerTests.swift; sourceTree = "<group>"; };
 		AEBA9C24211C623C00516744 /* GeohashTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeohashTests.swift; sourceTree = "<group>"; };
+		AEBA9C26211CB07E00516744 /* SDKEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKEventsTests.swift; sourceTree = "<group>"; };
 		AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC28B431FF6AAC20007AAB8 /* ShopGunSDK-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunSDK-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTracker.swift; sourceTree = "<group>"; };
@@ -650,6 +652,7 @@
 				AEEE54152118CFDE00528E3B /* EventTests.swift */,
 				AE38B457211990C7008C1EA8 /* EventShipper_v2Tests.swift */,
 				AEBA9C21211C2C1000516744 /* UniqueViewTokenizerTests.swift */,
+				AEBA9C26211CB07E00516744 /* SDKEventsTests.swift */,
 				AEBA9C24211C623C00516744 /* GeohashTests.swift */,
 			);
 			path = Tests;
@@ -1087,6 +1090,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE38B458211990C7008C1EA8 /* EventShipper_v2Tests.swift in Sources */,
+				AEBA9C27211CB07E00516744 /* SDKEventsTests.swift in Sources */,
 				AEBA9C23211C2C6800516744 /* UniqueViewTokenizerTests.swift in Sources */,
 				AEBA9C25211C623C00516744 /* GeohashTests.swift in Sources */,
 				AEEE54162118CFDE00528E3B /* EventTests.swift in Sources */,
