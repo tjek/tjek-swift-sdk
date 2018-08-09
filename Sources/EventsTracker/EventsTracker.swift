@@ -30,9 +30,13 @@ public final class EventsTracker {
     /// Modifying the context will only change events that are tracked in the future
     public var context: Context = Context()
 
+    let viewTokenizer: UniqueViewTokenizer
+    
     internal init(settings: Settings.EventsTracker, dataStore: ShopGunSDKDataStore?) {
         self.settings = settings
         self.dataStore = dataStore
+        
+        self.viewTokenizer = UniqueViewTokenizer.load(from: dataStore)
         
         let eventsShipper = EventsShipper_v1(baseURL: settings.baseURL, dryRun: settings.enabled == false)
         let eventsCache = EventsCache_v1(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.plist")
@@ -41,9 +45,6 @@ public final class EventsTracker {
                                         dispatchLimit: settings.dispatchLimit,
                                         shipper: eventsShipper,
                                         cache: eventsCache)
-        
-        // Make sure we've cleaned up any legacy data that is no longer needed
-        EventsTracker.clearUnusedLegacyData(from: dataStore)
         
         // Assign the callback for the session handler.
         // Note that the eventy must be triggered manually first time.

@@ -29,7 +29,7 @@ extension Event {
         return Event(timestamp: timestamp,
                      type: ReservedSDKType.pagedPublicationOpened.rawValue,
                      payload: payload)
-            .addingViewToken(contentId: publicationId.rawValue)
+            .addingViewToken(content: publicationId.rawValue)
     }
     
     /// 1-indexed
@@ -40,7 +40,7 @@ extension Event {
         return Event(timestamp: timestamp,
                      type: ReservedSDKType.pagedPublicationPageOpened.rawValue,
                      payload: payload)
-            .addingViewToken(contentId: "\(publicationId.rawValue).\(pageNumber)")
+            .addingViewToken(content: publicationId.rawValue + "\(pageNumber)")
     }
     
     internal static func clientSessionOpened(timestamp: Date = Date()) -> Event {

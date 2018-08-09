@@ -63,6 +63,8 @@
 		AE95FDC0204FEC6C0002C1CE /* CGSize_Fitting.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE95FDBF204FEC6C0002C1CE /* CGSize_Fitting.swift */; };
 		AE95FDCF205014AF0002C1CE /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE95FDC8205014080002C1CE /* CryptoSwift.framework */; };
 		AE95FDD0205014BC0002C1CE /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE95FDC8205014080002C1CE /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AEBA9C23211C2C6800516744 /* UniqueViewTokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA9C21211C2C1000516744 /* UniqueViewTokenizerTests.swift */; };
+		AEBA9C25211C623C00516744 /* GeohashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA9C24211C623C00516744 /* GeohashTests.swift */; };
 		AEC28B441FF6AAC20007AAB8 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */; };
 		AEC28B651FF6ABFC0007AAB8 /* CoreAPI_Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5A1FF6ABFC0007AAB8 /* CoreAPI_Person.swift */; };
 		AEC28B661FF6ABFC0007AAB8 /* CoreAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5B1FF6ABFC0007AAB8 /* CoreAPIRequest.swift */; };
@@ -73,7 +75,6 @@
 		AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B621FF6ABFC0007AAB8 /* Result.swift */; };
 		AEC28B6E1FF6AC2A0007AAB8 /* ShopGunSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AEC3D8571FFD87FB004C5947 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3D8551FFD87FB004C5947 /* SettingsTests.swift */; };
-		AECC8E07204987B5007185B0 /* EventsTracker+DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC8E06204987B5007185B0 /* EventsTracker+DataStore.swift */; };
 		AECC8E1B204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */; };
 		AED992852063008300671F48 /* CoreAPI_OfferRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED992842063008300671F48 /* CoreAPI_OfferRequests.swift */; };
 		AEDCC2F02008BA14002644C2 /* CoreAPI_Dealer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDCC2EF2008BA14002644C2 /* CoreAPI_Dealer.swift */; };
@@ -355,6 +356,8 @@
 		AE95FDBF204FEC6C0002C1CE /* CGSize_Fitting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGSize_Fitting.swift; sourceTree = "<group>"; };
 		AE95FDC1204FEE710002C1CE /* ShopGunSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShopGunSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CryptoSwift.xcodeproj; path = External/CryptoSwift/CryptoSwift.xcodeproj; sourceTree = "<group>"; };
+		AEBA9C21211C2C1000516744 /* UniqueViewTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniqueViewTokenizerTests.swift; sourceTree = "<group>"; };
+		AEBA9C24211C623C00516744 /* GeohashTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeohashTests.swift; sourceTree = "<group>"; };
 		AEC28B3A1FF6AAC20007AAB8 /* ShopGunSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShopGunSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC28B431FF6AAC20007AAB8 /* ShopGunSDK-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShopGunSDK-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsTracker.swift; sourceTree = "<group>"; };
@@ -387,7 +390,6 @@
 		AEC3D86E1FFD8E86004C5947 /* ShopGunSDK-Project-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Project-Release.xcconfig"; sourceTree = "<group>"; };
 		AEC3D86F1FFD8E86004C5947 /* ShopGunSDK-Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Tests.xcconfig"; sourceTree = "<group>"; };
 		AEC3D8701FFD8E86004C5947 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
-		AECC8E06204987B5007185B0 /* EventsTracker+DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+DataStore.swift"; sourceTree = "<group>"; };
 		AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+SessionLifecycleHandler.swift"; sourceTree = "<group>"; };
 		AED992842063008300671F48 /* CoreAPI_OfferRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAPI_OfferRequests.swift; sourceTree = "<group>"; };
 		AEDCC2EF2008BA14002644C2 /* CoreAPI_Dealer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAPI_Dealer.swift; sourceTree = "<group>"; };
@@ -570,7 +572,6 @@
 			isa = PBXGroup;
 			children = (
 				AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */,
-				AECC8E06204987B5007185B0 /* EventsTracker+DataStore.swift */,
 				AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */,
 				AE3B324D204559A5001C75C9 /* EventsTracker+Notifications.swift */,
 				AE3B324F20455C11001C75C9 /* EventsTracker+EventsCache.swift */,
@@ -648,6 +649,8 @@
 				AEC3D8551FFD87FB004C5947 /* SettingsTests.swift */,
 				AEEE54152118CFDE00528E3B /* EventTests.swift */,
 				AE38B457211990C7008C1EA8 /* EventShipper_v2Tests.swift */,
+				AEBA9C21211C2C1000516744 /* UniqueViewTokenizerTests.swift */,
+				AEBA9C24211C623C00516744 /* GeohashTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1052,7 +1055,6 @@
 				AE8E4544200E3CA70042CCE2 /* CoreAPI_PagedPublicationRequests.swift in Sources */,
 				AE8E4546200F6CAA0042CCE2 /* ImageURLSet.swift in Sources */,
 				AE0B85D4204607370092F110 /* GraphAPI.swift in Sources */,
-				AECC8E07204987B5007185B0 /* EventsTracker+DataStore.swift in Sources */,
 				AE95FDC0204FEC6C0002C1CE /* CGSize_Fitting.swift in Sources */,
 				AE3C38FE2019DFD700A92597 /* PagedPublicationView+LoadingView.swift in Sources */,
 				AE7F6A77201F36F300168C1A /* PagedPublicationView+Verso.swift in Sources */,
@@ -1085,6 +1087,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE38B458211990C7008C1EA8 /* EventShipper_v2Tests.swift in Sources */,
+				AEBA9C23211C2C6800516744 /* UniqueViewTokenizerTests.swift in Sources */,
+				AEBA9C25211C623C00516744 /* GeohashTests.swift in Sources */,
 				AEEE54162118CFDE00528E3B /* EventTests.swift in Sources */,
 				AEC3D8571FFD87FB004C5947 /* SettingsTests.swift in Sources */,
 			);
