@@ -66,10 +66,16 @@ extension Event {
         let payload: PayloadType = ["pp.id": .string(publicationId.rawValue),
                                     "ppp.n": .int(pageNumber)]
         
+        let viewTokenContent: String = {
+            var intAddr = UInt32(pageNumber).bigEndian
+            let intData = Data(buffer: UnsafeBufferPointer(start: &intAddr, count: 1))
+            return publicationId.rawValue + (String(data: intData, encoding: .utf8) ?? "")
+        }()
+        
         return Event(timestamp: timestamp,
                      type: ReservedSDKType.pagedPublicationPageOpened.rawValue,
                      payload: payload)
-            .addingViewToken(content: publicationId.rawValue + "\(pageNumber)", tokenizer: tokenizer)
+            .addingViewToken(content: viewTokenContent, tokenizer: tokenizer)
     }
     
     /**
