@@ -9,7 +9,7 @@
 
 import Foundation
 
-struct ShippableEvent {
+struct ShippableEvent: Codable {
     var id: String
     var version: Int
     var timestamp: Date
@@ -29,6 +29,10 @@ extension ShippableEvent {
                   timestamp: event.timestamp,
                   object: jsonValue)
     }
+}
+
+extension ShippableEvent: CacheableEvent {
+    var cacheId: String { return id }
 }
 
 enum EventShipperResult {

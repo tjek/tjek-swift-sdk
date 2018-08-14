@@ -10,7 +10,7 @@
 import Foundation
 
 /// A class that handles the shipping of the Events
-class EventsShipper_v1: PoolShipperProtocol {
+class EventsShipper_v1: PoolShipper_v1Protocol {
     
     var baseURL: URL
     
@@ -26,7 +26,7 @@ class EventsShipper_v1: PoolShipperProtocol {
         return URLSession(configuration: URLSessionConfiguration.default)
     }()
     
-    func ship(objects: [SerializedPoolObject], completion: @escaping ((_ poolIdsToRemove: [String]) -> Void)) {
+    func ship(objects: [SerializedV1PoolObject], completion: @escaping ((_ poolIdsToRemove: [String]) -> Void)) {
         
         var orderedEventDicts: [[String: AnyObject]] = []
         var keyedEventDicts: [String: [String: AnyObject]] = [:]

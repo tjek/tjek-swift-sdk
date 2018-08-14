@@ -36,14 +36,14 @@ public final class EventsTracker {
         self.settings = settings
         self.dataStore = dataStore
         self.viewTokenizer = UniqueViewTokenizer.load(from: dataStore)
+
+        let eventsShipper = EventsShipper_v2(baseURL: settings.baseURL, dryRun: settings.enabled == false)
+        let eventsCache = EventsCache<ShippableEvent>(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.v2.plist")
         
-        let eventsShipper = EventsShipper_v1(baseURL: settings.baseURL, dryRun: settings.enabled == false)
-        let eventsCache = EventsCache_v1(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.plist")
-        
-        self.pool = CachedFlushablePool(dispatchInterval: settings.dispatchInterval,
-                                        dispatchLimit: settings.dispatchLimit,
-                                        shipper: eventsShipper,
-                                        cache: eventsCache)
+        self.pool = EventsPool(dispatchInterval: settings.dispatchInterval,
+                               dispatchLimit: settings.dispatchLimit,
+                               shippingHandler: eventsShipper.ship,
+                               cache: eventsCache)
         
         // Assign the callback for the session handler.
         // Note that the eventy must be triggered manually first time.
@@ -56,7 +56,7 @@ public final class EventsTracker {
     
     private weak var dataStore: ShopGunSDKDataStore?
 
-    fileprivate let pool: CachedFlushablePool
+    fileprivate let pool: EventsPool
     
     private let sessionLifecycleHandler = SessionLifecycleHandler()
 }
@@ -119,9 +119,12 @@ extension EventsTracker {
         Logger.log("Event Tracked: '\(event)'", level: .debug, source: .EventsTracker)
         
         // push the event to the cached pool
-//        self.pool.push(object: event)
+        if let shippableEvent = ShippableEvent(event: eventToTrack) {
+            self.pool.push(event: shippableEvent)
+        }
         
         // send a notification for that specific event, a generic one
+        // TODO:
 //        NotificationCenter.default.post(name: .eventTracked(type: event.type), object: self, userInfo: eventInfo)
 //        NotificationCenter.default.post(name: .eventTracked(), object: self, userInfo: eventInfo)
     }
