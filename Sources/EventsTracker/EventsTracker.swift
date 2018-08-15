@@ -11,9 +11,6 @@ import Foundation
 
 public final class EventsTracker {
     
-    public enum AppIdentiferType {}
-    public typealias AppIdentifier = GenericIdentifier<AppIdentiferType>
-
     public struct Context {
         public var countryCode: String?
         public private(set) var location: (geohash: String, timestamp: Date)? = nil
@@ -113,7 +110,7 @@ extension EventsTracker {
         
         // Mark the event with the tracker's context & appId
         let eventToTrack = event
-            .addingAppIdentifier(AppIdentifier(rawValue: self.settings.appId))
+            .addingAppIdentifier(self.settings.appId)
             .addingContext(self.context)
         
         Logger.log("Event Tracked: '\(event)'", level: .debug, source: .EventsTracker)

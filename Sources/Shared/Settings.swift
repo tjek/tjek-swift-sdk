@@ -160,13 +160,16 @@ extension Settings {
      The settings for the EventsTracker component.
      */
     public struct EventsTracker: Decodable {
-        public var appId: String
+        public enum AppIdentiferType {}
+        public typealias AppIdentifier = GenericIdentifier<AppIdentiferType>
+        
+        public var appId: AppIdentifier
         public var baseURL: URL
         public var dispatchInterval: TimeInterval
         public var dispatchLimit: Int
         public var enabled: Bool
         
-        public init(appId: String, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, enabled: Bool = true) {
+        public init(appId: AppIdentifier, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, enabled: Bool = true) {
             self.appId = appId
             self.baseURL = baseURL
             self.dispatchInterval = dispatchInterval
@@ -188,7 +191,7 @@ extension Settings {
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             
-            let appId = try container.decode(String.self, forKey: .appId)
+            let appId = try container.decode(AppIdentifier.self, forKey: .appId)
             
             self.init(appId: appId)
             

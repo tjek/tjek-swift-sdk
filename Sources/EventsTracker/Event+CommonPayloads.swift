@@ -19,7 +19,7 @@ extension Event {
         case viewToken              = "vt"
     }
     
-    func addingAppIdentifier(_ appId: EventsTracker.AppIdentifier) -> Event {
+    func addingAppIdentifier(_ appId: Settings.EventsTracker.AppIdentifier) -> Event {
         var event = self
         event.mergePayload([CommonPayloadKeys.appId.rawValue: .string(appId.rawValue)])
         return event
