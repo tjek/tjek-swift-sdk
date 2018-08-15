@@ -137,7 +137,7 @@ class SettingsTests: XCTestCase {
     func testCreatingEventsTrackerSettings() {
         
         // 1. given
-        let testAppId = "test-appId"
+        let testAppId = Settings.EventsTracker.AppIdentifier(rawValue: "test-appId")
         let testURL = URL(string: "test-url")!
         let testDispatchInterval: TimeInterval = 111
         let testDispatchLimit: Int = 222
@@ -169,7 +169,7 @@ class SettingsTests: XCTestCase {
     func testDecodingEventsTrackerSettings() {
         
         // 1. given
-        let testAppId = "test-appId"
+        let testAppId = Settings.EventsTracker.AppIdentifier(rawValue: "test-appId")
         let testURL = URL(string: "test-url")!
         let testDispatchInterval: TimeInterval = 111
         let testDispatchLimit: Int = 222
