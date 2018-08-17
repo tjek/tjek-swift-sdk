@@ -42,6 +42,10 @@ public final class EventsTracker {
                                shippingHandler: eventsShipper.ship,
                                cache: eventsCache)
         
+        EventsTracker.legacyPoolCleaner(baseURL: settings.baseURL, enabled: settings.enabled) { (cleanedEvents) in
+            Logger.log("LegacyEventsPool cleaned (\(cleanedEvents) events)", level: .debug, source: .EventsTracker)
+        }
+
         // Assign the callback for the session handler.
         // Note that the eventy must be triggered manually first time.
         self.trackEvent(Event.clientSessionOpened())

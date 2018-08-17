@@ -27,6 +27,8 @@
 		AE0D1CB12122F638004A133D /* EventsPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B325320455D44001C75C9 /* EventsPool.swift */; };
 		AE0D1CB321230297004A133D /* EventsCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0D1CB221230297004A133D /* EventsCacheTests.swift */; };
 		AE1027A621240D8200104921 /* EventsPoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1027A521240D8200104921 /* EventsPoolTests.swift */; };
+		AE1027B821245B0D00104921 /* EventsTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1027B721245B0D00104921 /* EventsTrackerTests.swift */; };
+		AE1027BB2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1027BA2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift */; };
 		AE2008D5200CE86F004363BE /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2008D4200CE86F004363BE /* UserAgent.swift */; };
 		AE22AAFA20527DFA008601EB /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE22AAF920527DFA008601EB /* Settings.swift */; };
 		AE38B458211990C7008C1EA8 /* EventShipper_v2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE38B457211990C7008C1EA8 /* EventShipper_v2Tests.swift */; };
@@ -313,6 +315,8 @@
 		AE0D1CAF2122F501004A133D /* EventsPool_v1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsPool_v1.swift; sourceTree = "<group>"; };
 		AE0D1CB221230297004A133D /* EventsCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsCacheTests.swift; sourceTree = "<group>"; };
 		AE1027A521240D8200104921 /* EventsPoolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsPoolTests.swift; sourceTree = "<group>"; };
+		AE1027B721245B0D00104921 /* EventsTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsTrackerTests.swift; sourceTree = "<group>"; };
+		AE1027BA2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+LegacyPoolCleaner.swift"; sourceTree = "<group>"; };
 		AE2008D4200CE86F004363BE /* UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgent.swift; sourceTree = "<group>"; };
 		AE22AAF920527DFA008601EB /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		AE38B457211990C7008C1EA8 /* EventShipper_v2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventShipper_v2Tests.swift; sourceTree = "<group>"; };
@@ -479,6 +483,17 @@
 			path = Sources/GraphAPI;
 			sourceTree = "<group>";
 		};
+		AE1027B92126F5B500104921 /* LegacyEventsPool */ = {
+			isa = PBXGroup;
+			children = (
+				AE1027BA2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift */,
+				AE0D1CAF2122F501004A133D /* EventsPool_v1.swift */,
+				AE3B325120455CC2001C75C9 /* EventsShipper_v1.swift */,
+				AE3B324F20455C11001C75C9 /* EventsCache_v1.swift */,
+			);
+			path = LegacyEventsPool;
+			sourceTree = "<group>";
+		};
 		AE3B32DA2045F8A6001C75C9 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -584,9 +599,7 @@
 				AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */,
 				AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */,
 				AE3B324D204559A5001C75C9 /* EventsTracker+Notifications.swift */,
-				AE0D1CAF2122F501004A133D /* EventsPool_v1.swift */,
-				AE3B325120455CC2001C75C9 /* EventsShipper_v1.swift */,
-				AE3B324F20455C11001C75C9 /* EventsCache_v1.swift */,
+				AE1027B92126F5B500104921 /* LegacyEventsPool */,
 				AE3B325320455D44001C75C9 /* EventsPool.swift */,
 				AE38B4692119EBDB008C1EA8 /* EventsShipper_v2.swift */,
 				AE0D1C9D2122D8F2004A133D /* EventsCache.swift */,
@@ -666,6 +679,7 @@
 				AEBA9C24211C623C00516744 /* GeohashTests.swift */,
 				AE0D1CB221230297004A133D /* EventsCacheTests.swift */,
 				AE1027A521240D8200104921 /* EventsPoolTests.swift */,
+				AE1027B721245B0D00104921 /* EventsTrackerTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1082,6 +1096,7 @@
 				AE3C38F52019DF7900A92597 /* PagedPublicationView+ContentsView.swift in Sources */,
 				AE043057205BC15000F5D8C9 /* CoreAPI_Branding.swift in Sources */,
 				AE7F6A79201F5F4900168C1A /* PagedPublicationView+ImageLoader.swift in Sources */,
+				AE1027BB2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift in Sources */,
 				AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */,
 				AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */,
 				AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */,
@@ -1107,6 +1122,7 @@
 				AE0D1CB321230297004A133D /* EventsCacheTests.swift in Sources */,
 				AE1027A621240D8200104921 /* EventsPoolTests.swift in Sources */,
 				AEBA9C27211CB07E00516744 /* SDKEventsTests.swift in Sources */,
+				AE1027B821245B0D00104921 /* EventsTrackerTests.swift in Sources */,
 				AEBA9C23211C2C6800516744 /* UniqueViewTokenizerTests.swift in Sources */,
 				AEBA9C25211C623C00516744 /* GeohashTests.swift in Sources */,
 				AEEE54162118CFDE00528E3B /* EventTests.swift in Sources */,

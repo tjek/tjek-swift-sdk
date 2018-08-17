@@ -45,6 +45,8 @@ class EventsPool_v1 {
     let shipper: PoolShipper_v1Protocol
     let cache: PoolCache_v1Protocol
     
+    var willFlushCallback: (([SerializedV1PoolObject]) -> Void)? = nil
+    
     var dispatchLimit: Int {
         didSet {
             _poolQueue.async {
@@ -124,6 +126,8 @@ class EventsPool_v1 {
         }
         
         let objsToShip = self.cache.read(fromHead: self.dispatchLimit)
+        
+        willFlushCallback?(objsToShip)
         
         // get the objects to be shipped
         guard objsToShip.count > 0 else {
