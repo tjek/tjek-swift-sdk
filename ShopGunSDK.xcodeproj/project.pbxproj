@@ -383,6 +383,7 @@
 		AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+SessionLifecycleHandler.swift"; sourceTree = "<group>"; };
 		AED992842063008300671F48 /* CoreAPI_OfferRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAPI_OfferRequests.swift; sourceTree = "<group>"; };
 		AEDCC2EF2008BA14002644C2 /* CoreAPI_Dealer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAPI_Dealer.swift; sourceTree = "<group>"; };
+		AEEF0D86212D7F720004EFFC /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -526,6 +527,7 @@
 			isa = PBXGroup;
 			children = (
 				AE95FDC1204FEE710002C1CE /* ShopGunSDK.podspec */,
+				AEEF0D86212D7F720004EFFC /* Cartfile */,
 				AEC28B6F1FF6AC420007AAB8 /* ShopGunSDK.playground */,
 				AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */,
 				AEC28B591FF6ABFC0007AAB8 /* CoreAPI */,

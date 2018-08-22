@@ -3,6 +3,7 @@ ShopGunSDK
 
 [![Build Status](https://travis-ci.com/shopgun/shopgun-ios-sdk.svg?branch=master)](https://travis-ci.com/shopgun/shopgun-ios-sdk)
 [![Version](https://img.shields.io/cocoapods/v/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![Swift](http://img.shields.io/badge/swift-4.1-brightgreen.svg)](https://swift.org)
 
