@@ -1,7 +1,14 @@
 # Change Log
+
 ## v4.0.3
-- Added new `getPagedPublication` CoreAPI request.
-- Fix issue related to request parameter url-encoding
+- Added new `getPagedPublication(forDealers:...)` CoreAPI request.
+- Add dealerIds filter to `getOffers(matchingSearch:...)` CoreAPI request.
+- Add optional location filter to `getSuggestedPublications` CoreAPI request.
+- Add Carthage support.
+- Add `isAvailableInAllStores` property to PagedPublication.
+- Allow using private keychains with custom names.
+- Fix issue related to request parameter url-encoding.
+- Fix loading too-large page images.
 
 ## v4.0.2
 - Fix issue when building for Release (`GenericIdentifier` was not decoding correctly)

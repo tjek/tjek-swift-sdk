@@ -415,6 +415,7 @@
 		AEEE54112118983500528E3B /* Geohash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geohash.swift; sourceTree = "<group>"; };
 		AEEE541321189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTrackerContext+CoreLocation.swift"; sourceTree = "<group>"; };
 		AEEE54152118CFDE00528E3B /* EventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTests.swift; sourceTree = "<group>"; };
+		AEEF0D86212D7F720004EFFC /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -569,6 +570,7 @@
 			isa = PBXGroup;
 			children = (
 				AE95FDC1204FEE710002C1CE /* ShopGunSDK.podspec */,
+				AEEF0D86212D7F720004EFFC /* Cartfile */,
 				AEC28B6F1FF6AC420007AAB8 /* ShopGunSDK.playground */,
 				AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */,
 				AEC28B591FF6ABFC0007AAB8 /* CoreAPI */,

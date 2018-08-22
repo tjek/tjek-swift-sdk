@@ -1619,133 +1619,49 @@
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 14,
-      "symbol": "CoreAPI.PagedPublication",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 16,
-      "symbol": "CoreAPI.PagedPublication.Identifier",
-      "symbol_kind": "source.lang.swift.decl.typealias",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 18,
-      "symbol": "CoreAPI.PagedPublication.id",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 19,
-      "symbol": "CoreAPI.PagedPublication.label",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 20,
-      "symbol": "CoreAPI.PagedPublication.pageCount",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 21,
-      "symbol": "CoreAPI.PagedPublication.offerCount",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 22,
-      "symbol": "CoreAPI.PagedPublication.runDateRange",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 23,
-      "symbol": "CoreAPI.PagedPublication.aspectRatio",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 24,
-      "symbol": "CoreAPI.PagedPublication.branding",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 25,
-      "symbol": "CoreAPI.PagedPublication.frontPageImages",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 26,
-      "symbol": "CoreAPI.PagedPublication.dealerId",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 27,
-      "symbol": "CoreAPI.PagedPublication.storeId",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 89,
+      "line": 106,
       "symbol": "CoreAPI.PagedPublication.Page",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 90,
+      "line": 107,
       "symbol": "CoreAPI.PagedPublication.Page.index",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 91,
+      "line": 108,
       "symbol": "CoreAPI.PagedPublication.Page.title",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 92,
+      "line": 109,
       "symbol": "CoreAPI.PagedPublication.Page.aspectRatio",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 93,
+      "line": 110,
       "symbol": "CoreAPI.PagedPublication.Page.images",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 98,
+      "line": 115,
       "symbol": "CoreAPI.PagedPublication.Hotspot",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.inspiration_list/External/shopgun-ios-sdk/Sources/CoreAPI/Models/CoreAPI_PagedPublication.swift",
-      "line": 100,
+      "line": 117,
       "symbol": "CoreAPI.PagedPublication.Hotspot.offer",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
