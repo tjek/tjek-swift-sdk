@@ -30,8 +30,9 @@ class EventsTrackerTests: XCTestCase {
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             
             EventsTracker.legacyPoolCleaner(cacheFileName: legacyCacheFilename,
-                                            dispatchInterval: 1, baseURL: URL(string: "https://events.service-staging.shopgun.com")!, enabled: false)
-            { (shippedCount) in
+                                            dispatchInterval: 1,
+                                            baseURL: URL(string: "https://events.service-staging.shopgun.com")!,
+                                            enabled: false) { (shippedCount) in
                 XCTAssertEqual(shippedCount, 2)
                 // TODO: make sure the cache has been cleared
                 expectLegacyCacheEmptied.fulfill()

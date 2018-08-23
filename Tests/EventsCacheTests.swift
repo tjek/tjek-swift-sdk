@@ -21,6 +21,7 @@ class EventsCacheTests: XCTestCase {
     let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
     
     override func setUp() {
+        super.setUp()
         // clear the cache
         
         try? FileManager.default.removeItem(at: directory!.appendingPathComponent(fileName))
@@ -44,7 +45,7 @@ class EventsCacheTests: XCTestCase {
         XCTAssertEqual(readA.count, maxCnt)
         XCTAssertEqual(readA.map { $0.val }, ((200-maxCnt)..<200).map({ $0 }))
         
-        cacheA.write(toTail: (200..<400).map { TestEvent(cacheId: "\($0)", val: $0) })        
+        cacheA.write(toTail: (200..<400).map { TestEvent(cacheId: "\($0)", val: $0) })
         XCTAssertEqual(cacheA.objectCount, maxCnt)
         
         let readB = cacheA.read(fromHead: 500)

@@ -45,7 +45,6 @@ class EventTests: XCTestCase {
         XCTAssertEqual(fullEvent.payload, payload)
     }
 
-    
     func testPayload() {
         // 1. given
         var baseEvent = Event(type: 999)
@@ -115,7 +114,7 @@ class EventTests: XCTestCase {
         XCTAssertThrowsError(try JSONDecoder().decode(Event.self, from: emptyJson.data(using: .utf8)!))
         XCTAssertThrowsError(try JSONDecoder().decode(Event.self, from: corruptTypeJson.data(using: .utf8)!))
         XCTAssertNoThrow(try JSONDecoder().decode(Event.self, from: baseJson.data(using: .utf8)!))
-        let baseEvent: Event = try! JSONDecoder().decode(Event.self, from: baseJson.data(using: .utf8)!)
+        let baseEvent: Event = try JSONDecoder().decode(Event.self, from: baseJson.data(using: .utf8)!)
         
         // 3. then
         XCTAssertEqual(baseEvent.id.rawValue, id)
@@ -137,8 +136,8 @@ class EventTests: XCTestCase {
         
         XCTAssertNoThrow(try JSONEncoder().encode(event))
         
-        let jsonData = try! JSONEncoder().encode(event)
-        let decodedEvent = try! JSONDecoder().decode(Event.self, from: jsonData)
+        let jsonData = try JSONEncoder().encode(event)
+        let decodedEvent = try JSONDecoder().decode(Event.self, from: jsonData)
         
         // 3. then
         XCTAssertEqual(decodedEvent, event)

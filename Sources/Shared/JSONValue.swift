@@ -115,7 +115,7 @@ extension JSONValue: CustomDebugStringConvertible {
         default:
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted]
-            return try! String(data: encoder.encode(self), encoding: .utf8)!
+            return (try? String(data: encoder.encode(self), encoding: .utf8)!) ?? "<Invalid JSON>"
         }
     }
 }

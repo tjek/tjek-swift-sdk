@@ -94,12 +94,12 @@ struct Geohash {
         }
         .reduce(into: [Character: String]()) {
             $0[$1.0] = $1.1
-    }
+        }
     
     private static let charmap = bitmap
         .reduce(into: [String: Character]()) {
             $0[$1.1] = $1.0
-    }
+        }
 }
 
 extension Geohash {

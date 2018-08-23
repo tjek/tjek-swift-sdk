@@ -103,7 +103,7 @@ struct EventsShipper_v2 {
         task.resume()
     }
     
-    static func prepareRequestData(events: [ShippableEvent]) -> (Data?, [String: EventShipperResult])  {
+    static func prepareRequestData(events: [ShippableEvent]) -> (Data?, [String: EventShipperResult]) {
         // TODO: shipping context
         //        "application": {
         //            "id": "AAAhWQ==",                    // id is the same as you use in your events.
@@ -121,7 +121,7 @@ struct EventsShipper_v2 {
         
         // convert the objects to json
         guard let jsonData = try? JSONEncoder().encode(jsonDict) else {
-            return (nil, events.reduce(into: [:]) { $0[$1.id] = .error } )
+            return (nil, events.reduce(into: [:]) { $0[$1.id] = .error })
         }
         
         return (jsonData, [:])

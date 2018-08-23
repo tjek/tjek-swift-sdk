@@ -132,3 +132,20 @@ extension Event {
             .addingViewToken(content: query, tokenizer: tokenizer)
     }
 }
+
+extension Event {
+    
+    public static func offerOpened(_ offerId: CoreAPI.Offer.Identifier) -> Event {
+        return offerOpened(
+            offerId,
+            timestamp: Date()
+        )
+    }
+    
+    public static func searched(
+        for query: String,
+        languageCode: String?
+        ) -> Event {
+        return searched(for: query, languageCode: languageCode, timestamp: Date())
+    }
+}

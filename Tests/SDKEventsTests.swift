@@ -16,6 +16,8 @@ class SDKEventsTests: XCTestCase {
     fileprivate let dataStore = MockSaltDataStore()
     
     override func setUp() {
+        super.setUp()
+        
         self.tokenizer = UniqueViewTokenizer(salt: "salty")!
         
         dataStore.salt = "myhash"
@@ -70,7 +72,6 @@ class SDKEventsTests: XCTestCase {
                        ["pp.id": .string("pub1"),
                         "ppp.n": .int(1),
                         "vt": .string("xX+BAiu1Nmo=")])
-
 
         let nowTimestamp = Date().eventTimestamp
         let defaultEvent = Event.pagedPublicationPageOpened("ølØl5Banana", pageNumber: 9999)

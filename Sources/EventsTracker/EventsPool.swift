@@ -21,8 +21,8 @@ class EventsPool {
     init(dispatchInterval: TimeInterval,
          dispatchLimit: Int,
          shippingHandler: @escaping EventShippingHandler<ShippableEvent>,
-         cache: EventsCache<ShippableEvent>)
-    {
+         cache: EventsCache<ShippableEvent>
+        ) {
         
         self.dispatchInterval = dispatchInterval
         self.dispatchLimit = dispatchLimit

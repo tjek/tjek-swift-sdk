@@ -27,7 +27,12 @@ public final class EventsTracker {
     /// Modifying the context will only change events that are tracked in the future
     public var context: Context = Context()
 
-    internal let viewTokenizer: UniqueViewTokenizer
+    internal var viewTokenizer: UniqueViewTokenizer
+    
+    /// This will generate a new tokenizer with a new salt. Calling this will mean that any ViewToken sent with future events will not be connected to any historically shipped events.
+    public func resetViewTokenizerSalt() {
+        self.viewTokenizer = UniqueViewTokenizer.reload(from: dataStore)
+    }
     
     internal init(settings: Settings.EventsTracker, dataStore: ShopGunSDKDataStore?) {
         self.settings = settings
@@ -117,7 +122,7 @@ extension EventsTracker {
             .addingAppIdentifier(self.settings.appId)
             .addingContext(self.context)
         
-        Logger.log("Event Tracked: '\(event)'", level: .debug, source: .EventsTracker)
+        Logger.log("Event Tracked: '\(eventToTrack)'", level: .debug, source: .EventsTracker)
         
         // push the event to the cached pool
         if let shippableEvent = ShippableEvent(event: eventToTrack) {

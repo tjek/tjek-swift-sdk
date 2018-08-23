@@ -15,6 +15,7 @@ class EventShipper_v2Tests: XCTestCase {
     var shipper: EventsShipper_v2!
     
     override func setUp() {
+        super.setUp()
         shipper = EventsShipper_v2(baseURL: URL(string: "https://events.service-staging.shopgun.com")!, dryRun: false)
     }
 

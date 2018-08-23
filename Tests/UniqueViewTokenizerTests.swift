@@ -34,14 +34,12 @@ class UniqueViewTokenizerTests: XCTestCase {
         XCTAssertEqual(UniqueViewTokenizer.load(from: dataStore).salt, "foo")
         XCTAssertEqual(UniqueViewTokenizer.load(from: dataStore).salt, "foo")
         
-        
         // dataStore with empty string should generate new salt
         dataStore.salt = ""
         let emptySaltTokenizerA = UniqueViewTokenizer.load(from: dataStore)
         let emptySaltTokenizerB = UniqueViewTokenizer.load(from: dataStore)
         XCTAssertFalse(emptySaltTokenizerA.salt.isEmpty)
         XCTAssertEqual(emptySaltTokenizerA.salt, emptySaltTokenizerB.salt)
-        
         
         // load from empty datastore leads to new non-empty token, and that token persists to future loads
         dataStore.salt = nil
