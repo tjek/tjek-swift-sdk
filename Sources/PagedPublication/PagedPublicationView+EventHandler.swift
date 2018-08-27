@@ -73,7 +73,7 @@ extension PagedPublicationView {
 
         func didDisappear() {
             guard hasAppeared == true else { return }
-            Logger.log("DidDisappear", level: .debug, source: .EventsTracker)
+
             // trigger the disappear events without clearing the indexes
             self.loadedSpreadPageIndexes.forEach {
                 eventHandler.didCloseLoadedPublicationPage(publicationId, pageIndex: $0)
@@ -89,12 +89,10 @@ extension PagedPublicationView {
                  return
             }
             
-            Logger.log("Page Did Load (\(pageIndex))", level: .debug, source: .EventsTracker)
             loadedSpreadPageIndexes.insert(pageIndex)
         }
         
         func spreadDidAppear(pageIndexes: IndexSet, loadedIndexes: IndexSet) {
-            Logger.log("Spread Did Appear (\(pageIndexes) loaded: \(loadedIndexes))", level: .debug, source: .EventsTracker)
             
             // Figure out which loaded pageIndexes have been closed
             let closedLoadedPageIndexes = loadedSpreadPageIndexes.subtracting(pageIndexes)
@@ -108,8 +106,6 @@ extension PagedPublicationView {
         }
         
         func spreadDidDisappear() {
-            Logger.log("Spread Did Disappear (\(self.currentSpreadPageIndexes) loaded: \(self.loadedSpreadPageIndexes))", level: .debug, source: .EventsTracker)
-            
             self.loadedSpreadPageIndexes.forEach {
                 eventHandler.didCloseLoadedPublicationPage(publicationId, pageIndex: $0)
             }
