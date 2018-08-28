@@ -41,31 +41,84 @@ enum EventShipperResult {
     case retry
 }
 
-struct EventsShipper_v2 {
+struct EventsShipper {
+    
+    /// The `ApplicationContext` is sent whenever shipping events, at the time that the events are shipped. It is used by the server for debug purposes.
+    struct ApplicationContext: Encodable {
+        /// `id` is the same as in the events.
+        /// This is used to identify the application for debugging purposes,
+        /// even if all events in the events list are invalid.
+        var id: Settings.EventsTracker.AppIdentifier
+        
+        /// An integer describing your applications build number.
+        /// New versions of the build should have a build number strictly higher than versions that came before it.
+        var build: Int?
+        
+        /// A friendly label for the current version of your application.
+        /// It should indicate what application we are dealing with.
+        /// It can duplicate information also contained in the build number, if this is helpful for debugging.
+        var name: String?
+        
+        init(id: Settings.EventsTracker.AppIdentifier, buildNum: Int? = nil, name: String? = nil) {
+            self.id = id
+            
+            let appBundle = Bundle.main
+            self.build = buildNum ?? {
+                guard let buildStr = appBundle.object(forInfoDictionaryKey: "CFBundleVersion") as? String else { return nil }
+                return Int(buildStr)
+                }()
+            
+            self.name = name ?? {
+                var appName = ""
+                
+                if let appUA = appBundle.userAgent {
+                    appName += appUA
+                }
+                
+                let sdkBundle = Bundle(for: EventsTracker.self)
+                if let sdkUA = sdkBundle.userAgent {
+                    if appName.isEmpty {
+                        appName = sdkUA
+                    } else {
+                        appName += " (\(sdkUA))"
+                    }
+                }
+                
+                if appName.isEmpty {
+                    return nil
+                } else {
+                    return appName
+                }
+                }()
+        }
+    }
     
     let baseURL: URL
     let endpoint: String = "sync"
     let dryRun: Bool
     let networkSession: URLSession
     let maxAge: TimeInterval
+    let appContext: ApplicationContext
     
-    init(baseURL: URL, dryRun: Bool = false, maxAge: TimeInterval = 60*60*36, networkSession: URLSession = URLSession(configuration: URLSessionConfiguration.default)) {
+    init(baseURL: URL, dryRun: Bool = false, maxAge: TimeInterval = 60*60*36, networkSession: URLSession = URLSession(configuration: URLSessionConfiguration.default), appContext: ApplicationContext) {
         self.baseURL = baseURL
         self.dryRun = dryRun
         self.maxAge = maxAge
         self.networkSession = networkSession
+        self.appContext = appContext
     }
     
     func ship(events: [ShippableEvent], completion: @escaping ([String: EventShipperResult]) -> Void) {
-        EventsShipper_v2.ship(events: events,
-                              url: self.baseURL.appendingPathComponent(self.endpoint),
-                              maxAge: self.maxAge,
-                              networkSession: self.networkSession,
-                              dryRun: self.dryRun,
-                              completion: completion)
+        EventsShipper.ship(events: events,
+                           url: self.baseURL.appendingPathComponent(self.endpoint),
+                           maxAge: self.maxAge,
+                           networkSession: self.networkSession,
+                           appContext: self.appContext,
+                           dryRun: self.dryRun,
+                           completion: completion)
     }
     
-    static func ship(events: [ShippableEvent], url: URL, maxAge: TimeInterval, networkSession: URLSession, dryRun: Bool, completion: @escaping ([String: EventShipperResult]) -> Void) {
+    static func ship(events: [ShippableEvent], url: URL, maxAge: TimeInterval, networkSession: URLSession, appContext: ApplicationContext, dryRun: Bool, completion: @escaping ([String: EventShipperResult]) -> Void) {
         
         //eject if in dryRun mode
         guard dryRun == false else {
@@ -77,7 +130,7 @@ struct EventsShipper_v2 {
             return
         }
         
-        let (data, initialResults) = prepareRequestData(events: events)
+        let (data, initialResults) = prepareRequestData(events: events, appContext: appContext)
         
         guard let jsonData = data else {
             completion(initialResults)
@@ -103,21 +156,22 @@ struct EventsShipper_v2 {
         task.resume()
     }
     
-    static func prepareRequestData(events: [ShippableEvent]) -> (Data?, [String: EventShipperResult]) {
-        // TODO: shipping context
-        //        "application": {
-        //            "id": "AAAhWQ==",                    // id is the same as you use in your events.
-        //            // this is used to identify the application for debugging purposes,
-        //            // even if all events in the events list are invalid.
-        //            "build": 2001003180,                 // an integer describing your applications build number.
-        //            // new versions of the build should have a build number strictly higher than versions that came before it.
-        //            "name": "ShopGun iOS (SDK 2.4.1)"   // A friendly label for the current version of your application.
-        //            // It should indicate what application we are dealing with.
-        //            // It can duplicate information also contained in the build number,
-        //            // if this is helpful for debugging. like, "Bilka iOS (sdk 2.5)"
-        //        },
+    static func prepareRequestData(events: [ShippableEvent], appContext: ApplicationContext) -> (Data?, [String: EventShipperResult]) {
+        let jsonAppContext: [String: JSONValue] = {
+            var ctx: [String: JSONValue] = [:]
+            ctx["id"] = .string(appContext.id.rawValue)
+            if let buildNum = appContext.build {
+                ctx["build"] = .int(buildNum)
+            }
+            if let name = appContext.name {
+                ctx["name"] = .string(name)
+            }
+            return ctx
+        }()
+        
         // place array of dictionaries under 'events' key
-        let jsonDict: [String: [JSONValue]] = ["events": events.map { $0.object }]
+        let jsonDict: [String: JSONValue] = ["events": .array(events.map { $0.object }),
+                                             "application": .object(jsonAppContext)]
         
         // convert the objects to json
         guard let jsonData = try? JSONEncoder().encode(jsonDict) else {

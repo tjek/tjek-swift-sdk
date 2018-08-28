@@ -47,8 +47,6 @@ class EventsPool {
     
     /// Add an object to the pool
     func push(event: ShippableEvent) {
-        Logger.log("[Pool] Pushing \(event.id)", level: .important, source: .EventsTracker)
-
         poolQueue.async {
             // add the object to the tail of the cache
             self.cache.write(toTail: [event])
@@ -100,9 +98,6 @@ class EventsPool {
         
         // pass the objects to the shipper (on a bg queue)
         DispatchQueue.global(qos: .background).async { [weak self] in
-            
-            Logger.log("[Pool] Shipping \(eventsToShip.count) events", level: .important, source: .EventsTracker)
-            
             self?.shippingHandler(eventsToShip) { [weak self] results in
                 
                 // perform completion in pool's queue (this will block events arriving until completed)
@@ -115,8 +110,6 @@ class EventsPool {
     
     /// Handle the results recieved from the shipper. This will remove the successful & failed results from the cache, update the intervalDelay, and restart the timer
     private func handleShipperResults(_ results: [String: EventShipperResult]) {
-        
-        Logger.log("[Pool] Handling Results \(results)", level: .important, source: .EventsTracker)
         
         let idsToRemove: [String] = results.reduce([]) {
             switch $1.value {

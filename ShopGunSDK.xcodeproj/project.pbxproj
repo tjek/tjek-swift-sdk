@@ -31,8 +31,7 @@
 		AE1027BB2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1027BA2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift */; };
 		AE2008D5200CE86F004363BE /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2008D4200CE86F004363BE /* UserAgent.swift */; };
 		AE22AAFA20527DFA008601EB /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE22AAF920527DFA008601EB /* Settings.swift */; };
-		AE38B458211990C7008C1EA8 /* EventShipper_v2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE38B457211990C7008C1EA8 /* EventShipper_v2Tests.swift */; };
-		AE38B46A2119EBDB008C1EA8 /* EventsShipper_v2.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE38B4692119EBDB008C1EA8 /* EventsShipper_v2.swift */; };
+		AE38B46A2119EBDB008C1EA8 /* EventsShipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE38B4692119EBDB008C1EA8 /* EventsShipper.swift */; };
 		AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3227204030AD001C75C9 /* Error+Extensions.swift */; };
 		AE3B323C2044136C001C75C9 /* PagedPublicationView+ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B323B2044136C001C75C9 /* PagedPublicationView+ErrorView.swift */; };
 		AE3B3242204422D5001C75C9 /* Bundle+ShopGunSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */; };
@@ -320,8 +319,7 @@
 		AE1027BA2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+LegacyPoolCleaner.swift"; sourceTree = "<group>"; };
 		AE2008D4200CE86F004363BE /* UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgent.swift; sourceTree = "<group>"; };
 		AE22AAF920527DFA008601EB /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
-		AE38B457211990C7008C1EA8 /* EventShipper_v2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventShipper_v2Tests.swift; sourceTree = "<group>"; };
-		AE38B4692119EBDB008C1EA8 /* EventsShipper_v2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsShipper_v2.swift; sourceTree = "<group>"; };
+		AE38B4692119EBDB008C1EA8 /* EventsShipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsShipper.swift; sourceTree = "<group>"; };
 		AE3B3227204030AD001C75C9 /* Error+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extensions.swift"; sourceTree = "<group>"; };
 		AE3B323B2044136C001C75C9 /* PagedPublicationView+ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+ErrorView.swift"; sourceTree = "<group>"; };
 		AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+ShopGunSDK.swift"; sourceTree = "<group>"; };
@@ -605,7 +603,7 @@
 				AE3B324D204559A5001C75C9 /* EventsTracker+Notifications.swift */,
 				AE1027B92126F5B500104921 /* LegacyEventsPool */,
 				AE3B325320455D44001C75C9 /* EventsPool.swift */,
-				AE38B4692119EBDB008C1EA8 /* EventsShipper_v2.swift */,
+				AE38B4692119EBDB008C1EA8 /* EventsShipper.swift */,
 				AE0D1C9D2122D8F2004A133D /* EventsCache.swift */,
 				AE3B325720455FD1001C75C9 /* EventsTracker+Utils.swift */,
 				AE448F9A21147CF6000E5A28 /* Event.swift */,
@@ -755,7 +753,6 @@
 			isa = PBXGroup;
 			children = (
 				AEEE54152118CFDE00528E3B /* EventTests.swift */,
-				AE38B457211990C7008C1EA8 /* EventShipper_v2Tests.swift */,
 				AEBA9C21211C2C1000516744 /* UniqueViewTokenizerTests.swift */,
 				AEBA9C26211CB07E00516744 /* SDKEventsTests.swift */,
 				AEBA9C24211C623C00516744 /* GeohashTests.swift */,
@@ -1063,7 +1060,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE0D1CB02122F501004A133D /* EventsPool_v1.swift in Sources */,
-				AE38B46A2119EBDB008C1EA8 /* EventsShipper_v2.swift in Sources */,
+				AE38B46A2119EBDB008C1EA8 /* EventsShipper.swift in Sources */,
 				AEC28B671FF6ABFC0007AAB8 /* CoreAPI.swift in Sources */,
 				AE3B325820455FD1001C75C9 /* EventsTracker+Utils.swift in Sources */,
 				AE8E45582010A38C0042CCE2 /* CoreAPI_Offer.swift in Sources */,
@@ -1139,7 +1136,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE38B458211990C7008C1EA8 /* EventShipper_v2Tests.swift in Sources */,
 				AE0D1CB321230297004A133D /* EventsCacheTests.swift in Sources */,
 				AE1027A621240D8200104921 /* EventsPoolTests.swift in Sources */,
 				AEBA9C27211CB07E00516744 /* SDKEventsTests.swift in Sources */,

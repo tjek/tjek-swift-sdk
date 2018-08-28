@@ -38,7 +38,7 @@ class PagedPublicationLifecycleEventTrackerTests: XCTestCase {
         let expectPage3 = expectation(description: "Did Close Page 3")
         eventHandler.didCloseLoadedPubPage = { pubId, pageIndex in
             XCTAssert(pubId.rawValue == "abc")
-            XCTAssert([2,3].contains(pageIndex))
+            XCTAssert([2, 3].contains(pageIndex))
             if pageIndex == 2 {
                 expectPage2.fulfill()
             } else if pageIndex == 3 {
@@ -47,7 +47,7 @@ class PagedPublicationLifecycleEventTrackerTests: XCTestCase {
         }
         
         tracker.pageDidLoad(pageIndex: 1)
-        tracker.spreadDidAppear(pageIndexes: IndexSet([1,2,3]), loadedIndexes: IndexSet([2]))
+        tracker.spreadDidAppear(pageIndexes: IndexSet([1, 2, 3]), loadedIndexes: IndexSet([2]))
         tracker.pageDidLoad(pageIndex: 3)
         tracker.pageDidLoad(pageIndex: 4)
         tracker.spreadDidDisappear()

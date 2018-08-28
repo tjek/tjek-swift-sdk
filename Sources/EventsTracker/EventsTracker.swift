@@ -39,7 +39,7 @@ public final class EventsTracker {
         self.dataStore = dataStore
         self.viewTokenizer = UniqueViewTokenizer.load(from: dataStore)
 
-        let eventsShipper = EventsShipper_v2(baseURL: settings.baseURL, dryRun: settings.enabled == false)
+        let eventsShipper = EventsShipper(baseURL: settings.baseURL, dryRun: settings.enabled == false, appContext: .init(id: settings.appId))
         let eventsCache = EventsCache<ShippableEvent>(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.v2.plist")
         
         self.pool = EventsPool(dispatchInterval: settings.dispatchInterval,
@@ -121,8 +121,6 @@ extension EventsTracker {
         let eventToTrack = event
             .addingAppIdentifier(self.settings.appId)
             .addingContext(self.context)
-        
-        Logger.log("Event Tracked: '\(eventToTrack)'", level: .debug, source: .EventsTracker)
         
         // push the event to the cached pool
         if let shippableEvent = ShippableEvent(event: eventToTrack) {
