@@ -11,7 +11,10 @@ import Foundation
 
 extension Event {
     
-    private enum ReservedSDKType: Int {
+    /**
+     These are the set of reserved event types that the knows how to handle.
+     */
+    public enum EventType: Int {
         case dummy                          = 0
         case pagedPublicationOpened         = 1
         case pagedPublicationPageOpened     = 2
@@ -26,7 +29,7 @@ extension Event {
      */
     internal static func dummy(timestamp: Date = Date()) -> Event {
         return Event(timestamp: timestamp,
-                     type: ReservedSDKType.dummy.rawValue)
+                     type: EventType.dummy.rawValue)
     }
     
     /**
@@ -44,7 +47,7 @@ extension Event {
         let payload: PayloadType = ["pp.id": .string(publicationId.rawValue)]
         
         return Event(timestamp: timestamp,
-                     type: ReservedSDKType.pagedPublicationOpened.rawValue,
+                     type: EventType.pagedPublicationOpened.rawValue,
                      payload: payload)
             .addingViewToken(content: publicationId.rawValue, tokenizer: tokenizer)
     }
@@ -73,7 +76,7 @@ extension Event {
         }()
         
         return Event(timestamp: timestamp,
-                     type: ReservedSDKType.pagedPublicationPageOpened.rawValue,
+                     type: EventType.pagedPublicationPageOpened.rawValue,
                      payload: payload)
             .addingViewToken(content: viewTokenContent, tokenizer: tokenizer)
     }
@@ -93,7 +96,7 @@ extension Event {
         let payload: PayloadType = ["of.id": .string(offerId.rawValue)]
         
         return Event(timestamp: timestamp,
-                     type: ReservedSDKType.offerOpened.rawValue,
+                     type: EventType.offerOpened.rawValue,
                      payload: payload)
             .addingViewToken(content: offerId.rawValue, tokenizer: tokenizer)
     }
@@ -104,7 +107,7 @@ extension Event {
      */
     internal static func clientSessionOpened(timestamp: Date = Date()) -> Event {
         return Event(timestamp: timestamp,
-                     type: ReservedSDKType.clientSessionOpened.rawValue)
+                     type: EventType.clientSessionOpened.rawValue)
     }
     
     /**
@@ -127,7 +130,7 @@ extension Event {
         }
         
         return Event(timestamp: timestamp,
-                     type: ReservedSDKType.searched.rawValue,
+                     type: EventType.searched.rawValue,
                      payload: payload)
             .addingViewToken(content: query, tokenizer: tokenizer)
     }

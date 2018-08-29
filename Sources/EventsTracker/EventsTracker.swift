@@ -142,7 +142,6 @@ extension EventsTracker {
 // MARK: - Tracking methods
 
 extension EventsTracker {
-    
     public func trackEvent(_ event: Event) {
         
         // TODO: Do on shared queue?
@@ -153,13 +152,38 @@ extension EventsTracker {
             .addingContext(self.context)
         
         // push the event to the cached pool
-        if let shippableEvent = ShippableEvent(event: eventToTrack) {
-            self.pool.push(event: shippableEvent)
+        guard let shippableEvent = ShippableEvent(event: eventToTrack) else { return }
+        
+        self.pool.push(event: shippableEvent)
+        
+        let eventInfo = [EventsTracker.trackedEventNotificationKey: eventToTrack]
+        
+        // send a notification
+        NotificationCenter.default.post(name: EventsTracker.didTrackEventNotification,
+                                        object: self,
+                                        userInfo: eventInfo)
+    }
+}
+
+// MARK: - Tracking Notifications
+
+extension EventsTracker {
+    
+    /// The NotificationName for notifications posted when events are tracked. The Notification's userInfo contains the event. See `extractTrackedEvent(from:)` for an easy way to get the event from the Notification.
+    public static let didTrackEventNotification = Notification.Name(rawValue: "ShopGunSDK.EventsTracker.eventTracked")
+    
+    /// The key to access the event in the `didTrackEventNotification` notification's userInfo dictionary.
+    fileprivate static let trackedEventNotificationKey = "trackedEvent"
+    
+    /**
+     Given a Notification triggered by the `didTrackEventNotification` with the name, this will look in the userInfo and return the `Event` object, if it exists. The result will be `nil` if the Notification is not of the correct kind, or userInfo doesnt contain an event.
+     - parameter notification: The Notification to extract the `Event` from.
+     */
+    public static func extractTrackedEvent(from notification: Notification) -> Event? {
+        guard notification.name == EventsTracker.didTrackEventNotification else {
+            return nil
         }
         
-        // send a notification for that specific event, a generic one
-        // TODO:
-//        NotificationCenter.default.post(name: .eventTracked(type: event.type), object: self, userInfo: eventInfo)
-//        NotificationCenter.default.post(name: .eventTracked(), object: self, userInfo: eventInfo)
+        return notification.userInfo?[EventsTracker.trackedEventNotificationKey] as? Event
     }
 }
