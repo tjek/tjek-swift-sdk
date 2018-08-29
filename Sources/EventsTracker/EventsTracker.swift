@@ -12,12 +12,39 @@ import Foundation
 public final class EventsTracker {
     
     public struct Context {
+        /**
+         The `ISO 3166-1 alpha-2` encoded countryCode string. It is up to you to collect and validate this info from the user.
+         */
         public var countryCode: String?
+        
+        /**
+         The location information of the app's user. Once set, this will be sent with all future tracked events.
+         - A geohash of the location (this will have an accuracy no-greater than ±20km)
+         - The timestamp of when that location info was collected.
+         
+         It is up to you to collect this info from the user. See the `updateLocation(latitude:longitude:timestamp:)` method.
+         */
         public private(set) var location: (geohash: String, timestamp: Date)? = nil
         
+        /**
+         Updates the `location` property, using a lat/lng/timestamp to generate the geohash (to an accuracy of ±20km). This geohash will be included in all _future_ tracked events, until `clearLocation()` is called.
+         This does not modify the `countryCode`.
+         - Note: It is up to the user of the SDK to decide how this location information is collected. We recommend, however, that only GPS-sourced location data is used.
+         - parameter latitude: The latitide to use when generating the `location`'s geohash.
+         - parameter longitude: The longitude to use when generating the `location`'s geohash.
+         - parameter timestamp: The date that the lat/lng pair was generated (eg. when the user was discovered to be at that location)
+         */
         public mutating func updateLocation(latitude: Double, longitude: Double, timestamp: Date) {
             let hash = Geohash.encode(latitude: latitude, longitude: longitude, length: 4) // ±20km
             self.location = (hash, timestamp)
+        }
+        
+        /**
+         After this is called, the `location` geohash/timestamp will be set to `nil` and no longer sent with future tracked events.
+         This does not modify the `countryCode`.
+        */
+        public mutating func clearLocation() {
+            self.location = nil
         }
     }
     
@@ -51,11 +78,14 @@ public final class EventsTracker {
             Logger.log("LegacyEventsPool cleaned (\(cleanedEvents) events)", level: .debug, source: .EventsTracker)
         }
 
-        // Assign the callback for the session handler.
-        // Note that the eventy must be triggered manually first time.
-        self.trackEvent(Event.clientSessionOpened())
-        self.sessionLifecycleHandler.didStartNewSession = { [weak self] in
-            self?.trackEvent(Event.clientSessionOpened())
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            // Assign the callback for the session handler.
+            // Note that the events must be triggered manually first time.
+            // We delay by a moment to make sure that context can be initialized for the very first time.
+            self.trackEvent(Event.clientSessionOpened())
+            self.sessionLifecycleHandler.didStartNewSession = { [weak self] in
+                self?.trackEvent(Event.clientSessionOpened())
+            }
         }
     }
     private init() { fatalError("You must provide settings when creating an EventsTracker") }
