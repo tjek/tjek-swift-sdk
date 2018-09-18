@@ -15,7 +15,6 @@ extension Event {
         case appId                  = "_a" // NOTE: AppId is a semi-special case. For shipping events it is required, but not for constructing events.
         case locationHash           = "l.h"
         case locationHashTimestamp  = "l.ht"
-        case locationCountryCode    = "l.c"
         case viewToken              = "vt"
     }
     
@@ -29,12 +28,6 @@ extension Event {
         var event = self
         event.mergePayload([CommonPayloadKeys.locationHash.rawValue: .string(geohash),
                             CommonPayloadKeys.locationHashTimestamp.rawValue: .int(timestamp.eventTimestamp)])
-        return event
-    }
-    
-    func addingCountryCode(_ countryCode: String) -> Event {
-        var event = self
-        event.mergePayload([CommonPayloadKeys.locationCountryCode.rawValue: .string(countryCode)])
         return event
     }
     

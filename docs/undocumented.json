@@ -2116,28 +2116,28 @@
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/EventsTracker/EventsTracker.swift",
-      "line": 51,
+      "line": 44,
       "symbol": "EventsTracker.settings",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/EventsTracker/EventsTracker.swift",
-      "line": 105,
+      "line": 98,
       "symbol": "EventsTracker.shared",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/EventsTracker/EventsTracker.swift",
-      "line": 112,
+      "line": 105,
       "symbol": "EventsTracker.isConfigured",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/EventsTracker/EventsTracker.swift",
-      "line": 145,
+      "line": 138,
       "symbol": "EventsTracker.trackEvent(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -3047,28 +3047,28 @@
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/KeychainDataStore.swift",
-      "line": 62,
+      "line": 60,
       "symbol": "KeychainDataStore.set(value:for:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/KeychainDataStore.swift",
-      "line": 70,
+      "line": 68,
       "symbol": "KeychainDataStore.get(for:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/KeychainDataStore.swift",
-      "line": 81,
+      "line": 79,
       "symbol": "KeychainDataStore.shared",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/KeychainDataStore.swift",
-      "line": 89,
+      "line": 87,
       "symbol": "KeychainDataStore.isConfigured",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
