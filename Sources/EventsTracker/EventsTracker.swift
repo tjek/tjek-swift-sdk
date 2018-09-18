@@ -158,6 +158,8 @@ extension EventsTracker {
         
         let eventInfo = [EventsTracker.trackedEventNotificationKey: eventToTrack]
         
+        Logger.log("📩 Event Tracked: \(shippableEvent)", level: .debug, source: .EventsTracker)
+        
         // send a notification
         NotificationCenter.default.post(name: EventsTracker.didTrackEventNotification,
                                         object: self,
