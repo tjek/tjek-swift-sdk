@@ -21,31 +21,31 @@ public enum JSONValue: Equatable {
 
 extension JSONValue {
     
-    var stringValue: String? {
+    public var stringValue: String? {
         guard case .string(let value) = self else { return nil }
         return value
     }
-    var intValue: Int? {
+    public var intValue: Int? {
         guard case .int(let value) = self else { return nil }
         return value
     }
-    var numberValue: Float? {
+    public var numberValue: Float? {
         guard case .number(let value) = self else { return nil }
         return value
     }
-    var objectValue: [String: JSONValue]? {
+    public var objectValue: [String: JSONValue]? {
         guard case .object(let value) = self else { return nil }
         return value
     }
-    var arrayValue: [JSONValue]? {
+    public var arrayValue: [JSONValue]? {
         guard case .array(let value) = self else { return nil }
         return value
     }
-    var boolValue: Bool? {
+    public var boolValue: Bool? {
         guard case .bool(let value) = self else { return nil }
         return value
     }
-    var isNullValue: Bool {
+    public var isNullValue: Bool {
         guard case .null = self else { return false }
         return true
     }
