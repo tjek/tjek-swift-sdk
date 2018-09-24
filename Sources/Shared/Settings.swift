@@ -160,26 +160,27 @@ extension Settings {
      The settings for the EventsTracker component.
      */
     public struct EventsTracker: Decodable {
-        public var trackId: String
+        public enum AppIdentiferType {}
+        public typealias AppIdentifier = GenericIdentifier<AppIdentiferType>
+        
+        public var appId: AppIdentifier
         public var baseURL: URL
         public var dispatchInterval: TimeInterval
         public var dispatchLimit: Int
         public var enabled: Bool
-        public var includeLocation: Bool
         
-        public init(trackId: String, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, enabled: Bool = true, includeLocation: Bool = false) {
-            self.trackId = trackId
+        public init(appId: AppIdentifier, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, enabled: Bool = true) {
+            self.appId = appId
             self.baseURL = baseURL
             self.dispatchInterval = dispatchInterval
             self.dispatchLimit = dispatchLimit
             self.enabled = enabled
-            self.includeLocation = includeLocation
         }
         
         // MARK: Decodable
         
         enum CodingKeys: String, CodingKey {
-            case trackId
+            case appId
             case baseURL
             case dispatchInterval
             case dispatchLimit
@@ -190,12 +191,11 @@ extension Settings {
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             
-            let trackId = try container.decode(String.self, forKey: .trackId)
+            let appId = try container.decode(AppIdentifier.self, forKey: .appId)
             
-            self.init(trackId: trackId)
+            self.init(appId: appId)
             
             if let baseURLStr = try? container.decode(String.self, forKey: .baseURL), let baseURL = URL(string: baseURLStr) {
-                
                 self.baseURL = baseURL
             }
             
@@ -209,10 +209,6 @@ extension Settings {
             
             if let enabled = try? container.decode(Bool.self, forKey: .enabled) {
                 self.enabled = enabled
-            }
-            
-            if let includeLocation = try? container.decode(Bool.self, forKey: .includeLocation) {
-                self.includeLocation = includeLocation
             }
         }
     }

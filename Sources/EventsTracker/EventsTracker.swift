@@ -10,80 +10,84 @@
 import Foundation
 
 public final class EventsTracker {
-    public enum ClientIdentifierType {}
-    public typealias ClientIdentifier = GenericIdentifier<ClientIdentifierType>
-    public typealias EventType = String
-    public typealias EventProperties = [String: AnyObject]
+    
+    public struct Context {
+        /**
+         The location information of the app's user. Once set, this will be sent with all future tracked events.
+         - A geohash of the location (this will have an accuracy no-greater than ±20km)
+         - The timestamp of when that location info was collected.
+         
+         It is up to you to collect this info from the user. See the `updateLocation(latitude:longitude:timestamp:)` method.
+         */
+        public private(set) var location: (geohash: String, timestamp: Date)? = nil
+        
+        /**
+         Updates the `location` property, using a lat/lng/timestamp to generate the geohash (to an accuracy of ±20km). This geohash will be included in all _future_ tracked events, until `clearLocation()` is called.
+         - Note: It is up to the user of the SDK to decide how this location information is collected. We recommend, however, that only GPS-sourced location data is used.
+         - parameter latitude: The latitide to use when generating the `location`'s geohash.
+         - parameter longitude: The longitude to use when generating the `location`'s geohash.
+         - parameter timestamp: The date that the lat/lng pair was generated (eg. when the user was discovered to be at that location)
+         */
+        public mutating func updateLocation(latitude: Double, longitude: Double, timestamp: Date) {
+            let hash = Geohash.encode(latitude: latitude, longitude: longitude, length: 4) // ±20km
+            self.location = (hash, timestamp)
+        }
+        
+        /**
+         After this is called, the `location` geohash/timestamp will be set to `nil` and no longer sent with future tracked events.
+        */
+        public mutating func clearLocation() {
+            self.location = nil
+        }
+    }
     
     public let settings: Settings.EventsTracker
     
-    private weak var dataStore: ShopGunSDKDataStore?
+    /// The `Context` that will be attached to all future events (at the moment of tracking).
+    /// Modifying the context will only change events that are tracked in the future
+    public var context: Context = Context()
 
+    internal var viewTokenizer: UniqueViewTokenizer
+    
+    /// This will generate a new tokenizer with a new salt. Calling this will mean that any ViewToken sent with future events will not be connected to any historically shipped events.
+    public func resetViewTokenizerSalt() {
+        self.viewTokenizer = UniqueViewTokenizer.reload(from: dataStore)
+    }
+    
     internal init(settings: Settings.EventsTracker, dataStore: ShopGunSDKDataStore?) {
         self.settings = settings
         self.dataStore = dataStore
-        
-        let eventsShipper = EventsShipper(baseURL: settings.baseURL, dryRun: settings.enabled == false)
-        let eventsCache = EventsCache(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.plist")
-        
-        self.pool = CachedFlushablePool(dispatchInterval: settings.dispatchInterval,
-                                        dispatchLimit: settings.dispatchLimit,
-                                        shipper: eventsShipper,
-                                        cache: eventsCache)
-        
-        if settings.includeLocation {
-            DispatchQueue.main.async {
-                // Make sure we have a locationManager on first initialize (if needed).
-                // This is because the CLLocationManager must be created on the main thread.
-                _ = Context.LocationContext.location
-            }
-        }
-        
-        self.sessionLifecycleHandler = SessionLifecycleHandler()
-        
-        // Try to get the stored clientId, migrate the legacy clientId, or generate a new one.
-        if let storedClientId = EventsTracker.loadClientId(from: dataStore) {
-            self.clientId = storedClientId
-        } else {
-            if let legacyClientId = EventsTracker.loadLegacyClientId() {
-                self.clientId = legacyClientId
-                EventsTracker.clearLegacyClientId()
-                Logger.log("Loaded ClientId from Legacy cache", level: .debug, source: .EventsTracker)
-            } else {
-                self.clientId = ClientIdentifier.generate()
+        self.viewTokenizer = UniqueViewTokenizer.load(from: dataStore)
 
-                // A new clientId was generated, so send an event
-                LifecycleEvents.firstClientSessionOpened.track(self)
-            }
-            
-            // Save the new clientId back to the store
-            EventsTracker.updateDataStore(dataStore, clientId: self.clientId)
-        }
+        let eventsShipper = EventsShipper(baseURL: settings.baseURL, dryRun: settings.enabled == false, appContext: .init(id: settings.appId))
+        let eventsCache = EventsCache<ShippableEvent>(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.v2.plist")
         
-        // Assign the callback for the session handler.
-        // Note that the eventy must be triggered manually first time.
-        LifecycleEvents.clientSessionOpened.track(self)
-        self.sessionLifecycleHandler.didStartNewSession = { [weak self] in
-            guard let s = self else { return }
-            LifecycleEvents.clientSessionOpened.track(s)
+        self.pool = EventsPool(dispatchInterval: settings.dispatchInterval,
+                               dispatchLimit: settings.dispatchLimit,
+                               shippingHandler: eventsShipper.ship,
+                               cache: eventsCache)
+        
+        EventsTracker.legacyPoolCleaner(baseURL: settings.baseURL, enabled: settings.enabled) { (cleanedEvents) in
+            Logger.log("LegacyEventsPool cleaned (\(cleanedEvents) events)", level: .debug, source: .EventsTracker)
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            // Assign the callback for the session handler.
+            // Note that the events must be triggered manually first time.
+            // We delay by a moment to make sure that context can be initialized for the very first time.
+            self.trackEvent(Event.clientSessionOpened())
+            self.sessionLifecycleHandler.didStartNewSession = { [weak self] in
+                self?.trackEvent(Event.clientSessionOpened())
+            }
         }
     }
     private init() { fatalError("You must provide settings when creating an EventsTracker") }
+    
+    private weak var dataStore: ShopGunSDKDataStore?
 
-    fileprivate let pool: CachedFlushablePool
+    fileprivate let pool: EventsPool
     
-    public private(set) var clientId: ClientIdentifier
-    
-    public func resetClientId() {
-        self.clientId = ClientIdentifier.generate()
-        EventsTracker.updateDataStore(self.dataStore, clientId: self.clientId)
-        
-        LifecycleEvents.firstClientSessionOpened.track(self)
-        
-        LifecycleEvents.clientSessionOpened.track(self)
-    }
-    
-    fileprivate let sessionLifecycleHandler: SessionLifecycleHandler
+    private let sessionLifecycleHandler = SessionLifecycleHandler()
 }
 
 // MARK: -
@@ -131,71 +135,50 @@ extension EventsTracker {
 // MARK: - Tracking methods
 
 extension EventsTracker {
-    
-    public func trackEvent(_ type: EventType) {
-        trackEvent(type, properties: nil)
-    }
-    
-    public func trackEvent(_ type: EventType, properties: EventProperties?) {
-        // make sure that all events are initially triggered on the main thread, to guarantee order.
-        DispatchQueue.main.async { [weak self] in
-            guard let s = self else { return }
-            
-            s.trackEventSync(type, properties: properties)
-        }
-    }
-    
-    /// We expose this method internally so that the SDKConfig can enforce certain events being fired first.
-    fileprivate func trackEventSync(_ type: EventType, properties: EventProperties?) {
-        let event = ShippableEvent(type: type,
-                                   trackId: settings.trackId,
-                                   properties: properties,
-                                   clientId: self.clientId.rawValue,
-                                   includeLocation: settings.includeLocation)
-        Logger.log("Event Tracked: '\(type)' \(properties ?? [:])", level: .debug, source: .EventsTracker)
+    public func trackEvent(_ event: Event) {
         
-        track(event: event)
+        // TODO: Do on shared queue?
+        
+        // Mark the event with the tracker's context & appId
+        let eventToTrack = event
+            .addingAppIdentifier(self.settings.appId)
+            .addingContext(self.context)
+        
+        // push the event to the cached pool
+        guard let shippableEvent = ShippableEvent(event: eventToTrack) else { return }
+        
+        self.pool.push(event: shippableEvent)
+        
+        let eventInfo = [EventsTracker.trackedEventNotificationKey: eventToTrack]
+        
+        Logger.log("📩 Event Tracked: \(shippableEvent)", level: .debug, source: .EventsTracker)
+        
+        // send a notification
+        NotificationCenter.default.post(name: EventsTracker.didTrackEventNotification,
+                                        object: self,
+                                        userInfo: eventInfo)
     }
-    
-    fileprivate func track(event: EventsTracker.ShippableEvent) {
-        
-        self.pool.push(object: event)
-        
-        // save the eventInfo into a dict for sending as a notification
-        var eventInfo: [String: AnyObject] = ["type": event.type as AnyObject,
-                                              "uuid": event.uuid as AnyObject]
-        if event.properties != nil {
-            eventInfo["properties"] = event.properties! as AnyObject
-        }
-        
-        // send a notification for that specific event, a generic one
-        NotificationCenter.default.post(name: .eventTracked(type: event.type), object: self, userInfo: eventInfo)
-        NotificationCenter.default.post(name: .eventTracked(), object: self, userInfo: eventInfo)
-    }
-    
 }
 
-// MARK: - Lifecycle events
+// MARK: - Tracking Notifications
 
 extension EventsTracker {
-    fileprivate enum LifecycleEvents {
-        case firstClientSessionOpened
-        case clientSessionOpened
+    
+    /// The NotificationName for notifications posted when events are tracked. The Notification's userInfo contains the event. See `extractTrackedEvent(from:)` for an easy way to get the event from the Notification.
+    public static let didTrackEventNotification = Notification.Name(rawValue: "ShopGunSDK.EventsTracker.eventTracked")
+    
+    /// The key to access the event in the `didTrackEventNotification` notification's userInfo dictionary.
+    fileprivate static let trackedEventNotificationKey = "trackedEvent"
+    
+    /**
+     Given a Notification triggered by the `didTrackEventNotification` with the name, this will look in the userInfo and return the `Event` object, if it exists. The result will be `nil` if the Notification is not of the correct kind, or userInfo doesnt contain an event.
+     - parameter notification: The Notification to extract the `Event` from.
+     */
+    public static func extractTrackedEvent(from notification: Notification) -> Event? {
+        guard notification.name == EventsTracker.didTrackEventNotification else {
+            return nil
+        }
         
-        var type: EventType {
-            switch self {
-            case .firstClientSessionOpened:
-                return "first-client-session-opened"
-            case .clientSessionOpened:
-                return "client-session-opened"
-            }
-        }
-        var properties: EventProperties {
-            return [:]
-        }
-        
-        func track(_ tracker: EventsTracker) {
-            tracker.trackEvent(self.type, properties: self.properties)
-        }
+        return notification.userInfo?[EventsTracker.trackedEventNotificationKey] as? Event
     }
 }

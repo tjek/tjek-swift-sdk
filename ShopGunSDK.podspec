@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
         ss.frameworks   = "Foundation", "UIKit", "CoreLocation"
 
         ss.dependency "ShopGunSDK/Shared"
-        ss.dependency "CryptoSwift", "~> 0.9.0"
+        ss.dependency "CryptoSwift", "~> 0.11.0"
     end
 
     s.subspec 'GraphAPI' do |ss|
@@ -51,6 +51,8 @@ Pod::Spec.new do |s|
         ss.frameworks   = "Foundation", "UIKit", "CoreLocation"
         
         ss.dependency "ShopGunSDK/Shared"
+        ss.dependency "ShopGunSDK/CoreAPI"        
+        ss.dependency "CryptoSwift", "~> 0.11.0"
     end
 
     s.subspec 'Shared' do |ss|

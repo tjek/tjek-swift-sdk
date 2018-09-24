@@ -346,22 +346,16 @@ public class PagedPublicationView: UIView {
                                    aspectRatio: publicationModel.aspectRatio)
             
             // successful reload, event handler can now call opened & didAppear (if new publication, or we havnt called it yet)
-            if lifecycleEventTracker?.publicationModel.id != publicationModel.id, let eventHandler = self.eventHandler {
+            if lifecycleEventTracker?.publicationId != publicationModel.id, let eventHandler = self.eventHandler {
                 
-                lifecycleEventTracker = PagedPublicationView.LifecycleEventTracker(publicationModel: publicationModel, eventHandler: eventHandler)
+                lifecycleEventTracker = PagedPublicationView.LifecycleEventTracker(publicationId: publicationModel.id, eventHandler: eventHandler)
                 lifecycleEventTracker?.opened()
                 lifecycleEventTracker?.didAppear()
                 
-                // page has already been changed selected before load, so make a new spread tracker, and register page-loads if they already have been loaded
-                if self.currentPageIndexes.count > 0 {
-                    lifecycleEventTracker?.newSpreadLifecycleTracker(for: self.currentPageIndexes)
-                    
-                    currentPageIndexes.forEach {
-                        if let pageView = self.contentsView.versoView.getPageViewIfLoaded($0) as? PagedPublicationView.PageView, pageView.isViewImageLoaded {
-                            lifecycleEventTracker?.spreadLifecycleTracker?.pageLoaded(pageIndex: $0)
-                        }
-                    }
-                }
+                let loadedIndexes = self.currentPageIndexes.filter { (self.contentsView.versoView.getPageViewIfLoaded($0) as? PagedPublicationView.PageView)?.isViewImageLoaded ?? false }
+                lifecycleEventTracker?.spreadDidAppear(
+                    pageIndexes: currentPageIndexes,
+                    loadedIndexes: IndexSet(loadedIndexes))
             }
             
             delegate?.didLoad(publication: publicationModel, in: self)
@@ -562,7 +556,7 @@ extension PageViewDelegate: PagedPublicationPageViewDelegate {
 
         // tell the spread that the image loaded.
         // Will be ignored if page isnt part of the spread
-        lifecycleEventTracker?.spreadLifecycleTracker?.pageLoaded(pageIndex: pageIndex)
+        lifecycleEventTracker?.pageDidLoad(pageIndex: pageIndex)
         
         delegate?.didFinishLoadingPageImage(imageURL: imageURL, pageIndex: pageIndex, in: self)
     }
@@ -574,16 +568,13 @@ private typealias HotspotDelegate = PagedPublicationView
 extension HotspotDelegate: HotspotOverlayViewDelegate {
     
     func didTapHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint) {
-        lifecycleEventTracker?.spreadLifecycleTracker?.pageTapped(pageIndex: pageIndex, location: locationInPage, hittingHotspots: (hotspots.count > 0))
         delegate?.didTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
     func didLongPressHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint) {
-        lifecycleEventTracker?.spreadLifecycleTracker?.pageLongPressed(pageIndex: pageIndex, location: locationInPage)
         delegate?.didLongPress(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
     
     func didDoubleTapHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint) {
-        lifecycleEventTracker?.spreadLifecycleTracker?.pageDoubleTapped(pageIndex: pageIndex, location: locationInPage)
         delegate?.didDoubleTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
 }

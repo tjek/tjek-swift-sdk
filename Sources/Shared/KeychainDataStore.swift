@@ -16,6 +16,12 @@ final public class KeychainDataStore {
         self.settings = settings
         
         self.valet = {
+            // Valet totally fails when running in an Xcode Playground.
+            if Bundle.main.isXcodePlayground {
+                Logger.log("KeychainDataStore is not available in Xcode Playgrounds.", level: .important, source: .ShopGunSDK)
+                return nil
+            }
+            
             if case .sharedKeychain(let groupId) = settings,
                 let keychainId = Identifier(nonEmpty: groupId) {
                 
@@ -94,5 +100,11 @@ extension KeychainDataStore {
 
         Logger.log("Configuring KeychainDataStore", level: .verbose, source: .ShopGunSDK)
         _shared = KeychainDataStore(settings: settings)
+    }
+}
+
+extension Bundle {
+    fileprivate var isXcodePlayground: Bool {
+        return self.bundleIdentifier?.hasPrefix("com.apple.dt.playground.") ?? false
     }
 }

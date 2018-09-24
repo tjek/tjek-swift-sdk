@@ -8,9 +8,12 @@
 //  Copyright (c) 2018 ShopGun. All rights reserved.
 
 import Foundation
+
 extension EventsTracker {
     
+    /// Contains the logic for when we consider a session to have started (based on listening to the app's BecomeActive/EnterBackground notifications).
     class SessionLifecycleHandler {
+        /// This callback is triggered when a new session starts (app becomes active after being in the background)
         var didStartNewSession: (() -> Void)?
         
         init() {
