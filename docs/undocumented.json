@@ -192,14 +192,14 @@
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
       "line": 197,
-      "symbol": "CoreAPI.LoginCredentials.shopgun",
+      "symbol": "CoreAPI.LoginCredentials.shopgun(email:password:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/CoreAPI/CoreAPI.swift",
       "line": 198,
-      "symbol": "CoreAPI.LoginCredentials.facebook",
+      "symbol": "CoreAPI.LoginCredentials.facebook(token:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
@@ -2935,6 +2935,13 @@
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
+      "line": null,
+      "symbol": "JSONValue",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
       "line": 12,
       "symbol": "JSONValue",
       "symbol_kind": "source.lang.swift.decl.enum",
@@ -2943,42 +2950,42 @@
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
       "line": 13,
-      "symbol": "JSONValue.string",
+      "symbol": "JSONValue.string(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
       "line": 14,
-      "symbol": "JSONValue.int",
+      "symbol": "JSONValue.int(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
       "line": 15,
-      "symbol": "JSONValue.number",
+      "symbol": "JSONValue.number(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
       "line": 16,
-      "symbol": "JSONValue.object",
+      "symbol": "JSONValue.object(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
       "line": 17,
-      "symbol": "JSONValue.array",
+      "symbol": "JSONValue.array(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
       "line": 18,
-      "symbol": "JSONValue.bool",
+      "symbol": "JSONValue.bool(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
@@ -2987,6 +2994,55 @@
       "line": 19,
       "symbol": "JSONValue.null",
       "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
+      "line": 24,
+      "symbol": "JSONValue.stringValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
+      "line": 28,
+      "symbol": "JSONValue.intValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
+      "line": 32,
+      "symbol": "JSONValue.numberValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
+      "line": 36,
+      "symbol": "JSONValue.objectValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
+      "line": 40,
+      "symbol": "JSONValue.arrayValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
+      "line": 44,
+      "symbol": "JSONValue.boolValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/JSONValue.swift",
+      "line": 48,
+      "symbol": "JSONValue.isNullValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
@@ -3111,14 +3167,14 @@
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/Result.swift",
       "line": 11,
-      "symbol": "Result.success",
+      "symbol": "Result.success(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/Result.swift",
       "line": 12,
-      "symbol": "Result.error",
+      "symbol": "Result.error(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
@@ -3223,14 +3279,14 @@
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/Settings.swift",
       "line": 83,
-      "symbol": "Settings.KeychainDataStore.privateKeychain",
+      "symbol": "Settings.KeychainDataStore.privateKeychain(id:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/loz/Documents/ShopGun/whitehorse.develop/External/shopgun-ios-sdk/Sources/Shared/Settings.swift",
       "line": 84,
-      "symbol": "Settings.KeychainDataStore.sharedKeychain",
+      "symbol": "Settings.KeychainDataStore.sharedKeychain(groupId:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },

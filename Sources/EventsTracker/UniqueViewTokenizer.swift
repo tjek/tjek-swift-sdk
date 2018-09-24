@@ -8,7 +8,6 @@
 //  Copyright (c) 2018 ShopGun. All rights reserved.
 
 import Foundation
-import CryptoSwift
 
 /// The signature of a Tokenize function, for converting a string to a different string.
 typealias Tokenizer = (String) -> String
@@ -36,8 +35,9 @@ struct UniqueViewTokenizer {
         let str = salt + content
         let data = str.data(using: .utf8, allowLossyConversion: true) ?? Data()
         
-        return Data(bytes: data.md5().bytes.prefix(8))
-            .base64EncodedString()
+        return Data(bytes:
+            Array(data.md5()).prefix(8)
+            ).base64EncodedString()
     }
 }
 

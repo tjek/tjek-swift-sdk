@@ -63,11 +63,4 @@ github "shopgun/shopgun-ios-sdk" "master"
 For a overview of getting started with Carthage, read the documentation on their site, or [this handy tutorial](https://www.raywenderlich.com/416-carthage-tutorial-getting-started).
 
 ### Dependencies
-It is important to note that the ShopGunSDK depends upon a number of 3rd party frameworks (see above). With Carthage, these frameworks will have been added to the `Carthage/Build/iOS` folder when you ran `carthage`. As well as the `ShopGunSDK` framework, wou will also need to also link link these frameworks to your target, and add them to the target's `copy-frameworks` build script. 
-
-- Under the target's `General` tab:
-![Carthage Build Script](./Images/carthage-link-frameworks.png)
-
-- Under the target's `Build Phases` tab:
-![Carthage Build Script](./Images/carthage-copy-frameworks.png)
-
+It is important to note that the ShopGunSDK depends upon a number of 3rd party frameworks (see above). With Carthage, these frameworks will have been added to the `Carthage/Build/iOS` folder when you ran `carthage`. As well as the `ShopGunSDK` framework, wou will also need to also link these frameworks to your target, and add them to the target's `copy-frameworks` build script. 

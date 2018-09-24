@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
     s.name            = "ShopGunSDK"
-    s.version         = "4.0.3"
+    s.version         = "4.1"
     s.summary         = "ShopGun SDK for iOS."
     s.description     = <<-DESC
                          An SDK that makes it easy to talk to the ShopGun API.
@@ -36,7 +36,6 @@ Pod::Spec.new do |s|
         ss.frameworks   = "Foundation", "UIKit", "CoreLocation"
 
         ss.dependency "ShopGunSDK/Shared"
-        ss.dependency "CryptoSwift", "~> 0.11.0"
     end
 
     s.subspec 'GraphAPI' do |ss|
@@ -52,11 +51,11 @@ Pod::Spec.new do |s|
         
         ss.dependency "ShopGunSDK/Shared"
         ss.dependency "ShopGunSDK/CoreAPI"        
-        ss.dependency "CryptoSwift", "~> 0.11.0"
     end
 
     s.subspec 'Shared' do |ss|
-        ss.source_files = "Sources/Shared/**/*.swift"
+        ss.source_files = ["Sources/Shared/**/*.swift", "Sources/ShopGunSDKBridgingHeader.h"]
+        ss.public_header_files = "Sources/ShopGunSDKBridgingHeader.h"
         ss.frameworks   = "Foundation", "UIKit"
 
         ss.dependency "Valet", "~> 3.1.3"

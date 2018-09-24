@@ -65,8 +65,6 @@
 		AE8E454F2010941F0042CCE2 /* CoreAPI_DealerRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E454E2010941F0042CCE2 /* CoreAPI_DealerRequests.swift */; };
 		AE8E45582010A38C0042CCE2 /* CoreAPI_Offer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E45572010A38C0042CCE2 /* CoreAPI_Offer.swift */; };
 		AE95FDC0204FEC6C0002C1CE /* CGSize_Fitting.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE95FDBF204FEC6C0002C1CE /* CGSize_Fitting.swift */; };
-		AE95FDCF205014AF0002C1CE /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE95FDC8205014080002C1CE /* CryptoSwift.framework */; };
-		AE95FDD0205014BC0002C1CE /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE95FDC8205014080002C1CE /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEBA9C23211C2C6800516744 /* UniqueViewTokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA9C21211C2C1000516744 /* UniqueViewTokenizerTests.swift */; };
 		AEBA9C25211C623C00516744 /* GeohashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA9C24211C623C00516744 /* GeohashTests.swift */; };
 		AEBA9C27211CB07E00516744 /* SDKEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA9C26211CB07E00516744 /* SDKEventsTests.swift */; };
@@ -98,6 +96,8 @@
 		AEEE54122118983500528E3B /* Geohash.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE54112118983500528E3B /* Geohash.swift */; };
 		AEEE541421189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE541321189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift */; };
 		AEEE54162118CFDE00528E3B /* EventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE54152118CFDE00528E3B /* EventTests.swift */; };
+		AEFDDA952158DC38000992FD /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFDDA942158DC38000992FD /* Crypto.swift */; };
+		AEFDDA972158DE9B000992FD /* ShopGunSDKBridgingHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = AEFDDA962158DE9B000992FD /* ShopGunSDKBridgingHeader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -149,13 +149,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 26E6827B1BA8B3F900EFF4EA;
 			remoteInfo = "Valet-iOS";
-		};
-		AE0EC9532098E70500FEA06C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 754BE45419693E190098E6F3;
-			remoteInfo = CryptoSwift;
 		};
 		AE4942A420113A0F006658CE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -248,20 +241,6 @@
 			remoteGlobalIDString = 165CDDC6204B26D400C96C2E;
 			remoteInfo = "Valet tvOS Test Host App";
 		};
-		AE95FDC7205014080002C1CE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 754BE45519693E190098E6F3;
-			remoteInfo = CryptoSwift;
-		};
-		AE95FDC9205014080002C1CE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 754BE46019693E190098E6F3;
-			remoteInfo = Tests;
-		};
 		AEC28B451FF6AAC20007AAB8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AEC28B311FF6AAC20007AAB8 /* Project object */;
@@ -286,7 +265,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				AEE37C6F20513867008E71D8 /* Verso.framework in Embed Frameworks */,
-				AE95FDD0205014BC0002C1CE /* CryptoSwift.framework in Embed Frameworks */,
 				AEE37C6D20513855008E71D8 /* Kingfisher.framework in Embed Frameworks */,
 				AEE37C7120513881008E71D8 /* Valet.framework in Embed Frameworks */,
 			);
@@ -365,7 +343,6 @@
 		AE8E45572010A38C0042CCE2 /* CoreAPI_Offer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAPI_Offer.swift; sourceTree = "<group>"; };
 		AE95FDBF204FEC6C0002C1CE /* CGSize_Fitting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGSize_Fitting.swift; sourceTree = "<group>"; };
 		AE95FDC1204FEE710002C1CE /* ShopGunSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShopGunSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CryptoSwift.xcodeproj; path = External/CryptoSwift/CryptoSwift.xcodeproj; sourceTree = "<group>"; };
 		AEBA9C21211C2C1000516744 /* UniqueViewTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniqueViewTokenizerTests.swift; sourceTree = "<group>"; };
 		AEBA9C24211C623C00516744 /* GeohashTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeohashTests.swift; sourceTree = "<group>"; };
 		AEBA9C26211CB07E00516744 /* SDKEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKEventsTests.swift; sourceTree = "<group>"; };
@@ -414,6 +391,8 @@
 		AEEE541321189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTrackerContext+CoreLocation.swift"; sourceTree = "<group>"; };
 		AEEE54152118CFDE00528E3B /* EventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTests.swift; sourceTree = "<group>"; };
 		AEEF0D86212D7F720004EFFC /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
+		AEFDDA942158DC38000992FD /* Crypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crypto.swift; sourceTree = "<group>"; };
+		AEFDDA962158DE9B000992FD /* ShopGunSDKBridgingHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShopGunSDKBridgingHeader.h; path = Sources/ShopGunSDKBridgingHeader.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -421,7 +400,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE95FDCF205014AF0002C1CE /* CryptoSwift.framework in Frameworks */,
 				AEE37C7020513878008E71D8 /* Valet.framework in Frameworks */,
 				AEE37C6E20513862008E71D8 /* Verso.framework in Frameworks */,
 				AEE37C6C20513835008E71D8 /* Kingfisher.framework in Frameworks */,
@@ -443,7 +421,6 @@
 		AE06548D1FFEE23D009F6F92 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */,
 				AE49429920113A0F006658CE /* Verso.xcodeproj */,
 				AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */,
 				AE5A972820232098004E0799 /* Kingfisher.xcodeproj */,
@@ -555,15 +532,6 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
-		AE95FDC3205014080002C1CE /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				AE95FDC8205014080002C1CE /* CryptoSwift.framework */,
-				AE95FDCA205014080002C1CE /* Tests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		AEC28B301FF6AAC20007AAB8 = {
 			isa = PBXGroup;
 			children = (
@@ -571,6 +539,7 @@
 				AEEF0D86212D7F720004EFFC /* Cartfile */,
 				AEC28B6F1FF6AC420007AAB8 /* ShopGunSDK.playground */,
 				AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */,
+				AEFDDA962158DE9B000992FD /* ShopGunSDKBridgingHeader.h */,
 				AEC28B591FF6ABFC0007AAB8 /* CoreAPI */,
 				AE4942BF201743FA006658CE /* PagedPublication */,
 				AEC28B561FF6ABFB0007AAB8 /* EventsTracker */,
@@ -653,6 +622,7 @@
 				AE3B3227204030AD001C75C9 /* Error+Extensions.swift */,
 				AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */,
 				AEEE53F721187C5B00528E3B /* JSONValue.swift */,
+				AEFDDA942158DC38000992FD /* Crypto.swift */,
 			);
 			name = Shared;
 			path = Sources/Shared;
@@ -775,6 +745,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEFDDA972158DE9B000992FD /* ShopGunSDKBridgingHeader.h in Headers */,
 				AEC28B6E1FF6AC2A0007AAB8 /* ShopGunSDK.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -795,7 +766,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				AE0EC9542098E70500FEA06C /* PBXTargetDependency */,
 				AE5A9757202320AC004E0799 /* PBXTargetDependency */,
 				AE4942A720113A23006658CE /* PBXTargetDependency */,
 				AE0654AA1FFEE266009F6F92 /* PBXTargetDependency */,
@@ -864,10 +834,6 @@
 			productRefGroup = AEC28B3B1FF6AAC20007AAB8 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
-				{
-					ProductGroup = AE95FDC3205014080002C1CE /* Products */;
-					ProjectRef = AE95FDC2205014080002C1CE /* CryptoSwift.xcodeproj */;
-				},
 				{
 					ProductGroup = AE5A972920232098004E0799 /* Products */;
 					ProjectRef = AE5A972820232098004E0799 /* Kingfisher.xcodeproj */;
@@ -1009,20 +975,6 @@
 			remoteRef = AE63161E20906F4200E6CF9E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		AE95FDC8205014080002C1CE /* CryptoSwift.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = CryptoSwift.framework;
-			remoteRef = AE95FDC7205014080002C1CE /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AE95FDCA205014080002C1CE /* Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = Tests.xctest;
-			remoteRef = AE95FDC9205014080002C1CE /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		AECC8E49204E8B36007185B0 /* Valet macOS Test Host App.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
@@ -1068,6 +1020,7 @@
 				AEC28B681FF6ABFC0007AAB8 /* CoreAPI_APIError.swift in Sources */,
 				AE22AAFA20527DFA008601EB /* Settings.swift in Sources */,
 				AEEE540C21187F1D00528E3B /* UniqueViewTokenizer.swift in Sources */,
+				AEFDDA952158DC38000992FD /* Crypto.swift in Sources */,
 				AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */,
 				AE3B3244204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift in Sources */,
 				AE8E4541200E31E60042CCE2 /* UIColor_Hex.swift in Sources */,
@@ -1151,11 +1104,6 @@
 			isa = PBXTargetDependency;
 			name = "Valet-iOS";
 			targetProxy = AE0654A91FFEE266009F6F92 /* PBXContainerItemProxy */;
-		};
-		AE0EC9542098E70500FEA06C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = CryptoSwift;
-			targetProxy = AE0EC9532098E70500FEA06C /* PBXContainerItemProxy */;
 		};
 		AE4942A720113A23006658CE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
