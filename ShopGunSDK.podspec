@@ -54,8 +54,7 @@ Pod::Spec.new do |s|
     end
 
     s.subspec 'Shared' do |ss|
-        ss.source_files = ["Sources/Shared/**/*.swift", "Sources/ShopGunSDKBridgingHeader.h"]
-        ss.public_header_files = "Sources/ShopGunSDKBridgingHeader.h"
+        ss.source_files = "Sources/Shared/**/*.{swift,h,m}"
         ss.frameworks   = "Foundation", "UIKit"
 
         ss.dependency "Valet", "~> 3.1.6"

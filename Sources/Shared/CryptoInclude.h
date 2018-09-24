@@ -7,9 +7,17 @@
 //
 //  Copyright (c) 2018 ShopGun. All rights reserved.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
-
+#import <Foundation/Foundation.h>
 #import <CommonCrypto/CommonHMAC.h>
 
-#endif /* BridgingHeader_h */
+NS_ASSUME_NONNULL_BEGIN
+
+/**
+ This class exists as a rather annoying work around for the fact that ObjC Bridging Headers arent allowed in Frameworks.
+ So this is here simply to include the CommonCrypto libs.
+ */
+@interface CryptoInclude : NSObject
+
+@end
+
+NS_ASSUME_NONNULL_END
