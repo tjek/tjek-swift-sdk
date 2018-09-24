@@ -8,16 +8,20 @@
 //  Copyright (c) 2018 ShopGun. All rights reserved.
 
 #import <Foundation/Foundation.h>
-#import <CommonCrypto/CommonHMAC.h>
-
-NS_ASSUME_NONNULL_BEGIN
 
 /**
- This class exists as a rather annoying work around for the fact that ObjC Bridging Headers arent allowed in Frameworks.
- So this is here simply to include the CommonCrypto libs.
+ This is an annoying workaround to allow the Swift code to access the ObjC CommonCrypto lib.
  */
-@interface CryptoInclude : NSObject
+@interface CryptoInclude: NSObject
+
+/**
+ Creates a MD5 hash of the provided NSData object.
+ */
++ (nonnull NSData*) md5:(nonnull NSData*)data;
+
+/**
+ Creates a SHA256 hash of the provided string as hex NSString representation.
+ */
++ (nonnull NSString*) sha256:(nonnull NSString*) string;
 
 @end
-
-NS_ASSUME_NONNULL_END

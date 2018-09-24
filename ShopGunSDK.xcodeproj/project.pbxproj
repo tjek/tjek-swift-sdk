@@ -98,7 +98,7 @@
 		AEEE54162118CFDE00528E3B /* EventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE54152118CFDE00528E3B /* EventTests.swift */; };
 		AEFDDAB7215910A1000992FD /* CryptoInclude.h in Headers */ = {isa = PBXBuildFile; fileRef = AEFDDAB5215910A1000992FD /* CryptoInclude.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AEFDDAB8215910A1000992FD /* CryptoInclude.m in Sources */ = {isa = PBXBuildFile; fileRef = AEFDDAB6215910A1000992FD /* CryptoInclude.m */; };
-		AEFDDAB9215910DB000992FD /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFDDA942158DC38000992FD /* Crypto.swift */; };
+		AEFDDACF215919E3000992FD /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFDDA942158DC38000992FD /* Crypto.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1036,7 +1036,7 @@
 				AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */,
 				AEEE541421189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift in Sources */,
 				AE448F9B21147CF6000E5A28 /* Event.swift in Sources */,
-				AEFDDAB9215910DB000992FD /* Crypto.swift in Sources */,
+				AEFDDACF215919E3000992FD /* Crypto.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI_Person.swift in Sources */,
 				AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */,
 				AE3B325020455C11001C75C9 /* EventsCache_v1.swift in Sources */,
