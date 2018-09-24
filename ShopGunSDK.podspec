@@ -58,6 +58,6 @@ Pod::Spec.new do |s|
         ss.public_header_files = "Sources/ShopGunSDKBridgingHeader.h"
         ss.frameworks   = "Foundation", "UIKit"
 
-        ss.dependency "Valet", "~> 3.1.3"
+        ss.dependency "Valet", "~> 3.1.6"
     end
 end

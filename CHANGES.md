@@ -14,6 +14,7 @@
 - Fix loading too-large page images.
 - Remove CryptoSwift dependency.
 - Update `Kingfisher ~> 4.10.0` 
+- Update `Valet ~> 3.1.6`
 
 ## v4.0.2
 - Fix issue when building for Release (`GenericIdentifier` was not decoding correctly)
