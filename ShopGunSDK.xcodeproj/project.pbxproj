@@ -96,8 +96,9 @@
 		AEEE54122118983500528E3B /* Geohash.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE54112118983500528E3B /* Geohash.swift */; };
 		AEEE541421189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE541321189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift */; };
 		AEEE54162118CFDE00528E3B /* EventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE54152118CFDE00528E3B /* EventTests.swift */; };
-		AEFDDA952158DC38000992FD /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFDDA942158DC38000992FD /* Crypto.swift */; };
-		AEFDDA972158DE9B000992FD /* ShopGunSDKBridgingHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = AEFDDA962158DE9B000992FD /* ShopGunSDKBridgingHeader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AEFDDAB7215910A1000992FD /* CryptoInclude.h in Headers */ = {isa = PBXBuildFile; fileRef = AEFDDAB5215910A1000992FD /* CryptoInclude.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AEFDDAB8215910A1000992FD /* CryptoInclude.m in Sources */ = {isa = PBXBuildFile; fileRef = AEFDDAB6215910A1000992FD /* CryptoInclude.m */; };
+		AEFDDACF215919E3000992FD /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFDDA942158DC38000992FD /* Crypto.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -392,7 +393,8 @@
 		AEEE54152118CFDE00528E3B /* EventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTests.swift; sourceTree = "<group>"; };
 		AEEF0D86212D7F720004EFFC /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		AEFDDA942158DC38000992FD /* Crypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crypto.swift; sourceTree = "<group>"; };
-		AEFDDA962158DE9B000992FD /* ShopGunSDKBridgingHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShopGunSDKBridgingHeader.h; path = Sources/ShopGunSDKBridgingHeader.h; sourceTree = "<group>"; };
+		AEFDDAB5215910A1000992FD /* CryptoInclude.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CryptoInclude.h; sourceTree = "<group>"; };
+		AEFDDAB6215910A1000992FD /* CryptoInclude.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CryptoInclude.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -539,7 +541,6 @@
 				AEEF0D86212D7F720004EFFC /* Cartfile */,
 				AEC28B6F1FF6AC420007AAB8 /* ShopGunSDK.playground */,
 				AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */,
-				AEFDDA962158DE9B000992FD /* ShopGunSDKBridgingHeader.h */,
 				AEC28B591FF6ABFC0007AAB8 /* CoreAPI */,
 				AE4942BF201743FA006658CE /* PagedPublication */,
 				AEC28B561FF6ABFB0007AAB8 /* EventsTracker */,
@@ -623,6 +624,8 @@
 				AE3B3241204422D5001C75C9 /* Bundle+ShopGunSDK.swift */,
 				AEEE53F721187C5B00528E3B /* JSONValue.swift */,
 				AEFDDA942158DC38000992FD /* Crypto.swift */,
+				AEFDDAB5215910A1000992FD /* CryptoInclude.h */,
+				AEFDDAB6215910A1000992FD /* CryptoInclude.m */,
 			);
 			name = Shared;
 			path = Sources/Shared;
@@ -745,7 +748,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEFDDA972158DE9B000992FD /* ShopGunSDKBridgingHeader.h in Headers */,
+				AEFDDAB7215910A1000992FD /* CryptoInclude.h in Headers */,
 				AEC28B6E1FF6AC2A0007AAB8 /* ShopGunSDK.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1021,7 +1024,6 @@
 				AEC28B681FF6ABFC0007AAB8 /* CoreAPI_APIError.swift in Sources */,
 				AE22AAFA20527DFA008601EB /* Settings.swift in Sources */,
 				AEEE540C21187F1D00528E3B /* UniqueViewTokenizer.swift in Sources */,
-				AEFDDA952158DC38000992FD /* Crypto.swift in Sources */,
 				AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */,
 				AE3B3244204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift in Sources */,
 				AE8E4541200E31E60042CCE2 /* UIColor_Hex.swift in Sources */,
@@ -1034,6 +1036,7 @@
 				AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */,
 				AEEE541421189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift in Sources */,
 				AE448F9B21147CF6000E5A28 /* Event.swift in Sources */,
+				AEFDDACF215919E3000992FD /* Crypto.swift in Sources */,
 				AEC28B651FF6ABFC0007AAB8 /* CoreAPI_Person.swift in Sources */,
 				AE3B3228204030AD001C75C9 /* Error+Extensions.swift in Sources */,
 				AE3B325020455C11001C75C9 /* EventsCache_v1.swift in Sources */,
@@ -1069,6 +1072,7 @@
 				AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */,
 				AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */,
 				AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */,
+				AEFDDAB8215910A1000992FD /* CryptoInclude.m in Sources */,
 				AE04305F205BE24000F5D8C9 /* CoreAPI_StoreRequests.swift in Sources */,
 				AED992852063008300671F48 /* CoreAPI_OfferRequests.swift in Sources */,
 				AE7D9B63204745C6000F3B7D /* CoreAPI_LegacyMigration.swift in Sources */,
