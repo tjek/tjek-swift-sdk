@@ -8,6 +8,7 @@
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
 import Foundation
+import UIKit
 
 class EventsPool {
     
@@ -38,11 +39,11 @@ class EventsPool {
             }
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground(_:)), name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
     /// Add an object to the pool
@@ -182,7 +183,7 @@ class EventsPool {
         
         // generate a new timer. needs to be performed on main runloop
         flushTimer = Timer(timeInterval: interval, target: self, selector: #selector(flushTimerTick(_:)), userInfo: nil, repeats: false)
-        RunLoop.main.add(flushTimer!, forMode: RunLoopMode.commonModes)
+        RunLoop.main.add(flushTimer!, forMode: RunLoop.Mode.common)
     }
     
     @objc fileprivate func flushTimerTick(_ timer: Timer?) {

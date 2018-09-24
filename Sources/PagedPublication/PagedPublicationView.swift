@@ -120,7 +120,7 @@ public class PagedPublicationView: UIView {
     /// the PagePublicationView will not function correctly.
     public func didEnterForeground() {
         // start listening for the app going into the background
-        NotificationCenter.default.addObserver(self, selector: #selector(willResignActiveNotification), name: .UIApplicationWillResignActive, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(willResignActiveNotification), name: UIApplication.willResignActiveNotification, object: nil)
         lifecycleEventTracker?.didAppear()
     }
     
@@ -129,7 +129,7 @@ public class PagedPublicationView: UIView {
     /// This will pause event collection, until `didEnterForeground` is called again.
     public func didEnterBackground() {
         // stop listening for going into the background
-        NotificationCenter.default.removeObserver(self, name: .UIApplicationWillResignActive, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
         lifecycleEventTracker?.didDisappear()
     }
     
@@ -182,8 +182,8 @@ public class PagedPublicationView: UIView {
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .UIApplicationWillResignActive, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .UIApplicationDidBecomeActive, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
     }
     
     override public var backgroundColor: UIColor? {
@@ -535,13 +535,13 @@ public class PagedPublicationView: UIView {
     @objc
     fileprivate func willResignActiveNotification(_ notification: Notification) {
         // once in the background, listen for coming back to the foreground again
-        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActiveNotification), name: .UIApplicationDidBecomeActive, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActiveNotification), name: UIApplication.didBecomeActiveNotification, object: nil)
         didEnterBackground()
     }
     @objc
     fileprivate func didBecomeActiveNotification(_ notification: Notification) {
         // once in the foreground, stop listen for that again
-        NotificationCenter.default.removeObserver(self, name: .UIApplicationDidBecomeActive, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
         didEnterForeground()
     }
 }

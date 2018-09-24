@@ -126,7 +126,7 @@ class EventsCache_v1: PoolCache_v1Protocol {
             //print ("[CACHE] request write to disk [\(writeRequestCount)]")
             
             writeToDiskTimer = Timer(timeInterval: 0.2, target: self, selector: #selector(writeToDiskTimerTick(_:)), userInfo: nil, repeats: false)
-            RunLoop.main.add(writeToDiskTimer!, forMode: RunLoopMode.commonModes)
+            RunLoop.main.add(writeToDiskTimer!, forMode: RunLoop.Mode.common)
         }
     }
     @objc fileprivate func writeToDiskTimerTick(_ timer: Timer) { writeCurrentStateToDisk() }

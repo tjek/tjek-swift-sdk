@@ -8,6 +8,7 @@
 //  Copyright (c) 2016 ShopGun. All rights reserved.
 
 import Foundation
+import UIKit
 
 /// The format that is saved to the cache, and that is sent to the shipper.
 /// This could be done in a better, more generic way, in the future
@@ -76,11 +77,11 @@ class EventsPool_v1 {
             }
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground(_:)), name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
     @objc
@@ -204,7 +205,7 @@ class EventsPool_v1 {
         
         // generate a new timer. needs to be performed on main runloop
         flushTimer = Timer(timeInterval: interval, target: self, selector: #selector(flushTimerTick(_:)), userInfo: nil, repeats: false)
-        RunLoop.main.add(flushTimer!, forMode: RunLoopMode.commonModes)
+        RunLoop.main.add(flushTimer!, forMode: RunLoop.Mode.common)
     }
     
     @objc fileprivate func flushTimerTick(_ timer: Timer?) {

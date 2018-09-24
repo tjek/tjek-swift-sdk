@@ -53,7 +53,7 @@ extension PagedPublicationView {
         fileprivate var progressBarView = UIView()
         fileprivate var pageNumberLabel = PageNumberLabel()
         fileprivate var additionalLoadingSpinner: UIActivityIndicatorView = {
-            let view = UIActivityIndicatorView(activityIndicatorStyle: .white)
+            let view = UIActivityIndicatorView(style: .white)
             view.hidesWhenStopped = false
             view.startAnimating()
             return view
@@ -175,7 +175,7 @@ extension ContentsPageNumberLabel {
             textAlignment = .center
             
             //  monospaced numbers
-            let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.headline)
+            let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFont.TextStyle.headline)
             
             let features: [[UIFontDescriptor.FeatureKey: Any]] = [
                 [.featureIdentifier: kNumberSpacingType,
@@ -200,7 +200,7 @@ extension ContentsPageNumberLabel {
         private var labelEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 4, left: 22, bottom: 4, right: 22)
         
         override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
-            var rect = super.textRect(forBounds: UIEdgeInsetsInsetRect(bounds, labelEdgeInsets), limitedToNumberOfLines: numberOfLines)
+            var rect = super.textRect(forBounds: bounds.inset(by: labelEdgeInsets), limitedToNumberOfLines: numberOfLines)
             
             rect.origin.x -= labelEdgeInsets.left
             rect.origin.y -= labelEdgeInsets.top
@@ -210,7 +210,7 @@ extension ContentsPageNumberLabel {
             return rect
         }
         override func drawText(in rect: CGRect) {
-            super.drawText(in: UIEdgeInsetsInsetRect(rect, labelEdgeInsets))
+            super.drawText(in: rect.inset(by: labelEdgeInsets))
         }
     }
 }

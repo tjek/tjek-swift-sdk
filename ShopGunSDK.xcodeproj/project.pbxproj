@@ -805,11 +805,12 @@
 				TargetAttributes = {
 					AEC28B391FF6AAC20007AAB8 = {
 						CreatedOnToolsVersion = 9.1;
-						LastSwiftMigration = 0910;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 					};
 					AEC28B421FF6AAC20007AAB8 = {
 						CreatedOnToolsVersion = 9.1;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 					};
 				};

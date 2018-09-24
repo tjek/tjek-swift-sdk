@@ -124,14 +124,14 @@ extension PagedPublicationView {
             backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
             
             // must be started on non-main run loop to avoid interfering with scrolling
-            self.perform(#selector(startPulsingNumberAnimation), with: nil, afterDelay: 0, inModes: [RunLoopMode.commonModes])
+            self.perform(#selector(startPulsingNumberAnimation), with: nil, afterDelay: 0, inModes: [RunLoop.Mode.common])
             
             // listen for memory warnings and clear the zoomimage
-            NotificationCenter.default.addObserver(self, selector: #selector(memoryWarningNotification), name: .UIApplicationDidReceiveMemoryWarning, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(memoryWarningNotification), name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
         }
         
         deinit {
-            NotificationCenter.default.removeObserver(self, name: .UIApplicationDidReceiveMemoryWarning, object: nil)
+            NotificationCenter.default.removeObserver(self, name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
         }
         
         required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }

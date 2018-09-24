@@ -318,7 +318,7 @@ extension CoreAPI.AuthVault {
             if let expiryDate = CoreAPI.dateFormatter.date(from: expiryString) {
                 self.expiry = expiryDate
             } else {
-                throw DecodingError.dataCorruptedError(forKey: .expiry, in: values, debugDescription: "Date string does not match format expected by formatter (\(CoreAPI.dateFormatter.dateFormat)).")
+                throw DecodingError.dataCorruptedError(forKey: .expiry, in: values, debugDescription: "Date string does not match format expected by formatter (\(String(describing: CoreAPI.dateFormatter.dateFormat))).")
             }
         }
         

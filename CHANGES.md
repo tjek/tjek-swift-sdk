@@ -1,6 +1,9 @@
 # Change Log
 
 ## v4.1
+**Swift 4.2 now required**
+
+- New `EventsTracker`, with a privacy-first format.
 - Added new `getPagedPublication(forDealers:...)` CoreAPI request.
 - Add dealerIds filter to `getOffers(matchingSearch:...)` CoreAPI request.
 - Add optional location filter to `getSuggestedPublications` CoreAPI request.
@@ -10,7 +13,7 @@
 - Fix issue related to request parameter url-encoding.
 - Fix loading too-large page images.
 - Remove CryptoSwift dependency.
-- New EventsTracker, with a privacy-first format.
+- Update `Kingfisher ~> 4.10.0` 
 
 ## v4.0.2
 - Fix issue when building for Release (`GenericIdentifier` was not decoding correctly)
