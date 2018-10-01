@@ -21,6 +21,7 @@ extension Event {
         case offerOpened                    = 3
         case clientSessionOpened            = 4
         case searched                       = 5
+        case offerOpenedAfterSearch         = 7
     }
     
     /**
@@ -134,6 +135,34 @@ extension Event {
                      payload: payload)
             .addingViewToken(content: query, tokenizer: tokenizer)
     }
+    
+    /**
+     The event when a search is performed against the system, and that search leads to an offer being opened.
+     - parameter offerId: The Id of the offer that was opened.
+     - parameter query: The search query, as entered by the user, that lead to the offer being opened.
+     - parameter languageCode: The language the user is searching with (2-character ISO-639-1 code, or nil if no language can be detected)
+     - parameter timestamp: The date that the event occurred. Defaults to now.
+     */
+    internal static func offerOpenedAfterSearch(
+        offerId: CoreAPI.Offer.Identifier,
+        query: String,
+        languageCode: String?,
+        timestamp: Date = Date()
+        ) -> Event {
+        
+        var payload: PayloadType = [
+            "sea.q": .string(query),
+            "of.id": .string(offerId.rawValue)
+        ]
+        
+        if let lang = languageCode {
+            payload["sea.l"] = .string(lang)
+        }
+        
+        return Event(timestamp: timestamp,
+                     type: EventType.offerOpenedAfterSearch.rawValue,
+                     payload: payload)
+    }
 }
 
 extension Event {
@@ -150,5 +179,13 @@ extension Event {
         languageCode: String?
         ) -> Event {
         return searched(for: query, languageCode: languageCode, timestamp: Date())
+    }
+    
+    public static func offerOpenedAfterSearch(
+        offerId: CoreAPI.Offer.Identifier,
+        query: String,
+        languageCode: String?
+        ) -> Event {
+        return offerOpenedAfterSearch(offerId: offerId, query: query, languageCode: languageCode, timestamp: Date())
     }
 }

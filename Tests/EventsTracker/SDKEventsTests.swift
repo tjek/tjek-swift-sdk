@@ -161,6 +161,28 @@ class SDKEventsTests: XCTestCase {
                        ["sea.q": .string("øl og æg"),
                         "vt": .string("NTgj68OWnbc=")])
     }
+    
+    func testOfferOpenedAfterSearch() {
+        let testDate = Date(eventTimestamp: 12345)
+        let query = "Søme Very Long Séarch string 🌈"
+        let event = Event.offerOpenedAfterSearch(offerId: "offer_123", query: query, languageCode: "DA", timestamp: testDate)
+        
+        XCTAssertFalse(event.id.rawValue.isEmpty)
+        XCTAssertEqual(event.type, 7)
+        XCTAssertEqual(event.timestamp.eventTimestamp, 12345)
+        XCTAssertEqual(event.version, 2)
+        XCTAssertEqual(event.payload,
+                       ["sea.q": .string(query),
+                        "sea.l": .string("DA"),
+                        "of.id": .string("offer_123")])
+        
+        let nowTimestamp = Date().eventTimestamp
+        let defaultEvent = Event.offerOpenedAfterSearch(offerId: "abc123", query: "", languageCode: nil)
+        XCTAssert(abs(defaultEvent.timestamp.eventTimestamp - nowTimestamp) <= 2)
+        XCTAssertEqual(defaultEvent.payload,
+                       ["sea.q": .string(""),
+                        "of.id": .string("abc123")])
+    }
 }
 
 fileprivate class MockSaltDataStore: ShopGunSDKDataStore {
