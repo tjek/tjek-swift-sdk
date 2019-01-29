@@ -13,6 +13,9 @@ import Foundation
 public protocol GraphNetworkTransport {
     @discardableResult
     func send(request: GraphRequestProtocol, completion: @escaping (Result<GraphResponse>) -> Void) -> Cancellable
+    
+    @discardableResult
+    func send(dataRequest: GraphRequestProtocol, completion: @escaping (Result<Data>) -> Void) -> Cancellable
 }
 
 // MARK: - HTTP Network communication
@@ -30,47 +33,59 @@ public class HTTPGraphNetworkTransport: GraphNetworkTransport {
     }
     
     @discardableResult
-    public func send(request: GraphRequestProtocol, completion: @escaping (Result<GraphResponse>) -> Void) -> Cancellable {
+    public func send(dataRequest: GraphRequestProtocol, completion: @escaping (Result<Data>) -> Void) -> Cancellable {
         
-        let urlReq = self.buildURLRequest(for: request, additionalHeaders: additionalHeaders)
+        let urlReq = self.buildURLRequest(for: dataRequest, additionalHeaders: additionalHeaders)
         
         let task = session.dataTask(with: urlReq) { (responseData, response, error) in
-            
-            if let networkErr = error {
-                completion(.error(networkErr))
+            guard let data = responseData else {
+                let error = error ?? GraphError(message: "No Response Data", path: [])
+                completion(.error(error))
                 return
             }
             
-            // try to get dictionary from the response.
-            guard let jsonData = responseData, let jsonDict = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
-                
-                // TODO: Real 'empty/unparseable data' error
-                completion(.error(GraphError(message: "Invalid JSON", path: [])))
-                
-                return
-            }
-            
-            var data: [String: Any]?
-            var errors: [GraphError]?
-            
-            if let jsonErrors = jsonDict?["errors"] as? [[String: Any]] {
-                let possibleErrors = jsonErrors.compactMap(GraphError.init(json:))
-                if possibleErrors.count > 0 {
-                    errors = possibleErrors
-                }
-            }
-            
-            if let jsonData = jsonDict?["data"] as? [String: Any] {
-                data = jsonData
-            }
-            
-            let graphResponse = GraphResponse(data: data, errors: errors)
-            completion(.success(graphResponse))
+            completion(.success(data))
         }
         
         task.resume()
         
         return task
+    }
+    
+    @discardableResult
+    public func send(request: GraphRequestProtocol, completion: @escaping (Result<GraphResponse>) -> Void) -> Cancellable {
+        
+        return self.send(dataRequest: request) { (resultData: Result<Data>) in
+            switch resultData {
+            case .error(let error):
+                completion(.error(error))
+            case .success(let jsonData):
+                guard let jsonDict = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
+                    
+                    // TODO: Real 'empty/unparseable data' error
+                    completion(.error(GraphError(message: "Invalid JSON", path: [])))
+                    
+                    return
+                }
+                
+                var data: [String: Any]?
+                var errors: [GraphError]?
+                
+                if let jsonErrors = jsonDict?["errors"] as? [[String: Any]] {
+                    let possibleErrors = jsonErrors.compactMap(GraphError.init(json:))
+                    if possibleErrors.count > 0 {
+                        errors = possibleErrors
+                    }
+                }
+                
+                if let jsonData = jsonDict?["data"] as? [String: Any] {
+                    data = jsonData
+                }
+                
+                let graphResponse = GraphResponse(data: data, errors: errors)
+                completion(.success(graphResponse))
+            }
+        }
     }
     
     /// Build a URLRequest based on a GraphRequest
