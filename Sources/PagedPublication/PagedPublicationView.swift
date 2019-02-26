@@ -460,14 +460,11 @@ public class PagedPublicationView: UIView {
             self.isOutroPage(inPageIndexes: pageIndexes) == false,
             self.isOutroPageVisible == false {
             
-            properties.updateProgress(pageCount: pageCount, pageIndex: firstCurrentPageIndex)
-            
             properties.pageLabelString = dataSourceWithDefaults.textForPageNumberLabel(pageIndexes: pageIndexes,
                                                                             pageCount: pageCount,
                                                                             for: self)
                 
         } else {
-            properties.progress = nil
             properties.pageLabelString = nil
         }
         
