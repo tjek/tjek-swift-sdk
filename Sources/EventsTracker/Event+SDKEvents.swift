@@ -22,6 +22,7 @@ extension Event {
         case clientSessionOpened            = 4
         case searched                       = 5
         case offerOpenedAfterSearch         = 7
+        case incitoPublicationOpened        = 8
     }
     
     /**
@@ -163,6 +164,34 @@ extension Event {
                      type: EventType.offerOpenedAfterSearch.rawValue,
                      payload: payload)
     }
+    
+    /**
+     The event when an incito publication has been "opened" by a user. In general, "opening" an incito publication means any action that results in the incito's contents being presented for browsing.
+     - parameter incitoId: The uuid of the incito.
+     - parameter pagedPublicationId: The (optional) uuid of the pagedPublication related to this incito, if known.
+     - parameter timestamp: The date that the event occurred. Defaults to now.
+     - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
+     */
+    internal static func incitoPublicationOpened(
+        _ incitoId: String,
+        pagedPublicationId: CoreAPI.PagedPublication.Identifier?,
+        timestamp: Date = Date(),
+        tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
+        ) -> Event {
+        
+        let payload: PayloadType = ["ip.id": .string(incitoId)]
+        
+        var event = Event(timestamp: timestamp,
+                          type: EventType.incitoPublicationOpened.rawValue,
+                          payload: payload)
+            .addingViewToken(content: incitoId, tokenizer: tokenizer)
+        
+        if let pagedPubId = pagedPublicationId {
+            event = event.addingViewToken(content: pagedPubId.rawValue, key: "pp.vt", tokenizer: tokenizer)
+        }
+        
+        return event
+    }
 }
 
 extension Event {
@@ -187,5 +216,16 @@ extension Event {
         languageCode: String?
         ) -> Event {
         return offerOpenedAfterSearch(offerId: offerId, query: query, languageCode: languageCode, timestamp: Date())
+    }
+    
+    public static func incitoPublicationOpened(
+        _ incitoId: String,
+        pagedPublicationId: CoreAPI.PagedPublication.Identifier?
+        ) -> Event {
+        return incitoPublicationOpened(
+            incitoId,
+            pagedPublicationId: pagedPublicationId,
+            timestamp: Date()
+        )
     }
 }
