@@ -111,7 +111,9 @@ extension PagedPublicationView: VersoViewDelegate {
         self.hotspotOverlayView.touchGesture?.isEnabled = false
         self.hotspotOverlayView.touchGesture?.isEnabled = true
         
-        lifecycleEventTracker?.spreadDidDisappear()
+        if currentPageIndexes != oldPageIndexes {
+            lifecycleEventTracker?.spreadDidDisappear()
+        }
         
         // remove the outro index when refering to page indexes outside of PagedPub
         var currentExOutro = currentPageIndexes
