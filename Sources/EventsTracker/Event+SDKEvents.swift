@@ -21,6 +21,7 @@ extension Event {
         case offerOpened                    = 3
         case clientSessionOpened            = 4
         case searched                       = 5
+        case firstOfferOpenedAfterSearch    = 6
         case offerOpenedAfterSearch         = 7
         case incitoPublicationOpened        = 8
         case potentialLocalBusinessVisit    = 10
@@ -139,6 +140,39 @@ extension Event {
     }
     
     /**
+     The event when a search is performed against the system, and that search leads to an offer being opened. This is only triggered for the _first_ offer to be interacted with.
+     - parameter offerId: The Id of the offer that was opened.
+     - parameter precedingOfferIds: An ordered list of offer ids that were shown above the offer that was interacted with. Empty list if only one offer was retrieved and clicked. This includes results from pagination. Internally, this list is prefixed (prefixed, not suffixed!) to 100 items.
+     - parameter query: The search query, as entered by the user, that lead to the offer being opened.
+     - parameter languageCode: The language the user is searching with (2-character ISO-639-1 code, or nil if no language can be detected)
+     - parameter timestamp: The date that the event occurred. Defaults to now.
+     */
+    internal static func firstOfferOpenedAfterSearch(
+        offerId: CoreAPI.Offer.Identifier,
+        precedingOfferIds: [CoreAPI.Offer.Identifier],
+        query: String,
+        languageCode: String?,
+        timestamp: Date = Date()
+        ) -> Event {
+        
+        var payload: PayloadType = [
+            "sea.q": .string(query),
+            "of.id": .string(offerId.rawValue),
+            "of.ids": .array(precedingOfferIds
+                .prefix(100)
+                .map { .string($0.rawValue) })
+        ]
+        
+        if let lang = languageCode {
+            payload["sea.l"] = .string(lang)
+        }
+        
+        return Event(timestamp: timestamp,
+                     type: EventType.firstOfferOpenedAfterSearch.rawValue,
+                     payload: payload)
+    }
+    
+    /**
      The event when a search is performed against the system, and that search leads to an offer being opened.
      - parameter offerId: The Id of the offer that was opened.
      - parameter query: The search query, as entered by the user, that lead to the offer being opened.
@@ -249,6 +283,14 @@ extension Event {
         return searched(for: query, languageCode: languageCode, timestamp: Date())
     }
     
+    public static func firstOfferOpenedAfterSearch(
+        offerId: CoreAPI.Offer.Identifier,
+        precedingOfferIds: [CoreAPI.Offer.Identifier],
+        query: String,
+        languageCode: String?
+        ) -> Event {
+        return firstOfferOpenedAfterSearch(offerId: offerId, precedingOfferIds: precedingOfferIds, query: query, languageCode: languageCode, timestamp: Date())
+    }
     public static func offerOpenedAfterSearch(
         offerId: CoreAPI.Offer.Identifier,
         query: String,
