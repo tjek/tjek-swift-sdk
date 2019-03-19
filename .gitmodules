@@ -11,3 +11,6 @@
 [submodule "External/Kingfisher"]
 	path = External/Kingfisher
 	url = https://github.com/onevcat/Kingfisher.git
+[submodule "External/incito-ios"]
+	path = External/incito-ios
+	url = https://github.com/shopgun/incito-ios.git
