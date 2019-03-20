@@ -31,6 +31,16 @@ Pod::Spec.new do |s|
         ss.resources = ["Sources/PagedPublication/Resources/**/*"]
     end
 
+    s.subspec 'IncitoPublication' do |ss|
+        ss.source_files = "Sources/Incito/**/*.swift"
+        ss.frameworks   = "Foundation", "UIKit"
+        
+        ss.dependency "ShopGunSDK/Shared"
+        ss.dependency "ShopGunSDK/GraphAPI"
+        ss.dependency "ShopGunSDK/EventsTracker"
+        ss.dependency "Incito", "~> 0.1"
+    end
+    
     s.subspec 'CoreAPI' do |ss|
         ss.source_files = "Sources/CoreAPI/**/*.swift"
         ss.frameworks   = "Foundation", "UIKit", "CoreLocation"
