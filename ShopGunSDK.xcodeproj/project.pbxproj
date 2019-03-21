@@ -67,6 +67,12 @@
 		AE95FDC0204FEC6C0002C1CE /* CGSize_Fitting.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE95FDBF204FEC6C0002C1CE /* CGSize_Fitting.swift */; };
 		AE98C895224164B200B4BD7A /* Incito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE98C881224164A200B4BD7A /* Incito.framework */; };
 		AE98C896224164BF00B4BD7A /* Incito.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE98C881224164A200B4BD7A /* Incito.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AE98D324224263E300B4BD7A /* IncitoOffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE98D323224263E300B4BD7A /* IncitoOffer.swift */; };
+		AE98D34422426A9300B4BD7A /* IncitoGraphLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE98D34122426A9100B4BD7A /* IncitoGraphLoader.swift */; };
+		AE98D34522426A9300B4BD7A /* IncitoViewer.graphql in Resources */ = {isa = PBXBuildFile; fileRef = AE98D34222426A9100B4BD7A /* IncitoViewer.graphql */; };
+		AE98D34622426A9300B4BD7A /* IncitoViewerQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE98D34322426A9100B4BD7A /* IncitoViewerQuery.swift */; };
+		AE98D34822426AE000B4BD7A /* IncitoLoaderViewController+GraphLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE98D34722426AE000B4BD7A /* IncitoLoaderViewController+GraphLoader.swift */; };
+		AEAB9BE52243CBAA006DB981 /* SharedModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAB9BE42243CBAA006DB981 /* SharedModels.swift */; };
 		AEBA9C23211C2C6800516744 /* UniqueViewTokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA9C21211C2C1000516744 /* UniqueViewTokenizerTests.swift */; };
 		AEBA9C25211C623C00516744 /* GeohashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA9C24211C623C00516744 /* GeohashTests.swift */; };
 		AEBA9C27211CB07E00516744 /* SDKEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA9C26211CB07E00516744 /* SDKEventsTests.swift */; };
@@ -369,6 +375,12 @@
 		AE95FDBF204FEC6C0002C1CE /* CGSize_Fitting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGSize_Fitting.swift; sourceTree = "<group>"; };
 		AE95FDC1204FEE710002C1CE /* ShopGunSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShopGunSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		AE98C879224164A200B4BD7A /* Incito.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Incito.xcodeproj; path = "External/incito-ios/Incito.xcodeproj"; sourceTree = "<group>"; };
+		AE98D323224263E300B4BD7A /* IncitoOffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncitoOffer.swift; sourceTree = "<group>"; };
+		AE98D34122426A9100B4BD7A /* IncitoGraphLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncitoGraphLoader.swift; sourceTree = "<group>"; };
+		AE98D34222426A9100B4BD7A /* IncitoViewer.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = IncitoViewer.graphql; sourceTree = "<group>"; };
+		AE98D34322426A9100B4BD7A /* IncitoViewerQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncitoViewerQuery.swift; sourceTree = "<group>"; };
+		AE98D34722426AE000B4BD7A /* IncitoLoaderViewController+GraphLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IncitoLoaderViewController+GraphLoader.swift"; sourceTree = "<group>"; };
+		AEAB9BE42243CBAA006DB981 /* SharedModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedModels.swift; sourceTree = "<group>"; };
 		AEBA9C21211C2C1000516744 /* UniqueViewTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniqueViewTokenizerTests.swift; sourceTree = "<group>"; };
 		AEBA9C24211C623C00516744 /* GeohashTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeohashTests.swift; sourceTree = "<group>"; };
 		AEBA9C26211CB07E00516744 /* SDKEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKEventsTests.swift; sourceTree = "<group>"; };
@@ -570,12 +582,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		AE98C8972241659200B4BD7A /* Incito */ = {
+		AE98C8972241659200B4BD7A /* IncitoPublication */ = {
 			isa = PBXGroup;
 			children = (
+				AE98D323224263E300B4BD7A /* IncitoOffer.swift */,
+				AE98D34122426A9100B4BD7A /* IncitoGraphLoader.swift */,
+				AE98D34222426A9100B4BD7A /* IncitoViewer.graphql */,
+				AE98D34322426A9100B4BD7A /* IncitoViewerQuery.swift */,
+				AE98D34722426AE000B4BD7A /* IncitoLoaderViewController+GraphLoader.swift */,
 			);
-			name = Incito;
-			path = Sources/Incito;
+			name = IncitoPublication;
+			path = Sources/IncitoPublication;
 			sourceTree = "<group>";
 		};
 		AEC28B301FF6AAC20007AAB8 = {
@@ -587,7 +604,7 @@
 				AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */,
 				AEC28B591FF6ABFC0007AAB8 /* CoreAPI */,
 				AE4942BF201743FA006658CE /* PagedPublication */,
-				AE98C8972241659200B4BD7A /* Incito */,
+				AE98C8972241659200B4BD7A /* IncitoPublication */,
 				AEC28B561FF6ABFB0007AAB8 /* EventsTracker */,
 				AE091FD2203AF23F00345009 /* GraphAPI */,
 				AEC28B5F1FF6ABFC0007AAB8 /* Shared */,
@@ -656,6 +673,7 @@
 		AEC28B5F1FF6ABFC0007AAB8 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				AEAB9BE42243CBAA006DB981 /* SharedModels.swift */,
 				AE22AAF920527DFA008601EB /* Settings.swift */,
 				AE6D65EC204ECBF50011E15C /* Logger.swift */,
 				AE6D65F9204EE2910011E15C /* KeychainDataStore.swift */,
@@ -1057,6 +1075,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE98D34522426A9300B4BD7A /* IncitoViewer.graphql in Resources */,
 				AE3B32E72045F8A6001C75C9 /* PagedPublicationView.strings in Resources */,
 				AE3B32E82045F8A6001C75C9 /* PagedPublicationView.xcassets in Resources */,
 			);
@@ -1091,11 +1110,13 @@
 				AE7F6A73201F2F2B00168C1A /* PagedPublicationView+HotspotOverlayView.swift in Sources */,
 				AE3B3244204467F6001C75C9 /* PagedPublicationView+ProtocolDefaults.swift in Sources */,
 				AE8E4541200E31E60042CCE2 /* UIColor_Hex.swift in Sources */,
+				AEAB9BE52243CBAA006DB981 /* SharedModels.swift in Sources */,
 				AE091FEB203AF24000345009 /* GraphRequestResponse.swift in Sources */,
 				AEEE540A21187EEA00528E3B /* Event+CommonPayloads.swift in Sources */,
 				AE85C5E42000384500263F8B /* CoreAPI_AuthVault.swift in Sources */,
 				AE091FED203AF24000345009 /* GraphClient.swift in Sources */,
 				AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */,
+				AE98D34622426A9300B4BD7A /* IncitoViewerQuery.swift in Sources */,
 				AEEE54122118983500528E3B /* Geohash.swift in Sources */,
 				AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */,
 				AEEE541421189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift in Sources */,
@@ -1128,15 +1149,18 @@
 				AE2008D5200CE86F004363BE /* UserAgent.swift in Sources */,
 				AE50A3BE2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift in Sources */,
 				AE85C5EF2001884100263F8B /* Result+MapValue.swift in Sources */,
+				AE98D324224263E300B4BD7A /* IncitoOffer.swift in Sources */,
 				AE091FF0203AF24000345009 /* GraphError.swift in Sources */,
 				AE3C38F52019DF7900A92597 /* PagedPublicationView+ContentsView.swift in Sources */,
 				AE043057205BC15000F5D8C9 /* CoreAPI_Branding.swift in Sources */,
 				AE7F6A79201F5F4900168C1A /* PagedPublicationView+ImageLoader.swift in Sources */,
 				AE1027BB2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift in Sources */,
+				AE98D34822426AE000B4BD7A /* IncitoLoaderViewController+GraphLoader.swift in Sources */,
 				AE0AF2E5201A7D1A00CDF3EC /* PagedPublicationView+PageView.swift in Sources */,
 				AE0B8F8E20035D5C006E036F /* AsyncOperation.swift in Sources */,
 				AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */,
 				AEFDDAB8215910A1000992FD /* CryptoInclude.m in Sources */,
+				AE98D34422426A9300B4BD7A /* IncitoGraphLoader.swift in Sources */,
 				AE04305F205BE24000F5D8C9 /* CoreAPI_StoreRequests.swift in Sources */,
 				AED992852063008300671F48 /* CoreAPI_OfferRequests.swift in Sources */,
 				AE7D9B63204745C6000F3B7D /* CoreAPI_LegacyMigration.swift in Sources */,

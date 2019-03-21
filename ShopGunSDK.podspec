@@ -32,7 +32,8 @@ Pod::Spec.new do |s|
     end
 
     s.subspec 'IncitoPublication' do |ss|
-        ss.source_files = "Sources/Incito/**/*.swift"
+        ss.source_files = "Sources/IncitoPublication/**/*.swift"
+        ss.resources = ["Sources/IncitoPublication/**/*.graphql"]
         ss.frameworks   = "Foundation", "UIKit"
         
         ss.dependency "ShopGunSDK/Shared"
