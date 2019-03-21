@@ -14,8 +14,7 @@ extension CoreAPI {
     /// A `PagedPublication` is a catalog that has static images for each `Page`, with possible `Hotspot`s referencing `Offer`s on each page, that is published by a `Dealer`.
     public struct PagedPublication: Decodable, Equatable {
         
-        /// The type of a PagedPublication's unique identifier.
-        public typealias Identifier = GenericIdentifier<PagedPublication>
+        public typealias Identifier = PagedPublicationCoreAPIIdentifier
         
         /// The unique identifier of this PagedPublication.
         public var id: Identifier
