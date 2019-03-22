@@ -22,6 +22,12 @@ custom_categories:
     - PagedPublicationViewEventHandler
     - PagedPublicationViewImageLoader
     
+  - name: IncitoPublication
+    children:
+    - IncitoOffer
+    - IncitoViewController
+    - IncitoLoaderViewController
+    
   - name: CoreAPI
     children:
     - CoreAPI
