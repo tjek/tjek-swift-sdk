@@ -456,7 +456,6 @@ public class PagedPublicationView: UIView {
         var properties = contentsView.properties
         
         if let pageCount = coreProperties.pageCount,
-            let firstCurrentPageIndex = pageIndexes.first,
             self.isOutroPage(inPageIndexes: pageIndexes) == false,
             self.isOutroPageVisible == false {
             
