@@ -173,18 +173,18 @@ extension Event {
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
     internal static func incitoPublicationOpened(
-        _ incitoId: String,
-        pagedPublicationId: CoreAPI.PagedPublication.Identifier?,
+        _ incitoId: IncitoGraphIdentifier,
+        pagedPublicationId: PagedPublicationCoreAPIIdentifier?,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
         ) -> Event {
         
-        let payload: PayloadType = ["ip.id": .string(incitoId)]
+        let payload: PayloadType = ["ip.id": .string(incitoId.rawValue)]
         
         var event = Event(timestamp: timestamp,
                           type: EventType.incitoPublicationOpened.rawValue,
                           payload: payload)
-            .addingViewToken(content: incitoId, tokenizer: tokenizer)
+            .addingViewToken(content: incitoId.rawValue, tokenizer: tokenizer)
         
         if let pagedPubId = pagedPublicationId {
             event = event.addingViewToken(content: pagedPubId.rawValue, key: "pp.vt", tokenizer: tokenizer)
@@ -219,8 +219,8 @@ extension Event {
     }
     
     public static func incitoPublicationOpened(
-        _ incitoId: String,
-        pagedPublicationId: CoreAPI.PagedPublication.Identifier?
+        _ incitoId: IncitoGraphIdentifier,
+        pagedPublicationId: PagedPublicationCoreAPIIdentifier?
         ) -> Event {
         return incitoPublicationOpened(
             incitoId,

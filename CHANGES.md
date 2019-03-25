@@ -3,6 +3,8 @@
 ## v4.1
 **Swift 4.2 now required**
 
+- Add support for `IncitoLoaderViewController`.
+- Adds Finnish localizations.
 - New `EventsTracker`, with a privacy-first format.
 - Added new `getPagedPublication(forDealers:...)` CoreAPI request.
 - Add dealerIds filter to `getOffers(matchingSearch:...)` CoreAPI request.
@@ -12,6 +14,7 @@
 - Allow using private keychains with custom names.
 - Fix issue related to request parameter url-encoding.
 - Fix loading too-large page images.
+- Removes progress bar from PagedPublication view
 - Remove CryptoSwift dependency.
 - Update `Kingfisher ~> 4.10.0` 
 - Update `Valet ~> 3.1.6`

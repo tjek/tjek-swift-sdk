@@ -14,12 +14,7 @@ extension CoreAPI {
     /// A `PagedPublication` is a catalog that has static images for each `Page`, with possible `Hotspot`s referencing `Offer`s on each page, that is published by a `Dealer`.
     public struct PagedPublication: Decodable, Equatable {
         
-        /// The type of a PagedPublication's unique identifier.
-        public typealias Identifier = GenericIdentifier<PagedPublication>
-        
-        /// The type of a IncitoPublication's unique identifier.
-        public enum IncitoType {}
-        public typealias IncitoIdentifier = GenericIdentifier<IncitoType>
+        public typealias Identifier = PagedPublicationCoreAPIIdentifier
         
         /// The unique identifier of this PagedPublication.
         public var id: Identifier
@@ -44,7 +39,7 @@ extension CoreAPI {
         /// The unique identifier of the nearest store. This will only contain a value if the `PagedPublication` was fetched with a request that includes store information (eg. one that takes a precise location as a parameter).
         public var storeId: CoreAPI.Store.Identifier?
         /// The unique identifier of the Incito Publication related this PagedPublication
-        public var incitoId: IncitoIdentifier?
+        public var incitoId: IncitoGraphIdentifier?
         
         // MARK: Decodable
         
@@ -107,7 +102,7 @@ extension CoreAPI {
                 self.frontPageImages = ImageURLSet(sizedUrls: [])
             }
             
-            self.incitoId = try? values.decode(IncitoIdentifier.self, forKey: .incitoId)
+            self.incitoId = try? values.decode(IncitoGraphIdentifier.self, forKey: .incitoId)
         }
         
         // MARK: -
