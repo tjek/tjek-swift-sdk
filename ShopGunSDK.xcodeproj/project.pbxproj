@@ -395,7 +395,6 @@
 		AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericIdentifier.swift; sourceTree = "<group>"; };
 		AEC28B621FF6ABFC0007AAB8 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShopGunSDK.h; path = Sources/ShopGunSDK.h; sourceTree = "<group>"; };
-		AEC28B6F1FF6AC420007AAB8 /* ShopGunSDK.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = ShopGunSDK.playground; sourceTree = "<group>"; };
 		AEC28B711FF6AC8A0007AAB8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AEC3D8541FFD87FB004C5947 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AEC3D8551FFD87FB004C5947 /* SettingsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
@@ -600,7 +599,6 @@
 			children = (
 				AE95FDC1204FEE710002C1CE /* ShopGunSDK.podspec */,
 				AEEF0D86212D7F720004EFFC /* Cartfile */,
-				AEC28B6F1FF6AC420007AAB8 /* ShopGunSDK.playground */,
 				AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */,
 				AEC28B591FF6ABFC0007AAB8 /* CoreAPI */,
 				AE4942BF201743FA006658CE /* PagedPublication */,

@@ -118,12 +118,15 @@ extension Incito.ViewProperties {
 }
 
 extension IncitoViewController {
-    public func firstOffer(at point: CGPoint) -> IncitoOffer? {
-
-        guard let firstOfferView = self.firstView(at: point, where: { $1.isOffer }) else {
-            return nil
+    
+    public func firstOffer(at point: CGPoint) -> (ViewProperties.Identifier, IncitoOffer)? {
+        
+        guard let firstOfferView = self.firstView(at: point, where: { $1.isOffer }),
+            let offer = firstOfferView.properties.offer
+            else {
+                return nil
         }
         
-        return firstOfferView.properties.offer
+        return (firstOfferView.properties.id, offer)
     }
 }

@@ -23,7 +23,7 @@ extension IncitoLoaderViewController {
      */
     public func load(
         id: IncitoGraphIdentifier,
-        graphClient: GraphClient,
+        graphClient: GraphClient = GraphAPI.shared.client,
         relatedPublicationId: PagedPublicationCoreAPIIdentifier?,
         businessLoaded: ((Result<GraphBusiness>) -> Void)? = nil,
         completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil

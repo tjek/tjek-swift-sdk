@@ -17,6 +17,10 @@ final public class GraphAPI {
     }
     
     private init() { fatalError("You must provide settings when creating the GraphAPI") }
+    
+    public lazy var client: NetworkGraphClient = {
+        return NetworkGraphClient(graphAPI: self)
+    }()
 }
 
 // MARK: -
@@ -56,5 +60,33 @@ extension GraphAPI {
         }
         
         _shared = GraphAPI(settings: settings)
+    }
+}
+
+
+
+// An GraphClient for connecting to the ShopGun Graph service. It handles auth with AppKeys.
+extension NetworkGraphClient {
+    convenience init(url: URL, appKey: String? = nil) {
+        var additionalHeaders: [String: String]? = nil
+        
+        if let realAppKey = appKey, let authData = "app-key:\(realAppKey)".data(using: .utf8) {
+            
+            let base64EncodedCredential = authData.base64EncodedString()
+            let authString = "Basic \(base64EncodedCredential)"
+            
+            additionalHeaders = ["Authorization": authString]
+        }
+        
+        let connection = HTTPGraphNetworkTransport(url: url, additionalHeaders: additionalHeaders, configuration: URLSessionConfiguration.default)
+        
+        self.init(connection: connection)
+    }
+    
+    convenience init(graphAPI: GraphAPI) {
+        self.init(
+            url: graphAPI.settings.baseURL,
+            appKey: graphAPI.settings.key
+        )
     }
 }

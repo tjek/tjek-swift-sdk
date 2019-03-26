@@ -1,0 +1,14 @@
+workspace '../../ShopGunSDK.xcworkspace'
+project "CocoapodsDemo"
+platform :ios, '9.3'
+
+target 'CocoapodsDemo' do
+  use_frameworks!
+
+  # In your actual project you would not use the path-based pod.
+  # Instead, something like `pod "ShopGunSDK"``
+  # You can also specify subspecs if you only want to use a subsection of the functionality.
+  # For example `pod "ShopGunSDK/PagedPublicationView"`
+  pod 'ShopGunSDK', :path => '../../'
+  
+end

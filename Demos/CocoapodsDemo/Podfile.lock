@@ -1,0 +1,65 @@
+PODS:
+  - Cache (5.2.0)
+  - FLAnimatedImage (1.0.12)
+  - Incito (0.2):
+    - Cache (~> 5.2)
+    - FLAnimatedImage (~> 1.0)
+  - Kingfisher (4.10.1)
+  - ShopGunSDK (4.1):
+    - ShopGunSDK/CoreAPI (= 4.1)
+    - ShopGunSDK/EventsTracker (= 4.1)
+    - ShopGunSDK/GraphAPI (= 4.1)
+    - ShopGunSDK/IncitoPublication (= 4.1)
+    - ShopGunSDK/PagedPublicationView (= 4.1)
+    - ShopGunSDK/Shared (= 4.1)
+  - ShopGunSDK/CoreAPI (4.1):
+    - ShopGunSDK/Shared
+  - ShopGunSDK/EventsTracker (4.1):
+    - ShopGunSDK/CoreAPI
+    - ShopGunSDK/Shared
+  - ShopGunSDK/GraphAPI (4.1):
+    - ShopGunSDK/Shared
+  - ShopGunSDK/IncitoPublication (4.1):
+    - Incito (~> 0.2)
+    - ShopGunSDK/EventsTracker
+    - ShopGunSDK/GraphAPI
+    - ShopGunSDK/Shared
+  - ShopGunSDK/PagedPublicationView (4.1):
+    - Kingfisher (~> 4.10.0)
+    - ShopGunSDK/CoreAPI
+    - ShopGunSDK/EventsTracker
+    - ShopGunSDK/Shared
+    - Verso (~> 1.0.3)
+  - ShopGunSDK/Shared (4.1):
+    - Valet (~> 3.1.6)
+  - Valet (3.1.6)
+  - Verso (1.0.3)
+
+DEPENDENCIES:
+  - ShopGunSDK (from `../../`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Cache
+    - FLAnimatedImage
+    - Incito
+    - Kingfisher
+    - Valet
+    - Verso
+
+EXTERNAL SOURCES:
+  ShopGunSDK:
+    :path: "../../"
+
+SPEC CHECKSUMS:
+  Cache: 807c5d86d01a177f06ede9865add3aea269bbfd4
+  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
+  Incito: 52c3d3f0e6f6a002474795ab36e3e8e18e2349b3
+  Kingfisher: c148cd7b47ebde9989f6bc7c27dcaa79d81279a0
+  ShopGunSDK: 27ceb0df66d887d6bd5ab417581113cdbd578b08
+  Valet: d11fac6ffa0541755b2ae5aa11dc88daa44f29bd
+  Verso: 2a19842572b2b8f6f13eae539294faedcd971a88
+
+PODFILE CHECKSUM: ed0b3c5087f312dd9bbde35aeab6936fc01fb782
+
+COCOAPODS: 1.5.3

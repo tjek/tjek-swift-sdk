@@ -9,10 +9,6 @@
 
 import Foundation
 
-public enum SettingsError: Error {
-    case propertyMissing(name: String)
-}
-
 public class Settings: Decodable {
     public var keychainDataStore: Settings.KeychainDataStore
     public var coreAPI: Settings.CoreAPI? = nil
@@ -45,6 +41,7 @@ public class Settings: Decodable {
     private enum SettingsLoadError: Error {
         case fileNotFound(fileName: String)
         case fileEmpty(filePath: URL)
+        case propertyMissing(name: String)
     }
     private static var _shared: Settings?
     
@@ -68,11 +65,11 @@ public class Settings: Decodable {
             self.keychainDataStore = .privateKeychain(id: privateId)
         }
         
-        self.coreAPI = try? container.decode(Settings.CoreAPI.self, forKey: .coreAPI)
+        self.coreAPI = try container.decodeIfPresent(Settings.CoreAPI.self, forKey: .coreAPI)
         
-        self.graphAPI = try? container.decode(Settings.GraphAPI.self, forKey: .graphAPI)
+        self.graphAPI = try container.decodeIfPresent(Settings.GraphAPI.self, forKey: .graphAPI)
         
-        self.eventsTracker = try? container.decode(Settings.EventsTracker.self, forKey: .eventsTracker)
+        self.eventsTracker = try container.decodeIfPresent(Settings.EventsTracker.self, forKey: .eventsTracker)
     }
     
 }
@@ -88,6 +85,7 @@ extension Settings {
         case sharedKeychain(groupId: String)
     }
 }
+
 extension Settings {
     /**
      The settings for the CoreAPI component.
@@ -99,10 +97,10 @@ extension Settings {
         
         public init(key: String, secret: String, baseURL: URL = URL(string: "https://api.etilbudsavis.dk")!) throws {
             guard !key.isEmpty else {
-                throw(SettingsError.propertyMissing(name: "Settings.CoreAPI.key"))
+                throw(SettingsLoadError.propertyMissing(name: "Settings.CoreAPI.key"))
             }
             guard !secret.isEmpty else {
-                throw(SettingsError.propertyMissing(name: "Settings.CoreAPI.secret" ))
+                throw(SettingsLoadError.propertyMissing(name: "Settings.CoreAPI.secret" ))
             }
             
             self.key = key
@@ -144,7 +142,7 @@ extension Settings {
         public init(key: String, baseURL: URL = URL(string: "https://graph.service.shopgun.com")!) throws {
             
             guard !key.isEmpty else {
-                throw(SettingsError.propertyMissing(name: "Settings.GraphAPI.key" ))
+                throw(SettingsLoadError.propertyMissing(name: "Settings.GraphAPI.key" ))
             }
             
             self.key = key
@@ -188,7 +186,7 @@ extension Settings {
         public init(appId: AppIdentifier, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, enabled: Bool = true) throws {
             
             guard !appId.rawValue.isEmpty else {
-                throw(SettingsError.propertyMissing(name: "Settings.EventsTracker.appId" ))
+                throw(SettingsLoadError.propertyMissing(name: "Settings.EventsTracker.appId" ))
             }
             
             self.appId = appId

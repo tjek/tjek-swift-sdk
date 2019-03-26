@@ -2,14 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>KeychainGroupId(?)</key>
-	<string>file-group-id</string>
 	<key>GraphAPI</key>
 	<dict>
 		<key>key</key>
 		<string>graphapi-file-key</string>
-		<key>baseURL(?)</key>
-		<string>graphapi-file-url</string>
 	</dict>
 	<key>CoreAPI</key>
 	<dict>
@@ -17,21 +13,11 @@
 		<string>coreapi-file-key</string>
 		<key>secret</key>
 		<string>coreapi-file-secret</string>
-		<key>baseURL(?)</key>
-		<string>coreapi-file-url</string>
 	</dict>
 	<key>EventsTracker</key>
 	<dict>
 		<key>appId</key>
-		<string>events-file-appid</string>
-		<key>baseURL(?)</key>
-		<string>events-file-url</string>
-		<key>dispatchInterval(?)</key>
-		<real>5.5</real>
-		<key>dispatchLimit(?)</key>
-		<integer>10</integer>
-		<key>enabled(?)</key>
-		<false/>
+		<string>eventstracker-appId</string>
 	</dict>
 </dict>
 </plist>
