@@ -63,11 +63,9 @@ extension GraphAPI {
     }
 }
 
-
-
 // An GraphClient for connecting to the ShopGun Graph service. It handles auth with AppKeys.
 extension NetworkGraphClient {
-    convenience init(url: URL, appKey: String? = nil) {
+    public convenience init(url: URL, appKey: String? = nil) {
         var additionalHeaders: [String: String]? = nil
         
         if let realAppKey = appKey, let authData = "app-key:\(realAppKey)".data(using: .utf8) {
@@ -83,7 +81,7 @@ extension NetworkGraphClient {
         self.init(connection: connection)
     }
     
-    convenience init(graphAPI: GraphAPI) {
+    public convenience init(graphAPI: GraphAPI) {
         self.init(
             url: graphAPI.settings.baseURL,
             appKey: graphAPI.settings.key
