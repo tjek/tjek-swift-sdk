@@ -63,13 +63,17 @@ public class PagedPublicationView: UIView {
     public typealias CoreProperties = (pageCount: Int?, bgColor: UIColor, aspectRatio: Double)
     
     /**
-     * This will configure the `CoreAPI` and `EventsTracker` components using the `Settings` from the default SettingsFile.
-     *
-     * If you dont call this (or at least `CoreAPI.configure()`) before you start using the `PagedPublicationView`, there will be a `fatalError`.
+     This will configure the `CoreAPI` and `EventsTracker` components using the `Settings` from the default SettingsFile.
+     
+     If you dont call this (or at least `CoreAPI.configure()`) before you start using the `PagedPublicationView`, there will be a `fatalError`.
+     
+     - parameter sendEvents: If set to `true` (the default) it will configure the `EventsTracker` to send anonymous publication opened & page-read events. You must make sure that the default Settings file has all the properties needed for tracking events.
      */
-    public static func configure() {
+    public static func configure(sendEvents: Bool = true) {
         CoreAPI.configure()
-        EventsTracker.configure()
+        if sendEvents {
+            EventsTracker.configure()
+        }
     }
     
     public weak var delegate: PagedPublicationViewDelegate?

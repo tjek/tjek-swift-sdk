@@ -9,6 +9,10 @@
 
 import Foundation
 
+public enum SettingsError: Error {
+    case propertyMissing(name: String)
+}
+
 public class Settings: Decodable {
     public var keychainDataStore: Settings.KeychainDataStore
     public var coreAPI: Settings.CoreAPI? = nil
@@ -93,7 +97,14 @@ extension Settings {
         public var secret: String
         public var baseURL: URL
         
-        public init(key: String, secret: String, baseURL: URL = URL(string: "https://api.etilbudsavis.dk")!) {
+        public init(key: String, secret: String, baseURL: URL = URL(string: "https://api.etilbudsavis.dk")!) throws {
+            guard !key.isEmpty else {
+                throw(SettingsError.propertyMissing(name: "Settings.CoreAPI.key"))
+            }
+            guard !secret.isEmpty else {
+                throw(SettingsError.propertyMissing(name: "Settings.CoreAPI.secret" ))
+            }
+            
             self.key = key
             self.secret = secret
             self.baseURL = baseURL
@@ -113,7 +124,7 @@ extension Settings {
             let key = try container.decode(String.self, forKey: .key)
             let secret = try container.decode(String.self, forKey: .secret)
             
-            self.init(key: key, secret: secret)
+            try self.init(key: key, secret: secret)
             
             if let baseURLStr = try? container.decode(String.self, forKey: .baseURL), let baseURL = URL(string: baseURLStr) {
                 self.baseURL = baseURL
@@ -130,7 +141,12 @@ extension Settings {
         public var key: String
         public var baseURL: URL
         
-        public init(key: String, baseURL: URL = URL(string: "https://graph.service.shopgun.com")!) {
+        public init(key: String, baseURL: URL = URL(string: "https://graph.service.shopgun.com")!) throws {
+            
+            guard !key.isEmpty else {
+                throw(SettingsError.propertyMissing(name: "Settings.GraphAPI.key" ))
+            }
+            
             self.key = key
             self.baseURL = baseURL
         }
@@ -146,7 +162,7 @@ extension Settings {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             
             let key = try container.decode(String.self, forKey: .key)
-            self.init(key: key)
+            try self.init(key: key)
             
             if let baseURLStr = try? container.decode(String.self, forKey: .baseURL), let baseURL = URL(string: baseURLStr) {
                 self.baseURL = baseURL
@@ -169,7 +185,12 @@ extension Settings {
         public var dispatchLimit: Int
         public var enabled: Bool
         
-        public init(appId: AppIdentifier, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, enabled: Bool = true) {
+        public init(appId: AppIdentifier, baseURL: URL = URL(string: "https://events.service.shopgun.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, enabled: Bool = true) throws {
+            
+            guard !appId.rawValue.isEmpty else {
+                throw(SettingsError.propertyMissing(name: "Settings.EventsTracker.appId" ))
+            }
+            
             self.appId = appId
             self.baseURL = baseURL
             self.dispatchInterval = dispatchInterval
@@ -193,7 +214,7 @@ extension Settings {
             
             let appId = try container.decode(AppIdentifier.self, forKey: .appId)
             
-            self.init(appId: appId)
+            try self.init(appId: appId)
             
             if let baseURLStr = try? container.decode(String.self, forKey: .baseURL), let baseURL = URL(string: baseURLStr) {
                 self.baseURL = baseURL
