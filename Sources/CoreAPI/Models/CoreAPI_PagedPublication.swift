@@ -16,6 +16,11 @@ extension CoreAPI {
         
         public typealias Identifier = PagedPublicationCoreAPIIdentifier
         
+        public enum PublicationType: String, Codable {
+            case paged
+            case incito
+        }
+        
         /// The unique identifier of this PagedPublication.
         public var id: Identifier
         /// The name of the publication. eg. "Christmas Special".
@@ -41,6 +46,17 @@ extension CoreAPI {
         /// The unique identifier of the Incito Publication related this PagedPublication
         public var incitoId: IncitoGraphIdentifier?
         
+        /// Defines what types of publication this represents.
+        /// If it contains `paged`, the `id` can be used to view this in a PagedPublicationViewer
+        /// If it contains `incito`, the `incitoId` will always have a value, and it can be viewed with the IncitoViewer
+        /// If it ONLY contains `incito`, this cannot be viewed in a PagedPublicationViewer (see `isOnlyIncito`)
+        public var types: Set<PublicationType>
+        
+        /// True if this publication can only be viewed as an incito (if viewed in a PagedPublication view it would appear as a single-page pdf)
+        public var isOnlyIncito: Bool {
+            return types == [.incito]
+        }
+        
         // MARK: Decodable
         
         enum CodingKeys: String, CodingKey {
@@ -57,6 +73,7 @@ extension CoreAPI {
             case dimensions
             case frontPageImageURLs = "images"
             case incitoId           = "incito_publication_id"
+            case types
         }
   
         public init(from decoder: Decoder) throws {
@@ -103,6 +120,8 @@ extension CoreAPI {
             }
             
             self.incitoId = try? values.decode(IncitoGraphIdentifier.self, forKey: .incitoId)
+            
+            self.types = (try? values.decode(Set<PublicationType>.self, forKey: .types)) ?? [.paged]
         }
         
         // MARK: -
