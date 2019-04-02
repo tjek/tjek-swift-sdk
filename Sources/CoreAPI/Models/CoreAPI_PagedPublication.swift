@@ -57,6 +57,36 @@ extension CoreAPI {
             return types == [.incito]
         }
         
+        public init(
+            id: Identifier,
+            label: String?,
+            pageCount: Int,
+            offerCount: Int,
+            runDateRange: Range<Date>,
+            aspectRatio: Double,
+            branding: Branding,
+            frontPageImages: ImageURLSet,
+            isAvailableInAllStores: Bool,
+            dealerId: CoreAPI.Dealer.Identifier,
+            storeId: CoreAPI.Store.Identifier?,
+            incitoId: IncitoGraphIdentifier?,
+            types: Set<PublicationType>
+            ) {
+            self.id = id
+            self.label = label
+            self.pageCount = pageCount
+            self.offerCount = offerCount
+            self.runDateRange = runDateRange
+            self.aspectRatio = aspectRatio
+            self.branding = branding
+            self.frontPageImages = frontPageImages
+            self.isAvailableInAllStores = isAvailableInAllStores
+            self.dealerId = dealerId
+            self.storeId = storeId
+            self.incitoId = incitoId
+            self.types = types
+        }
+        
         // MARK: Decodable
         
         enum CodingKeys: String, CodingKey {
