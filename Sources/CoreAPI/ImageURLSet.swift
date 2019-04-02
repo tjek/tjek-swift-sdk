@@ -14,6 +14,11 @@ public struct ImageURLSet: Equatable {
     public struct SizedImageURL: Equatable {
         public var size: CGSize
         public var url: URL
+        
+        public init(size: CGSize, url: URL) {
+            self.size = size
+            self.url = url
+        }
     }
     
     /// The urls & their sizes, sorted from smallest to largest by area
