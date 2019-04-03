@@ -45,7 +45,7 @@ extension CoreAPI.Requests {
     }
     
     /// Given a publication's Id, this will return
-    public static func getSuggestedPublications(relatedTo pubId: CoreAPI.PagedPublication.Identifier, near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+    public static func getSuggestedPublications(relatedTo pubId: CoreAPI.PagedPublication.Identifier, near locationQuery: LocationQuery? = nil, acceptedTypes: Set<CoreAPI.PagedPublication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
         
         var params = ["catalog_id": pubId.rawValue]
         params.merge(pagination.requestParams) { (_, new) in new }
@@ -53,6 +53,7 @@ extension CoreAPI.Requests {
         if let locationQParams = locationQuery?.requestParams {
             params.merge(locationQParams) { (_, new) in new }
         }
+        params["types"] = acceptedTypes.map({ $0.rawValue }).joined(separator: ",")
 
         return .init(path: "/v2/catalogs/suggest",
                      method: .GET,
@@ -88,11 +89,12 @@ extension CoreAPI.Requests {
         }
     }
     
-    public static func getPublications(near locationQuery: LocationQuery, sortedBy: PublicationSortOrder, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+    public static func getPublications(near locationQuery: LocationQuery, sortedBy: PublicationSortOrder, acceptedTypes: Set<CoreAPI.PagedPublication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
         
         var params = ["order_by": sortedBy.sortKeys.joined(separator: ",")]
         params.merge(locationQuery.requestParams) { (_, new) in new }
         params.merge(pagination.requestParams) { (_, new) in new }
+        params["types"] = acceptedTypes.map({ $0.rawValue }).joined(separator: ",")
         
         return .init(path: "/v2/catalogs",
                      method: .GET,
@@ -100,24 +102,26 @@ extension CoreAPI.Requests {
                      parameters: params)
     }
     
-    public static func getPublications(matchingSearch searchString: String, near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+    public static func getPublications(matchingSearch searchString: String, near locationQuery: LocationQuery? = nil, acceptedTypes: Set<CoreAPI.PagedPublication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
         
         var params = ["query": searchString]
         if let locationQParams = locationQuery?.requestParams {
             params.merge(locationQParams) { (_, new) in new }
         }
         params.merge(pagination.requestParams) { (_, new) in new }
-
+        params["types"] = acceptedTypes.map({ $0.rawValue }).joined(separator: ",")
+        
         return .init(path: "/v2/catalogs/search",
                      method: .GET,
                      requiresAuth: true,
                      parameters: params)
     }
     
-    public static func getPublications(forStores storeIds: [CoreAPI.Store.Identifier], pagination: PaginatedQuery = PaginatedQuery(count: 24)) ->
+    public static func getPublications(forStores storeIds: [CoreAPI.Store.Identifier], acceptedTypes: Set<CoreAPI.PagedPublication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) ->
         CoreAPI.Request<[CoreAPI.PagedPublication]> {
             var params = ["store_ids": storeIds.map(String.init).joined(separator: ",")]
             params.merge(pagination.requestParams) { (_, new) in new }
+            params["types"] = acceptedTypes.map({ $0.rawValue }).joined(separator: ",")
             
             return .init(path: "/v2/catalogs",
                          method: .GET,
@@ -131,10 +135,11 @@ extension CoreAPI.Requests {
      * - parameter dealerIds: A list of `Dealer` identifiers defining which dealer's publications you want to fetch.
      * - parameter pagination: A `PaginationQuery` that lets you specify how many publications you wish to fetch, and with what page offset.
      */
-    public static func getPublications(forDealers dealerIds: [CoreAPI.Dealer.Identifier], pagination: PaginatedQuery = PaginatedQuery(count: 24)) ->
+    public static func getPublications(forDealers dealerIds: [CoreAPI.Dealer.Identifier], acceptedTypes: Set<CoreAPI.PagedPublication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) ->
         CoreAPI.Request<[CoreAPI.PagedPublication]> {
             var params = ["dealer_ids": dealerIds.map(String.init).joined(separator: ",")]
             params.merge(pagination.requestParams) { (_, new) in new }
+            params["types"] = acceptedTypes.map({ $0.rawValue }).joined(separator: ",")
             
             return .init(path: "/v2/catalogs",
                          method: .GET,
@@ -142,13 +147,14 @@ extension CoreAPI.Requests {
                          parameters: params)
     }
     
-    public static func getFavoritedPublications(near locationQuery: LocationQuery? = nil, sortedBy: PublicationSortOrder, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+    public static func getFavoritedPublications(near locationQuery: LocationQuery? = nil, sortedBy: PublicationSortOrder, acceptedTypes: Set<CoreAPI.PagedPublication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
         
         var params = ["order_by": sortedBy.sortKeys.joined(separator: ",")]
         params.merge(pagination.requestParams) { (_, new) in new }
         if let locationQParams = locationQuery?.requestParams {
             params.merge(locationQParams) { (_, new) in new }
         }
+        params["types"] = acceptedTypes.map({ $0.rawValue }).joined(separator: ",")
         
         return .init(path: "/v2/catalogs/favorites",
                      method: .GET,
