@@ -10,10 +10,13 @@
 import UIKit
 import Incito
 
+public typealias FeatureLabel = (key: String, value: Double)
+
 public func IncitoGraphLoader(
     id: IncitoGraphIdentifier,
     graphClient: GraphClient,
     width: Double,
+    featureLabels: [FeatureLabel] = [],
     timeout: TimeInterval = 10,
     businessLoadedCallback: ((Incito.Result<GraphBusiness>) -> Void)?
     ) -> IncitoLoader {
@@ -28,6 +31,7 @@ public func IncitoGraphLoader(
     
     let query = IncitoViewerQuery(
         id: id,
+        featureLabels: featureLabels,
         maxWidth: Int(width),
         deviceCategory: deviceCategory,
         orientation: orientation,
