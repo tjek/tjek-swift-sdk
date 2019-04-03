@@ -15,64 +15,57 @@ enum IncitoPublicationLoaderError: Error {
     case notAnIncitoPublication
 }
 
+extension CoreAPI {
+    func request<R: CoreAPIMappableRequest>(_ request: R) -> Future<ShopGunSDK.Result<R.ResponseType>> {
+        return Future { cb in
+            self.request(request, completion: cb)
+        }
+    }
+}
+
 extension IncitoLoaderViewController {
     
-    public func load(
-        publicationId: CoreAPI.PagedPublication.Identifier,
+    private func load(
+        incitoIdLoader: Future<Incito.Result<IncitoGraphIdentifier>>,
+        relatedPublicationId: CoreAPI.PagedPublication.Identifier?,
         graphClient: GraphClient = GraphAPI.shared.client,
-        publicationLoaded: ((Result<CoreAPI.PagedPublication>) -> Void)? = nil,
-        businessLoaded: ((Result<GraphBusiness>) -> Void)? = nil,
-        completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil
+        businessLoaded: ((Incito.Result<GraphBusiness>) -> Void)? = nil,
+        completion: ((Incito.Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil
         ) {
         
         // Keep track of the id of the incitoId once it is loaded.
+        var expectedIncitoId: IncitoGraphIdentifier? = nil
         var firstLoadedIncitoId: IncitoGraphIdentifier? = nil
-        var publicationIncitoId: IncitoGraphIdentifier? = nil
         
         // every time the loader is called, fetch the width of the screen
-        let graphLoader: (IncitoGraphIdentifier) -> IncitoLoader = { graphId in
-            Future(work: { [weak self] in Double(self?.view.frame.size.width ?? 0) })
-            .asyncOnMain()
-            .flatMap({ width in
-                IncitoGraphLoader(
-                    id: graphId,
-                    graphClient: graphClient,
-                    width: width,
-                    businessLoadedCallback: { businessLoaded?($0.shopGunSDKResult) }
-                )
-            })
+        let graphIncitoLoader: (IncitoGraphIdentifier) -> IncitoLoader = { graphId in
+            Future<Double>(work: { [weak self] in Double(self?.view.frame.size.width ?? 0) })
+                .asyncOnMain()
+                .flatMap({ width in
+                    IncitoGraphLoader(
+                        id: graphId,
+                        graphClient: graphClient,
+                        width: width,
+                        businessLoadedCallback: { businessLoaded?($0) }
+                    )
+                })
         }
         
         // make a loader that first fetches the publication, then gets the incito id from that publication, then calls the graphLoader with that incitoId
-        let loader = Future<ShopGunSDK.Result<CoreAPI.PagedPublication>>(run: { cb in
-            let publicationReq = CoreAPI.Requests.getPagedPublication(withId: publicationId)
-            CoreAPI.shared.request(publicationReq, completion: cb)
-        })
-            .observe({ publicationLoaded?($0) })
-            .map({
-                Incito.Result(shopGunSDKResult:
-                    $0.mapValue({ (pub: CoreAPI.PagedPublication) -> IncitoGraphIdentifier in
-                        if let incitoId = pub.incitoId {
-                            publicationIncitoId = incitoId
-                            return incitoId
-                        } else {
-                            throw IncitoPublicationLoaderError.notAnIncitoPublication
-                        }
-                    })
-                )
-            })
-            .flatMapResult(graphLoader)
+        let loader = incitoIdLoader
+            .observeSuccess({ expectedIncitoId = $0 })
+            .flatMapResult(graphIncitoLoader)
         
         self.load(loader) { [weak self] vcResult in
             switch vcResult {
             case let .success(viewController):
                 var firstSuccessfulReload: Bool = false
-                if let incitoId = publicationIncitoId {
+                if let incitoId = expectedIncitoId {
                     firstSuccessfulReload = (firstLoadedIncitoId != incitoId)
                     
                     if firstSuccessfulReload {
                         firstLoadedIncitoId = incitoId
-                        self?.firstSuccessfulReload(incitoId: incitoId, relatedPublicationId: publicationId)
+                        self?.firstSuccessfulReload(incitoId: incitoId, relatedPublicationId: relatedPublicationId)
                     }
                 }
                 completion?(.success((viewController, firstSuccessfulReload)))
@@ -81,6 +74,42 @@ extension IncitoLoaderViewController {
             }
         }
     }
+    
+    public func load(
+        publicationId: CoreAPI.PagedPublication.Identifier,
+        graphClient: GraphClient = GraphAPI.shared.client,
+        publicationLoaded: ((Incito.Result<CoreAPI.PagedPublication>) -> Void)? = nil,
+        businessLoaded: ((Incito.Result<GraphBusiness>) -> Void)? = nil,
+        completion: ((Incito.Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil
+        ) {
+        
+        let publicationReq = CoreAPI.Requests.getPagedPublication(withId: publicationId)
+        
+        let incitoIdLoader: Future<Incito.Result<IncitoGraphIdentifier>> = CoreAPI.shared
+            .request(publicationReq)
+            .map(Incito.Result.init(shopGunSDKResult:))
+            .observe({ publicationLoaded?($0) })
+            .map({
+                switch $0 {
+                case let .success(publication):
+                    guard let incitoId = publication.incitoId else {
+                        return .error(IncitoPublicationLoaderError.notAnIncitoPublication)
+                    }
+                    return .success(incitoId)
+                case let .error(err):
+                    return .error(err)
+                }
+            })
+        
+        self.load(
+            incitoIdLoader: incitoIdLoader,
+            relatedPublicationId: publicationId,
+            graphClient: graphClient,
+            businessLoaded: businessLoaded,
+            completion: completion
+        )
+    }
+    
     /**
      Will start loading the incito specified by the id, using the graphClient.
      
@@ -94,38 +123,19 @@ extension IncitoLoaderViewController {
         graphId: IncitoGraphIdentifier,
         graphClient: GraphClient = GraphAPI.shared.client,
         relatedPublicationId: PagedPublicationCoreAPIIdentifier?,
-        businessLoaded: ((Result<GraphBusiness>) -> Void)? = nil,
-        completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil
+        businessLoaded: ((Incito.Result<GraphBusiness>) -> Void)? = nil,
+        completion: ((Incito.Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil
         ) {
         
-        // Keep track of the id of the incitoId once it is loaded.
-        var loadedIncitoId: IncitoGraphIdentifier? = nil
+        let incitoIdLoader = Future<Incito.Result<IncitoGraphIdentifier>>(value: .success(graphId))
         
-        // every time the loader is called, fetch the width of the screen
-        let loader = Future<Double>(work: { [weak self] in Double(self?.view.frame.size.width ?? 0) })
-            .asyncOnMain()
-            .flatMap({ width in
-                IncitoGraphLoader(
-                    id: graphId,
-                    graphClient: graphClient,
-                    width: width,
-                    businessLoadedCallback: { businessLoaded?($0.shopGunSDKResult) }
-                )
-            })
-        
-        self.load(loader) { [weak self] vcResult in
-            switch vcResult {
-            case let .success(viewController):
-                let firstSuccessfulReload = (loadedIncitoId != graphId)
-                if firstSuccessfulReload {
-                    loadedIncitoId = graphId
-                    self?.firstSuccessfulReload(incitoId: graphId, relatedPublicationId: relatedPublicationId)
-                }
-                completion?(.success((viewController, firstSuccessfulReload)))
-            case let .error(error):
-                completion?(.error(error))
-            }
-        }
+        self.load(
+            incitoIdLoader: incitoIdLoader,
+            relatedPublicationId: relatedPublicationId,
+            graphClient: graphClient,
+            businessLoaded: businessLoaded,
+            completion: completion
+        )
     }
     
     private func firstSuccessfulReload(incitoId: IncitoGraphIdentifier, relatedPublicationId: PagedPublicationCoreAPIIdentifier?) {
