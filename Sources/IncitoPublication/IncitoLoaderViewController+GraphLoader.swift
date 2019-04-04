@@ -79,8 +79,8 @@ extension IncitoLoaderViewController {
     
     public func load(
         publicationId: CoreAPI.PagedPublication.Identifier,
-        graphClient: GraphClient = GraphAPI.shared.client,
         featureLabels: [FeatureLabel] = [],
+        graphClient: GraphClient = GraphAPI.shared.client,
         publicationLoaded: ((Incito.Result<CoreAPI.PagedPublication>) -> Void)? = nil,
         businessLoaded: ((Incito.Result<GraphBusiness>) -> Void)? = nil,
         completion: ((Incito.Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil
@@ -125,9 +125,9 @@ extension IncitoLoaderViewController {
      */
     public func load(
         graphId: IncitoGraphIdentifier,
-        graphClient: GraphClient = GraphAPI.shared.client,
         relatedPublicationId: PagedPublicationCoreAPIIdentifier?,
         featureLabels: [FeatureLabel] = [],
+        graphClient: GraphClient = GraphAPI.shared.client,
         businessLoaded: ((Incito.Result<GraphBusiness>) -> Void)? = nil,
         completion: ((Incito.Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil
         ) {
