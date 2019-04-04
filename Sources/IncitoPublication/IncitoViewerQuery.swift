@@ -28,7 +28,7 @@ struct IncitoViewerQuery: GraphQuery {
     }
     
     var id: IncitoGraphIdentifier
-    var featureLabels: [FeatureLabel]
+    var featureLabelWeights: [String: Double]
     var maxWidth: Int
     var deviceCategory: DeviceCategory
     var orientation: Orientation
@@ -46,7 +46,7 @@ struct IncitoViewerQuery: GraphQuery {
     var variables: GraphDict? {
         var dict: GraphDict = [
             "id": id.rawValue,
-            "featureLabels": featureLabels.map({ ["key": $0, "value": $1] }),
+            "featureLabels": featureLabelWeights.map({ ["key": $0, "value": $1] }),
             "maxWidth": maxWidth,
             "deviceCategory": deviceCategory.rawValue,
             "orientation": orientation.rawValue,
