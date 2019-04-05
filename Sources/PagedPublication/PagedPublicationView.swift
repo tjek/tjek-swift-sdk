@@ -12,9 +12,9 @@ import Verso
 
 /// The object that does the fetching of the publication's
 public protocol PagedPublicationViewDataLoader {
-    typealias PublicationLoadedHandler = ((Result<PagedPublicationView.PublicationModel>) -> Void)
-    typealias PagesLoadedHandler = ((Result<[PagedPublicationView.PageModel]>) -> Void)
-    typealias HotspotsLoadedHandler = ((Result<[PagedPublicationView.HotspotModel]>) -> Void)
+    typealias PublicationLoadedHandler = ((Result<PagedPublicationView.PublicationModel, Error>) -> Void)
+    typealias PagesLoadedHandler = ((Result<[PagedPublicationView.PageModel], Error>) -> Void)
+    typealias HotspotsLoadedHandler = ((Result<[PagedPublicationView.HotspotModel], Error>) -> Void)
 
     func startLoading(publicationId: PagedPublicationView.PublicationId, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler)
     func cancelLoading()
@@ -339,7 +339,7 @@ public class PagedPublicationView: UIView {
     
     // MARK: - Data Loading
     
-    private func publicationDidLoad(forId publicationId: PublicationId, result: Result<PublicationModel>) {
+    private func publicationDidLoad(forId publicationId: PublicationId, result: Result<PublicationModel, Error>) {
         switch result {
         case .success(let publicationModel):
             self.publicationState = .loaded(publicationId, publicationModel)
@@ -363,27 +363,27 @@ public class PagedPublicationView: UIView {
             }
             
             delegate?.didLoad(publication: publicationModel, in: self)
-        case .error(let error):
+        case .failure(let error):
             self.publicationState = .error(publicationId, error)
         }
         
         self.updateCurrentViewState(initialPageIndex: self.postReloadPageIndex)
     }
     
-    private func pagesDidLoad(forId publicationId: PublicationId, result: Result<[PageModel]>) {
+    private func pagesDidLoad(forId publicationId: PublicationId, result: Result<[PageModel], Error>) {
         switch result {
         case .success(let pageModels):
             // generate page view states based on the pageModels
             self.pagesState = .loaded(publicationId, pageModels)
             delegate?.didLoad(pages: pageModels, in: self)
-        case .error(let error):
+        case .failure(let error):
             self.pagesState = .error(publicationId, error)
         }
         
         self.updateCurrentViewState(initialPageIndex: self.postReloadPageIndex)
     }
     
-    private func hotspotsDidLoad(forId publicationId: PublicationId, result: Result<[HotspotModel]>) {
+    private func hotspotsDidLoad(forId publicationId: PublicationId, result: Result<[HotspotModel], Error>) {
         switch result {
         case .success(let hotspotModels):
             // key hotspots by their pageLocations
@@ -394,7 +394,7 @@ public class PagedPublicationView: UIView {
             
             self.hotspotsState = .loaded(publicationId, hotspotsByPage)
             self.delegate?.didLoad(hotspots: hotspotModels, in: self)
-        case .error(let error):
+        case .failure(let error):
             self.hotspotsState = .error(publicationId, error)
         }
         

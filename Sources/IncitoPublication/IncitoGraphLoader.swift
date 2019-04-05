@@ -16,7 +16,7 @@ public func IncitoGraphLoader(
     width: Double,
     featureLabelWeights: [String: Double] = [:],
     timeout: TimeInterval = 10,
-    businessLoadedCallback: ((Incito.Result<GraphBusiness>) -> Void)?
+    businessLoadedCallback: ((Result<GraphBusiness, Error>) -> Void)?
     ) -> IncitoLoader {
     
     let deviceCategory = UIDevice.current.incitoDeviceCategory
@@ -48,7 +48,6 @@ public func IncitoGraphLoader(
     // - load the document
     return graphClient
         .start(dataRequest: request)
-        .map(Incito.Result.init(shopGunSDKResult:))
         .flatMapResult(GenericGraphResponse<IncitoViewerGraphData>.decode(from:))
         .observe({ res in
             businessLoadedCallback?(res.map({ $0.data.incito.business }))
@@ -66,8 +65,8 @@ struct GenericGraphResponse<DataType: Decodable>: Decodable {
 }
 
 extension GraphClient {
-    func start(dataRequest: GraphRequestProtocol) -> Future<ShopGunSDK.Result<Data>> {
-        return Future<ShopGunSDK.Result<Data>> { completion in
+    func start(dataRequest: GraphRequestProtocol) -> FutureResult<Data> {
+        return FutureResult<Data> { completion in
             self.start(dataRequest: dataRequest, completion: completion)
         }
     }
@@ -79,27 +78,6 @@ extension UIDevice {
             return .tablet
         default:
             return .mobile
-        }
-    }
-}
-
-extension Incito.Result {
-    /// annoying mapping between Result types... roll-on swift 5
-    init(shopGunSDKResult: ShopGunSDK.Result<A>) {
-        switch shopGunSDKResult {
-        case let .success(a):
-            self = .success(a)
-        case let .error(error):
-            self = .error(error)
-        }
-    }
-    
-    var shopGunSDKResult: ShopGunSDK.Result<A> {
-        switch self {
-        case let .success(a):
-            return .success(a)
-        case let .error(error):
-            return .error(error)
         }
     }
 }

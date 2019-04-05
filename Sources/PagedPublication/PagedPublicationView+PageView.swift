@@ -207,7 +207,7 @@ extension PagedPublicationView {
                     
                     s.imageLoadState = .loaded
                     s.delegate?.didFinishLoading(viewImage: url, fromCache: fromCache, in: s)
-                case .error(let error):
+                case .failure(let error):
                     
                     guard error.isCancellationError == false else {
                         s.imageLoadState = .notLoaded
@@ -238,7 +238,7 @@ extension PagedPublicationView {
                     s.zoomImageLoadState = .loaded
                     s.delegate?.didFinishLoading(zoomImage: url, fromCache: fromCache, in: s)
 
-                case .error(let error):
+                case .failure(let error):
                     s.zoomImageView.isHidden = true
 
                     guard error.isCancellationError == false else {

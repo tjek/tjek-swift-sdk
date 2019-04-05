@@ -29,6 +29,9 @@
 		AE1027A621240D8200104921 /* EventsPoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1027A521240D8200104921 /* EventsPoolTests.swift */; };
 		AE1027B821245B0D00104921 /* EventsTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1027B721245B0D00104921 /* EventsTrackerTests.swift */; };
 		AE1027BB2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1027BA2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift */; };
+		AE1B50862257A30C00A680AB /* Incito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE98C881224164A200B4BD7A /* Incito.framework */; };
+		AE1B50872257A32300A680AB /* Verso.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4942A520113A0F006658CE /* Verso.framework */; };
+		AE1B50882257A32F00A680AB /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06549A1FFEE24C009F6F92 /* Valet.framework */; };
 		AE2008D5200CE86F004363BE /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2008D4200CE86F004363BE /* UserAgent.swift */; };
 		AE22AAFA20527DFA008601EB /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE22AAF920527DFA008601EB /* Settings.swift */; };
 		AE38B46A2119EBDB008C1EA8 /* EventsShipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE38B4692119EBDB008C1EA8 /* EventsShipper.swift */; };
@@ -83,7 +86,6 @@
 		AEC28B681FF6ABFC0007AAB8 /* CoreAPI_APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5D1FF6ABFC0007AAB8 /* CoreAPI_APIError.swift */; };
 		AEC28B6A1FF6ABFC0007AAB8 /* Cancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */; };
 		AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */; };
-		AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B621FF6ABFC0007AAB8 /* Result.swift */; };
 		AEC28B6E1FF6AC2A0007AAB8 /* ShopGunSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AEC3D8571FFD87FB004C5947 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3D8551FFD87FB004C5947 /* SettingsTests.swift */; };
 		AECC8E1B204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */; };
@@ -393,7 +395,6 @@
 		AEC28B5D1FF6ABFC0007AAB8 /* CoreAPI_APIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAPI_APIError.swift; sourceTree = "<group>"; };
 		AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cancellable.swift; sourceTree = "<group>"; };
 		AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericIdentifier.swift; sourceTree = "<group>"; };
-		AEC28B621FF6ABFC0007AAB8 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShopGunSDK.h; path = Sources/ShopGunSDK.h; sourceTree = "<group>"; };
 		AEC28B711FF6AC8A0007AAB8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AEC3D8541FFD87FB004C5947 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -449,6 +450,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE1B50882257A32F00A680AB /* Valet.framework in Frameworks */,
+				AE1B50872257A32300A680AB /* Verso.framework in Frameworks */,
+				AE1B50862257A30C00A680AB /* Incito.framework in Frameworks */,
 				AE0B85D2204602650092F110 /* Kingfisher.framework in Frameworks */,
 				AEC28B441FF6AAC20007AAB8 /* ShopGunSDK.framework in Frameworks */,
 			);
@@ -677,7 +681,6 @@
 				AE6D65F9204EE2910011E15C /* KeychainDataStore.swift */,
 				AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */,
 				AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */,
-				AEC28B621FF6ABFC0007AAB8 /* Result.swift */,
 				AE85C5EE2001884100263F8B /* Result+MapValue.swift */,
 				AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */,
 				AE2008D4200CE86F004363BE /* UserAgent.swift */,
@@ -1129,7 +1132,6 @@
 				AE092011203C1F4D00345009 /* EventsTracker.swift in Sources */,
 				AE3B3242204422D5001C75C9 /* Bundle+ShopGunSDK.swift in Sources */,
 				AE0654871FFED399009F6F92 /* CoreAPI_Utils.swift in Sources */,
-				AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */,
 				AEEE540E211889E400528E3B /* Event+EventsTrackerContext.swift in Sources */,
 				AE3B323C2044136C001C75C9 /* PagedPublicationView+ErrorView.swift in Sources */,
 				AE09204820401E6A00345009 /* CoreAPI_RequestQueryParameters.swift in Sources */,

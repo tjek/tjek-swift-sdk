@@ -20,7 +20,7 @@ extension CoreAPI {
             case reauthorize(LoginCredentials) // renew the current token the specified credentials (fails if no token)
         }
         
-        typealias SignedRequestCompletion = ((Result<URLRequest>) -> Void)
+        typealias SignedRequestCompletion = ((Result<URLRequest, Error>) -> Void)
         
         // MARK: Funcs
         
@@ -178,11 +178,11 @@ extension CoreAPI {
                 urlRequest = urlRequest.signedForCoreAPI(withToken: token, secret: self.secret)
             }
             
-            let task = self.urlSession.coreAPIDataTask(with: urlRequest) { [weak self] (authSessionResult: Result<AuthSessionResponse>) -> Void in
+            let task = self.urlSession.coreAPIDataTask(with: urlRequest) { [weak self] (authSessionResult: Result<AuthSessionResponse, Error>) -> Void in
                 self?.queue.async { [weak self] in
                     self?.activeRegenerateTaskCompleted(authSessionResult)
                     DispatchQueue.main.async {
-                        mutableCompletion?(authSessionResult.error)
+                        mutableCompletion?(authSessionResult.getFailure())
                     }
                 }
             }
@@ -205,7 +205,7 @@ extension CoreAPI {
                 if let authError = authError {
                     // unauthorized, with an error, so perform completion and forward the error
                     DispatchQueue.main.async {
-                        completion(.error(authError))
+                        completion(.failure(authError))
                     }
                 } else {
                     // unauthorized, without an error, so cache completion & start regenerating token
@@ -241,7 +241,7 @@ extension CoreAPI {
             self.activeRegenerateTask = nil
         }
         
-        private func activeRegenerateTaskCompleted(_ result: Result<AuthSessionResponse>) {
+        private func activeRegenerateTaskCompleted(_ result: Result<AuthSessionResponse, Error>) {
             
             switch result {
             case .success(let authSession):
@@ -258,11 +258,11 @@ extension CoreAPI {
                     }
                 }
                 
-            case .error(let cancelError as NSError)
+            case .failure(let cancelError as NSError)
                 where cancelError.domain == NSURLErrorDomain && cancelError.code == URLError.Code.cancelled.rawValue:
                 // if cancelled then ignore
                 break
-            case .error(let regenError):
+            case .failure(let regenError):
                 Logger.log("Failed to update authSession \(regenError)", level: .error, source: .CoreAPI)
                 
                 let type = activeRegenerateTask?.type
@@ -275,7 +275,7 @@ extension CoreAPI {
                 } else {
                     for (_, completion) in self.pendingSignedRequests {
                         DispatchQueue.main.async {
-                            completion(.error(regenError))
+                            completion(.failure(regenError))
                         }
                     }
                 }
