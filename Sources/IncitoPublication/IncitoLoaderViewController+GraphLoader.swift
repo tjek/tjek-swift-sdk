@@ -28,6 +28,7 @@ extension IncitoLoaderViewController {
     private func load(
         incitoIdLoader: Future<Incito.Result<IncitoGraphIdentifier>>,
         relatedPublicationId: CoreAPI.PagedPublication.Identifier?,
+        featureLabelWeights: [String: Double],
         graphClient: GraphClient = GraphAPI.shared.client,
         businessLoaded: ((Incito.Result<GraphBusiness>) -> Void)? = nil,
         completion: ((Incito.Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil
@@ -46,6 +47,7 @@ extension IncitoLoaderViewController {
                         id: graphId,
                         graphClient: graphClient,
                         width: width,
+                        featureLabelWeights: featureLabelWeights,
                         businessLoadedCallback: { businessLoaded?($0) }
                     )
                 })
@@ -77,6 +79,7 @@ extension IncitoLoaderViewController {
     
     public func load(
         publicationId: CoreAPI.PagedPublication.Identifier,
+        featureLabelWeights: [String: Double] = [:],
         graphClient: GraphClient = GraphAPI.shared.client,
         publicationLoaded: ((Incito.Result<CoreAPI.PagedPublication>) -> Void)? = nil,
         businessLoaded: ((Incito.Result<GraphBusiness>) -> Void)? = nil,
@@ -104,6 +107,7 @@ extension IncitoLoaderViewController {
         self.load(
             incitoIdLoader: incitoIdLoader,
             relatedPublicationId: publicationId,
+            featureLabelWeights: featureLabelWeights,
             graphClient: graphClient,
             businessLoaded: businessLoaded,
             completion: completion
@@ -121,8 +125,9 @@ extension IncitoLoaderViewController {
      */
     public func load(
         graphId: IncitoGraphIdentifier,
-        graphClient: GraphClient = GraphAPI.shared.client,
         relatedPublicationId: PagedPublicationCoreAPIIdentifier?,
+        featureLabelWeights: [String: Double] = [:],
+        graphClient: GraphClient = GraphAPI.shared.client,
         businessLoaded: ((Incito.Result<GraphBusiness>) -> Void)? = nil,
         completion: ((Incito.Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil
         ) {
@@ -132,6 +137,7 @@ extension IncitoLoaderViewController {
         self.load(
             incitoIdLoader: incitoIdLoader,
             relatedPublicationId: relatedPublicationId,
+            featureLabelWeights: featureLabelWeights,
             graphClient: graphClient,
             businessLoaded: businessLoaded,
             completion: completion

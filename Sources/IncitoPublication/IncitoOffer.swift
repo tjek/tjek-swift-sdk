@@ -35,11 +35,12 @@ public struct IncitoOffer {
     public var products: [Product] = []
     public var ids: [Id] = []
     public var labels: [Label] = []
+    public var featureLabels: [String] = []
 }
 
 extension IncitoOffer: Decodable {
     enum CodingKeys: String, CodingKey {
-        case title, description, link, products, ids, labels
+        case title, description, link, products, ids, labels, featureLabels = "feature_labels"
     }
     
     public init(from decoder: Decoder) throws {
@@ -52,6 +53,7 @@ extension IncitoOffer: Decodable {
         self.products = (try? c.decode([Product].self, forKey: .products)) ?? []
         self.ids = (try? c.decode([Id].self, forKey: .ids)) ?? []
         self.labels = (try? c.decode([Label].self, forKey: .labels)) ?? []
+        self.featureLabels = (try? c.decode([String].self, forKey: .featureLabels)) ?? []
     }
 }
 
@@ -77,11 +79,14 @@ extension IncitoOffer {
             viewProperties.isOffer,
             let jsonValue = viewProperties.style.meta[ViewProperties.offerMetaKey],
             let jsonData = try? JSONEncoder().encode(jsonValue),
-            let offer = try? JSONDecoder().decode(IncitoOffer.self, from: jsonData)
+            var offer = try? JSONDecoder().decode(IncitoOffer.self, from: jsonData)
             else {
             return nil
         }
- 
+        
+        // feature labels are not part of the meta, so add them separately
+        offer.featureLabels = viewProperties.style.featureLabels
+        
         self = offer
     }
 }

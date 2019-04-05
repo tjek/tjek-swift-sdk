@@ -14,6 +14,7 @@ public func IncitoGraphLoader(
     id: IncitoGraphIdentifier,
     graphClient: GraphClient,
     width: Double,
+    featureLabelWeights: [String: Double] = [:],
     timeout: TimeInterval = 10,
     businessLoadedCallback: ((Incito.Result<GraphBusiness>) -> Void)?
     ) -> IncitoLoader {
@@ -28,6 +29,7 @@ public func IncitoGraphLoader(
     
     let query = IncitoViewerQuery(
         id: id,
+        featureLabelWeights: featureLabelWeights,
         maxWidth: Int(width),
         deviceCategory: deviceCategory,
         orientation: orientation,
