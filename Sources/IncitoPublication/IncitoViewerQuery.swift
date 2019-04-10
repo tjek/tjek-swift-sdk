@@ -67,6 +67,7 @@ struct IncitoViewerQuery: GraphQuery {
 
 enum IncitoViewerGraphQueryError: Error {
     case noData
+    case invalidData
 }
 
 public struct GraphBusiness: Decodable {

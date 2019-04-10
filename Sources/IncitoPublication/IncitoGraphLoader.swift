@@ -49,16 +49,68 @@ public func IncitoGraphLoader(
     return graphClient
         .start(dataRequest: request)
         .map(Incito.Result.init(shopGunSDKResult:))
-        .flatMapResult(GenericGraphResponse<IncitoViewerGraphData>.decode(from:))
+        .flatMapResult({
+            decodeGraphResponseData($0)
+        })
         .observe({ res in
-            businessLoadedCallback?(res.map({ $0.data.incito.business }))
+            businessLoadedCallback?(res.map({ $0.business }))
         })
         .flatMapResult({
             IncitoDocumentLoader(
-                document: $0.data.incito.document,
+                document: $0.document,
                 width: width
             )
         })
+}
+
+func decodeGraphResponseData(_ jsonData: Data) -> Future<Incito.Result<(business: GraphBusiness, document: IncitoPropertiesDocument)>> {
+    return Future(work: {
+        Incito.Result<(business: GraphBusiness, document: IncitoPropertiesDocument)>(catching: {
+
+            let jsonObj = try JSONSerialization.jsonObject(with: jsonData, options: [])
+            
+            guard let jsonDict = jsonObj as? [String: [String: [String: [String: Any]]]] else {
+                throw IncitoViewerGraphQueryError.invalidData
+            }
+            
+            guard let incitoDict = jsonDict["data"]?["incito"] else {
+                throw IncitoViewerGraphQueryError.invalidData
+            }
+            
+            guard let document = try incitoDict["document"].map(IncitoPropertiesDocument.init(jsonDict:)) else {
+                throw IncitoViewerGraphQueryError.invalidData
+            }
+            
+            guard let business = try incitoDict["business"].map(GraphBusiness.init(jsonDict:)) else {
+                throw IncitoViewerGraphQueryError.invalidData
+            }
+            
+            return (
+                business: business,
+                document: document
+            )
+        })
+    })
+}
+
+extension GraphBusiness {
+    init(jsonDict: [String: Any]) throws {
+        
+        guard
+            let id = Identifier(rawValue: jsonDict["id"] as? String),
+            let coreId = CoreAPI.Dealer.Identifier(rawValue: jsonDict["coreId"] as? String),
+            let name = jsonDict["name"] as? String
+        else {
+            throw IncitoViewerGraphQueryError.invalidData
+        }
+        
+        self.id = id
+        self.coreId = coreId
+        self.name = name
+        self.primaryColor = (jsonDict["primaryColor"] as? String)
+            .flatMap(Color.init(string:))?
+            .uiColor
+    }
 }
 
 struct GenericGraphResponse<DataType: Decodable>: Decodable {
