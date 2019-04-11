@@ -10,6 +10,12 @@
 import UIKit
 import Incito
 
+enum IncitoGraphLoaderError: Error {
+    case invalidData
+    case missingDocument
+    case missingBusiness
+}
+
 public func IncitoGraphLoader(
     id: IncitoGraphIdentifier,
     graphClient: GraphClient,
@@ -49,8 +55,10 @@ public func IncitoGraphLoader(
     return graphClient
         .start(dataRequest: request)
         .map(Incito.Result.init(shopGunSDKResult:))
+//        .measure(print: " 📞 Downloaded")
         .flatMapResult({
             decodeGraphResponseData($0)
+//                .measure(print: " ⚙️ Decoded")
         })
         .observe({ res in
             businessLoadedCallback?(res.map({ $0.business }))
@@ -69,20 +77,17 @@ func decodeGraphResponseData(_ jsonData: Data) -> Future<Incito.Result<(business
 
             let jsonObj = try JSONSerialization.jsonObject(with: jsonData, options: [])
             
-            guard let jsonDict = jsonObj as? [String: [String: [String: [String: Any]]]] else {
-                throw IncitoViewerGraphQueryError.invalidData
-            }
-            
-            guard let incitoDict = jsonDict["data"]?["incito"] else {
-                throw IncitoViewerGraphQueryError.invalidData
+            guard let jsonDict = jsonObj as? [String: [String: [String: [String: Any]]]],
+                let incitoDict = jsonDict["data"]?["incito"] else {
+                throw IncitoGraphLoaderError.invalidData
             }
             
             guard let document = try incitoDict["document"].map(IncitoPropertiesDocument.init(jsonDict:)) else {
-                throw IncitoViewerGraphQueryError.invalidData
+                throw IncitoGraphLoaderError.missingDocument
             }
             
             guard let business = try incitoDict["business"].map(GraphBusiness.init(jsonDict:)) else {
-                throw IncitoViewerGraphQueryError.invalidData
+                throw IncitoGraphLoaderError.missingBusiness
             }
             
             return (
@@ -101,7 +106,7 @@ extension GraphBusiness {
             let coreId = CoreAPI.Dealer.Identifier(rawValue: jsonDict["coreId"] as? String),
             let name = jsonDict["name"] as? String
         else {
-            throw IncitoViewerGraphQueryError.invalidData
+            throw IncitoGraphLoaderError.invalidData
         }
         
         self.id = id

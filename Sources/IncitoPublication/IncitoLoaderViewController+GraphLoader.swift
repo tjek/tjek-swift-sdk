@@ -51,6 +51,7 @@ extension IncitoLoaderViewController {
                         businessLoadedCallback: { businessLoaded?($0) }
                     )
                 })
+//            .measure(print: " 🌈 Incito Fully Loaded")
         }
         
         // make a loader that first fetches the publication, then gets the incito id from that publication, then calls the graphLoader with that incitoId
