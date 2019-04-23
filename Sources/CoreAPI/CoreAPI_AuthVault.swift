@@ -353,7 +353,7 @@ extension CoreAPI.AuthVault {
     fileprivate static func updateDataStore(_ dataStore: ShopGunSDKDataStore?, data: CoreAPI.AuthVault.StoreData?) {
         var authJSON: String? = nil
         if let data = data,
-            let authJSONData = try? JSONEncoder().encode(data) {
+            let authJSONData: Data = try? JSONEncoder().encode(data) {
             authJSON = String(data: authJSONData, encoding: .utf8)
         }
         dataStore?.set(value: authJSON, for: CoreAPI.AuthVault.dataStoreKey)

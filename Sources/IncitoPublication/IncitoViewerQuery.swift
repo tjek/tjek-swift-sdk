@@ -65,10 +65,6 @@ struct IncitoViewerQuery: GraphQuery {
     }
 }
 
-enum IncitoViewerGraphQueryError: Error {
-    case noData
-}
-
 public struct GraphBusiness: Decodable {
     public typealias Identifier = ShopGunSDK.GenericIdentifier<GraphBusiness>
     
@@ -92,13 +88,4 @@ public struct GraphBusiness: Decodable {
             self.primaryColor = Color(string: colorRGBAStr)?.uiColor
         }
     }
-}
-
-struct IncitoPublication: Decodable {
-    var document: IncitoPropertiesDocument
-    var business: GraphBusiness
-}
-
-struct IncitoViewerGraphData: Decodable {
-    var incito: IncitoPublication
 }

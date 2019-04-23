@@ -13,8 +13,8 @@ Pod::Spec.new do |s|
     s.social_media_url = "http://twitter.com/ShopGun"
 
     s.platform         = :ios, "9.3"
-    s.swift_version    = "4.2"
-    s.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.2' }
+    s.swift_version    = "5.0"
+    s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0' }
 
     s.source       = { :git => "https://github.com/shopgun/shopgun-ios-sdk.git", :tag => "v#{s.version}" }
     
@@ -39,7 +39,7 @@ Pod::Spec.new do |s|
         ss.dependency "ShopGunSDK/Shared"
         ss.dependency "ShopGunSDK/GraphAPI"
         ss.dependency "ShopGunSDK/EventsTracker"
-        ss.dependency "Incito", "~> 0.3"
+        ss.dependency "Incito", "~> 0.4"
     end
     
     s.subspec 'CoreAPI' do |ss|
