@@ -148,16 +148,8 @@ extension CoreAPI.Request where T == [String: Any] {
             httpBody: httpBody,
             timeoutInterval: timeoutInterval,
             maxRetryCount: maxRetryCount,
-            resultMapper: {
-                $0.flatMap({ data in
-                    return Result<T, Error>.init(catching: {
-                        guard let jsonDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-                            throw CoreAPI.APIError.unableToDecodeResponseData
-                        }
-                        return jsonDict
-                    })
-                })
-        })
+            resultMapper: { $0.decodeJSONObject() }
+        )
     }
 }
 
@@ -172,16 +164,7 @@ extension CoreAPI.Request where T == [[String: Any]] {
             httpBody: httpBody,
             timeoutInterval: timeoutInterval,
             maxRetryCount: maxRetryCount,
-            resultMapper: {
-                $0.flatMap({ data in
-                    return Result<T, Error>.init(catching: {
-                        guard let jsonArr = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else {
-                            throw CoreAPI.APIError.unableToDecodeResponseData
-                        }
-                        return jsonArr
-                        
-                    })
-                })
-        })
+            resultMapper: { $0.decodeJSONObject() }
+        )
     }
 }

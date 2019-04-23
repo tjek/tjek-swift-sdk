@@ -22,18 +22,15 @@ extension CoreAPI.Requests {
             path: "/v2/catalogs/\(pubId.rawValue)/pages",
             method: .GET,
             resultMapper: {
-                return $0.flatMap({ (data: Data) in
-                    return .init(catching: {
-                        // map the raw array of imageURLSets into objects containing page indexes
-                        let pageURLs = try JSONDecoder().decode([ImageURLSet.CoreAPI.ImageURLs].self, from: data)
-                        return pageURLs.enumerated().map {
-                            let images = ImageURLSet(fromCoreAPI: $0.element, aspectRatio: aspectRatio)
-                            let pageIndex = $0.offset
-                            return .init(index: pageIndex, title: "\(pageIndex+1)", aspectRatio: aspectRatio ?? 1.0, images: images)
-                        }
-                    })
+                $0.decodeJSON().map({ (pageURLs: [ImageURLSet.CoreAPI.ImageURLs]) in
+                    pageURLs.enumerated().map {
+                        let images = ImageURLSet(fromCoreAPI: $0.element, aspectRatio: aspectRatio)
+                        let pageIndex = $0.offset
+                        return .init(index: pageIndex, title: "\(pageIndex+1)", aspectRatio: aspectRatio ?? 1.0, images: images)
+                    }
                 })
-        })
+            }
+        )
     }
     
     /// Fetch all hotspots for the specified publication
@@ -43,15 +40,14 @@ extension CoreAPI.Requests {
             path: "/v2/catalogs/\(pubId.rawValue)/hotspots",
             method: .GET,
             resultMapper: {
-                return $0.flatMap({ (data: Data) in
-                    return .init(catching: {
-                        return try JSONDecoder().decode([CoreAPI.PagedPublication.Hotspot].self, from: data).map {
-                            /// We do this to convert out of the awful old V2 coord system (which was x: 0->1, y: 0->(h/w))
-                            return $0.withScaledBounds(scale: CGPoint(x: 1, y: aspectRatio))
-                        }
+                $0.decodeJSON().map({ (hotspots: [CoreAPI.PagedPublication.Hotspot]) in
+                    hotspots.map({
+                        /// We do this to convert out of the awful old V2 coord system (which was x: 0->1, y: 0->(h/w))
+                        $0.withScaledBounds(scale: CGPoint(x: 1, y: aspectRatio))
                     })
                 })
-        })
+            }
+        )
     }
     
     /// Given a publication's Id, this will return

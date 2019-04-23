@@ -41,10 +41,10 @@ class EventsShipper_v1: PoolShipper_v1Protocol {
             if var jsonDict = try? JSONSerialization.jsonObject(with: obj.jsonData, options: []) as? [String: AnyObject],
                 jsonDict != nil {
                 
-                jsonDict!["sentAt"] = EventsTracker.dateFormatter.string(from: Date()) as AnyObject?
+                jsonDict["sentAt"] = EventsTracker.dateFormatter.string(from: Date()) as AnyObject?
                 
-                orderedEventDicts.append(jsonDict!)
-                keyedEventDicts[obj.poolId] = jsonDict!
+                orderedEventDicts.append(jsonDict)
+                keyedEventDicts[obj.poolId] = jsonDict
             } else {
                 idsToRemove.append(obj.poolId)
             }
@@ -86,7 +86,7 @@ class EventsShipper_v1: PoolShipper_v1Protocol {
             guard let data = responseData,
                 (200 ..< 300).contains(statusCode),
                 let jsonData = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject],
-                let events = jsonData!["events"] as? [[String: AnyObject]] else {
+                let events = jsonData["events"] as? [[String: AnyObject]] else {
                     
                     completion(idsToRemove)
                     return

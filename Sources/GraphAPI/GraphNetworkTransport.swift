@@ -71,14 +71,14 @@ public class HTTPGraphNetworkTransport: GraphNetworkTransport {
                 var data: [String: Any]?
                 var errors: [GraphError]?
                 
-                if let jsonErrors = jsonDict?["errors"] as? [[String: Any]] {
+                if let jsonErrors = jsonDict["errors"] as? [[String: Any]] {
                     let possibleErrors = jsonErrors.compactMap(GraphError.init(json:))
                     if possibleErrors.count > 0 {
                         errors = possibleErrors
                     }
                 }
                 
-                if let jsonData = jsonDict?["data"] as? [String: Any] {
+                if let jsonData = jsonDict["data"] as? [String: Any] {
                     data = jsonData
                 }
                 

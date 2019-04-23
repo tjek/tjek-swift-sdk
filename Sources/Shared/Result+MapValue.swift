@@ -22,4 +22,18 @@ extension Result where Success == Data, Failure: Error {
             })
         }
     }
+    
+    public func decodeJSONObject<R>() -> Result<R, Error> {
+        switch self {
+        case .failure(let err):
+            return .failure(err)
+        case .success(let data):
+            return .init(catching: {
+                guard let successValue: R = try JSONSerialization.jsonObject(with: data, options: []) as? R else {
+                    throw CoreAPI.APIError.unableToDecodeResponseData
+                }
+                return successValue
+            })
+        }
+    }
 }

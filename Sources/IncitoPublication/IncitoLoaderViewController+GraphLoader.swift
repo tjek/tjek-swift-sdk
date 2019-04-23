@@ -17,7 +17,7 @@ enum IncitoPublicationLoaderError: Error {
 }
 
 extension CoreAPI {
-    func request<R: CoreAPIMappableRequest>(_ request: R) -> FutureResult<R.ResponseType> {
+    func requestFuture<R: CoreAPIMappableRequest>(_ request: R) -> FutureResult<R.ResponseType> {
         return Future { cb in
             self.request(request, completion: cb)
         }
@@ -91,7 +91,7 @@ extension IncitoLoaderViewController {
         let publicationReq = CoreAPI.Requests.getPagedPublication(withId: publicationId)
         
         let incitoIdLoader: FutureResult<IncitoGraphIdentifier> = CoreAPI.shared
-            .request(publicationReq)
+            .requestFuture(publicationReq)
             .observe({ publicationLoaded?($0) })
             .map({
                 switch $0 {
