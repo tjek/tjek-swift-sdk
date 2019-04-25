@@ -116,6 +116,12 @@ extension CoreAPI.Offer {
         public var price: Double
         public var prePrice: Double?
         
+        public init(currency: CurrencyCode, price: Double, prePrice: Double?) {
+            self.currency = currency
+            self.price = price
+            self.prePrice = prePrice
+        }
+        
         enum CodingKeys: String, CodingKey {
             case currency
             case price
@@ -131,6 +137,17 @@ extension CoreAPI.Offer {
         public struct QuantityRange: Equatable {
             public var from: Double?
             public var to: Double?
+            
+            public init(from: Double?, to: Double?) {
+                self.from = from
+                self.to = to
+            }
+        }
+        
+        public init(unit: QuantityUnit?, size: QuantityRange, pieces: QuantityRange) {
+            self.unit = unit
+            self.size = size
+            self.pieces = pieces
         }
         
         enum CodingKeys: String, CodingKey {
@@ -166,6 +183,16 @@ extension CoreAPI.Offer {
         public struct SIUnit: Decodable, Equatable {
             public var symbol: String
             public var factor: Double
+            
+            public init(symbol: String, factor: Double) {
+                self.symbol = symbol
+                self.factor = factor
+            }
+        }
+        
+        public init(symbol: String, siUnit: SIUnit) {
+            self.symbol = symbol
+            self.siUnit = siUnit
         }
         
         enum CodingKeys: String, CodingKey {
