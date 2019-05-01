@@ -23,6 +23,7 @@ extension Event {
         case searched                       = 5
         case offerOpenedAfterSearch         = 7
         case incitoPublicationOpened        = 8
+        case storeVisited                   = 9
     }
     
     /**
@@ -192,6 +193,44 @@ extension Event {
         
         return event
     }
+    
+    /**
+     The event when a user opened the app close to a store. The event is only triggered if gps traking is enabled, user gps location has accuracy below a specified radial distance and closest store is within a specified radial distance.
+     - parameter horizontalAccuracy: Device's horizontal accuracy of its geolocation information in meters.
+     - parameter storeId: The id of the closest store, within specified radial distance.
+     - parameter distanceToStore: Estimated distance between device and store, in meters.
+     - parameter dealerId: The id of the business to which the store belongs to.
+     - parameter hasInteracted: Whether the user interacted with content from the same business as the store's within the last specified maximum time period.
+     - parameter hoursSinceLastInteraction: Time passed (in hours) since the content interaction and the potential store visit.
+     - parameter timestamp: The date that the event occurred. Defaults to now.
+     - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
+     */
+    internal static func storeVisited(
+        _ horizontalAccuracy: Double,
+        storeId: CoreAPI.Store.Identifier,
+        distanceToStore: Double,
+        dealerId: CoreAPI.Dealer.Identifier,
+        hasInteracted: Bool,
+        hoursSinceLastInteraction: Int?,
+        timestamp: Date = Date(),
+        tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
+        ) -> Event {
+        
+        var payload: PayloadType = [
+            "l.hac": .int(Int(horizontalAccuracy)),
+            "st.id": .string(storeId.rawValue),
+            "st.dis": .int(Int(distanceToStore)),
+            "st.bid": .string(dealerId.rawValue),
+            "b.cin": .bool(hasInteracted)
+        ]
+        
+        if let hours = hoursSinceLastInteraction {
+            payload["b.cint"] = .int(hours)
+        }
+        
+        return Event(timestamp: timestamp, type: EventType.storeVisited.rawValue, payload: payload)
+            .addingViewToken(content: storeId.rawValue, key: "vt", tokenizer: tokenizer)
+    }
 }
 
 extension Event {
@@ -227,5 +266,16 @@ extension Event {
             pagedPublicationId: pagedPublicationId,
             timestamp: Date()
         )
+    }
+    
+    public static func storeVisited(
+        _ horizontalAccuracy: Double,
+        storeId: CoreAPI.Store.Identifier,
+        distanceToStore: Double,
+        dealerId: CoreAPI.Dealer.Identifier,
+        hasInteracted: Bool,
+        hoursSinceLastInteraction: Int?
+        ) -> Event {
+        return storeVisited(horizontalAccuracy, storeId: storeId, distanceToStore: distanceToStore, dealerId: dealerId, hasInteracted: hasInteracted, hoursSinceLastInteraction: hoursSinceLastInteraction)
     }
 }
