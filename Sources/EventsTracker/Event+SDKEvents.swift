@@ -23,7 +23,7 @@ extension Event {
         case searched                       = 5
         case offerOpenedAfterSearch         = 7
         case incitoPublicationOpened        = 8
-        case storeVisited                   = 9
+        case potentialLocalBusinessVisit    = 9
     }
     
     /**
@@ -205,7 +205,7 @@ extension Event {
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
-    internal static func storeVisited(
+    internal static func pLocalBusinessVisit(
         _ horizontalAccuracy: Double,
         storeId: CoreAPI.Store.Identifier,
         distanceToStore: Double,
@@ -228,7 +228,7 @@ extension Event {
             payload["b.cint"] = .int(hours)
         }
         
-        return Event(timestamp: timestamp, type: EventType.storeVisited.rawValue, payload: payload)
+        return Event(timestamp: timestamp, type: EventType.potentialLocalBusinessVisit.rawValue, payload: payload)
             .addingViewToken(content: storeId.rawValue, key: "vt", tokenizer: tokenizer)
     }
 }
@@ -268,7 +268,7 @@ extension Event {
         )
     }
     
-    public static func storeVisited(
+    public static func potentialLocalBusinessVisit(
         _ horizontalAccuracy: Double,
         storeId: CoreAPI.Store.Identifier,
         distanceToStore: Double,
@@ -276,6 +276,7 @@ extension Event {
         hasInteracted: Bool,
         hoursSinceLastInteraction: Int?
         ) -> Event {
-        return storeVisited(horizontalAccuracy, storeId: storeId, distanceToStore: distanceToStore, dealerId: dealerId, hasInteracted: hasInteracted, hoursSinceLastInteraction: hoursSinceLastInteraction)
+        
+        return pLocalBusinessVisit(horizontalAccuracy, storeId: storeId, distanceToStore: distanceToStore, dealerId: dealerId, hasInteracted: hasInteracted, hoursSinceLastInteraction: hoursSinceLastInteraction)
     }
 }
