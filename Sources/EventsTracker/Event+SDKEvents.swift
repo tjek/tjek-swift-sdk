@@ -205,7 +205,7 @@ extension Event {
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
-    internal static func pLocalBusinessVisit(
+    internal static func potentialLocalBusinessVisit(
         _ horizontalAccuracy: Double,
         storeId: CoreAPI.Store.Identifier,
         distanceToStore: Double,
@@ -277,6 +277,6 @@ extension Event {
         hoursSinceLastInteraction: Int?
         ) -> Event {
         
-        return pLocalBusinessVisit(horizontalAccuracy, storeId: storeId, distanceToStore: distanceToStore, dealerId: dealerId, hasInteracted: hasInteracted, hoursSinceLastInteraction: hoursSinceLastInteraction)
+        return potentialLocalBusinessVisit(horizontalAccuracy, storeId: storeId, distanceToStore: distanceToStore, dealerId: dealerId, hasInteracted: hasInteracted, hoursSinceLastInteraction: hoursSinceLastInteraction, timestamp: Date())
     }
 }
