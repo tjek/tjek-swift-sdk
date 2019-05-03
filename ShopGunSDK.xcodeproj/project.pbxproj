@@ -49,6 +49,7 @@
 		AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */; };
 		AE448F9B21147CF6000E5A28 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448F9A21147CF6000E5A28 /* Event.swift */; };
 		AE4942C120174406006658CE /* PagedPublicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4942C020174406006658CE /* PagedPublicationView.swift */; };
+		AE4F7452227C2CA400E8AC5D /* Result+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4F7441227C2CA400E8AC5D /* Result+Utils.swift */; };
 		AE50A3BE2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */; };
 		AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */; };
 		AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6D65EC204ECBF50011E15C /* Logger.swift */; };
@@ -355,6 +356,7 @@
 		AE448F9A21147CF6000E5A28 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		AE49429920113A0F006658CE /* Verso.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Verso.xcodeproj; path = External/Verso/Verso.xcodeproj; sourceTree = "<group>"; };
 		AE4942C020174406006658CE /* PagedPublicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagedPublicationView.swift; sourceTree = "<group>"; };
+		AE4F7441227C2CA400E8AC5D /* Result+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Utils.swift"; sourceTree = "<group>"; };
 		AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D_Equatable.swift; sourceTree = "<group>"; };
 		AE5A972820232098004E0799 /* Kingfisher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kingfisher.xcodeproj; path = External/Kingfisher/Kingfisher.xcodeproj; sourceTree = "<group>"; };
 		AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+EventHandler.swift"; sourceTree = "<group>"; };
@@ -667,6 +669,7 @@
 				AE95FDBF204FEC6C0002C1CE /* CGSize_Fitting.swift */,
 				AE8E4540200E31E60042CCE2 /* UIColor_Hex.swift */,
 				AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */,
+				AE85C5EE2001884100263F8B /* Result+MapValue.swift */,
 			);
 			name = CoreAPI;
 			path = Sources/CoreAPI;
@@ -681,7 +684,7 @@
 				AE6D65F9204EE2910011E15C /* KeychainDataStore.swift */,
 				AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */,
 				AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */,
-				AE85C5EE2001884100263F8B /* Result+MapValue.swift */,
+				AE4F7441227C2CA400E8AC5D /* Result+Utils.swift */,
 				AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */,
 				AE2008D4200CE86F004363BE /* UserAgent.swift */,
 				AE3B3227204030AD001C75C9 /* Error+Extensions.swift */,
@@ -1098,6 +1101,7 @@
 			files = (
 				AE0D1CB02122F501004A133D /* EventsPool_v1.swift in Sources */,
 				AE38B46A2119EBDB008C1EA8 /* EventsShipper.swift in Sources */,
+				AE4F7452227C2CA400E8AC5D /* Result+Utils.swift in Sources */,
 				AEC28B671FF6ABFC0007AAB8 /* CoreAPI.swift in Sources */,
 				AE3B325820455FD1001C75C9 /* EventsTracker+Utils.swift in Sources */,
 				AE8E45582010A38C0042CCE2 /* CoreAPI_Offer.swift in Sources */,

@@ -91,7 +91,7 @@ class EventsCache_v1: PoolCache_v1Protocol {
             
             for (index, obj) in self.allObjects.enumerated() {
                 // it should be ignored, skip this object
-                if let idx = idsToRemove.index(of: obj.poolId) {
+                if let idx = idsToRemove.firstIndex(of: obj.poolId) {
                     idsToRemove.remove(at: idx)
                     // it was the last id to remove, so just append all the rest
                     if idsToRemove.count == 0 {

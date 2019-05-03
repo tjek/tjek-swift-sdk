@@ -34,10 +34,7 @@ struct UniqueViewTokenizer {
     func tokenize(_ content: String) -> String {
         let str = salt + content
         let data = str.data(using: .utf8, allowLossyConversion: true) ?? Data()
-        
-        return Data(bytes:
-            Array(data.md5()).prefix(8)
-            ).base64EncodedString()
+        return Data(Array(data.md5()).prefix(8)).base64EncodedString()
     }
 }
 
