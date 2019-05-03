@@ -78,7 +78,7 @@ extension IncitoOffer {
         guard
             viewProperties.isOffer,
             let jsonValue = viewProperties.style.meta[ViewProperties.offerMetaKey],
-            let jsonData = try? JSONEncoder().encode(jsonValue),
+            let jsonData: Data = try? JSONEncoder().encode(jsonValue),
             var offer = try? JSONDecoder().decode(IncitoOffer.self, from: jsonData)
             else {
             return nil

@@ -19,7 +19,7 @@ struct ShippableEvent: Codable {
 extension ShippableEvent {
     init?(event: Event) {
         // convert the event into a JSONValue object
-        guard let data = try? JSONEncoder().encode(event),
+        guard let data: Data = try? JSONEncoder().encode(event),
             let jsonValue = try? JSONDecoder().decode(JSONValue.self, from: data) else {
                 return nil
         }
@@ -174,7 +174,7 @@ struct EventsShipper {
                                              "application": .object(jsonAppContext)]
         
         // convert the objects to json
-        guard let jsonData = try? JSONEncoder().encode(jsonDict) else {
+        guard let jsonData: Data = try? JSONEncoder().encode(jsonDict) else {
             return (nil, events.reduce(into: [:]) { $0[$1.id] = .error })
         }
         

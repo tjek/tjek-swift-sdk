@@ -121,7 +121,7 @@ class EventsCache<T: CacheableEvent> {
     fileprivate func saveToDisk(objects: [T]) {
         guard let fileURL = diskCachePath else { return }
         
-        guard let encodedData = try? PropertyListEncoder().encode(objects) else {
+        guard let encodedData: Data = try? PropertyListEncoder().encode(objects) else {
             return
         }
         

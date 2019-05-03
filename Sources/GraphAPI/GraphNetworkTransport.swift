@@ -12,10 +12,10 @@ import Foundation
 /// An abstract Networking Transport connection. Given a request it will callback with a Result
 public protocol GraphNetworkTransport {
     @discardableResult
-    func send(request: GraphRequestProtocol, completion: @escaping (Result<GraphResponse>) -> Void) -> Cancellable
+    func send(request: GraphRequestProtocol, completion: @escaping (Result<GraphResponse, Error>) -> Void) -> Cancellable
     
     @discardableResult
-    func send(dataRequest: GraphRequestProtocol, completion: @escaping (Result<Data>) -> Void) -> Cancellable
+    func send(dataRequest: GraphRequestProtocol, completion: @escaping (Result<Data, Error>) -> Void) -> Cancellable
 }
 
 // MARK: - HTTP Network communication
@@ -33,14 +33,14 @@ public class HTTPGraphNetworkTransport: GraphNetworkTransport {
     }
     
     @discardableResult
-    public func send(dataRequest: GraphRequestProtocol, completion: @escaping (Result<Data>) -> Void) -> Cancellable {
+    public func send(dataRequest: GraphRequestProtocol, completion: @escaping (Result<Data, Error>) -> Void) -> Cancellable {
         
         let urlReq = self.buildURLRequest(for: dataRequest, additionalHeaders: additionalHeaders)
         
         let task = session.dataTask(with: urlReq) { (responseData, response, error) in
             guard let data = responseData else {
                 let error = error ?? GraphError(message: "No Response Data", path: [])
-                completion(.error(error))
+                completion(.failure(error))
                 return
             }
             
@@ -53,17 +53,17 @@ public class HTTPGraphNetworkTransport: GraphNetworkTransport {
     }
     
     @discardableResult
-    public func send(request: GraphRequestProtocol, completion: @escaping (Result<GraphResponse>) -> Void) -> Cancellable {
+    public func send(request: GraphRequestProtocol, completion: @escaping (Result<GraphResponse, Error>) -> Void) -> Cancellable {
         
-        return self.send(dataRequest: request) { (resultData: Result<Data>) in
+        return self.send(dataRequest: request) { (resultData: Result<Data, Error>) in
             switch resultData {
-            case .error(let error):
-                completion(.error(error))
+            case .failure(let error):
+                completion(.failure(error))
             case .success(let jsonData):
                 guard let jsonDict = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
                     
                     // TODO: Real 'empty/unparseable data' error
-                    completion(.error(GraphError(message: "Invalid JSON", path: [])))
+                    completion(.failure(GraphError(message: "Invalid JSON", path: [])))
                     
                     return
                 }
@@ -71,14 +71,14 @@ public class HTTPGraphNetworkTransport: GraphNetworkTransport {
                 var data: [String: Any]?
                 var errors: [GraphError]?
                 
-                if let jsonErrors = jsonDict?["errors"] as? [[String: Any]] {
+                if let jsonErrors = jsonDict["errors"] as? [[String: Any]] {
                     let possibleErrors = jsonErrors.compactMap(GraphError.init(json:))
                     if possibleErrors.count > 0 {
                         errors = possibleErrors
                     }
                 }
                 
-                if let jsonData = jsonDict?["data"] as? [String: Any] {
+                if let jsonData = jsonDict["data"] as? [String: Any] {
                     data = jsonData
                 }
                 

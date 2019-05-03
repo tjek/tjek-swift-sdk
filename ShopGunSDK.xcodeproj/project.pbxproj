@@ -29,6 +29,9 @@
 		AE1027A621240D8200104921 /* EventsPoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1027A521240D8200104921 /* EventsPoolTests.swift */; };
 		AE1027B821245B0D00104921 /* EventsTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1027B721245B0D00104921 /* EventsTrackerTests.swift */; };
 		AE1027BB2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1027BA2126F5DF00104921 /* EventsTracker+LegacyPoolCleaner.swift */; };
+		AE1B50862257A30C00A680AB /* Incito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE98C881224164A200B4BD7A /* Incito.framework */; };
+		AE1B50872257A32300A680AB /* Verso.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4942A520113A0F006658CE /* Verso.framework */; };
+		AE1B50882257A32F00A680AB /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06549A1FFEE24C009F6F92 /* Valet.framework */; };
 		AE2008D5200CE86F004363BE /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2008D4200CE86F004363BE /* UserAgent.swift */; };
 		AE22AAFA20527DFA008601EB /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE22AAF920527DFA008601EB /* Settings.swift */; };
 		AE38B46A2119EBDB008C1EA8 /* EventsShipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE38B4692119EBDB008C1EA8 /* EventsShipper.swift */; };
@@ -46,6 +49,7 @@
 		AE3C39002019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3C38FF2019FC5400A92597 /* PagedPublicationView+CoreAPILoader.swift */; };
 		AE448F9B21147CF6000E5A28 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448F9A21147CF6000E5A28 /* Event.swift */; };
 		AE4942C120174406006658CE /* PagedPublicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4942C020174406006658CE /* PagedPublicationView.swift */; };
+		AE4F7452227C2CA400E8AC5D /* Result+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4F7441227C2CA400E8AC5D /* Result+Utils.swift */; };
 		AE50A3BE2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */; };
 		AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */; };
 		AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6D65EC204ECBF50011E15C /* Logger.swift */; };
@@ -83,7 +87,6 @@
 		AEC28B681FF6ABFC0007AAB8 /* CoreAPI_APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B5D1FF6ABFC0007AAB8 /* CoreAPI_APIError.swift */; };
 		AEC28B6A1FF6ABFC0007AAB8 /* Cancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */; };
 		AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */; };
-		AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B621FF6ABFC0007AAB8 /* Result.swift */; };
 		AEC28B6E1FF6AC2A0007AAB8 /* ShopGunSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AEC3D8571FFD87FB004C5947 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3D8551FFD87FB004C5947 /* SettingsTests.swift */; };
 		AECC8E1B204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */; };
@@ -353,6 +356,7 @@
 		AE448F9A21147CF6000E5A28 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		AE49429920113A0F006658CE /* Verso.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Verso.xcodeproj; path = External/Verso/Verso.xcodeproj; sourceTree = "<group>"; };
 		AE4942C020174406006658CE /* PagedPublicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagedPublicationView.swift; sourceTree = "<group>"; };
+		AE4F7441227C2CA400E8AC5D /* Result+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Utils.swift"; sourceTree = "<group>"; };
 		AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D_Equatable.swift; sourceTree = "<group>"; };
 		AE5A972820232098004E0799 /* Kingfisher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kingfisher.xcodeproj; path = External/Kingfisher/Kingfisher.xcodeproj; sourceTree = "<group>"; };
 		AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+EventHandler.swift"; sourceTree = "<group>"; };
@@ -393,7 +397,6 @@
 		AEC28B5D1FF6ABFC0007AAB8 /* CoreAPI_APIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAPI_APIError.swift; sourceTree = "<group>"; };
 		AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cancellable.swift; sourceTree = "<group>"; };
 		AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericIdentifier.swift; sourceTree = "<group>"; };
-		AEC28B621FF6ABFC0007AAB8 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShopGunSDK.h; path = Sources/ShopGunSDK.h; sourceTree = "<group>"; };
 		AEC28B711FF6AC8A0007AAB8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AEC3D8541FFD87FB004C5947 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -449,6 +452,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE1B50882257A32F00A680AB /* Valet.framework in Frameworks */,
+				AE1B50872257A32300A680AB /* Verso.framework in Frameworks */,
+				AE1B50862257A30C00A680AB /* Incito.framework in Frameworks */,
 				AE0B85D2204602650092F110 /* Kingfisher.framework in Frameworks */,
 				AEC28B441FF6AAC20007AAB8 /* ShopGunSDK.framework in Frameworks */,
 			);
@@ -663,6 +669,7 @@
 				AE95FDBF204FEC6C0002C1CE /* CGSize_Fitting.swift */,
 				AE8E4540200E31E60042CCE2 /* UIColor_Hex.swift */,
 				AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */,
+				AE85C5EE2001884100263F8B /* Result+MapValue.swift */,
 			);
 			name = CoreAPI;
 			path = Sources/CoreAPI;
@@ -677,8 +684,7 @@
 				AE6D65F9204EE2910011E15C /* KeychainDataStore.swift */,
 				AEC28B601FF6ABFC0007AAB8 /* Cancellable.swift */,
 				AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */,
-				AEC28B621FF6ABFC0007AAB8 /* Result.swift */,
-				AE85C5EE2001884100263F8B /* Result+MapValue.swift */,
+				AE4F7441227C2CA400E8AC5D /* Result+Utils.swift */,
 				AE0B8F8D20035D5C006E036F /* AsyncOperation.swift */,
 				AE2008D4200CE86F004363BE /* UserAgent.swift */,
 				AE3B3227204030AD001C75C9 /* Error+Extensions.swift */,
@@ -1095,6 +1101,7 @@
 			files = (
 				AE0D1CB02122F501004A133D /* EventsPool_v1.swift in Sources */,
 				AE38B46A2119EBDB008C1EA8 /* EventsShipper.swift in Sources */,
+				AE4F7452227C2CA400E8AC5D /* Result+Utils.swift in Sources */,
 				AEC28B671FF6ABFC0007AAB8 /* CoreAPI.swift in Sources */,
 				AE3B325820455FD1001C75C9 /* EventsTracker+Utils.swift in Sources */,
 				AE8E45582010A38C0042CCE2 /* CoreAPI_Offer.swift in Sources */,
@@ -1129,7 +1136,6 @@
 				AE092011203C1F4D00345009 /* EventsTracker.swift in Sources */,
 				AE3B3242204422D5001C75C9 /* Bundle+ShopGunSDK.swift in Sources */,
 				AE0654871FFED399009F6F92 /* CoreAPI_Utils.swift in Sources */,
-				AEC28B6C1FF6ABFC0007AAB8 /* Result.swift in Sources */,
 				AEEE540E211889E400528E3B /* Event+EventsTrackerContext.swift in Sources */,
 				AE3B323C2044136C001C75C9 /* PagedPublicationView+ErrorView.swift in Sources */,
 				AE09204820401E6A00345009 /* CoreAPI_RequestQueryParameters.swift in Sources */,

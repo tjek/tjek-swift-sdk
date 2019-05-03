@@ -10,13 +10,14 @@
 import Foundation
 import Incito
 import UIKit
+import Future
 
 enum IncitoPublicationLoaderError: Error {
     case notAnIncitoPublication
 }
 
 extension CoreAPI {
-    func request<R: CoreAPIMappableRequest>(_ request: R) -> Future<ShopGunSDK.Result<R.ResponseType>> {
+    func requestFuture<R: CoreAPIMappableRequest>(_ request: R) -> FutureResult<R.ResponseType> {
         return Future { cb in
             self.request(request, completion: cb)
         }
@@ -26,12 +27,12 @@ extension CoreAPI {
 extension IncitoLoaderViewController {
     
     private func load(
-        incitoIdLoader: Future<Incito.Result<IncitoGraphIdentifier>>,
+        incitoIdLoader: FutureResult<IncitoGraphIdentifier>,
         relatedPublicationId: CoreAPI.PagedPublication.Identifier?,
         featureLabelWeights: [String: Double],
         graphClient: GraphClient = GraphAPI.shared.client,
-        businessLoaded: ((Incito.Result<GraphBusiness>) -> Void)? = nil,
-        completion: ((Incito.Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil
+        businessLoaded: ((Result<GraphBusiness, Error>) -> Void)? = nil,
+        completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
         ) {
         
         // Keep track of the id of the incitoId once it is loaded.
@@ -56,7 +57,7 @@ extension IncitoLoaderViewController {
         
         // make a loader that first fetches the publication, then gets the incito id from that publication, then calls the graphLoader with that incitoId
         let loader = incitoIdLoader
-            .observeSuccess({ expectedIncitoId = $0 })
+            .observeResultSuccess({ expectedIncitoId = $0 })
             .flatMapResult(graphIncitoLoader)
         
         self.load(loader) { [weak self] vcResult in
@@ -72,8 +73,8 @@ extension IncitoLoaderViewController {
                     }
                 }
                 completion?(.success((viewController, firstSuccessfulReload)))
-            case let .error(error):
-                completion?(.error(error))
+            case let .failure(error):
+                completion?(.failure(error))
             }
         }
     }
@@ -82,26 +83,25 @@ extension IncitoLoaderViewController {
         publicationId: CoreAPI.PagedPublication.Identifier,
         featureLabelWeights: [String: Double] = [:],
         graphClient: GraphClient = GraphAPI.shared.client,
-        publicationLoaded: ((Incito.Result<CoreAPI.PagedPublication>) -> Void)? = nil,
-        businessLoaded: ((Incito.Result<GraphBusiness>) -> Void)? = nil,
-        completion: ((Incito.Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil
+        publicationLoaded: ((Result<CoreAPI.PagedPublication, Error>) -> Void)? = nil,
+        businessLoaded: ((Result<GraphBusiness, Error>) -> Void)? = nil,
+        completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
         ) {
         
         let publicationReq = CoreAPI.Requests.getPagedPublication(withId: publicationId)
         
-        let incitoIdLoader: Future<Incito.Result<IncitoGraphIdentifier>> = CoreAPI.shared
-            .request(publicationReq)
-            .map(Incito.Result.init(shopGunSDKResult:))
+        let incitoIdLoader: FutureResult<IncitoGraphIdentifier> = CoreAPI.shared
+            .requestFuture(publicationReq)
             .observe({ publicationLoaded?($0) })
             .map({
                 switch $0 {
                 case let .success(publication):
                     guard let incitoId = publication.incitoId else {
-                        return .error(IncitoPublicationLoaderError.notAnIncitoPublication)
+                        return .failure(IncitoPublicationLoaderError.notAnIncitoPublication)
                     }
                     return .success(incitoId)
-                case let .error(err):
-                    return .error(err)
+                case let .failure(err):
+                    return .failure(err)
                 }
             })
         
@@ -129,11 +129,11 @@ extension IncitoLoaderViewController {
         relatedPublicationId: PagedPublicationCoreAPIIdentifier?,
         featureLabelWeights: [String: Double] = [:],
         graphClient: GraphClient = GraphAPI.shared.client,
-        businessLoaded: ((Incito.Result<GraphBusiness>) -> Void)? = nil,
-        completion: ((Incito.Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool)>) -> Void)? = nil
+        businessLoaded: ((Result<GraphBusiness, Error>) -> Void)? = nil,
+        completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
         ) {
         
-        let incitoIdLoader = Future<Incito.Result<IncitoGraphIdentifier>>(value: .success(graphId))
+        let incitoIdLoader = FutureResult<IncitoGraphIdentifier>(value: .success(graphId))
         
         self.load(
             incitoIdLoader: incitoIdLoader,

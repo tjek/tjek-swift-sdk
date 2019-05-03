@@ -18,30 +18,36 @@ extension CoreAPI.Requests {
     
     /// Fetch all the pages for the specified publication
     public static func getPagedPublicationPages(withId pubId: CoreAPI.PagedPublication.Identifier, aspectRatio: Double? = nil) -> CoreAPI.Request<[CoreAPI.PagedPublication.Page]> {
-        return .init(path: "/v2/catalogs/\(pubId.rawValue)/pages", method: .GET, resultMapper: {
-            return $0.mapValue {
-                // map the raw array of imageURLSets into objects containing page indexes
-                let pageURLs = try JSONDecoder().decode([ImageURLSet.CoreAPI.ImageURLs].self, from: $0)
-                return pageURLs.enumerated().map {
-                    let images = ImageURLSet(fromCoreAPI: $0.element, aspectRatio: aspectRatio)
-                    let pageIndex = $0.offset
-                    return .init(index: pageIndex, title: "\(pageIndex+1)", aspectRatio: aspectRatio ?? 1.0, images: images)
-                }
+        return CoreAPI.Request<[CoreAPI.PagedPublication.Page]>(
+            path: "/v2/catalogs/\(pubId.rawValue)/pages",
+            method: .GET,
+            resultMapper: {
+                $0.decodeJSON().map({ (pageURLs: [ImageURLSet.CoreAPI.ImageURLs]) in
+                    pageURLs.enumerated().map {
+                        let images = ImageURLSet(fromCoreAPI: $0.element, aspectRatio: aspectRatio)
+                        let pageIndex = $0.offset
+                        return .init(index: pageIndex, title: "\(pageIndex+1)", aspectRatio: aspectRatio ?? 1.0, images: images)
+                    }
+                })
             }
-        })
+        )
     }
-
+    
     /// Fetch all hotspots for the specified publication
     /// The `aspectRatio` (w/h) of the publication is needed in order to position the hotspots correctly
     public static func getPagedPublicationHotspots(withId pubId: CoreAPI.PagedPublication.Identifier, aspectRatio: Double) -> CoreAPI.Request<[CoreAPI.PagedPublication.Hotspot]> {
-        return .init(path: "/v2/catalogs/\(pubId.rawValue)/hotspots", method: .GET, resultMapper: {
-            return $0.mapValue {
-                return try JSONDecoder().decode([CoreAPI.PagedPublication.Hotspot].self, from: $0).map {
-                    /// We do this to convert out of the awful old V2 coord system (which was x: 0->1, y: 0->(h/w))
-                    return $0.withScaledBounds(scale: CGPoint(x: 1, y: aspectRatio))
-                }
+        return CoreAPI.Request<[CoreAPI.PagedPublication.Hotspot]>(
+            path: "/v2/catalogs/\(pubId.rawValue)/hotspots",
+            method: .GET,
+            resultMapper: {
+                $0.decodeJSON().map({ (hotspots: [CoreAPI.PagedPublication.Hotspot]) in
+                    hotspots.map({
+                        /// We do this to convert out of the awful old V2 coord system (which was x: 0->1, y: 0->(h/w))
+                        $0.withScaledBounds(scale: CGPoint(x: 1, y: aspectRatio))
+                    })
+                })
             }
-        })
+        )
     }
     
     /// Given a publication's Id, this will return
