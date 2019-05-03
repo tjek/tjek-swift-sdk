@@ -196,22 +196,21 @@ extension Event {
     
     /**
      The event when a user opened the app close to a store. The event is only triggered if gps traking is enabled, user gps location has accuracy below a specified radial distance and closest store is within a specified radial distance.
-     - parameter horizontalAccuracy: Device's horizontal accuracy of its geolocation information in meters.
      - parameter storeId: The id of the closest store, within specified radial distance.
-     - parameter distanceToStore: Estimated distance between device and store, in meters.
      - parameter dealerId: The id of the business to which the store belongs to.
+     - parameter horizontalAccuracy: Device's horizontal accuracy of its geolocation information in meters.
+     - parameter distanceToStore: Estimated distance between device and store, in meters.
      - parameter hasInteracted: Whether the user interacted with content from the same business as the store's within the last specified maximum time period.
      - parameter hoursSinceLastInteraction: Time passed (in hours) since the content interaction and the potential store visit.
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
     internal static func potentialLocalBusinessVisit(
-        _ horizontalAccuracy: Double,
-        storeId: CoreAPI.Store.Identifier,
-        distanceToStore: Double,
+        for storeId: CoreAPI.Store.Identifier,
         dealerId: CoreAPI.Dealer.Identifier,
-        hasInteracted: Bool,
-        hoursSinceLastInteraction: Int?,
+        horizontalAccuracy: Double,
+        distanceToStore: Double,
+        timeSinceLastInteraction: TimeInterval?,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
         ) -> Event {
@@ -220,16 +219,18 @@ extension Event {
             "l.hac": .int(Int(horizontalAccuracy)),
             "st.id": .string(storeId.rawValue),
             "st.dis": .int(Int(distanceToStore)),
-            "st.bid": .string(dealerId.rawValue),
-            "b.cin": .bool(hasInteracted)
+            "st.bid": .string(dealerId.rawValue)
         ]
         
-        if let hours = hoursSinceLastInteraction {
-            payload["b.cint"] = .int(hours)
+        if let secs = timeSinceLastInteraction {
+            payload["b.cin"] = .bool(true)
+            payload["b.cint"] = .int(Int(secs / 3600))
+        } else {
+            payload["b.cin"] = .bool(false)
         }
         
         return Event(timestamp: timestamp, type: EventType.potentialLocalBusinessVisit.rawValue, payload: payload)
-            .addingViewToken(content: storeId.rawValue, key: "vt", tokenizer: tokenizer)
+            .addingViewToken(content: storeId.rawValue, tokenizer: tokenizer)
     }
 }
 
@@ -269,14 +270,13 @@ extension Event {
     }
     
     public static func potentialLocalBusinessVisit(
-        _ horizontalAccuracy: Double,
-        storeId: CoreAPI.Store.Identifier,
-        distanceToStore: Double,
+        for storeId: CoreAPI.Store.Identifier,
         dealerId: CoreAPI.Dealer.Identifier,
-        hasInteracted: Bool,
-        hoursSinceLastInteraction: Int?
+        horizontalAccuracy: Double,
+        distanceToStore: Double,
+        timeSinceLastInteraction: TimeInterval?
         ) -> Event {
         
-        return potentialLocalBusinessVisit(horizontalAccuracy, storeId: storeId, distanceToStore: distanceToStore, dealerId: dealerId, hasInteracted: hasInteracted, hoursSinceLastInteraction: hoursSinceLastInteraction, timestamp: Date())
+        return potentialLocalBusinessVisit(for: storeId, dealerId: dealerId, horizontalAccuracy: horizontalAccuracy, distanceToStore: distanceToStore, timeSinceLastInteraction: timeSinceLastInteraction, timestamp: Date())
     }
 }
