@@ -200,8 +200,7 @@ extension Event {
      - parameter dealerId: The id of the business to which the store belongs to.
      - parameter horizontalAccuracy: Device's horizontal accuracy of its geolocation information in meters.
      - parameter distanceToStore: Estimated distance between device and store, in meters.
-     - parameter hasInteracted: Whether the user interacted with content from the same business as the store's within the last specified maximum time period.
-     - parameter hoursSinceLastInteraction: Time passed (in hours) since the content interaction and the potential store visit.
+     - parameter timeSinceLastInteraction: Time passed (in secs) since the content interaction and the potential store visit. nil if no interaction occurred.
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
