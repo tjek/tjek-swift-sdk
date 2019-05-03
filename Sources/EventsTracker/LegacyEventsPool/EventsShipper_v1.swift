@@ -38,8 +38,7 @@ class EventsShipper_v1: PoolShipper_v1Protocol {
             allIds.append(obj.poolId)
             
             // deserialize the jsonData and update the sent date
-            if var jsonDict = try? JSONSerialization.jsonObject(with: obj.jsonData, options: []) as? [String: AnyObject],
-                jsonDict != nil {
+            if var jsonDict = try? JSONSerialization.jsonObject(with: obj.jsonData, options: []) as? [String: AnyObject] {
                 
                 jsonDict["sentAt"] = EventsTracker.dateFormatter.string(from: Date()) as AnyObject?
                 
