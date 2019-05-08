@@ -31,7 +31,7 @@ class DemoIncitoViewController: IncitoLoaderViewController {
         // Start the actual loading of the incito.
         // By providing the related publicationId we can more accurately measure incito-read analytics
         self.load(
-            id: incitoId,
+            graphId: incitoId,
             relatedPublicationId: publication.id
         )
     }

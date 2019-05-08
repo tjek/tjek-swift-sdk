@@ -45,7 +45,7 @@ class PublicationListViewController: UIViewController {
                     shouldOpenIncito: { [weak self] in self?.openIncito(for: $0) },
                     shouldOpenPagedPub: { [weak self] in self?.openPagedPub(for: $0) }
                 )
-            case let .error(error):
+            case let .failure(error):
                 self?.contentVC = ErrorViewController(error: error)
             }
         }

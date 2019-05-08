@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -40,6 +40,7 @@
 		AE1686A0224A5C0200332DA6 /* DemoPagedPublicationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoPagedPublicationViewController.swift; sourceTree = "<group>"; };
 		AE1686A2224A72B800332DA6 /* PublicationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicationListViewController.swift; sourceTree = "<group>"; };
 		AE1686A4224A76DD00332DA6 /* PublicationListContentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicationListContentsViewController.swift; sourceTree = "<group>"; };
+		AE4BDDCB22831590008DB391 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +67,7 @@
 		AE16864F224A158D00332DA6 = {
 			isa = PBXGroup;
 			children = (
+				AE4BDDCB22831590008DB391 /* Readme.md */,
 				AE16866D224A15EE00332DA6 /* SharedSource */,
 				AE168659224A158D00332DA6 /* Products */,
 				670FD2EF85ABA96D80A30964 /* Pods */,
@@ -185,32 +187,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-CocoapodsDemo/Pods-CocoapodsDemo-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Cache/Cache.framework",
-				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
-				"${BUILT_PRODUCTS_DIR}/Incito/Incito.framework",
-				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
-				"${BUILT_PRODUCTS_DIR}/ShopGunSDK/ShopGunSDK.framework",
-				"${BUILT_PRODUCTS_DIR}/Valet/Valet.framework",
-				"${BUILT_PRODUCTS_DIR}/Verso/Verso.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-CocoapodsDemo/Pods-CocoapodsDemo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cache.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Incito.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ShopGunSDK.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Valet.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Verso.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-CocoapodsDemo/Pods-CocoapodsDemo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CocoapodsDemo/Pods-CocoapodsDemo-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CocoapodsDemo/Pods-CocoapodsDemo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C43E066BB773DCD1918A4148 /* [CP] Check Pods Manifest.lock */ = {

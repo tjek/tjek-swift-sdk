@@ -5,6 +5,9 @@
       location = "group:ShopGunSDK.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Demos/CarthageDemo/CarthageDemo.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Demos/CocoapodsDemo/CocoapodsDemo.xcodeproj">
    </FileRef>
    <FileRef
