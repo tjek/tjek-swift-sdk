@@ -23,7 +23,7 @@ extension Event {
         case searched                       = 5
         case offerOpenedAfterSearch         = 7
         case incitoPublicationOpened        = 8
-        case potentialLocalBusinessVisit    = 9
+        case potentialLocalBusinessVisit    = 10
     }
     
     /**
@@ -200,7 +200,7 @@ extension Event {
      - parameter dealerId: The id of the business to which the store belongs to.
      - parameter horizontalAccuracy: Device's horizontal accuracy of its geolocation information in meters.
      - parameter distanceToStore: Estimated distance between device and store, in meters.
-     - parameter timeSinceLastInteraction: Time passed (in secs) since the content interaction and the potential store visit. nil if no interaction occurred.
+     - parameter timeSinceLastInteraction: Time passed (in secs) since the content interaction and the potential local business visit. Nil if no interaction was recorded.
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
@@ -216,9 +216,9 @@ extension Event {
         
         var payload: PayloadType = [
             "l.hac": .int(Int(horizontalAccuracy)),
-            "st.id": .string(storeId.rawValue),
-            "st.dis": .int(Int(distanceToStore)),
-            "st.bid": .string(dealerId.rawValue)
+            "lb.id": .string(storeId.rawValue),
+            "lb.dis": .int(Int(distanceToStore)),
+            "lb.bid": .string(dealerId.rawValue)
         ]
         
         if let secs = timeSinceLastInteraction {

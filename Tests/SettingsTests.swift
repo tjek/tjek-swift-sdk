@@ -23,8 +23,8 @@ class SettingsTests: XCTestCase {
         let defaultURL = URL(string: "https://api.etilbudsavis.dk")!
         
         // 2. when
-        let fullSettings = Settings.CoreAPI(key: testKey, secret: testSecret, baseURL: testURL)
-        let minimalSettings = Settings.CoreAPI(key: testKey, secret: testSecret)
+        guard let fullSettings = try? Settings.CoreAPI(key: testKey, secret: testSecret, baseURL: testURL) else { return }
+        guard let minimalSettings = try? Settings.CoreAPI(key: testKey, secret: testSecret) else { return }
         
         // 3. then
         XCTAssertEqual(fullSettings.key, testKey)
@@ -86,8 +86,8 @@ class SettingsTests: XCTestCase {
         let defaultURL = URL(string: "https://graph.service.shopgun.com")!
         
         // 2. when
-        let fullSettings = Settings.GraphAPI(key: testKey, baseURL: testURL)
-        let minimalSettings = Settings.GraphAPI(key: testKey)
+        guard let fullSettings = try? Settings.GraphAPI(key: testKey, baseURL: testURL) else { return }
+        guard let minimalSettings = try? Settings.GraphAPI(key: testKey) else { return }
         
         // 3. then
         XCTAssertEqual(fullSettings.key, testKey)
@@ -149,8 +149,8 @@ class SettingsTests: XCTestCase {
         let defaultEnabled: Bool = true
         
         // 2. when
-        let fullSettings = Settings.EventsTracker(appId: testAppId, baseURL: testURL, dispatchInterval: testDispatchInterval, dispatchLimit: testDispatchLimit, enabled: testEnabled)
-        let minimalSettings = Settings.EventsTracker(appId: testAppId)
+        guard let fullSettings = try? Settings.EventsTracker(appId: testAppId, baseURL: testURL, dispatchInterval: testDispatchInterval, dispatchLimit: testDispatchLimit, enabled: testEnabled) else { return }
+        guard let minimalSettings = try? Settings.EventsTracker(appId: testAppId) else { return }
         
         // 3. then
         XCTAssertEqual(fullSettings.appId, testAppId)
