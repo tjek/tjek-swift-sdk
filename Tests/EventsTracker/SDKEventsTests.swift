@@ -21,7 +21,8 @@ class SDKEventsTests: XCTestCase {
         self.tokenizer = UniqueViewTokenizer(salt: "salty")!
         
         dataStore.salt = "myhash"
-        EventsTracker.configure(Settings.EventsTracker(appId: "appId_123"),
+        guard let settings = try? Settings.EventsTracker(appId: "appId_123") else { return }
+        EventsTracker.configure(settings,
                                 dataStore: self.dataStore)
     }
     
@@ -90,6 +91,25 @@ class SDKEventsTests: XCTestCase {
                        ["pp.id": .string("pub1"),
                         "ppp.n": .int(9999),
                         "vt": .string("VwMOrDD8zMk=")])
+    }
+    
+    func testPotentialLocalBusinessVisit() {
+        let testDate = Date(eventTimestamp: 12345)
+        let event = Event.potentialLocalBusinessVisit(for: .init(rawValue: "e3dclwL"), dealerId: .init(rawValue: "d7fazg"), horizontalAccuracy: 93, distanceToStore: 85, timeSinceLastInteraction: 3600, timestamp: testDate)
+        
+        XCTAssertFalse(event.id.rawValue.isEmpty)
+        XCTAssertEqual(event.type, 10)
+        XCTAssertEqual(event.timestamp.eventTimestamp, 12345)
+        XCTAssertEqual(event.version, 2)
+        
+        XCTAssertEqual(event.payload,
+                       ["lb.id": .string("e3dclwL"),
+                        "lb.bid": .string("d7fazg"),
+                        "l.hac": .int(93),
+                        "lb.dis": .int(85),
+                        "b.cin": .bool(true),
+                        "b.cint": .int(1),
+                        "vt": .string("JGwLh2htW9c=")])
     }
     
     func testOfferOpened() {
