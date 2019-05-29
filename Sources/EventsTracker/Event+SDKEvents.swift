@@ -24,6 +24,7 @@ extension Event {
         case firstOfferOpenedAfterSearch    = 6
         case offerOpenedAfterSearch         = 7
         case incitoPublicationOpened        = 8
+        case searchResultsViewed            = 9
         case potentialLocalBusinessVisit    = 10
     }
     
@@ -229,6 +230,34 @@ extension Event {
     }
     
     /**
+     The event when a search is performed against the system, the user views the search results, and then the users leaves the search results screen.
+     - parameter query: The search query, as entered by the user, that lead to the offer results being shown.
+     - parameter languageCode: The language the user is searching with (2-character ISO-639-1 code, or nil if no language can be detected)
+     - parameter resultsViewedCount: The total number of unique results seen by the user before they leave the screen. Cannot be < 1.
+     - parameter timestamp: The date that the event occurred. Defaults to now.
+     */
+    internal static func searchResultsViewed(
+        query: String,
+        languageCode: String?,
+        resultsViewedCount: Int,
+        timestamp: Date = Date()
+        ) -> Event {
+
+        var payload: PayloadType = [
+            "sea.q": .string(query),
+            "sea.v": .int(resultsViewedCount)
+        ]
+        
+        if let lang = languageCode {
+            payload["sea.l"] = .string(lang)
+        }
+        
+        return Event(timestamp: timestamp,
+                     type: EventType.searchResultsViewed.rawValue,
+                     payload: payload)
+    }
+    
+    /**
      The event when a user opened the app close to a store. The event is only triggered if gps traking is enabled, user gps location has accuracy below a specified radial distance and closest store is within a specified radial distance.
      - parameter storeId: The id of the closest store, within specified radial distance.
      - parameter dealerId: The id of the business to which the store belongs to.
@@ -308,6 +337,14 @@ extension Event {
             pagedPublicationId: pagedPublicationId,
             timestamp: Date()
         )
+    }
+    
+    public static func searchResultsViewed(
+        query: String,
+        languageCode: String?,
+        resultsViewedCount: Int
+        ) -> Event {
+        return searchResultsViewed(query: query, languageCode: languageCode, resultsViewedCount: resultsViewedCount, timestamp: Date())
     }
     
     public static func potentialLocalBusinessVisit(
