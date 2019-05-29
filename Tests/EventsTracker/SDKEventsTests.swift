@@ -203,6 +203,68 @@ class SDKEventsTests: XCTestCase {
                        ["sea.q": .string(""),
                         "of.id": .string("abc123")])
     }
+    
+    func testFirstOfferOpenedAfterSearch() {
+        let testDate = Date(eventTimestamp: 12345)
+        let query = "Another Very Long Séarch string 🌈"
+        let offerIds = ["b", "a", "c"].map(CoreAPI.Offer.Identifier.init(rawValue:))
+        let event = Event.firstOfferOpenedAfterSearch(offerId: "offer_123", precedingOfferIds: offerIds, query: query, languageCode: "DA", timestamp: testDate)
+        
+        XCTAssertFalse(event.id.rawValue.isEmpty)
+        XCTAssertEqual(event.type, 6)
+        XCTAssertEqual(event.timestamp.eventTimestamp, 12345)
+        XCTAssertEqual(event.version, 2)
+        XCTAssertEqual(event.payload,
+                       ["sea.q": .string(query),
+                        "sea.l": .string("DA"),
+                        "of.id": .string("offer_123"),
+                        "of.ids": .array([.string("b"), .string("a"), .string("c")])
+                        ])
+        
+        let nowTimestamp = Date().eventTimestamp
+        let defaultEvent = Event.firstOfferOpenedAfterSearch(offerId: "abc123", precedingOfferIds: [], query: "", languageCode: nil)
+        XCTAssert(abs(defaultEvent.timestamp.eventTimestamp - nowTimestamp) <= 2)
+        XCTAssertEqual(defaultEvent.payload,
+                       ["sea.q": .string(""),
+                        "of.id": .string("abc123"),
+                        "of.ids": .array([])
+                        ])
+        
+        let manyOfferIds = Array(50..<250).map({ CoreAPI.Offer.Identifier(rawValue: String($0)) })
+        
+        let clampedOfferIds = manyOfferIds.prefix(100).map({ JSONValue.string($0.rawValue) })
+        
+        let bigEvent = Event.firstOfferOpenedAfterSearch(offerId: "abc123", precedingOfferIds: manyOfferIds, query: "", languageCode: nil)
+        
+        
+        XCTAssertEqual(bigEvent.payload,
+                       ["sea.q": .string(""),
+                        "of.id": .string("abc123"),
+                        "of.ids": .array(clampedOfferIds)
+            ])
+    }
+    
+    func testSearchResultsViewed() {
+        let testDate = Date(eventTimestamp: 12345)
+        let query = "Søme Very Long Séarch string 🌈"
+        let event = Event.searchResultsViewed(query: query, languageCode: "DA", resultsViewedCount: 5, timestamp: testDate)
+        
+        XCTAssertFalse(event.id.rawValue.isEmpty)
+        XCTAssertEqual(event.type, 9)
+        XCTAssertEqual(event.timestamp.eventTimestamp, 12345)
+        XCTAssertEqual(event.version, 2)
+        XCTAssertEqual(event.payload,
+                       ["sea.q": .string(query),
+                        "sea.l": .string("DA"),
+                        "sea.v": .int(5)])
+        
+        let nowTimestamp = Date().eventTimestamp
+        let defaultEvent = Event.searchResultsViewed(query: "", languageCode: nil, resultsViewedCount: 1)
+        XCTAssert(abs(defaultEvent.timestamp.eventTimestamp - nowTimestamp) <= 2)
+        XCTAssertEqual(defaultEvent.payload,
+                       ["sea.q": .string(""),
+                        "sea.v": .int(1)])
+    }
 }
 
 fileprivate class MockSaltDataStore: ShopGunSDKDataStore {
