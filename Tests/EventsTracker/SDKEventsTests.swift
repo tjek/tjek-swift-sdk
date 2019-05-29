@@ -236,7 +236,6 @@ class SDKEventsTests: XCTestCase {
         
         let bigEvent = Event.firstOfferOpenedAfterSearch(offerId: "abc123", precedingOfferIds: manyOfferIds, query: "", languageCode: nil)
         
-        
         XCTAssertEqual(bigEvent.payload,
                        ["sea.q": .string(""),
                         "of.id": .string("abc123"),
