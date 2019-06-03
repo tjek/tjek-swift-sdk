@@ -70,7 +70,6 @@
 		AE8E45582010A38C0042CCE2 /* CoreAPI_Offer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E45572010A38C0042CCE2 /* CoreAPI_Offer.swift */; };
 		AE95FDC0204FEC6C0002C1CE /* CGSize_Fitting.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE95FDBF204FEC6C0002C1CE /* CGSize_Fitting.swift */; };
 		AE98C895224164B200B4BD7A /* Incito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE98C881224164A200B4BD7A /* Incito.framework */; };
-		AE98C896224164BF00B4BD7A /* Incito.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE98C881224164A200B4BD7A /* Incito.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AE98D324224263E300B4BD7A /* IncitoOffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE98D323224263E300B4BD7A /* IncitoOffer.swift */; };
 		AE98D34422426A9300B4BD7A /* IncitoGraphLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE98D34122426A9100B4BD7A /* IncitoGraphLoader.swift */; };
 		AE98D34522426A9300B4BD7A /* IncitoViewer.graphql in Resources */ = {isa = PBXBuildFile; fileRef = AE98D34222426A9100B4BD7A /* IncitoViewer.graphql */; };
@@ -94,11 +93,8 @@
 		AEDCC2F02008BA14002644C2 /* CoreAPI_Dealer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDCC2EF2008BA14002644C2 /* CoreAPI_Dealer.swift */; };
 		AEE2CC902134303200E93556 /* LifecycleEventTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE2CC8F2134303200E93556 /* LifecycleEventTrackerTests.swift */; };
 		AEE37C6C20513835008E71D8 /* Kingfisher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5A973820232098004E0799 /* Kingfisher.framework */; };
-		AEE37C6D20513855008E71D8 /* Kingfisher.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE5A973820232098004E0799 /* Kingfisher.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEE37C6E20513862008E71D8 /* Verso.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4942A520113A0F006658CE /* Verso.framework */; };
-		AEE37C6F20513867008E71D8 /* Verso.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE4942A520113A0F006658CE /* Verso.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEE37C7020513878008E71D8 /* Valet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE06549A1FFEE24C009F6F92 /* Valet.framework */; };
-		AEE37C7120513881008E71D8 /* Valet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE06549A1FFEE24C009F6F92 /* Valet.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEEE53F821187C5B00528E3B /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE53F721187C5B00528E3B /* JSONValue.swift */; };
 		AEEE540A21187EEA00528E3B /* Event+CommonPayloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE540921187EEA00528E3B /* Event+CommonPayloads.swift */; };
 		AEEE540C21187F1D00528E3B /* UniqueViewTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE540B21187F1D00528E3B /* UniqueViewTokenizer.swift */; };
@@ -289,23 +285,6 @@
 			remoteInfo = "Valet macOS Test Host App";
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		AE95FDCE205014880002C1CE /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				AE98C896224164BF00B4BD7A /* Incito.framework in Embed Frameworks */,
-				AEE37C6F20513867008E71D8 /* Verso.framework in Embed Frameworks */,
-				AEE37C6D20513855008E71D8 /* Kingfisher.framework in Embed Frameworks */,
-				AEE37C7120513881008E71D8 /* Valet.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		AE043042205BC15000F5D8C9 /* CoreAPI_Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAPI_Store.swift; sourceTree = "<group>"; };
@@ -831,7 +810,6 @@
 				AEC28B361FF6AAC20007AAB8 /* Frameworks */,
 				AEC28B371FF6AAC20007AAB8 /* Headers */,
 				AEC28B381FF6AAC20007AAB8 /* Resources */,
-				AE95FDCE205014880002C1CE /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
