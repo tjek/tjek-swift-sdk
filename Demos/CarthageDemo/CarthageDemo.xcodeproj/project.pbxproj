@@ -50,6 +50,7 @@
 		AE4BDDB422830ECC008DB391 /* UIViewController+Cycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Cycle.swift"; sourceTree = "<group>"; };
 		AE4BDDB522830ECC008DB391 /* LoadingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		AE4BDDCA22831580008DB391 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
+		AEC520A622A51F210069F284 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		AEEF0D78212D7A380004EFFC /* Kingfisher.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kingfisher.framework; path = Carthage/Build/iOS/Kingfisher.framework; sourceTree = "<group>"; };
 		AEEF0D7A212D7A380004EFFC /* Valet.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Valet.framework; path = Carthage/Build/iOS/Valet.framework; sourceTree = "<group>"; };
 		AEEF0D7B212D7A380004EFFC /* Verso.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Verso.framework; path = Carthage/Build/iOS/Verso.framework; sourceTree = "<group>"; };
@@ -78,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				AE4BDDCA22831580008DB391 /* Readme.md */,
+				AEC520A622A51F210069F284 /* Cartfile */,
 				AE4BDDA622830ECC008DB391 /* SharedSource */,
 				AE1027DE212D639C00104921 /* Products */,
 				AE1027F2212D68C400104921 /* Frameworks */,
