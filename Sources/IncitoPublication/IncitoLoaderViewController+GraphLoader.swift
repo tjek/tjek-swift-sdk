@@ -139,7 +139,7 @@ extension IncitoLoaderViewController {
         completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
         ) {
         
-        // if the publication doesnt have a graphId, then just 
+        // if the publication doesnt have a graphId, then just eject with an error
         guard let graphId = publication.incitoId else {
             self.load(IncitoLoader(value: .failure(IncitoPublicationLoaderError.notAnIncitoPublication))) { vcResult in
                 completion?(vcResult.map({ ($0, false) }))
