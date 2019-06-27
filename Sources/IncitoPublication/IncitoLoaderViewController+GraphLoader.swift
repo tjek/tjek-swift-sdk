@@ -27,8 +27,8 @@ extension CoreAPI {
 extension IncitoLoaderViewController {
     
     private func load(
-        incitoIdLoader: FutureResult<IncitoGraphIdentifier>,
-        relatedPublicationId: CoreAPI.PagedPublication.Identifier?,
+        incitoPublicationId: CoreAPI.PagedPublication.Identifier,
+        incitoPropertyLoader: FutureResult<(graphId: IncitoGraphIdentifier, isAlsoPagedPublication: Bool)>,
         featureLabelWeights: [String: Double],
         graphClient: GraphClient = GraphAPI.shared.client,
         businessLoaded: ((Result<GraphBusiness, Error>) -> Void)? = nil,
@@ -38,6 +38,7 @@ extension IncitoLoaderViewController {
         // Keep track of the id of the incitoId once it is loaded.
         var expectedIncitoId: IncitoGraphIdentifier? = nil
         var firstLoadedIncitoId: IncitoGraphIdentifier? = nil
+        var isAlsoPagedPublication: Bool = false
         
         // every time the loader is called, fetch the width of the screen
         let graphIncitoLoader: (IncitoGraphIdentifier) -> IncitoLoader = { graphId in
@@ -56,9 +57,14 @@ extension IncitoLoaderViewController {
         }
         
         // make a loader that first fetches the publication, then gets the incito id from that publication, then calls the graphLoader with that incitoId
-        let loader = incitoIdLoader
-            .observeResultSuccess({ expectedIncitoId = $0 })
-            .flatMapResult(graphIncitoLoader)
+        let loader = incitoPropertyLoader
+            .observeResultSuccess({
+                expectedIncitoId = $0.graphId
+                isAlsoPagedPublication = $0.isAlsoPagedPublication
+            })
+            .flatMapResult({
+                graphIncitoLoader($0.graphId)
+            })
         
         self.load(loader) { [weak self] vcResult in
             switch vcResult {
@@ -69,7 +75,7 @@ extension IncitoLoaderViewController {
                     
                     if firstSuccessfulReload {
                         firstLoadedIncitoId = incitoId
-                        self?.firstSuccessfulReload(incitoId: incitoId, relatedPublicationId: relatedPublicationId)
+                        self?.firstSuccessfulReload(incitoPublicationId: incitoPublicationId, isAlsoPagedPublication: isAlsoPagedPublication)
                     }
                 }
                 completion?(.success((viewController, firstSuccessfulReload)))
@@ -90,7 +96,7 @@ extension IncitoLoaderViewController {
         
         let publicationReq = CoreAPI.Requests.getPagedPublication(withId: publicationId)
         
-        let incitoIdLoader: FutureResult<IncitoGraphIdentifier> = CoreAPI.shared
+        let incitoPropertyLoader: FutureResult<(graphId: IncitoGraphIdentifier, isAlsoPagedPublication: Bool)> = CoreAPI.shared
             .requestFuture(publicationReq)
             .observe({ publicationLoaded?($0) })
             .map({
@@ -99,15 +105,16 @@ extension IncitoLoaderViewController {
                     guard let incitoId = publication.incitoId else {
                         return .failure(IncitoPublicationLoaderError.notAnIncitoPublication)
                     }
-                    return .success(incitoId)
+                    
+                    return .success((graphId: incitoId, isAlsoPagedPublication: !publication.isOnlyIncito))
                 case let .failure(err):
                     return .failure(err)
                 }
             })
         
         self.load(
-            incitoIdLoader: incitoIdLoader,
-            relatedPublicationId: publicationId,
+            incitoPublicationId: publicationId,
+            incitoPropertyLoader: incitoPropertyLoader,
             featureLabelWeights: featureLabelWeights,
             graphClient: graphClient,
             businessLoaded: businessLoaded,
@@ -116,7 +123,7 @@ extension IncitoLoaderViewController {
     }
     
     /**
-     Will start loading the incito specified by the id, using the graphClient.
+     Will start loading the incito specified by the publication, using the graphClient.
      
      During the loading process (but before the incito is completely parsed) the businessLoaded callback will be called, containing the GraphBusiness object associated with the Incito. You can use this to customize the screen (bg color etc) before the incito is fully loaded.
      
@@ -125,19 +132,24 @@ extension IncitoLoaderViewController {
      If you specify a `lastReadPosition` it will scroll to this location once loading finishes. This is a 0-1 %, accessible via the `scrollProgress` property of the IncitoViewController.
      */
     public func load(
-        graphId: IncitoGraphIdentifier,
-        relatedPublicationId: PagedPublicationCoreAPIIdentifier?,
+        publication: CoreAPI.PagedPublication,
         featureLabelWeights: [String: Double] = [:],
         graphClient: GraphClient = GraphAPI.shared.client,
         businessLoaded: ((Result<GraphBusiness, Error>) -> Void)? = nil,
         completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
         ) {
         
-        let incitoIdLoader = FutureResult<IncitoGraphIdentifier>(value: .success(graphId))
+        // if the publication doesnt have a graphId, then just 
+        guard let graphId = publication.incitoId else {
+            self.load(IncitoLoader(value: .failure(IncitoPublicationLoaderError.notAnIncitoPublication))) { vcResult in
+                completion?(vcResult.map({ ($0, false) }))
+            }
+            return
+        }
         
         self.load(
-            incitoIdLoader: incitoIdLoader,
-            relatedPublicationId: relatedPublicationId,
+            incitoPublicationId: publication.id,
+            incitoPropertyLoader: .init(value: .success((graphId, !publication.isOnlyIncito))),
             featureLabelWeights: featureLabelWeights,
             graphClient: graphClient,
             businessLoaded: businessLoaded,
@@ -145,14 +157,14 @@ extension IncitoLoaderViewController {
         )
     }
     
-    private func firstSuccessfulReload(incitoId: IncitoGraphIdentifier, relatedPublicationId: PagedPublicationCoreAPIIdentifier?) {
+    private func firstSuccessfulReload(incitoPublicationId: PagedPublicationCoreAPIIdentifier, isAlsoPagedPublication: Bool) {
         
         // On first successful load, trigger the incitoOpened event (if the events tracker has been configured)
         if EventsTracker.isConfigured {
             EventsTracker.shared.trackEvent(
                 .incitoPublicationOpened(
-                    incitoId,
-                    pagedPublicationId: relatedPublicationId
+                    incitoPublicationId,
+                    isAlsoPagedPublication: isAlsoPagedPublication
                 )
             )
         }

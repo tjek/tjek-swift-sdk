@@ -20,8 +20,6 @@ class DemoIncitoViewController: IncitoLoaderViewController {
     }
     
     func load(publication: CoreAPI.PagedPublication) {
-        guard let incitoId = publication.incitoId else { return }
-    
         self.title = publication.branding.name
         
         // Note: we are setting the `backgroundColor` on the View Controller (rather than `incitoVC.view.backgroundColor`)
@@ -30,10 +28,7 @@ class DemoIncitoViewController: IncitoLoaderViewController {
         
         // Start the actual loading of the incito.
         // By providing the related publicationId we can more accurately measure incito-read analytics
-        self.load(
-            graphId: incitoId,
-            relatedPublicationId: publication.id
-        )
+        super.load(publication: publication)
     }
 }
 

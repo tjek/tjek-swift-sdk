@@ -23,9 +23,11 @@ extension Event {
         case searched                       = 5
         case firstOfferOpenedAfterSearch    = 6
         case offerOpenedAfterSearch         = 7
+        @available(*, deprecated, renamed: "incitoPublicationOpened_v2")
         case incitoPublicationOpened        = 8
         case searchResultsViewed            = 9
         case potentialLocalBusinessVisit    = 10
+        case incitoPublicationOpened_v2     = 11
     }
     
     /**
@@ -208,6 +210,7 @@ extension Event {
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
+    @available(*, deprecated, renamed: "incitoPublicationOpened(_:isAlsoPagedPublication:timestamp:tokenizer:)")
     internal static func incitoPublicationOpened(
         _ incitoId: IncitoGraphIdentifier,
         pagedPublicationId: PagedPublicationCoreAPIIdentifier?,
@@ -225,6 +228,26 @@ extension Event {
         if let pagedPubId = pagedPublicationId {
             event = event.addingViewToken(content: pagedPubId.rawValue, key: "pp.vt", tokenizer: tokenizer)
         }
+        
+        return event
+    }
+    
+    internal static func incitoPublicationOpened(
+        _ incitoPublicationId: PagedPublicationCoreAPIIdentifier,
+        isAlsoPagedPublication: Bool,
+        timestamp: Date = Date(),
+        tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
+        ) -> Event {
+        
+        let payload: PayloadType = [
+            "ip.id": .string(incitoPublicationId.rawValue),
+            "ip.paged": .bool(isAlsoPagedPublication)
+        ]
+        
+        let event = Event(timestamp: timestamp,
+                          type: EventType.incitoPublicationOpened_v2.rawValue,
+                          payload: payload)
+            .addingViewToken(content: incitoPublicationId.rawValue, tokenizer: tokenizer)
         
         return event
     }
@@ -328,6 +351,7 @@ extension Event {
         return offerOpenedAfterSearch(offerId: offerId, query: query, languageCode: languageCode, timestamp: Date())
     }
     
+    @available(*, deprecated, renamed: "incitoPublicationOpened(_:isAlsoPagedPublication:)")
     public static func incitoPublicationOpened(
         _ incitoId: IncitoGraphIdentifier,
         pagedPublicationId: PagedPublicationCoreAPIIdentifier?
@@ -335,6 +359,17 @@ extension Event {
         return incitoPublicationOpened(
             incitoId,
             pagedPublicationId: pagedPublicationId,
+            timestamp: Date()
+        )
+    }
+    
+    public static func incitoPublicationOpened(
+        _ incitoPublicationId: PagedPublicationCoreAPIIdentifier,
+        isAlsoPagedPublication: Bool
+        ) -> Event {
+        return incitoPublicationOpened(
+            incitoPublicationId,
+            isAlsoPagedPublication: isAlsoPagedPublication,
             timestamp: Date()
         )
     }
