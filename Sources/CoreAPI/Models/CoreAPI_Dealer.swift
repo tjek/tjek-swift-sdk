@@ -69,6 +69,10 @@ extension CoreAPI {
     public struct Country: Decodable, Equatable {
         public typealias Identifier = GenericIdentifier<Country>
         public var id: Identifier
+        
+        public init(id: Identifier) {
+            self.id = id
+        }
     }
 }
 

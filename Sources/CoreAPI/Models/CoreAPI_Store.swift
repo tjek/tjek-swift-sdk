@@ -27,6 +27,18 @@ extension CoreAPI {
         public var branding: CoreAPI.Branding
         public var contact: String?
         
+        public init(id: Identifier, street: String?, city: String?, zipCode: String?, country: CoreAPI.Country, coordinate: CLLocationCoordinate2D, dealerId: CoreAPI.Dealer.Identifier, branding: CoreAPI.Branding, contact: String?) {
+            self.id = id
+            self.street = street
+            self.city = city
+            self.zipCode = zipCode
+            self.country = country
+            self.coordinate = coordinate
+            self.dealerId = dealerId
+            self.branding = branding
+            self.contact = contact
+        }
+        
         // MARK: Decodable
         
         enum CodingKeys: String, CodingKey {
