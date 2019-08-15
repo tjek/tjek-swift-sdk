@@ -39,7 +39,7 @@ Pod::Spec.new do |s|
         ss.dependency "ShopGunSDK/Shared"
         ss.dependency "ShopGunSDK/GraphAPI"
         ss.dependency "ShopGunSDK/EventsTracker"
-        ss.dependency "Incito", "~> 0.7"
+        ss.dependency "Incito", "~> 0.8"
     end
     
     s.subspec 'CoreAPI' do |ss|
