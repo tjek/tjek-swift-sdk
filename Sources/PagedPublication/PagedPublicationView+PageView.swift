@@ -70,8 +70,7 @@ extension PagedPublicationView {
             backgroundColor = properties.isBackgroundDark ? UIColor(white: 1, alpha: 0.1) : UIColor(white: 0.8, alpha: 0.15)
             
             let pagePixelWidth = bounds.width * UIScreen.main.scale
-            let imageSize: CGSize = pagePixelWidth > 1500 ? ImageURLSet.CoreAPI.zoomSize : ImageURLSet.CoreAPI.viewSize
-            if let imageURL = properties.images?.url(fitting: imageSize) {
+            if let imageURL = properties.images?.url(fitting: ImageURLSet.CoreAPI.viewSize) {
                 startLoadingViewImage(fromURL: imageURL)
             }
             
