@@ -234,6 +234,11 @@ extension CoreAPI {
         self.authVault.resetStoredAuthState()
     }
     
+    /// The current session token.
+    public var sessionToken: String? {
+        return self.authVault.sessionToken
+    }
+    
     fileprivate func authorizedUserDidChange(prevAuthUser: AuthorizedUser?, newAuthUser: AuthorizedUser?) {
         
         switch newAuthUser {

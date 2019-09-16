@@ -134,6 +134,11 @@ extension CoreAPI {
             }
         }
         
+        var sessionToken: String? {
+            guard case let .authorized(token, _, _) = self.authState else { return nil }
+            return token
+        }
+        
         // MARK: Funcs
         
         private func regenerateOnQueue(_ type: AuthRegenerationType, completion: ((Error?) -> Void)? = nil) {
