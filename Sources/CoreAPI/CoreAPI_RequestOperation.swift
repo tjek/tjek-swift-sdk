@@ -22,21 +22,19 @@ extension CoreAPI {
         private var remainingRetries: Int
         private let originalURLRequest: URLRequest
         private let completion: CompletionHandler?
-        private let authVault: AuthVault?
         private let urlSession: URLSession
         
         private var activeTask: URLSessionTask?
         private var remainingRegenerateAuthRetries: Int = 3
         private var queue: DispatchQueue = DispatchQueue(label: "ShopGunSDK.CoreAPI.RequestOperationQ")
 
-        init(id: Identifier = .generate(), requiresAuth: Bool, maxRetryCount: Int, urlRequest: URLRequest, authVault: AuthVault?, urlSession: URLSession, completion: CompletionHandler?) {
+        init(id: Identifier = .generate(), requiresAuth: Bool, maxRetryCount: Int, urlRequest: URLRequest, urlSession: URLSession, completion: CompletionHandler?) {
             self.id = id
             self.requiresAuth = requiresAuth
             self.remainingRetries = maxRetryCount
             self.originalURLRequest = urlRequest
             self.completion = completion
             
-            self.authVault = authVault
             self.urlSession = urlSession
             
             self.activeTask = nil
@@ -63,24 +61,7 @@ extension CoreAPI {
         }
         
         private func startPerformingRequest() {
-            guard requiresAuth, let authVault = self.authVault else {
-                // no auth required, just perform with the original, unsigned, urlRequest
-                self.performRequest(self.originalURLRequest)
-                return
-            }
-            
-            authVault.signURLRequest(self.originalURLRequest) { [weak self] (authResult) in
-                guard self?.isCancelled == false else { return }
-                
-                self?.queue.async { [weak self] in
-                    switch authResult {
-                    case .success(let signedURLRequest):
-                        self?.performRequest(signedURLRequest)
-                    case .failure(let authError):
-                        self?.finish(withResult: .failure(authError))
-                    }
-                }
-            }
+            self.performRequest(self.originalURLRequest)
         }
         
         private func performRequest(_ urlRequest: URLRequest) {
@@ -107,18 +88,6 @@ extension CoreAPI {
                 self.queue.asyncAfter(deadline: .now() + (error.canRetryAfter ?? 0.0)) { [weak self] in
                     self?.startPerformingRequest()
                 }
-            case .failure(let error as CoreAPI.APIError)
-                where error.requiresRenewedAuthSession && self.remainingRegenerateAuthRetries > 0 && self.authVault != nil:
-                // It was an auth error (and we havnt run out of retries)
-                // Trigger a regenerate on the vault, and retry
-                
-                self.authVault?.regenerate(.renewOrCreate)
-                
-                self.activeTask = nil
-                self.requiresAuth = true
-                self.remainingRegenerateAuthRetries -= 1
-                
-                self.startPerformingRequest()
             case .failure:
                 // All other possible errors (or we have retried too many times)
                 self.finish(withResult: result)

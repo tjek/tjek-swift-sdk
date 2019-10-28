@@ -10,14 +10,20 @@
 import Foundation
 
 final public class CoreAPI {
+    public typealias TokenProvider = () -> String?
+    
+    /// Every time a request is made, this TokenProvider is called to ask for the auth token.
+    public var tokenProvider: TokenProvider
     
     public let settings: Settings.CoreAPI
     
-    public var locale: Locale = Locale.autoupdatingCurrent {
-        didSet { self.updateAuthVaultParams() }
-    }
+    public var locale: Locale = Locale.autoupdatingCurrent
+//    {
+//        didSet { self.updateAuthVaultParams() }
+//    }
     
-    internal init(settings: Settings.CoreAPI, dataStore: ShopGunSDKDataStore) {
+    internal init(tokenProvider: @escaping TokenProvider, settings: Settings.CoreAPI, dataStore: ShopGunSDKDataStore) {
+        self.tokenProvider = tokenProvider
         self.settings = settings
         
         // Build the urlSession that requests will be run on
@@ -29,24 +35,26 @@ final public class CoreAPI {
 
         self.requestOpQueue.name = "ShopGunSDK.CoreAPI.Requests"
         
-        self.authVault = AuthVault(baseURL: settings.baseURL, key: settings.key, secret: settings.secret, urlSession: self.requstURLSession, dataStore: dataStore)
         
-        self.authVault.authorizedUserDidChangeCallback = { [weak self] in self?.authorizedUserDidChange(prevAuthUser: $0, newAuthUser: $1) }
-        self.updateAuthVaultParams()
+        
+//        self.authVault = AuthVault(baseURL: settings.baseURL, key: settings.key, secret: settings.secret, urlSession: self.requstURLSession, dataStore: dataStore)
+//
+//        self.authVault.authorizedUserDidChangeCallback = { [weak self] in self?.authorizedUserDidChange(prevAuthUser: $0, newAuthUser: $1) }
+//        self.updateAuthVaultParams()
     }
     
     private init() { fatalError("You must provide settings when creating the CoreAPI") }
     
-    private let authVault: AuthVault
+//    private let authVault: AuthVault
     private let requstURLSession: URLSession
     private let requestOpQueue: OperationQueue = OperationQueue()
     private let queue: DispatchQueue = DispatchQueue(label: "CoreAPI-Queue")
     private var additionalRequestParams: [String: String] {
         return ["r_locale": self.locale.identifier]
     }
-    private func updateAuthVaultParams() {
-        self.authVault.additionalRequestParams.merge(self.additionalRequestParams) { (_, new) in new }
-    }
+//    private func updateAuthVaultParams() {
+//        self.authVault.additionalRequestParams.merge(self.additionalRequestParams) { (_, new) in new }
+//    }
 }
 
 // MARK: -
@@ -65,28 +73,23 @@ extension CoreAPI {
         return _shared != nil
     }
     
-    public static func configure() {
+    /// This will cause a fatalError if KeychainDataStore hasnt been configured
+    public static func configure(tokenProvider: @escaping TokenProvider = { return nil }, settings: Settings.CoreAPI? = nil, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
         do {
-            guard let settings = try Settings.loadShared().coreAPI else {
+            guard let settings = try (settings ?? Settings.loadShared().coreAPI) else {
                 fatalError("Required CoreAPI settings missing from '\(Settings.defaultSettingsFileName)'")
             }
             
-            configure(settings)
+            if isConfigured {
+                Logger.log("Re-configuring CoreAPI", level: .verbose, source: .CoreAPI)
+            } else {
+                Logger.log("Configuring CoreAPI", level: .verbose, source: .CoreAPI)
+            }
+            
+            _shared = CoreAPI(tokenProvider: tokenProvider, settings: settings, dataStore: dataStore)
         } catch let error {
             fatalError(String(describing: error))
         }
-    }
-    
-    /// This will cause a fatalError if KeychainDataStore hasnt been configured
-    public static func configure(_ settings: Settings.CoreAPI, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
-
-        if isConfigured {
-            Logger.log("Re-configuring CoreAPI", level: .verbose, source: .CoreAPI)
-        } else {
-            Logger.log("Configuring CoreAPI", level: .verbose, source: .CoreAPI)
-        }
-        
-        _shared = CoreAPI(settings: settings, dataStore: dataStore)
     }
 }
 
@@ -126,14 +129,18 @@ extension CoreAPI {
         self.queue.async { [weak self] in
             guard let s = self else { return }
             
-            let urlRequest = request.urlRequest(for: s.settings.baseURL, additionalParameters: s.additionalRequestParams)
+            var urlRequest = request
+                .urlRequest(for: s.settings.baseURL, additionalParameters: s.additionalRequestParams)
+            
+            if let token = self?.tokenProvider() {
+                urlRequest = urlRequest.signedForCoreAPI(withToken: token, secret: s.settings.secret)
+            }
             
             // make a new RequestOperation and add it to the pending queue
             let reqOp = RequestOperation(id: token.id,
                                          requiresAuth: request.requiresAuth,
                                          maxRetryCount: request.maxRetryCount,
                                          urlRequest: urlRequest,
-                                         authVault: s.authVault,
                                          urlSession: s.requstURLSession,
                                          completion: { (dataResult) in
                                             // Make sure the completion is always called on main
@@ -187,74 +194,74 @@ extension CoreAPI {
 
 // MARK: -
 
-extension CoreAPI {
-    
-    public enum ClientIdentifierType {}
-    public typealias ClientIdentifier = GenericIdentifier<ClientIdentifierType>
-    
-    public enum LoginCredentials: Equatable {
-        case logout
-        case shopgun(email: String, password: String)
-        case facebook(token: String)
-    }
-    
-    // A user/provider pair
-    public typealias AuthorizedUser = (person: CoreAPI.Person, provider: CoreAPI.AuthorizedUserProvider)
-    public enum AuthorizedUserProvider: String, Codable {
-        case shopgun    = "etilbudsavis" // TODO: do decoding manually to avoid eta/sgn distinction?
-        case facebook   = "facebook"
-    }
-
-    public func login(credentials: LoginCredentials, completion: ((Result<AuthorizedUser, Error>) -> Void)?) {
-        self.queue.async { [weak self] in
-            
-            self?.authVault.regenerate(.reauthorize(credentials), completion: { [weak self] (error) in
-                if let user = self?.authorizedUser {
-                    completion?(.success(user))
-                } else {
-                    completion?(.failure(error ?? APIError.unableToLogin))
-                }
-            })
-        }
-    }
-    
-    public var authorizedUser: AuthorizedUser? {
-        return self.authVault.currentAuthorizedUser
-    }
-    
-    /// The Id that represents this installation on this device to the CoreAPI.
-    /// This will remain constant until the app is removed, or it is reset.
-    /// It is created the first time the coreAPI communicates with the server
-    public var clientId: ClientIdentifier? {
-        return self.authVault.clientId
-    }
-    
-    /// Reset the cached clientId. The user will also be logged out, and the clientId will only be regenerated on future CoreAPI requests.
-    public func resetClientId() {
-        self.authVault.resetStoredAuthState()
-    }
-    
-    /// The current session token.
-    public var sessionToken: String? {
-        return self.authVault.sessionToken
-    }
-    
-    fileprivate func authorizedUserDidChange(prevAuthUser: AuthorizedUser?, newAuthUser: AuthorizedUser?) {
-        
-        switch newAuthUser {
-        case let (person, provider)?:
-            Logger.log("User (\(provider)) logged In \(person)", level: .debug, source: .CoreAPI)
-        case nil:
-            Logger.log("User logged out", level: .debug, source: .CoreAPI)
-        }
-        
-        var userInfo: [AnyHashable: Any] = [:]
-        userInfo["previous"] = prevAuthUser
-        userInfo["current"] = newAuthUser
-        
-        NotificationCenter.default.post(name: CoreAPI.authorizedUserDidChangeNotification, object: self, userInfo: userInfo)
-    }
-    
+//extension CoreAPI {
+//
+//    public enum ClientIdentifierType {}
+//    public typealias ClientIdentifier = GenericIdentifier<ClientIdentifierType>
+//
+//    public enum LoginCredentials: Equatable {
+//        case logout
+//        case shopgun(email: String, password: String)
+//        case facebook(token: String)
+//    }
+//
+//    // A user/provider pair
+//    public typealias AuthorizedUser = (person: CoreAPI.Person, provider: CoreAPI.AuthorizedUserProvider)
+//    public enum AuthorizedUserProvider: String, Codable {
+//        case shopgun    = "etilbudsavis" // TODO: do decoding manually to avoid eta/sgn distinction?
+//        case facebook   = "facebook"
+//    }
+//
+//    public func login(credentials: LoginCredentials, completion: ((Result<AuthorizedUser, Error>) -> Void)?) {
+//        self.queue.async { [weak self] in
+//
+//            self?.authVault.regenerate(.reauthorize(credentials), completion: { [weak self] (error) in
+//                if let user = self?.authorizedUser {
+//                    completion?(.success(user))
+//                } else {
+//                    completion?(.failure(error ?? APIError.unableToLogin))
+//                }
+//            })
+//        }
+//    }
+//
+//    public var authorizedUser: AuthorizedUser? {
+//        return self.authVault.currentAuthorizedUser
+//    }
+//
+//    /// The Id that represents this installation on this device to the CoreAPI.
+//    /// This will remain constant until the app is removed, or it is reset.
+//    /// It is created the first time the coreAPI communicates with the server
+//    public var clientId: ClientIdentifier? {
+//        return self.authVault.clientId
+//    }
+//
+//    /// Reset the cached clientId. The user will also be logged out, and the clientId will only be regenerated on future CoreAPI requests.
+//    public func resetClientId() {
+//        self.authVault.resetStoredAuthState()
+//    }
+//
+//    /// The current session token.
+//    public var sessionToken: String? {
+//        return self.authVault.sessionToken
+//    }
+//
+//    fileprivate func authorizedUserDidChange(prevAuthUser: AuthorizedUser?, newAuthUser: AuthorizedUser?) {
+//
+//        switch newAuthUser {
+//        case let (person, provider)?:
+//            Logger.log("User (\(provider)) logged In \(person)", level: .debug, source: .CoreAPI)
+//        case nil:
+//            Logger.log("User logged out", level: .debug, source: .CoreAPI)
+//        }
+//
+//        var userInfo: [AnyHashable: Any] = [:]
+//        userInfo["previous"] = prevAuthUser
+//        userInfo["current"] = newAuthUser
+//
+//        NotificationCenter.default.post(name: CoreAPI.authorizedUserDidChangeNotification, object: self, userInfo: userInfo)
+//    }
+//
     /**
      The name of the notification that is posted when the authorized user changes.
      
@@ -262,8 +269,8 @@ extension CoreAPI {
      - If we are logging in, the `previous` authorized user is nil.
      - If we are logging out, the `current` authorized user is nil.
      */
-    public static let authorizedUserDidChangeNotification = Notification.Name("com.shopgun.ios.sdk.coreAPI.authorizedUserDidChange")
-}
+//    public static let authorizedUserDidChangeNotification = Notification.Name("com.shopgun.ios.sdk.coreAPI.authorizedUserDidChange")
+//}
 
 extension CoreAPI {
     /// Simple namespace for keeping Requests
