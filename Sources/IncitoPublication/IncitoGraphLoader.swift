@@ -54,26 +54,37 @@ public func IncitoGraphLoader(
     // - decode the graph response
     // - load the document
     return graphClient
-        .start(dataRequest: request)
+        .start(dataRequest: request) // -> FutureResult<Data>
 //        .measure(print: " 📞 Downloaded")
         .flatMapResult({
             decodeGraphResponseData($0)
 //                .measure(print: " ⚙️ Decoded")
-        })
+        }) // -> FutureResult<(business: GraphBusiness, document: IncitoDocument)>
         .observe({ res in
             businessLoadedCallback?(res.map({ $0.business }))
         })
-        .flatMapResult({
-            IncitoDocumentLoader(
-                document: $0.document,
-                width: width
-            )
-        })
+        .mapToIncitoLoader({ $0.map({ $0.document }) })
 }
 
-func decodeGraphResponseData(_ jsonData: Data) -> FutureResult<(business: GraphBusiness, document: IncitoPropertiesDocument)> {
+extension Future {
+    func mapToIncitoLoader(_ f: @escaping (Response) -> Result<IncitoDocument, Error>) -> IncitoLoader {
+        return IncitoLoader { cb in
+            self.run {
+                cb(f($0))
+            }
+        }
+    }
+    
+    func flatMapToIncitoLoader(_ f: @escaping (Response) -> IncitoLoader) -> IncitoLoader {
+        return IncitoLoader { cb in
+            self.run { f($0).load(cb) }
+        }
+    }
+}
+
+func decodeGraphResponseData(_ jsonData: Data) -> FutureResult<(business: GraphBusiness, document: IncitoDocument)> {
     return Future(work: {
-        Result<(business: GraphBusiness, document: IncitoPropertiesDocument), Error>(catching: {
+        Result<(business: GraphBusiness, document: IncitoDocument), Error>(catching: {
 
             let jsonObj = try JSONSerialization.jsonObject(with: jsonData, options: [])
             
@@ -82,7 +93,12 @@ func decodeGraphResponseData(_ jsonData: Data) -> FutureResult<(business: GraphB
                 throw IncitoGraphLoaderError.invalidData
             }
             
-            guard let document = try incitoDict["document"].map(IncitoPropertiesDocument.init(jsonDict:)) else {
+            guard let document: IncitoDocument = try incitoDict["document"].flatMap({
+                guard let jsonStr = String(data: try JSONSerialization.data(withJSONObject: $0), encoding: .utf8) else {
+                    return nil
+                }
+                return try IncitoDocument.init(jsonDict: $0, jsonStr: jsonStr)
+            }) else {
                 throw IncitoGraphLoaderError.missingDocument
             }
             
@@ -112,9 +128,7 @@ extension GraphBusiness {
         self.id = id
         self.coreId = coreId
         self.name = name
-        self.primaryColor = (jsonDict["primaryColor"] as? String)
-            .flatMap(Color.init(string:))?
-            .uiColor
+        self.primaryColor = (jsonDict["primaryColor"] as? String).flatMap(UIColor.init(webString:))
     }
 }
 

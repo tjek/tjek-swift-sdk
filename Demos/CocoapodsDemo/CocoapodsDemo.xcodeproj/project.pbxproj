@@ -41,6 +41,7 @@
 		AE1686A2224A72B800332DA6 /* PublicationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicationListViewController.swift; sourceTree = "<group>"; };
 		AE1686A4224A76DD00332DA6 /* PublicationListContentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicationListContentsViewController.swift; sourceTree = "<group>"; };
 		AE4BDDCB22831590008DB391 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
+		AE69DA5D2375740800A5A360 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				AE4BDDCB22831590008DB391 /* Readme.md */,
+				AE69DA5D2375740800A5A360 /* Podfile */,
 				AE16866D224A15EE00332DA6 /* SharedSource */,
 				AE168659224A158D00332DA6 /* Products */,
 				670FD2EF85ABA96D80A30964 /* Pods */,
@@ -384,6 +386,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MN86AVA6GX;
 				INFOPLIST_FILE = "$(SRCROOT)/../SharedSource/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -402,6 +405,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MN86AVA6GX;
 				INFOPLIST_FILE = "$(SRCROOT)/../SharedSource/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
