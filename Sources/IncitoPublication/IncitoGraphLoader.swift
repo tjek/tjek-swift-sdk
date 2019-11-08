@@ -97,7 +97,7 @@ func decodeGraphResponseData(_ jsonData: Data) -> FutureResult<(business: GraphB
                 guard let jsonStr = String(data: try JSONSerialization.data(withJSONObject: $0), encoding: .utf8) else {
                     return nil
                 }
-                return try IncitoDocument.init(jsonDict: $0, jsonStr: jsonStr)
+                return try IncitoDocument(jsonDict: $0, jsonStr: jsonStr)
             }) else {
                 throw IncitoGraphLoaderError.missingDocument
             }
