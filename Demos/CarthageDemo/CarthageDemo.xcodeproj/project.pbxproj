@@ -9,9 +9,6 @@
 /* Begin PBXBuildFile section */
 		AE1027F4212D68C500104921 /* ShopGunSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE1027F3212D68C500104921 /* ShopGunSDK.framework */; };
 		AE4BDD9F22830A86008DB391 /* Incito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4BDD9E22830A4A008DB391 /* Incito.framework */; };
-		AE4BDDA322830AB6008DB391 /* FLAnimatedImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4BDDA222830AAE008DB391 /* FLAnimatedImage.framework */; };
-		AE4BDDA422830AB6008DB391 /* Future.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4BDDA022830AAE008DB391 /* Future.framework */; };
-		AE4BDDA522830AB6008DB391 /* GenericGeometry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4BDDA122830AAE008DB391 /* GenericGeometry.framework */; };
 		AE4BDDB622830ECC008DB391 /* DemoPagedPublicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4BDDA722830ECC008DB391 /* DemoPagedPublicationViewController.swift */; };
 		AE4BDDB722830ECC008DB391 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4BDDA822830ECC008DB391 /* RootViewController.swift */; };
 		AE4BDDB822830ECC008DB391 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE4BDDA922830ECC008DB391 /* LaunchScreen.storyboard */; };
@@ -61,9 +58,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE4BDDA322830AB6008DB391 /* FLAnimatedImage.framework in Frameworks */,
-				AE4BDDA422830AB6008DB391 /* Future.framework in Frameworks */,
-				AE4BDDA522830AB6008DB391 /* GenericGeometry.framework in Frameworks */,
 				AE4BDD9F22830A86008DB391 /* Incito.framework in Frameworks */,
 				AEEF0D7C212D7A380004EFFC /* Kingfisher.framework in Frameworks */,
 				AEEF0D7E212D7A380004EFFC /* Valet.framework in Frameworks */,
@@ -396,6 +390,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/../SharedSource/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -418,6 +413,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/../SharedSource/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

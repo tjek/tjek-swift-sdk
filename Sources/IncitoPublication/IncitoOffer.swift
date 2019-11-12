@@ -73,11 +73,11 @@ extension IncitoOffer.Label: Decodable {
 }
 
 extension IncitoOffer {
-    public init?(viewProperties: Incito.ViewProperties) {
+    public init?(element: IncitoDocument.Element) {
         
         guard
-            viewProperties.isOffer,
-            let jsonValue = viewProperties.style.meta[ViewProperties.offerMetaKey],
+            element.isOffer,
+            let jsonValue = element.meta[IncitoDocument.Element.offerMetaKey],
             let jsonData: Data = try? JSONEncoder().encode(jsonValue),
             var offer = try? JSONDecoder().decode(IncitoOffer.self, from: jsonData)
             else {
@@ -85,7 +85,7 @@ extension IncitoOffer {
         }
         
         // feature labels are not part of the meta, so add them separately
-        offer.featureLabels = viewProperties.style.featureLabels
+        offer.featureLabels = element.featureLabels
         
         self = offer
     }
@@ -108,30 +108,30 @@ extension Array where Element == IncitoOffer.Id {
     }
 }
 
-extension Incito.ViewProperties {
+extension IncitoDocument.Element {
     
     public static let offerMetaKey = "tjek.offer.v1"
     
     public var isOffer: Bool {
-        return self.style.role == "offer"
+        return self.role == "offer"
     }
     
     /// If this element is an offer, try to decode the IncitoOffer from the `meta`.
     public var offer: IncitoOffer? {
-        return IncitoOffer(viewProperties: self)
+        return IncitoOffer(element: self)
     }
 }
 
 extension IncitoViewController {
     
-    public func firstOffer(at point: CGPoint) -> (ViewProperties.Identifier, IncitoOffer)? {
+    public func firstOffer(at point: CGPoint, completion: @escaping ((IncitoDocument.Element.Identifier, IncitoOffer)?) -> Void) {
         
-        guard let firstOfferView = self.firstView(at: point, where: { $1.isOffer }),
-            let offer = firstOfferView.properties.offer
-            else {
-                return nil
+        self.getFirstElement(at: point, where: { $0.isOffer }) { element in
+            guard let id = element?.id, let offer = element?.offer else {
+                completion(nil)
+                return
+            }
+            completion((id, offer))
         }
-        
-        return (firstOfferView.properties.id, offer)
     }
 }
