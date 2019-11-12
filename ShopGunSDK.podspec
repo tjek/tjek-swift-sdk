@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
     s.name            = "ShopGunSDK"
-    s.version         = "4.1"
+    s.version         = "4.2"
     s.summary         = "ShopGun SDK for iOS."
     s.description     = <<-DESC
                          An SDK that makes it easy to talk to the ShopGun API.
