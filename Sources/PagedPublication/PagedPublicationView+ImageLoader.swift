@@ -12,7 +12,7 @@ import UIKit
 /// The object that knows how to load/cache the page images from a URL
 /// Loosely based on `Kingfisher` interface
 public protocol PagedPublicationViewImageLoader: class {
-    func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, evenWhenCached: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool)>, URL) -> Void))
+    func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, evenWhenCached: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool), Error>, URL) -> Void))
     func cancelImageLoad(for imageView: UIImageView)
 }
 
@@ -48,7 +48,7 @@ extension PagedPublicationView {
             KingfisherManager.shared.cache.maxDiskCacheSize = 150*1024*1024
         }
         
-        func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, evenWhenCached: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool)>, URL) -> Void)) {
+        func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, evenWhenCached: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool), Error>, URL) -> Void)) {
             
             var options: KingfisherOptionsInfo = [.transition(.fade(transition.fadeDuration))]
             if transition.evenWhenCached == true {
@@ -66,7 +66,7 @@ extension PagedPublicationView {
                     } else {
                         err = error ?? PagedPublicationView.ImageLoaderError.unknownImageLoadError(url: url)
                     }
-                    completion(.error(err), url)
+                    completion(.failure(err), url)
                 }
             }
         }

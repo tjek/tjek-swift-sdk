@@ -1,0 +1,34 @@
+query IncitoViewer(
+    $id: ID!,
+    $featureLabels: [IncitoFeatureLabelInput],
+    $maxWidth: Int!,
+    $deviceCategory: DeviceCategory!,
+    $orientation: Orientation!,
+    $pixelRatio: Float!,
+    $pointer: Pointer!,
+    $versionsSupported: [String!]!
+    $locale: LocaleCode,
+    $time: DateTime
+) {
+    incito: node(id:$id){
+        ... on IncitoPublication {
+            business {
+                id
+                coreId
+                primaryColor
+                name
+            }
+            document: incito(
+               deviceCategory: $deviceCategory,
+               featureLabels: $featureLabels,
+               locale: $locale,
+               maxWidth: $maxWidth,
+               orientation: $orientation,
+               pixelRatio: $pixelRatio,
+               pointer: $pointer,
+               time: $time,
+               versionsSupported: $versionsSupported
+           )
+        }
+    }
+}

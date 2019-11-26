@@ -1,10 +1,11 @@
 ShopGunSDK
 ==========
 
-[![Build Status](https://travis-ci.com/shopgun/shopgun-ios-sdk.svg?branch=master)](https://travis-ci.com/shopgun/shopgun-ios-sdk)
+[![Build Status](https://travis-ci.org/shopgun/shopgun-ios-sdk.svg?branch=master)](https://travis-ci.org/shopgun/shopgun-ios-sdk)
 [![Version](https://img.shields.io/cocoapods/v/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
-[![Swift](http://img.shields.io/badge/swift-4.1-brightgreen.svg)](https://swift.org)
+[![Swift](http://img.shields.io/badge/swift-4.2-brightgreen.svg)](https://swift.org)
 
 ## Introduction
 
@@ -12,7 +13,8 @@ This is a framework for interacting with the ShopGun APIs from within your own a
 
 | Component | Description |
 | :--- | :--- |
-| 📖 **`PagedPublicationView`** | A view for fetching, rendering, and interacting with, a catalog. |
+| **`PagedPublicationView`** | A view for fetching, rendering, and interacting with, a catalog. |
+| **`IncitoPublication`** | A view controller for fetching, rendering, and interacting with, a digital catalog (an "[Incito](https://github.com/shopgun/incito-ios)"). |
 | 🤝 **`CoreAPI`** | Simplifies auth & communication with the ShopGun REST API. |
 | 🔗 **`GraphAPI`** | An interface for easily making requests to ShopGun's GraphQL API. |
 | 📡 **`EventsTracker`** | An events tracker for efficiently sending analytics events. |
@@ -29,6 +31,7 @@ This is a framework for interacting with the ShopGun APIs from within your own a
 ### Detailed Guides
 - [Configuration](Guides/Configuration.md)
 - [PagedPublicationView](Guides/PagedPublicationView.md)
+- [IncitoPublication](Guides/IncitoPublication.md)
 - [CoreAPI](Guides/CoreAPI.md)
 - [GraphAPI](Guides/GraphAPI.md)
 - [EventsTracker](Guides/EventsTracker.md)
@@ -40,7 +43,7 @@ This is a framework for interacting with the ShopGun APIs from within your own a
 
 - iOS 9.3+
 - Xcode 9.0+
-- Swift 4.0+
+- Swift 4.2+
 
 ### Installation
 

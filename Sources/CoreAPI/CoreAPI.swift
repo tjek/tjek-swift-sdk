@@ -94,7 +94,7 @@ extension CoreAPI {
 
 extension CoreAPI {
     
-    @discardableResult public func request<R: CoreAPIMappableRequest>(_ request: R, completion: ((Result<R.ResponseType>) -> Void)?) -> Cancellable {
+    @discardableResult public func request<R: CoreAPIMappableRequest>(_ request: R, completion: ((Result<R.ResponseType, Error>) -> Void)?) -> Cancellable {
         if let completion = completion {
             // convert the Result<Data> into Result<R.ResponseType>
             return requestData(request, completion: { (dataResult) in
@@ -115,7 +115,7 @@ extension CoreAPI {
         }
     }
     
-    @discardableResult public func requestData(_ request: CoreAPIRequest, completion: ((Result<Data>) -> Void)?) -> Cancellable {
+    @discardableResult public func requestData(_ request: CoreAPIRequest, completion: ((Result<Data, Error>) -> Void)?) -> Cancellable {
         
         // make a new cancellable token by which we refer to this request from the outside
         let token = CancellableToken(owner: self)
@@ -139,7 +139,7 @@ extension CoreAPI {
                                             // Make sure the completion is always called on main
                                             DispatchQueue.main.async {
                                                 let duration = Date().timeIntervalSince(start)
-                                                Logger.log("\(dataResult.value != nil ? "✅" : "❌") Request completed: \(String(format: "%.3fs %.3fkb", duration, Double(dataResult.value?.count ?? 0) / 1024 )) '\(request.path)' (\(token.id.rawValue))", level: .performance, source: .CoreAPI)
+                                                Logger.log("\(dataResult.getSuccess() != nil ? "✅" : "❌") Request completed: \(String(format: "%.3fs %.3fkb", duration, Double(dataResult.getSuccess()?.count ?? 0) / 1024 )) '\(request.path)' (\(token.id.rawValue))", level: .performance, source: .CoreAPI)
 
                                                 completion?(dataResult)
                                             }
@@ -205,14 +205,14 @@ extension CoreAPI {
         case facebook   = "facebook"
     }
 
-    public func login(credentials: LoginCredentials, completion: ((Result<AuthorizedUser>) -> Void)?) {
+    public func login(credentials: LoginCredentials, completion: ((Result<AuthorizedUser, Error>) -> Void)?) {
         self.queue.async { [weak self] in
             
             self?.authVault.regenerate(.reauthorize(credentials), completion: { [weak self] (error) in
                 if let user = self?.authorizedUser {
                     completion?(.success(user))
                 } else {
-                    completion?(.error(error ?? APIError.unableToLogin))
+                    completion?(.failure(error ?? APIError.unableToLogin))
                 }
             })
         }
@@ -232,6 +232,11 @@ extension CoreAPI {
     /// Reset the cached clientId. The user will also be logged out, and the clientId will only be regenerated on future CoreAPI requests.
     public func resetClientId() {
         self.authVault.resetStoredAuthState()
+    }
+    
+    /// The current session token.
+    public var sessionToken: String? {
+        return self.authVault.sessionToken
     }
     
     fileprivate func authorizedUserDidChange(prevAuthUser: AuthorizedUser?, newAuthUser: AuthorizedUser?) {

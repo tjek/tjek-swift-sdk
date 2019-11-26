@@ -30,7 +30,7 @@ extension PagedPublicationView {
         }
 
         fileprivate lazy var spinner: UIActivityIndicatorView = {
-            let view = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+            let view = UIActivityIndicatorView(style: .whiteLarge)
             view.color = UIColor(white: 0, alpha: 0.7)
             view.hidesWhenStopped = false
             view.startAnimating()

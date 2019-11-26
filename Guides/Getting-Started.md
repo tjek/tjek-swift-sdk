@@ -23,7 +23,7 @@ In this example we are configuring the `PagedPublicationView`, which configures 
 
 - `CoreAPI`/`key`
 - `CoreAPI`/`secret`
-- `EventsTracker`/`trackId`
+- `EventsTracker`/`appId`
 
 You can get these values from the [ShopGun Developer](https://shopgun.com/developers) page.
 

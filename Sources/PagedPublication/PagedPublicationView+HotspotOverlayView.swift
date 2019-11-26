@@ -221,7 +221,7 @@ extension PagedPublicationView {
             } else if touch.state == .ended  || touch.state == .cancelled {
                 guard tapGesture!.state != .ended else { return }
                 
-                self.perform(#selector(fadeOutOverlay), with: nil, afterDelay: 0, inModes: [.commonModes])
+                self.perform(#selector(fadeOutOverlay), with: nil, afterDelay: 0, inModes: [RunLoop.Mode.common])
             }
         }
         @objc

@@ -11,6 +11,9 @@
 [submodule "External/Kingfisher"]
 	path = External/Kingfisher
 	url = https://github.com/onevcat/Kingfisher.git
-[submodule "External/CryptoSwift"]
-	path = External/CryptoSwift
-	url = https://github.com/krzyzanowskim/CryptoSwift.git
+[submodule "External/incito-ios"]
+	path = External/incito-ios
+	url = https://github.com/shopgun/incito-ios.git
+[submodule "External/swift-future"]
+	path = External/swift-future
+	url = https://github.com/shopgun/swift-future.git

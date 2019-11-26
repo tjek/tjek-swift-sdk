@@ -1,5 +1,30 @@
 # Change Log
 
+## v4.2
+**Swift 5.0.1 now required**
+
+- Replaces IncitoViewController renderer with a web-view based one.
+- Add Carthage demo
+
+## v4.1
+**Swift 4.2 now required**
+
+- Add support for `IncitoLoaderViewController`.
+- Adds Finnish localizations.
+- New `EventsTracker`, with a privacy-first format.
+- Added new `getPagedPublication(forDealers:...)` CoreAPI request.
+- Add dealerIds filter to `getOffers(matchingSearch:...)` CoreAPI request.
+- Add optional location filter to `getSuggestedPublications` CoreAPI request.
+- Add Carthage support.
+- Add `isAvailableInAllStores` property to PagedPublication.
+- Allow using private keychains with custom names.
+- Fix issue related to request parameter url-encoding.
+- Fix loading too-large page images.
+- Removes progress bar from PagedPublication view
+- Remove CryptoSwift dependency.
+- Update `Kingfisher ~> 4.10.0` 
+- Update `Valet ~> 3.1.6`
+
 ## v4.0.2
 - Fix issue when building for Release (`GenericIdentifier` was not decoding correctly)
 

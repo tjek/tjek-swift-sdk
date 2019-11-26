@@ -12,9 +12,9 @@ import Verso
 
 /// The object that does the fetching of the publication's
 public protocol PagedPublicationViewDataLoader {
-    typealias PublicationLoadedHandler = ((Result<PagedPublicationView.PublicationModel>) -> Void)
-    typealias PagesLoadedHandler = ((Result<[PagedPublicationView.PageModel]>) -> Void)
-    typealias HotspotsLoadedHandler = ((Result<[PagedPublicationView.HotspotModel]>) -> Void)
+    typealias PublicationLoadedHandler = ((Result<PagedPublicationView.PublicationModel, Error>) -> Void)
+    typealias PagesLoadedHandler = ((Result<[PagedPublicationView.PageModel], Error>) -> Void)
+    typealias HotspotsLoadedHandler = ((Result<[PagedPublicationView.HotspotModel], Error>) -> Void)
 
     func startLoading(publicationId: PagedPublicationView.PublicationId, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler)
     func cancelLoading()
@@ -63,13 +63,17 @@ public class PagedPublicationView: UIView {
     public typealias CoreProperties = (pageCount: Int?, bgColor: UIColor, aspectRatio: Double)
     
     /**
-     * This will configure the `CoreAPI` and `EventsTracker` components using the `Settings` from the default SettingsFile.
-     *
-     * If you dont call this (or at least `CoreAPI.configure()`) before you start using the `PagedPublicationView`, there will be a `fatalError`.
+     This will configure the `CoreAPI` and `EventsTracker` components using the `Settings` from the default SettingsFile.
+     
+     If you dont call this (or at least `CoreAPI.configure()`) before you start using the `PagedPublicationView`, there will be a `fatalError`.
+     
+     - parameter sendEvents: If set to `true` (the default) it will configure the `EventsTracker` to send anonymous publication opened & page-read events. You must make sure that the default Settings file has all the properties needed for tracking events.
      */
-    public static func configure() {
+    public static func configure(sendEvents: Bool = true) {
         CoreAPI.configure()
-        EventsTracker.configure()
+        if sendEvents {
+            EventsTracker.configure()
+        }
     }
     
     public weak var delegate: PagedPublicationViewDelegate?
@@ -120,7 +124,7 @@ public class PagedPublicationView: UIView {
     /// the PagePublicationView will not function correctly.
     public func didEnterForeground() {
         // start listening for the app going into the background
-        NotificationCenter.default.addObserver(self, selector: #selector(willResignActiveNotification), name: .UIApplicationWillResignActive, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(willResignActiveNotification), name: UIApplication.willResignActiveNotification, object: nil)
         lifecycleEventTracker?.didAppear()
     }
     
@@ -129,7 +133,7 @@ public class PagedPublicationView: UIView {
     /// This will pause event collection, until `didEnterForeground` is called again.
     public func didEnterBackground() {
         // stop listening for going into the background
-        NotificationCenter.default.removeObserver(self, name: .UIApplicationWillResignActive, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
         lifecycleEventTracker?.didDisappear()
     }
     
@@ -182,8 +186,8 @@ public class PagedPublicationView: UIView {
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .UIApplicationWillResignActive, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .UIApplicationDidBecomeActive, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
     }
     
     override public var backgroundColor: UIColor? {
@@ -335,7 +339,7 @@ public class PagedPublicationView: UIView {
     
     // MARK: - Data Loading
     
-    private func publicationDidLoad(forId publicationId: PublicationId, result: Result<PublicationModel>) {
+    private func publicationDidLoad(forId publicationId: PublicationId, result: Result<PublicationModel, Error>) {
         switch result {
         case .success(let publicationModel):
             self.publicationState = .loaded(publicationId, publicationModel)
@@ -346,35 +350,40 @@ public class PagedPublicationView: UIView {
                                    aspectRatio: publicationModel.aspectRatio)
             
             // successful reload, event handler can now call opened & didAppear (if new publication, or we havnt called it yet)
-            if lifecycleEventTracker?.publicationModel.id != publicationModel.id, let eventHandler = self.eventHandler {
+            if lifecycleEventTracker?.publicationId != publicationModel.id, let eventHandler = self.eventHandler {
                 
-                lifecycleEventTracker = PagedPublicationView.LifecycleEventTracker(publicationModel: publicationModel, eventHandler: eventHandler)
+                lifecycleEventTracker = PagedPublicationView.LifecycleEventTracker(publicationId: publicationModel.id, eventHandler: eventHandler)
                 lifecycleEventTracker?.opened()
                 lifecycleEventTracker?.didAppear()
+                
+                let loadedIndexes = self.currentPageIndexes.filter { (self.contentsView.versoView.getPageViewIfLoaded($0) as? PagedPublicationView.PageView)?.isViewImageLoaded ?? false }
+                lifecycleEventTracker?.spreadDidAppear(
+                    pageIndexes: currentPageIndexes,
+                    loadedIndexes: IndexSet(loadedIndexes))
             }
             
             delegate?.didLoad(publication: publicationModel, in: self)
-        case .error(let error):
+        case .failure(let error):
             self.publicationState = .error(publicationId, error)
         }
         
         self.updateCurrentViewState(initialPageIndex: self.postReloadPageIndex)
     }
     
-    private func pagesDidLoad(forId publicationId: PublicationId, result: Result<[PageModel]>) {
+    private func pagesDidLoad(forId publicationId: PublicationId, result: Result<[PageModel], Error>) {
         switch result {
         case .success(let pageModels):
             // generate page view states based on the pageModels
             self.pagesState = .loaded(publicationId, pageModels)
             delegate?.didLoad(pages: pageModels, in: self)
-        case .error(let error):
+        case .failure(let error):
             self.pagesState = .error(publicationId, error)
         }
         
         self.updateCurrentViewState(initialPageIndex: self.postReloadPageIndex)
     }
     
-    private func hotspotsDidLoad(forId publicationId: PublicationId, result: Result<[HotspotModel]>) {
+    private func hotspotsDidLoad(forId publicationId: PublicationId, result: Result<[HotspotModel], Error>) {
         switch result {
         case .success(let hotspotModels):
             // key hotspots by their pageLocations
@@ -385,7 +394,7 @@ public class PagedPublicationView: UIView {
             
             self.hotspotsState = .loaded(publicationId, hotspotsByPage)
             self.delegate?.didLoad(hotspots: hotspotModels, in: self)
-        case .error(let error):
+        case .failure(let error):
             self.hotspotsState = .error(publicationId, error)
         }
         
@@ -451,18 +460,14 @@ public class PagedPublicationView: UIView {
         var properties = contentsView.properties
         
         if let pageCount = coreProperties.pageCount,
-            let firstCurrentPageIndex = pageIndexes.first,
             self.isOutroPage(inPageIndexes: pageIndexes) == false,
             self.isOutroPageVisible == false {
-            
-            properties.updateProgress(pageCount: pageCount, pageIndex: firstCurrentPageIndex)
             
             properties.pageLabelString = dataSourceWithDefaults.textForPageNumberLabel(pageIndexes: pageIndexes,
                                                                             pageCount: pageCount,
                                                                             for: self)
                 
         } else {
-            properties.progress = nil
             properties.pageLabelString = nil
         }
         
@@ -530,13 +535,13 @@ public class PagedPublicationView: UIView {
     @objc
     fileprivate func willResignActiveNotification(_ notification: Notification) {
         // once in the background, listen for coming back to the foreground again
-        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActiveNotification), name: .UIApplicationDidBecomeActive, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActiveNotification), name: UIApplication.didBecomeActiveNotification, object: nil)
         didEnterBackground()
     }
     @objc
     fileprivate func didBecomeActiveNotification(_ notification: Notification) {
         // once in the foreground, stop listen for that again
-        NotificationCenter.default.removeObserver(self, name: .UIApplicationDidBecomeActive, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
         didEnterForeground()
     }
 }
@@ -551,7 +556,7 @@ extension PageViewDelegate: PagedPublicationPageViewDelegate {
 
         // tell the spread that the image loaded.
         // Will be ignored if page isnt part of the spread
-        lifecycleEventTracker?.spreadLifecycleTracker?.pageLoaded(pageIndex: pageIndex)
+        lifecycleEventTracker?.pageDidLoad(pageIndex: pageIndex)
         
         delegate?.didFinishLoadingPageImage(imageURL: imageURL, pageIndex: pageIndex, in: self)
     }
@@ -563,16 +568,13 @@ private typealias HotspotDelegate = PagedPublicationView
 extension HotspotDelegate: HotspotOverlayViewDelegate {
     
     func didTapHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint) {
-        lifecycleEventTracker?.spreadLifecycleTracker?.pageTapped(pageIndex: pageIndex, location: locationInPage, hittingHotspots: (hotspots.count > 0))
         delegate?.didTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
     func didLongPressHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint) {
-        lifecycleEventTracker?.spreadLifecycleTracker?.pageLongPressed(pageIndex: pageIndex, location: locationInPage)
         delegate?.didLongPress(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
     
     func didDoubleTapHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint) {
-        lifecycleEventTracker?.spreadLifecycleTracker?.pageDoubleTapped(pageIndex: pageIndex, location: locationInPage)
         delegate?.didDoubleTap(pageIndex: pageIndex, locationInPage: locationInPage, hittingHotspots: hotspots, in: self)
     }
 }

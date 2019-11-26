@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
     s.name            = "ShopGunSDK"
-    s.version         = "4.0.2"
+    s.version         = "4.2"
     s.summary         = "ShopGun SDK for iOS."
     s.description     = <<-DESC
                          An SDK that makes it easy to talk to the ShopGun API.
@@ -13,8 +13,8 @@ Pod::Spec.new do |s|
     s.social_media_url = "http://twitter.com/ShopGun"
 
     s.platform         = :ios, "9.3"
-    s.swift_version    = "4.1"
-    s.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.1' }
+    s.swift_version    = "5.0.1"
+    s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0' }
 
     s.source       = { :git => "https://github.com/shopgun/shopgun-ios-sdk.git", :tag => "v#{s.version}" }
     
@@ -25,18 +25,29 @@ Pod::Spec.new do |s|
         ss.dependency "ShopGunSDK/Shared"
         ss.dependency "ShopGunSDK/CoreAPI"
         ss.dependency "ShopGunSDK/EventsTracker"
-        ss.dependency "Verso", "~> 1.0.2"
-        ss.dependency "Kingfisher", "~> 4.7.0"
+        ss.dependency "Verso", "~> 1.0.3"
+        ss.dependency "Kingfisher", "~> 4.10.0"
         
         ss.resources = ["Sources/PagedPublication/Resources/**/*"]
     end
 
+    s.subspec 'IncitoPublication' do |ss|
+        ss.source_files = "Sources/IncitoPublication/**/*.swift"
+        ss.resources = ["Sources/IncitoPublication/**/*.graphql"]
+        ss.frameworks   = "Foundation", "UIKit"
+        
+        ss.dependency "ShopGunSDK/Shared"
+        ss.dependency "ShopGunSDK/GraphAPI"
+        ss.dependency "ShopGunSDK/EventsTracker"
+        ss.dependency "Incito", "~> 1.0"
+        ss.dependency "ShopGun-Future", "~> 0.4"
+    end
+    
     s.subspec 'CoreAPI' do |ss|
         ss.source_files = "Sources/CoreAPI/**/*.swift"
         ss.frameworks   = "Foundation", "UIKit", "CoreLocation"
 
         ss.dependency "ShopGunSDK/Shared"
-        ss.dependency "CryptoSwift", "~> 0.9.0"
     end
 
     s.subspec 'GraphAPI' do |ss|
@@ -51,12 +62,13 @@ Pod::Spec.new do |s|
         ss.frameworks   = "Foundation", "UIKit", "CoreLocation"
         
         ss.dependency "ShopGunSDK/Shared"
+        ss.dependency "ShopGunSDK/CoreAPI"        
     end
 
     s.subspec 'Shared' do |ss|
-        ss.source_files = "Sources/Shared/**/*.swift"
+        ss.source_files = "Sources/Shared/**/*.{swift,h,m}"
         ss.frameworks   = "Foundation", "UIKit"
 
-        ss.dependency "Valet", "~> 3.1.3"
+        ss.dependency "Valet", "~> 3.1.6"
     end
 end

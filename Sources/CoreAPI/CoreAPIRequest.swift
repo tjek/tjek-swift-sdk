@@ -29,7 +29,7 @@ public protocol CoreAPIRequest {
 public protocol CoreAPIMappableRequest: CoreAPIRequest {
     associatedtype ResponseType // the type that is returned after mapping input data
     
-    typealias ResultMapper = ((Result<Data>) -> (Result<ResponseType>))
+    typealias ResultMapper = ((Result<Data, Error>) -> (Result<ResponseType, Error>))
     var resultMapper: ResultMapper { get }
 }
 
@@ -40,17 +40,17 @@ extension CoreAPIRequest {
         
         // put parameters into url of request
         if var urlComps = URLComponents(url: requestURL, resolvingAgainstBaseURL: false) {
-            // merge the requests params and the additionalParams, favoring the reqs params
-            var allParams = self.parameters ?? [:]
-            allParams.merge(additionalParameters) { (reqParam, _) in reqParam }
             
+            let allParams = (self.parameters ?? [:]).merging(additionalParameters) { (reqParam, _) in reqParam }
+
             urlComps.queryItems = allParams.map { (key, value) in
                 URLQueryItem(name: key, value: value)
             }
-            // percent-encode the path & query using the allowed char sets (BUT DO encode `@` and `+` for when we send emails)
-            urlComps.percentEncodedQuery = urlComps.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed.subtracting(CharacterSet(charactersIn: "@+"))) ?? urlComps.percentEncodedQuery
-            urlComps.percentEncodedPath = urlComps.percentEncodedPath.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlPathAllowed.subtracting(CharacterSet(charactersIn: "@+"))) ?? urlComps.percentEncodedPath
-
+            
+            // This is a super-hacky hack because for some reason our server doesn't accept unencoded `+` characters
+            // Server-side fix is pending.
+            urlComps.percentEncodedPath = urlComps.percentEncodedPath.replacingOccurrences(of: "+", with: "%2B")
+            
             if let urlWithParams = urlComps.url {
                 requestURL = urlWithParams
             }
@@ -85,7 +85,7 @@ extension CoreAPI {
         public var timeoutInterval: TimeInterval
         public var requiresAuth: Bool
         public var maxRetryCount: Int
-        public var resultMapper: ((Result<Data>) -> (Result<T>))
+        public var resultMapper: ((Result<Data, Error>) -> (Result<T, Error>))
 
         public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String?]? = nil, httpBody: Any? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3, resultMapper: @escaping ResultMapper) {
             self.path = path
@@ -101,7 +101,7 @@ extension CoreAPI {
         /**
          Create a request based on another request, with the ResponseType remapped using the resultMapper.
          */
-        public init<U>(request: Request<U>, resultMapper: @escaping ((Result<U>) -> (Result<T>))) {
+        public init<U>(request: Request<U>, resultMapper: @escaping ((Result<U, Error>) -> (Result<T, Error>))) {
             self.path = request.path
             self.method = request.method
             self.parameters = request.parameters
@@ -124,34 +124,47 @@ extension CoreAPI.Request where T: Decodable {
 extension CoreAPI.Request where T == Void {
     /// If we know the responseType is Void then map the result data into a void
     public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String?]? = nil, httpBody: Any? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
-        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, httpBody: httpBody, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: { $0.mapValue({ _ in return () }) })
+        self.init(
+            path: path,
+            method: method,
+            requiresAuth: requiresAuth,
+            parameters: parameters,
+            httpBody: httpBody,
+            timeoutInterval: timeoutInterval,
+            maxRetryCount: maxRetryCount,
+            resultMapper: { $0.map({ _ in () }) }
+        )
     }
 }
 
 extension CoreAPI.Request where T == [String: Any] {
     /// If we know the responseType is a generic dictionary then map the result data using the JSONSerialization Foundation api
     public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String?]? = nil, httpBody: Any? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
-        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, httpBody: httpBody, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: {
-            $0.mapValue({ data in
-                guard let jsonDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-                    throw CoreAPI.APIError.unableToDecodeResponseData
-                }
-                return jsonDict
-            })
-        })
+        self.init(
+            path: path,
+            method: method,
+            requiresAuth: requiresAuth,
+            parameters: parameters,
+            httpBody: httpBody,
+            timeoutInterval: timeoutInterval,
+            maxRetryCount: maxRetryCount,
+            resultMapper: { $0.decodeJSONObject() }
+        )
     }
 }
 
 extension CoreAPI.Request where T == [[String: Any]] {
     /// If we know the responseType is an array of generic dictionaries then map the result data using the JSONSerialization Foundation api
     public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String?]? = nil, httpBody: Any? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
-        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, httpBody: httpBody, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: {
-            $0.mapValue({ data in
-                guard let jsonArr = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else {
-                    throw CoreAPI.APIError.unableToDecodeResponseData
-                }
-                return jsonArr
-            })
-        })
+        self.init(
+            path: path,
+            method: method,
+            requiresAuth: requiresAuth,
+            parameters: parameters,
+            httpBody: httpBody,
+            timeoutInterval: timeoutInterval,
+            maxRetryCount: maxRetryCount,
+            resultMapper: { $0.decodeJSONObject() }
+        )
     }
 }

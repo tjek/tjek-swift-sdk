@@ -111,7 +111,9 @@ extension PagedPublicationView: VersoViewDelegate {
         self.hotspotOverlayView.touchGesture?.isEnabled = false
         self.hotspotOverlayView.touchGesture?.isEnabled = true
         
-        lifecycleEventTracker?.clearSpreadLifecycleTracker()
+        if currentPageIndexes != oldPageIndexes {
+            lifecycleEventTracker?.spreadDidDisappear()
+        }
         
         // remove the outro index when refering to page indexes outside of PagedPub
         var currentExOutro = currentPageIndexes
@@ -142,17 +144,11 @@ extension PagedPublicationView: VersoViewDelegate {
     public func currentPageIndexesFinishedChanging(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in verso: VersoView) {
         // make a new spreadEventHandler (unless it's the outro)
         if self.isOutroPage(inPageIndexes: currentPageIndexes) == false {
-            lifecycleEventTracker?.newSpreadLifecycleTracker(for: currentPageIndexes)
-            
-            currentPageIndexes.forEach {
-                if let pageView = verso.getPageViewIfLoaded($0) as? PagedPublicationView.PageView, pageView.isViewImageLoaded {
-                    lifecycleEventTracker?.spreadLifecycleTracker?.pageLoaded(pageIndex: $0)
-                }
-            }
-            
-            if verso.zoomScale > 1 {
-                lifecycleEventTracker?.spreadLifecycleTracker?.didZoomIn()
-            }
+           
+            let loadedIndexes = currentPageIndexes.filter { (verso.getPageViewIfLoaded($0) as? PagedPublicationView.PageView)?.isViewImageLoaded ?? false }
+            lifecycleEventTracker?.spreadDidAppear(
+                pageIndexes: currentPageIndexes,
+                loadedIndexes: IndexSet(loadedIndexes))
         }
         
         // remove the outro index when refering to page indexes outside of PagedPub
@@ -173,18 +169,11 @@ extension PagedPublicationView: VersoViewDelegate {
     }
     
     public func didEndZooming(pages pageIndexes: IndexSet, zoomScale: CGFloat, in verso: VersoView) {
-
-        guard zoomScale > 1 else {
-            lifecycleEventTracker?.spreadLifecycleTracker?.didZoomOut()
-            return
-        }
         
         pageIndexes.forEach {
             if let pageView = verso.getPageViewIfLoaded($0) as? PagedPublicationView.PageView {
                 pageView.startLoadingZoomImageIfNotLoaded()
             }
         }
-        
-        lifecycleEventTracker?.spreadLifecycleTracker?.didZoomIn()
     }
 }

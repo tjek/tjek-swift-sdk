@@ -19,6 +19,14 @@ extension CoreAPI {
         public var logoURL: URL?
         public var color: UIColor?
         
+        public init(name: String?, website: URL?, description: String?, logoURL: URL?, color: UIColor?) {
+            self.name = name
+            self.website = website
+            self.description = description
+            self.logoURL = logoURL
+            self.color = color
+        }
+        
         // MARK: Decodable
         
         enum CodingKeys: String, CodingKey {

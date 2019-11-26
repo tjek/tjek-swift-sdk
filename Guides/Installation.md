@@ -49,3 +49,18 @@ No matter if you are installing separate components, or the entire SDK, importin
 ```swift
 import ShopGunSDK
 ```
+
+## Carthage
+
+You can also add the `ShopGunSDK` to your project using [Carthage](https://github.com/Carthage/Carthage).
+
+To use the latest released version, add the following to your `Cartfile`:
+
+```ruby
+github "shopgun/shopgun-ios-sdk" "master"
+```
+
+For a overview of getting started with Carthage, read the documentation on their site, or [this handy tutorial](https://www.raywenderlich.com/416-carthage-tutorial-getting-started).
+
+### Dependencies
+It is important to note that the ShopGunSDK depends upon a number of 3rd party frameworks (see above). With Carthage, these frameworks will have been added to the `Carthage/Build/iOS` folder when you ran `carthage`. As well as the `ShopGunSDK` framework, wou will also need to also link these frameworks to your target, and add them to the target's `copy-frameworks` build script. 

@@ -10,14 +10,14 @@
 import Foundation
 
 extension URLSession {
-    func coreAPIDataTask(with urlRequest: URLRequest, completionHandler: @escaping (Result<Data>) -> Void) -> URLSessionDataTask {
+    func coreAPIDataTask(with urlRequest: URLRequest, completionHandler: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask {
         return dataTask(with: urlRequest) { (data, response, error) in
             let result = CoreAPI.parseAPIResponse(data: data, response: response, error: error)
             completionHandler(result)
         }
     }
-    func coreAPIDataTask<R: Decodable>(with urlRequest: URLRequest, completionHandler: @escaping (Result<R>) -> Void) -> URLSessionDataTask {
-        return coreAPIDataTask(with: urlRequest) { (dataResult: Result<Data>) in
+    func coreAPIDataTask<R: Decodable>(with urlRequest: URLRequest, completionHandler: @escaping (Result<R, Error>) -> Void) -> URLSessionDataTask {
+        return coreAPIDataTask(with: urlRequest) { (dataResult: Result<Data, Error>) in
             completionHandler(dataResult.decodeJSON())
         }
     }
@@ -26,7 +26,7 @@ extension URLSession {
 extension CoreAPI {
 
     // Take the raw API response and turn it into a Result<Data>, parsing any API error json
-    static func parseAPIResponse(data: Data?, response: URLResponse?, error: Error?) -> Result<Data> {
+    static func parseAPIResponse(data: Data?, response: URLResponse?, error: Error?) -> Result<Data, Error> {
 
         guard let httpStatusCode = (response as? HTTPURLResponse)?.statusCode, let data = data else {
             let resError: Error
@@ -35,7 +35,7 @@ extension CoreAPI {
             } else {
                 resError = APIError.invalidNetworkResponseError(urlResponse: response)
             }
-            return .error(resError)
+            return .failure(resError)
         }
 
         // client or server error - try to decode the error data
@@ -52,7 +52,7 @@ extension CoreAPI {
                 error = APIError.unknownAPIError(httpStatusCode: httpStatusCode, urlResponse: response)
             }
 
-            return .error(error)
+            return .failure(error)
         }
 
         return .success(data)

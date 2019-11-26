@@ -12,30 +12,42 @@ final public class KeychainDataStore {
     
     fileprivate let valet: Valet?
 
-    internal init(settings: Settings.KeychainDataStore) {
+    public init(settings: Settings.KeychainDataStore) {
         self.settings = settings
         
-        var valet: Valet? = nil
-        
-        if case .sharedKeychain(let groupId) = settings,
-            let keychainId = Identifier(nonEmpty: groupId) {
-        
-            valet = Valet.sharedAccessGroupValet(with: keychainId, accessibility: .afterFirstUnlock)
-            if valet?.canAccessKeychain() == false {
-                valet = nil
-                Logger.log("Unable to access shared keychain group '\(keychainId)'. Will attempt to save secure data in an unshared keychain instead.", level: .important, source: .ShopGunSDK)
+        self.valet = {
+            // Valet totally fails when running in an Xcode Playground.
+            if Bundle.main.isXcodePlayground {
+                Logger.log("KeychainDataStore is not available in Xcode Playgrounds.", level: .important, source: .ShopGunSDK)
+                return nil
             }
-        }
-        
-        // if the valet is unable to access the keychain, revert to a non-shared store
-        if valet == nil {
-            valet = Valet.valet(with: Identifier(nonEmpty: "com.shopgun.ios.sdk.keychain-store")!, accessibility: .afterFirstUnlock)
             
-            if valet?.canAccessKeychain() == false {
-                Logger.log("Unable to access keychain. Secure data will not be cached.", level: .error, source: .ShopGunSDK)
+            if case .sharedKeychain(let groupId) = settings,
+                let keychainId = Identifier(nonEmpty: groupId) {
+                
+                let valet = Valet.sharedAccessGroupValet(with: keychainId, accessibility: .afterFirstUnlock)
+                if valet.canAccessKeychain() {
+                    return valet
+                } else {
+                    Logger.log("Unable to access shared keychain group. Secure data will not be cached.", level: .important, source: .ShopGunSDK)
+                    return nil
+                }
+            } else if case .privateKeychain(let privateId) = settings,
+                let keychainId = Identifier(nonEmpty: privateId ?? "com.shopgun.ios.sdk.keychain-store") {
+                
+                let valet = Valet.valet(with: keychainId, accessibility: .afterFirstUnlock)
+                
+                if valet.canAccessKeychain() {
+                    return valet
+                } else {
+                    Logger.log("Unable to access keychain. Secure data will not be cached.", level: .error, source: .ShopGunSDK)
+                    return nil
+                }
+            } else {
+                return nil
             }
-        }
-        self.valet = valet
+            
+        }()
     }
     
     private init() { fatalError("You must provide settings when creating a KeychainDataStore") }
@@ -67,7 +79,7 @@ extension KeychainDataStore {
     public static var shared: KeychainDataStore {
         if _shared == nil {
             // first time non-configured dataStore is requested it is configured based on the shared config file (if available).
-            configure((try? Settings.loadShared())?.keychainDataStore ?? .privateKeychain)
+            configure((try? Settings.loadShared())?.keychainDataStore ?? .privateKeychain(id: nil))
         }
         return _shared!
     }
@@ -76,6 +88,10 @@ extension KeychainDataStore {
         return _shared != nil
     }
     
+    /**
+     Configure the `shared` KeychainDataStore instance. Will be a no-op if the shared KeychainDataStore has already been configured.
+     - parameter settings: The settings to configure the shared datastore with.
+     **/
     public static func configure(_ settings: Settings.KeychainDataStore) {
         guard isConfigured == false else {
             Logger.log("Cannot re-configure KeychainDataStore", level: .error, source: .ShopGunSDK)
@@ -84,5 +100,11 @@ extension KeychainDataStore {
 
         Logger.log("Configuring KeychainDataStore", level: .verbose, source: .ShopGunSDK)
         _shared = KeychainDataStore(settings: settings)
+    }
+}
+
+extension Bundle {
+    fileprivate var isXcodePlayground: Bool {
+        return self.bundleIdentifier?.hasPrefix("com.apple.dt.playground.") ?? false
     }
 }

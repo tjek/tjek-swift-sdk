@@ -11,26 +11,87 @@ import UIKit
 
 extension CoreAPI {
     
+    /// A `PagedPublication` is a catalog that has static images for each `Page`, with possible `Hotspot`s referencing `Offer`s on each page, that is published by a `Dealer`.
     public struct PagedPublication: Decodable, Equatable {
         
-        public typealias Identifier = GenericIdentifier<PagedPublication>
+        public typealias Identifier = PagedPublicationCoreAPIIdentifier
         
+        public enum PublicationType: String, Codable {
+            case paged
+            case incito
+        }
+        
+        /// The unique identifier of this PagedPublication.
         public var id: Identifier
+        /// The name of the publication. eg. "Christmas Special".
         public var label: String?
+        /// How many pages this publication has.
         public var pageCount: Int
+        /// How many `Offer`s are in this publication.
         public var offerCount: Int
+        /// The range of dates that this publication is valid from and until.
         public var runDateRange: Range<Date>
-        public var aspectRatio: Double // (width / height)
+        /// The ratio of width to height for the page-images. So if an image is (w:100, h:200), the aspectRatio is 0.5 (width/height).
+        public var aspectRatio: Double
+        /// The branding information for the publication's dealer.
         public var branding: Branding
+        /// A set of URLs for the different sized images for the cover of the publication.
         public var frontPageImages: ImageURLSet
+        /// Whether this publication is available in all stores, or just in a select few stores.
+        public var isAvailableInAllStores: Bool
+        /// The unique identifier of the dealer that published this publication.
         public var dealerId: CoreAPI.Dealer.Identifier
+        /// The unique identifier of the nearest store. This will only contain a value if the `PagedPublication` was fetched with a request that includes store information (eg. one that takes a precise location as a parameter).
         public var storeId: CoreAPI.Store.Identifier?
-
+        /// The unique identifier of the Incito Publication related this PagedPublication
+        public var incitoId: IncitoGraphIdentifier?
+        
+        /// Defines what types of publication this represents.
+        /// If it contains `paged`, the `id` can be used to view this in a PagedPublicationViewer
+        /// If it contains `incito`, the `incitoId` will always have a value, and it can be viewed with the IncitoViewer
+        /// If it ONLY contains `incito`, this cannot be viewed in a PagedPublicationViewer (see `isOnlyIncito`)
+        public var types: Set<PublicationType>
+        
+        /// True if this publication can only be viewed as an incito (if viewed in a PagedPublication view it would appear as a single-page pdf)
+        public var isOnlyIncito: Bool {
+            return types == [.incito]
+        }
+        
+        public init(
+            id: Identifier,
+            label: String?,
+            pageCount: Int,
+            offerCount: Int,
+            runDateRange: Range<Date>,
+            aspectRatio: Double,
+            branding: Branding,
+            frontPageImages: ImageURLSet,
+            isAvailableInAllStores: Bool,
+            dealerId: CoreAPI.Dealer.Identifier,
+            storeId: CoreAPI.Store.Identifier?,
+            incitoId: IncitoGraphIdentifier?,
+            types: Set<PublicationType>
+            ) {
+            self.id = id
+            self.label = label
+            self.pageCount = pageCount
+            self.offerCount = offerCount
+            self.runDateRange = runDateRange
+            self.aspectRatio = aspectRatio
+            self.branding = branding
+            self.frontPageImages = frontPageImages
+            self.isAvailableInAllStores = isAvailableInAllStores
+            self.dealerId = dealerId
+            self.storeId = storeId
+            self.incitoId = incitoId
+            self.types = types
+        }
+        
         // MARK: Decodable
         
         enum CodingKeys: String, CodingKey {
             case id
-            case label
+            case label              = "label"
             case branding
             case pageCount          = "page_count"
             case offerCount         = "offer_count"
@@ -38,8 +99,11 @@ extension CoreAPI {
             case runTillDateStr     = "run_till"
             case dealerId           = "dealer_id"
             case storeId            = "store_id"
+            case availableAllStores = "all_stores"
             case dimensions
             case frontPageImageURLs = "images"
+            case incitoId           = "incito_publication_id"
+            case types
         }
   
         public init(from decoder: Decoder) throws {
@@ -73,15 +137,21 @@ extension CoreAPI {
                 self.aspectRatio = 1.0
             }
             
+            self.isAvailableInAllStores = (try? values.decode(Bool.self, forKey: .availableAllStores)) ?? true
+            
             self.dealerId = try values.decode(Dealer.Identifier.self, forKey: .dealerId)
             
             self.storeId = try? values.decode(Store.Identifier.self, forKey: .storeId)
 
-            if let frontPageImageURLs = try? values.decode(ImageURLSet.CoreAPIImageURLs.self, forKey: .frontPageImageURLs) {
+            if let frontPageImageURLs = try? values.decode(ImageURLSet.CoreAPI.ImageURLs.self, forKey: .frontPageImageURLs) {
                 self.frontPageImages = ImageURLSet(fromCoreAPI: frontPageImageURLs, aspectRatio: self.aspectRatio)
             } else {
                 self.frontPageImages = ImageURLSet(sizedUrls: [])
             }
+            
+            self.incitoId = try? values.decode(IncitoGraphIdentifier.self, forKey: .incitoId)
+            
+            self.types = (try? values.decode(Set<PublicationType>.self, forKey: .types)) ?? [.paged]
         }
         
         // MARK: -

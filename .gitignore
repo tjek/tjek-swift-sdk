@@ -32,3 +32,9 @@ Carthage/Build
 
 ## Project specific
 *.secret.json
+
+## Demos
+Demos/CocoapodsDemo/Pods/
+Demos/CocoapodsDemo/Podfile.lock
+Demos/CarthageDemo/Carthage/
+Demos/CarthageDemo/Cartfile.resolved

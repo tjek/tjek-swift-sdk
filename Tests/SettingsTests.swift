@@ -23,8 +23,8 @@ class SettingsTests: XCTestCase {
         let defaultURL = URL(string: "https://api.etilbudsavis.dk")!
         
         // 2. when
-        let fullSettings = Settings.CoreAPI(key: testKey, secret: testSecret, baseURL: testURL)
-        let minimalSettings = Settings.CoreAPI(key: testKey, secret: testSecret)
+        guard let fullSettings = try? Settings.CoreAPI(key: testKey, secret: testSecret, baseURL: testURL) else { return }
+        guard let minimalSettings = try? Settings.CoreAPI(key: testKey, secret: testSecret) else { return }
         
         // 3. then
         XCTAssertEqual(fullSettings.key, testKey)
@@ -86,8 +86,8 @@ class SettingsTests: XCTestCase {
         let defaultURL = URL(string: "https://graph.service.shopgun.com")!
         
         // 2. when
-        let fullSettings = Settings.GraphAPI(key: testKey, baseURL: testURL)
-        let minimalSettings = Settings.GraphAPI(key: testKey)
+        guard let fullSettings = try? Settings.GraphAPI(key: testKey, baseURL: testURL) else { return }
+        guard let minimalSettings = try? Settings.GraphAPI(key: testKey) else { return }
         
         // 3. then
         XCTAssertEqual(fullSettings.key, testKey)
@@ -137,69 +137,62 @@ class SettingsTests: XCTestCase {
     func testCreatingEventsTrackerSettings() {
         
         // 1. given
-        let testTrackId = "test-trackId"
+        let testAppId = Settings.EventsTracker.AppIdentifier(rawValue: "test-appId")
         let testURL = URL(string: "test-url")!
         let testDispatchInterval: TimeInterval = 111
         let testDispatchLimit: Int = 222
         let testEnabled: Bool = false
-        let testIncludeLocation: Bool = true
         
         let defaultURL = URL(string: "https://events.service.shopgun.com")!
         let defaultDispatchInterval: TimeInterval = 120
         let defaultDispatchLimit: Int = 100
         let defaultEnabled: Bool = true
-        let defaultIncludeLocation: Bool = false
         
         // 2. when
-        let fullSettings = Settings.EventsTracker(trackId: testTrackId, baseURL: testURL, dispatchInterval: testDispatchInterval, dispatchLimit: testDispatchLimit, enabled: testEnabled, includeLocation: testIncludeLocation)
-        let minimalSettings = Settings.EventsTracker(trackId: testTrackId)
+        guard let fullSettings = try? Settings.EventsTracker(appId: testAppId, baseURL: testURL, dispatchInterval: testDispatchInterval, dispatchLimit: testDispatchLimit, enabled: testEnabled) else { return }
+        guard let minimalSettings = try? Settings.EventsTracker(appId: testAppId) else { return }
         
         // 3. then
-        XCTAssertEqual(fullSettings.trackId, testTrackId)
+        XCTAssertEqual(fullSettings.appId, testAppId)
         XCTAssertEqual(fullSettings.baseURL, testURL)
         XCTAssertEqual(fullSettings.dispatchInterval, testDispatchInterval)
         XCTAssertEqual(fullSettings.dispatchLimit, testDispatchLimit)
         XCTAssertEqual(fullSettings.enabled, testEnabled)
-        XCTAssertEqual(fullSettings.includeLocation, testIncludeLocation)
         
-        XCTAssertEqual(minimalSettings.trackId, testTrackId)
+        XCTAssertEqual(minimalSettings.appId, testAppId)
         XCTAssertEqual(minimalSettings.baseURL, defaultURL)
         XCTAssertEqual(minimalSettings.dispatchInterval, defaultDispatchInterval)
         XCTAssertEqual(minimalSettings.dispatchLimit, defaultDispatchLimit)
         XCTAssertEqual(minimalSettings.enabled, defaultEnabled)
-        XCTAssertEqual(minimalSettings.includeLocation, defaultIncludeLocation)
     }
     
     func testDecodingEventsTrackerSettings() {
         
         // 1. given
-        let testTrackId = "test-trackId"
+        let testAppId = Settings.EventsTracker.AppIdentifier(rawValue: "test-appId")
         let testURL = URL(string: "test-url")!
         let testDispatchInterval: TimeInterval = 111
         let testDispatchLimit: Int = 222
         let testEnabled: Bool = false
-        let testIncludeLocation: Bool = true
         
         let defaultURL = URL(string: "https://events.service.shopgun.com")!
         let defaultDispatchInterval: TimeInterval = 120
         let defaultDispatchLimit: Int = 100
         let defaultEnabled: Bool = true
-        let defaultIncludeLocation: Bool = false
         
         let fullJson = """
             {
-            "trackId": "\(testTrackId)",
+            "appId": "\(testAppId)",
             "baseURL": "\(testURL)",
             "dispatchInterval": \(testDispatchInterval),
             "dispatchLimit": \(testDispatchLimit),
-            "enabled": \(testEnabled),
-            "includeLocation": \(testIncludeLocation)
+            "enabled": \(testEnabled)
             }
             """.data(using: .utf8)!
         
         let minimalJson = """
             {
-            "trackId": "\(testTrackId)"
+            "appId": "\(testAppId)"
             }
             """.data(using: .utf8)!
         
@@ -209,19 +202,17 @@ class SettingsTests: XCTestCase {
             let minimalSettings = try JSONDecoder().decode(Settings.EventsTracker.self, from: minimalJson)
             
             // 3. then
-            XCTAssertEqual(fullSettings.trackId, testTrackId)
+            XCTAssertEqual(fullSettings.appId, testAppId)
             XCTAssertEqual(fullSettings.baseURL, testURL)
             XCTAssertEqual(fullSettings.dispatchInterval, testDispatchInterval)
             XCTAssertEqual(fullSettings.dispatchLimit, testDispatchLimit)
             XCTAssertEqual(fullSettings.enabled, testEnabled)
-            XCTAssertEqual(fullSettings.includeLocation, testIncludeLocation)
             
-            XCTAssertEqual(minimalSettings.trackId, testTrackId)
+            XCTAssertEqual(minimalSettings.appId, testAppId)
             XCTAssertEqual(minimalSettings.baseURL, defaultURL)
             XCTAssertEqual(minimalSettings.dispatchInterval, defaultDispatchInterval)
             XCTAssertEqual(minimalSettings.dispatchLimit, defaultDispatchLimit)
             XCTAssertEqual(minimalSettings.enabled, defaultEnabled)
-            XCTAssertEqual(minimalSettings.includeLocation, defaultIncludeLocation)
         } catch let error {
             XCTAssert(false, "Unable to decode settings: \(error.localizedDescription)")
         }

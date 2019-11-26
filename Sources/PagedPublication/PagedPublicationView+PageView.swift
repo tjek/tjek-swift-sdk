@@ -44,9 +44,7 @@ extension PagedPublicationView {
         func startLoadingZoomImageIfNotLoaded() {
             guard zoomImageLoadState == .notLoaded else { return }
             
-            let pageSize = self.bounds.size
-            let maxScaleFactor: CGFloat = 4
-            guard let zoomImageURL = properties?.images?.url(fitting: CGSize(width: pageSize.width * maxScaleFactor, height: pageSize.height * maxScaleFactor)) else { return }
+            guard let zoomImageURL = properties?.images?.url(fitting: ImageURLSet.CoreAPI.zoomSize) else { return }
             
             self.startLoadingZoomImage(fromURL: zoomImageURL)
         }
@@ -71,7 +69,7 @@ extension PagedPublicationView {
             pageLabel.textColor = properties.isBackgroundDark ? UIColor.white : UIColor(white: 0, alpha: 0.7)
             backgroundColor = properties.isBackgroundDark ? UIColor(white: 1, alpha: 0.1) : UIColor(white: 0.8, alpha: 0.15)
             
-            if let imageURL = properties.images?.url(fitting: self.bounds.size) {
+            if let imageURL = properties.images?.url(fitting: ImageURLSet.CoreAPI.viewSize) {
                 startLoadingViewImage(fromURL: imageURL)
             }
             
@@ -124,14 +122,14 @@ extension PagedPublicationView {
             backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
             
             // must be started on non-main run loop to avoid interfering with scrolling
-            self.perform(#selector(startPulsingNumberAnimation), with: nil, afterDelay: 0, inModes: [RunLoopMode.commonModes])
+            self.perform(#selector(startPulsingNumberAnimation), with: nil, afterDelay: 0, inModes: [RunLoop.Mode.common])
             
             // listen for memory warnings and clear the zoomimage
-            NotificationCenter.default.addObserver(self, selector: #selector(memoryWarningNotification), name: .UIApplicationDidReceiveMemoryWarning, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(memoryWarningNotification), name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
         }
         
         deinit {
-            NotificationCenter.default.removeObserver(self, name: .UIApplicationDidReceiveMemoryWarning, object: nil)
+            NotificationCenter.default.removeObserver(self, name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
         }
         
         required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
@@ -207,7 +205,7 @@ extension PagedPublicationView {
                     
                     s.imageLoadState = .loaded
                     s.delegate?.didFinishLoading(viewImage: url, fromCache: fromCache, in: s)
-                case .error(let error):
+                case .failure(let error):
                     
                     guard error.isCancellationError == false else {
                         s.imageLoadState = .notLoaded
@@ -238,7 +236,7 @@ extension PagedPublicationView {
                     s.zoomImageLoadState = .loaded
                     s.delegate?.didFinishLoading(zoomImage: url, fromCache: fromCache, in: s)
 
-                case .error(let error):
+                case .failure(let error):
                     s.zoomImageView.isHidden = true
 
                     guard error.isCancellationError == false else {
