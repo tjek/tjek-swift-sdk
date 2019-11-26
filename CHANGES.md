@@ -1,5 +1,11 @@
 # Change Log
 
+## v4.2
+**Swift 5.0.1 now required**
+
+- Replaces IncitoViewController renderer with a web-view based one.
+- Add Carthage demo
+
 ## v4.1
 **Swift 4.2 now required**
 
