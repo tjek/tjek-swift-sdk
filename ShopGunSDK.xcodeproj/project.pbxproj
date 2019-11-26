@@ -1478,7 +1478,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AEC3D86D1FFD8E86004C5947 /* ShopGunSDK-Framework.xcconfig */;
 			buildSettings = {
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 			};
 			name = Debug;
 		};
@@ -1486,7 +1485,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AEC3D86D1FFD8E86004C5947 /* ShopGunSDK-Framework.xcconfig */;
 			buildSettings = {
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 			};
 			name = Release;
 		};
