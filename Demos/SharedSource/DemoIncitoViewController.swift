@@ -50,12 +50,12 @@ extension DemoIncitoViewController: IncitoLoaderViewControllerDelegate {
         }
     }
     
-    func incitoDocumentLoaded(in viewController: IncitoViewController) {
+    func incitoDocumentLoaded(document: IncitoDocument, in viewController: IncitoViewController) {
         print("✅ Did Load Incito")
         
         // register a long-press gesture with the loaded IncitoViewController.
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
-        viewController.view.addGestureRecognizer(longPress)
+        viewController.addGesture(longPress)
     }
     
     @objc private func didLongPress(_ longPress: UILongPressGestureRecognizer) {

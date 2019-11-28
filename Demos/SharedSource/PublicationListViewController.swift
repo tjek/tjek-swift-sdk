@@ -7,9 +7,10 @@
 //
 //  Copyright (c) 2019 ShopGun. All rights reserved.
 
-import ShopGunSDK
-import Incito
 import CoreLocation
+import Incito
+import ShopGunSDK
+import UIKit
 
 class PublicationListViewController: UIViewController {
     
