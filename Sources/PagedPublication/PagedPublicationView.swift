@@ -15,7 +15,7 @@ public protocol PagedPublicationViewDataLoader {
     typealias PublicationLoadedHandler = ((Result<PagedPublicationView.PublicationModel, Error>) -> Void)
     typealias PagesLoadedHandler = ((Result<[PagedPublicationView.PageModel], Error>) -> Void)
     typealias HotspotsLoadedHandler = ((Result<[PagedPublicationView.HotspotModel], Error>) -> Void)
-
+    
     func startLoading(publicationId: PagedPublicationView.PublicationId, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler)
     func cancelLoading()
 }
@@ -40,6 +40,8 @@ public protocol PagedPublicationViewDelegate: class {
     func didLoad(publication publicationModel: PagedPublicationView.PublicationModel, in pagedPublicationView: PagedPublicationView)
     func didLoad(pages pageModels: [PagedPublicationView.PageModel], in pagedPublicationView: PagedPublicationView)
     func didLoad(hotspots hotspotModels: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView)
+    
+    func backgroundColor(publication publicationModel: PagedPublicationView.PublicationModel, in pagedPublicationView: PagedPublicationView) -> UIColor?
 }
 
 public protocol PagedPublicationViewDataSource: class {
@@ -153,7 +155,7 @@ public class PagedPublicationView: UIView {
             contentsView.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentsView.topAnchor.constraint(equalTo: topAnchor),
             contentsView.bottomAnchor.constraint(equalTo: bottomAnchor)
-            ])
+        ])
         
         addSubview(self.loadingView)
         self.loadingView.alpha = 0
@@ -161,7 +163,7 @@ public class PagedPublicationView: UIView {
         NSLayoutConstraint.activate([
             loadingView.centerXAnchor.constraint(equalTo: layoutMarginsGuide.centerXAnchor),
             loadingView.centerYAnchor.constraint(equalTo: layoutMarginsGuide.centerYAnchor)
-            ])
+        ])
         
         addSubview(self.errorView)
         self.errorView.alpha = 0
@@ -178,7 +180,7 @@ public class PagedPublicationView: UIView {
                 con.priority = .defaultHigh
                 return con
             }()
-            ])
+        ])
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -211,7 +213,7 @@ public class PagedPublicationView: UIView {
         case loaded(Id, Model)
         case error(Id, Error)
     }
-
+    
     enum ViewState {
         case initial
         case loading(bgColor: UIColor)
@@ -344,9 +346,10 @@ public class PagedPublicationView: UIView {
         case .success(let publicationModel):
             self.publicationState = .loaded(publicationId, publicationModel)
             
+            let bgColor = self.delegate?.backgroundColor(publication: publicationModel, in: self) ?? publicationModel.branding.color ?? self.coreProperties.bgColor
             // update coreProperties using the publication
             self.coreProperties = (pageCount: publicationModel.pageCount,
-                                   bgColor: publicationModel.branding.color ?? self.coreProperties.bgColor,
+                                   bgColor: bgColor,
                                    aspectRatio: publicationModel.aspectRatio)
             
             // successful reload, event handler can now call opened & didAppear (if new publication, or we havnt called it yet)
@@ -427,7 +430,7 @@ public class PagedPublicationView: UIView {
             self.errorView.alpha = 0
             self.backgroundColor = bgColor
             
-            //TODO: change loading foreground color
+        //TODO: change loading foreground color
         case let .contents(coreProperties, additionalLoading):
             self.loadingView.alpha = 0
             self.contentsView.alpha = 1
@@ -464,9 +467,9 @@ public class PagedPublicationView: UIView {
             self.isOutroPageVisible == false {
             
             properties.pageLabelString = dataSourceWithDefaults.textForPageNumberLabel(pageIndexes: pageIndexes,
-                                                                            pageCount: pageCount,
-                                                                            for: self)
-                
+                                                                                       pageCount: pageCount,
+                                                                                       for: self)
+            
         } else {
             properties.pageLabelString = nil
         }
@@ -553,7 +556,7 @@ extension PageViewDelegate: PagedPublicationPageViewDelegate {
     func didFinishLoading(viewImage imageURL: URL, fromCache: Bool, in pageView: PagedPublicationView.PageView) {
         
         let pageIndex = pageView.pageIndex
-
+        
         // tell the spread that the image loaded.
         // Will be ignored if page isnt part of the spread
         lifecycleEventTracker?.pageDidLoad(pageIndex: pageIndex)

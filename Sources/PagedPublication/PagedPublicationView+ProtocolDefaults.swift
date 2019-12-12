@@ -28,6 +28,10 @@ public extension PagedPublicationViewDelegate {
     func didLoad(publication publicationModel: PagedPublicationView.PublicationModel, in pagedPublicationView: PagedPublicationView) {}
     func didLoad(pages pageModels: [PagedPublicationView.PageModel], in pagedPublicationView: PagedPublicationView) {}
     func didLoad(hotspots hotspotModels: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView) {}
+    
+    func backgroundColor(publication: PagedPublicationView.PublicationModel, in pagedPublicationView: PagedPublicationView) -> UIColor? {
+        return nil
+    }
 }
 
 // MARK: -
