@@ -52,6 +52,7 @@
 		AE4F7452227C2CA400E8AC5D /* Result+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4F7441227C2CA400E8AC5D /* Result+Utils.swift */; };
 		AE50A3BE2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */; };
 		AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */; };
+		AE69DA732375759A00A5A360 /* Future.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE69DA6E2375758400A5A360 /* Future.framework */; };
 		AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6D65EC204ECBF50011E15C /* Logger.swift */; };
 		AE6D660B204EE2910011E15C /* KeychainDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6D65F9204EE2910011E15C /* KeychainDataStore.swift */; };
 		AE7D9B63204745C6000F3B7D /* CoreAPI_LegacyMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7D9B62204745C6000F3B7D /* CoreAPI_LegacyMigration.swift */; };
@@ -249,6 +250,55 @@
 			remoteGlobalIDString = 165CDDC6204B26D400C96C2E;
 			remoteInfo = "Valet tvOS Test Host App";
 		};
+		AE69DA672375758400A5A360 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE69DA5E2375758400A5A360 /* Future.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CF4AA6334CC33D910289C1FBBE694222;
+			remoteInfo = FutureTests_iOS;
+		};
+		AE69DA692375758400A5A360 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE69DA5E2375758400A5A360 /* Future.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6A5DF8493A9C9CC3810049AF77CFE228;
+			remoteInfo = FutureTests_macOS;
+		};
+		AE69DA6B2375758400A5A360 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE69DA5E2375758400A5A360 /* Future.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1D8C9DBC8643655983272B2EC9C59C26;
+			remoteInfo = FutureTests_watchOS;
+		};
+		AE69DA6D2375758400A5A360 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE69DA5E2375758400A5A360 /* Future.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7997B1791C0E84016C20DB8132636F8C;
+			remoteInfo = Future_iOS;
+		};
+		AE69DA6F2375758400A5A360 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE69DA5E2375758400A5A360 /* Future.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5DB1109224ACCBEF7C36B15F2E541CBA;
+			remoteInfo = Future_macOS;
+		};
+		AE69DA712375758400A5A360 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE69DA5E2375758400A5A360 /* Future.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1527A6CC3DD96F8D87B3DEC3B9951CFA;
+			remoteInfo = Future_watchOS;
+		};
+		AE69DA76237575AE00A5A360 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE69DA5E2375758400A5A360 /* Future.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F369621451E58A0F439993691A2C5AD7;
+			remoteInfo = Future_iOS;
+		};
 		AE98C880224164A200B4BD7A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AE98C879224164A200B4BD7A /* Incito.xcodeproj */;
@@ -285,6 +335,19 @@
 			remoteInfo = "Valet macOS Test Host App";
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AE69DA752375759A00A5A360 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		AE043042205BC15000F5D8C9 /* CoreAPI_Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAPI_Store.swift; sourceTree = "<group>"; };
@@ -339,6 +402,7 @@
 		AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D_Equatable.swift; sourceTree = "<group>"; };
 		AE5A972820232098004E0799 /* Kingfisher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kingfisher.xcodeproj; path = External/Kingfisher/Kingfisher.xcodeproj; sourceTree = "<group>"; };
 		AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+EventHandler.swift"; sourceTree = "<group>"; };
+		AE69DA5E2375758400A5A360 /* Future.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Future.xcodeproj; path = "External/swift-future/Future.xcodeproj"; sourceTree = "<group>"; };
 		AE6D65EC204ECBF50011E15C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		AE6D65F9204EE2910011E15C /* KeychainDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainDataStore.swift; sourceTree = "<group>"; };
 		AE7D9B62204745C6000F3B7D /* CoreAPI_LegacyMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAPI_LegacyMigration.swift; sourceTree = "<group>"; };
@@ -422,6 +486,7 @@
 			files = (
 				AE98C895224164B200B4BD7A /* Incito.framework in Frameworks */,
 				AEE37C7020513878008E71D8 /* Valet.framework in Frameworks */,
+				AE69DA732375759A00A5A360 /* Future.framework in Frameworks */,
 				AEE37C6E20513862008E71D8 /* Verso.framework in Frameworks */,
 				AEE37C6C20513835008E71D8 /* Kingfisher.framework in Frameworks */,
 			);
@@ -445,6 +510,7 @@
 		AE06548D1FFEE23D009F6F92 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AE69DA5E2375758400A5A360 /* Future.xcodeproj */,
 				AE98C879224164A200B4BD7A /* Incito.xcodeproj */,
 				AE49429920113A0F006658CE /* Verso.xcodeproj */,
 				AE06548E1FFEE24B009F6F92 /* Valet.xcodeproj */,
@@ -542,6 +608,19 @@
 				AE5A974A20232098004E0799 /* KingfisherTests.xctest */,
 				AE5A974C20232098004E0799 /* KingfisherTests-tvOS.xctest */,
 				AE5A974E20232098004E0799 /* KingfisherTests-macOS.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AE69DA5F2375758400A5A360 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AE69DA682375758400A5A360 /* FutureTests.xctest */,
+				AE69DA6A2375758400A5A360 /* FutureTests.xctest */,
+				AE69DA6C2375758400A5A360 /* FutureTests.xctest */,
+				AE69DA6E2375758400A5A360 /* Future.framework */,
+				AE69DA702375758400A5A360 /* Future.framework */,
+				AE69DA722375758400A5A360 /* Future.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -810,10 +889,12 @@
 				AEC28B361FF6AAC20007AAB8 /* Frameworks */,
 				AEC28B371FF6AAC20007AAB8 /* Headers */,
 				AEC28B381FF6AAC20007AAB8 /* Resources */,
+				AE69DA752375759A00A5A360 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AE69DA77237575AE00A5A360 /* PBXTargetDependency */,
 				AE98C894224164AC00B4BD7A /* PBXTargetDependency */,
 				AE5A9757202320AC004E0799 /* PBXTargetDependency */,
 				AE4942A720113A23006658CE /* PBXTargetDependency */,
@@ -884,6 +965,10 @@
 			productRefGroup = AEC28B3B1FF6AAC20007AAB8 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = AE69DA5F2375758400A5A360 /* Products */;
+					ProjectRef = AE69DA5E2375758400A5A360 /* Future.xcodeproj */;
+				},
 				{
 					ProductGroup = AE98C87A224164A200B4BD7A /* Products */;
 					ProjectRef = AE98C879224164A200B4BD7A /* Incito.xcodeproj */;
@@ -1027,6 +1112,48 @@
 			fileType = wrapper.application;
 			path = "Valet tvOS Test Host App.app";
 			remoteRef = AE63161E20906F4200E6CF9E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE69DA682375758400A5A360 /* FutureTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = FutureTests.xctest;
+			remoteRef = AE69DA672375758400A5A360 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE69DA6A2375758400A5A360 /* FutureTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = FutureTests.xctest;
+			remoteRef = AE69DA692375758400A5A360 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE69DA6C2375758400A5A360 /* FutureTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = FutureTests.xctest;
+			remoteRef = AE69DA6B2375758400A5A360 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE69DA6E2375758400A5A360 /* Future.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Future.framework;
+			remoteRef = AE69DA6D2375758400A5A360 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE69DA702375758400A5A360 /* Future.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Future.framework;
+			remoteRef = AE69DA6F2375758400A5A360 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AE69DA722375758400A5A360 /* Future.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Future.framework;
+			remoteRef = AE69DA712375758400A5A360 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		AE98C881224164A200B4BD7A /* Incito.framework */ = {
@@ -1189,6 +1316,11 @@
 			isa = PBXTargetDependency;
 			name = "Kingfisher-iOS";
 			targetProxy = AE5A9756202320AC004E0799 /* PBXContainerItemProxy */;
+		};
+		AE69DA77237575AE00A5A360 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Future_iOS;
+			targetProxy = AE69DA76237575AE00A5A360 /* PBXContainerItemProxy */;
 		};
 		AE98C894224164AC00B4BD7A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

@@ -85,7 +85,7 @@ public struct GraphBusiness: Decodable {
         self.name = try c.decode(String.self, forKey: .name)
         
         if let colorRGBAStr = try c.decodeIfPresent(String.self, forKey: .primaryColor) {
-            self.primaryColor = Color(string: colorRGBAStr)?.uiColor
+            self.primaryColor = UIColor(webString: colorRGBAStr)
         }
     }
 }

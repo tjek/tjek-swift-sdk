@@ -43,8 +43,8 @@ extension IncitoLoaderViewController {
         // every time the loader is called, fetch the width of the screen
         let graphIncitoLoader: (IncitoGraphIdentifier) -> IncitoLoader = { graphId in
             Future<Double>(work: { [weak self] in Double(self?.view.frame.size.width ?? 0) })
-                .asyncOnMain()
-                .flatMap({ width in
+                .asyncOnMain() // -> Future<Double>
+                .flatMapToIncitoLoader({ width in
                     IncitoGraphLoader(
                         id: graphId,
                         graphClient: graphClient,
@@ -57,13 +57,20 @@ extension IncitoLoaderViewController {
         }
         
         // make a loader that first fetches the publication, then gets the incito id from that publication, then calls the graphLoader with that incitoId
-        let loader = incitoPropertyLoader
+        let loader: IncitoLoader = incitoPropertyLoader
             .observeResultSuccess({
                 expectedIncitoId = $0.graphId
                 isAlsoPagedPublication = $0.isAlsoPagedPublication
             })
-            .flatMapResult({
-                graphIncitoLoader($0.graphId)
+            .flatMapToIncitoLoader({ result in
+                IncitoLoader { callback in
+                    switch result {
+                    case let .success(s):
+                        graphIncitoLoader(s.graphId).load(callback)
+                    case let .failure(error):
+                        callback(.failure(error))
+                    }
+                }
             })
         
         self.load(loader) { [weak self] vcResult in
@@ -141,7 +148,7 @@ extension IncitoLoaderViewController {
         
         // if the publication doesnt have a graphId, then just eject with an error
         guard let graphId = publication.incitoId else {
-            self.load(IncitoLoader(value: .failure(IncitoPublicationLoaderError.notAnIncitoPublication))) { vcResult in
+            self.load(IncitoLoader(load: { cb in cb(.failure(IncitoPublicationLoaderError.notAnIncitoPublication)) })) { vcResult in
                 completion?(vcResult.map({ ($0, false) }))
             }
             return

@@ -38,22 +38,24 @@ extension DemoIncitoViewController: IncitoLoaderViewControllerDelegate {
     func incitoDidReceiveTap(at point: CGPoint, in viewController: IncitoViewController) {
         
         // get the first view at the point of tapping that is an offer.
-        guard let (elementId, tappedOffer) = viewController.firstOffer(at: point) else {
-            return
+        viewController.firstOffer(at: point) {
+            guard let (elementId, tappedOffer) = $0 else {
+                return
+            }
+            
+            print("👉 Did Tap Offer:", tappedOffer)
+            
+            // scroll to that offer
+            viewController.scrollToElement(withId: elementId, animated: true)
         }
-        
-        print("👉 Did Tap Offer:", tappedOffer)
-        
-        // scroll to that offer
-        viewController.scrollToElement(withId: elementId, animated: true)
     }
     
-    func incitoDocumentLoaded(in viewController: IncitoViewController) {
+    func incitoDocumentLoaded(document: IncitoDocument, in viewController: IncitoViewController) {
         print("✅ Did Load Incito")
         
         // register a long-press gesture with the loaded IncitoViewController.
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
-        viewController.view.addGestureRecognizer(longPress)
+        viewController.addGesture(longPress)
     }
     
     @objc private func didLongPress(_ longPress: UILongPressGestureRecognizer) {
@@ -64,11 +66,17 @@ extension DemoIncitoViewController: IncitoLoaderViewControllerDelegate {
         // Find where the gesture occurred in the loaded IncitoViewController,
         // then find the offer that is at that location
         let point = longPress.location(in: incitoVC.view)
-        guard let (elementId, pressedOffer) = incitoVC.firstOffer(at: point) else {
-            return
+        
+        // get the first view at the point of tapping that is an offer.
+        incitoVC.firstOffer(at: point) {
+            guard let (elementId, pressedOffer) = $0 else {
+                return
+            }
+            
+            print("👉👉 Did LongPress Offer:", pressedOffer)
+            
+            // scroll to the long-pressed offer
+            incitoVC.scrollToElement(withId: elementId, animated: true)
         }
-        print("👉👉 Did LongPress Offer:", pressedOffer)
-        // scroll to the long-pressed offer
-        incitoVC.scrollToElement(withId: elementId, animated: true)
     }
 }
