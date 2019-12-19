@@ -10,7 +10,7 @@
 import Foundation
 
 final public class CoreAPI {
-    public typealias TokenProvider = () -> String?
+    public typealias TokenProvider = () -> (authToken: String?, appInstallId: String?)
     
     /// Every time a request is made, this TokenProvider is called to ask for the auth token.
     public var tokenProvider: TokenProvider
@@ -50,7 +50,10 @@ final public class CoreAPI {
     private let requestOpQueue: OperationQueue = OperationQueue()
     private let queue: DispatchQueue = DispatchQueue(label: "CoreAPI-Queue")
     private var additionalRequestParams: [String: String] {
-        return ["r_locale": self.locale.identifier]
+        return [
+            "r_locale": self.locale.identifier,
+            "X-Api-Key": self.settings.key
+        ]
     }
 //    private func updateAuthVaultParams() {
 //        self.authVault.additionalRequestParams.merge(self.additionalRequestParams) { (_, new) in new }
@@ -74,7 +77,7 @@ extension CoreAPI {
     }
     
     /// This will cause a fatalError if KeychainDataStore hasnt been configured
-    public static func configure(tokenProvider: @escaping TokenProvider = { return nil }, settings: Settings.CoreAPI? = nil, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
+    public static func configure(tokenProvider: @escaping TokenProvider = { return (nil, nil) }, settings: Settings.CoreAPI? = nil, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
         do {
             guard let settings = try (settings ?? Settings.loadShared().coreAPI) else {
                 fatalError("Required CoreAPI settings missing from '\(Settings.defaultSettingsFileName)'")
@@ -132,8 +135,8 @@ extension CoreAPI {
             var urlRequest = request
                 .urlRequest(for: s.settings.baseURL, additionalParameters: s.additionalRequestParams)
             
-            if let token = self?.tokenProvider() {
-                urlRequest = urlRequest.signedForCoreAPI(withToken: token, secret: s.settings.secret)
+            if let (token, appInstallId) = self?.tokenProvider() {
+                urlRequest = urlRequest.signedForCoreAPI(withToken: token, appInstallId: appInstallId)
             }
             
             // make a new RequestOperation and add it to the pending queue
