@@ -426,12 +426,16 @@ import Foundation
 extension URLRequest {
     
     /// Generates a new URLRequest that includes the signed HTTPHeaders, given a token & secret
-    func signedForCoreAPI(withToken authToken: String?, appInstallId: String?) -> URLRequest {
+    func signedForCoreAPI(withToken authToken: String?, appInstallId: String?, apiKey: String, apiSecret: String) -> URLRequest {
         var signedRequest = self
         
-        signedRequest.setValue(authToken.map { "Bearer \($0)" }, forHTTPHeaderField: "Authorization")
-        signedRequest.setValue(appInstallId, forHTTPHeaderField: "X-AppInstall-Id")
+        signedRequest.setValue(apiKey, forHTTPHeaderField: "X-Api-Key")
+        #warning("Secret will be removed going forward")
+        signedRequest.setValue(apiSecret, forHTTPHeaderField: "X-Api-Secret")
         
+        signedRequest.setValue(authToken.map { "Bearer \($0)" }, forHTTPHeaderField: "Authorization")
+        signedRequest.setValue(appInstallId, forHTTPHeaderField: "X-App-Install-Id")
+
         return signedRequest
     }
 }

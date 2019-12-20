@@ -51,8 +51,7 @@ final public class CoreAPI {
     private let queue: DispatchQueue = DispatchQueue(label: "CoreAPI-Queue")
     private var additionalRequestParams: [String: String] {
         return [
-            "r_locale": self.locale.identifier,
-            "X-Api-Key": self.settings.key
+            "r_locale": self.locale.identifier
         ]
     }
 //    private func updateAuthVaultParams() {
@@ -130,21 +129,20 @@ extension CoreAPI {
         let start = Date()
         
         self.queue.async { [weak self] in
-            guard let s = self else { return }
+            guard let self = self else { return }
+            
+            let (authToken, appInstallId) = self.tokenProvider()
             
             var urlRequest = request
-                .urlRequest(for: s.settings.baseURL, additionalParameters: s.additionalRequestParams)
-            
-            if let (token, appInstallId) = self?.tokenProvider() {
-                urlRequest = urlRequest.signedForCoreAPI(withToken: token, appInstallId: appInstallId)
-            }
+                .urlRequest(for: self.settings.baseURL, additionalParameters: self.additionalRequestParams)
+                .signedForCoreAPI(withToken: authToken, appInstallId: appInstallId, apiKey: self.settings.key, apiSecret: self.settings.secret)
             
             // make a new RequestOperation and add it to the pending queue
             let reqOp = RequestOperation(id: token.id,
                                          requiresAuth: request.requiresAuth,
                                          maxRetryCount: request.maxRetryCount,
                                          urlRequest: urlRequest,
-                                         urlSession: s.requstURLSession,
+                                         urlSession: self.requstURLSession,
                                          completion: { (dataResult) in
                                             // Make sure the completion is always called on main
                                             DispatchQueue.main.async {
@@ -154,7 +152,7 @@ extension CoreAPI {
                                                 completion?(dataResult)
                                             }
             })
-            s.requestOpQueue.addOperation(reqOp)
+            self.requestOpQueue.addOperation(reqOp)
         }
     
         return token
