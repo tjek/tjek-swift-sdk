@@ -27,6 +27,7 @@ extension Event {
         case incitoPublicationOpened        = 8
         case searchResultsViewed            = 9
         case incitoPublicationOpened_v2     = 11
+        case basicAnalytics                 = 12
     }
     
     /**
@@ -56,6 +57,52 @@ extension Event {
                      type: EventType.pagedPublicationOpened.rawValue,
                      payload: payload)
             .addingViewToken(content: publicationId.rawValue, tokenizer: tokenizer)
+    }
+    
+    /**
+     The event to report basic analytics about new sessions and views opened.
+     - parameter screenName: Name of the view currently being presented.
+     - parameter appVersion: Version of the app.
+     - parameter category: Event category, e.g. session and screen.
+     - parameter action: Event action, e.g. opened, clicked.
+     - parameter label: Event label if you want to describe it.
+     - parameter timestamp: The date that the event occurred. Defaults to now.
+     - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
+     */
+    internal static func basicAnalytics(
+        _ screenName: String?,
+        appVersion: String,
+        category: String,
+        action: String,
+        label: String?,
+        timestamp: Date = Date(),
+        tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
+        ) -> Event {
+        
+        var payload: PayloadType = [
+            "_av": .string(appVersion),
+            "c": .string(category),
+            "a": .string(action),
+            "os": .string("iOS"),
+            "osv": .string(UIDevice.current.systemVersion),
+        ]
+        
+        if let name = screenName {
+            payload["s"] = .string(name)
+        }
+        
+        if let lbl = label {
+            payload["l"] = .string(lbl)
+        }
+        
+        let viewTokenContent: String = [category, action, label, screenName]
+            .compactMap{ $0 }
+            .joined()
+        
+        return Event(timestamp: timestamp,
+                     type: EventType.basicAnalytics.rawValue,
+                     payload: payload)
+            .addingViewToken(content: viewTokenContent, tokenizer: tokenizer)
     }
     
     /**
