@@ -60,11 +60,11 @@ extension Event {
     }
     
     /**
-     The event to report basic analytics about new sessions and views opened.
-     - parameter screenName: Name of the view currently being presented.
-     - parameter appVersion: Version of the app.
+     The event to report basic analytics i.e. new sessions, views opened.
      - parameter category: Event category, e.g. session and screen.
      - parameter action: Event action, e.g. opened, clicked.
+     - parameter appVersion: Version of the app.
+     - parameter screenName: Name of the view currently being presented.
      - parameter label: Event label if you want to describe it.
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
@@ -84,7 +84,7 @@ extension Event {
             "c": .string(category),
             "a": .string(action),
             "os": .string("iOS"),
-            "osv": .string(UIDevice.current.systemVersion),
+            "osv": .string(UIDevice.current.systemVersion)
         ]
         
         if let name = screenName {
@@ -96,8 +96,8 @@ extension Event {
         }
         
         let viewTokenContent: String = [category, action, label, screenName]
-            .compactMap{ $0 }
-            .joined()
+            .compactMap { $0 }
+            .joined(separator: ".")
         
         return Event(timestamp: timestamp,
                      type: EventType.basicAnalytics.rawValue,
@@ -350,7 +350,7 @@ extension Event {
         screenName: String?,
         label: String?
         ) -> Event {
-        return basicAnalytics(category: category, action: action, appVersion: appVersion, screenName: screenName, label: label)
+        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, label: label, timestamp: Date())
     }
     
     public static func firstOfferOpenedAfterSearch(
