@@ -70,10 +70,10 @@ extension Event {
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
     internal static func basicAnalytics(
-        _ screenName: String?,
-        appVersion: String,
-        category: String,
+        _ category: String,
         action: String,
+        appVersion: String,
+        screenName: String?,
         label: String?,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
@@ -341,6 +341,16 @@ extension Event {
         languageCode: String?
         ) -> Event {
         return searched(for: query, languageCode: languageCode, timestamp: Date())
+    }
+    
+    public static func basicAnalytics(
+        category: String,
+        action: String,
+        appVersion: String,
+        screenName: String?,
+        label: String?
+        ) -> Event {
+        return basicAnalytics(category: category, action: action, appVersion: appVersion, screenName: screenName, label: label)
     }
     
     public static func firstOfferOpenedAfterSearch(
