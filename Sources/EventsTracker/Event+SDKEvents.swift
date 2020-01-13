@@ -26,8 +26,8 @@ extension Event {
         @available(*, deprecated, renamed: "incitoPublicationOpened_v2")
         case incitoPublicationOpened        = 8
         case searchResultsViewed            = 9
-        case potentialLocalBusinessVisit    = 10
         case incitoPublicationOpened_v2     = 11
+        case basicAnalytics                 = 12
     }
     
     /**
@@ -57,6 +57,52 @@ extension Event {
                      type: EventType.pagedPublicationOpened.rawValue,
                      payload: payload)
             .addingViewToken(content: publicationId.rawValue, tokenizer: tokenizer)
+    }
+    
+    /**
+     The event to report basic analytics i.e. new sessions, views opened.
+     - parameter category: Event category, e.g. session and screen.
+     - parameter action: Event action, e.g. opened, clicked.
+     - parameter appVersion: Version of the app.
+     - parameter screenName: Name of the view currently being presented.
+     - parameter label: Event label if you want to describe it.
+     - parameter timestamp: The date that the event occurred. Defaults to now.
+     - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
+     */
+    internal static func basicAnalytics(
+        _ category: String,
+        action: String,
+        appVersion: String,
+        screenName: String?,
+        label: String?,
+        timestamp: Date = Date(),
+        tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
+        ) -> Event {
+        
+        var payload: PayloadType = [
+            "_av": .string(appVersion),
+            "c": .string(category),
+            "a": .string(action),
+            "os": .string("iOS"),
+            "osv": .string(UIDevice.current.systemVersion)
+        ]
+        
+        if let name = screenName {
+            payload["s"] = .string(name)
+        }
+        
+        if let lbl = label {
+            payload["l"] = .string(lbl)
+        }
+        
+        let viewTokenContent: String = [category, action, label, screenName]
+            .compactMap { $0 }
+            .joined(separator: ".")
+        
+        return Event(timestamp: timestamp,
+                     type: EventType.basicAnalytics.rawValue,
+                     payload: payload)
+            .addingViewToken(content: viewTokenContent, tokenizer: tokenizer)
     }
     
     /**
@@ -279,44 +325,6 @@ extension Event {
                      type: EventType.searchResultsViewed.rawValue,
                      payload: payload)
     }
-    
-    /**
-     The event when a user opened the app close to a store. The event is only triggered if gps traking is enabled, user gps location has accuracy below a specified radial distance and closest store is within a specified radial distance.
-     - parameter storeId: The id of the closest store, within specified radial distance.
-     - parameter dealerId: The id of the business to which the store belongs to.
-     - parameter horizontalAccuracy: Device's horizontal accuracy of its geolocation information in meters.
-     - parameter distanceToStore: Estimated distance between device and store, in meters.
-     - parameter timeSinceLastInteraction: Time passed (in secs) since the content interaction and the potential local business visit. Nil if no interaction was recorded.
-     - parameter timestamp: The date that the event occurred. Defaults to now.
-     - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
-     */
-    internal static func potentialLocalBusinessVisit(
-        for storeId: CoreAPI.Store.Identifier,
-        dealerId: CoreAPI.Dealer.Identifier,
-        horizontalAccuracy: Double,
-        distanceToStore: Double,
-        timeSinceLastInteraction: TimeInterval?,
-        timestamp: Date = Date(),
-        tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
-        
-        var payload: PayloadType = [
-            "l.hac": .int(Int(horizontalAccuracy)),
-            "lb.id": .string(storeId.rawValue),
-            "lb.dis": .int(Int(distanceToStore)),
-            "lb.bid": .string(dealerId.rawValue)
-        ]
-        
-        if let secs = timeSinceLastInteraction {
-            payload["b.cin"] = .bool(true)
-            payload["b.cint"] = .int(Int(secs / 3600))
-        } else {
-            payload["b.cin"] = .bool(false)
-        }
-        
-        return Event(timestamp: timestamp, type: EventType.potentialLocalBusinessVisit.rawValue, payload: payload)
-            .addingViewToken(content: storeId.rawValue, tokenizer: tokenizer)
-    }
 }
 
 extension Event {
@@ -333,6 +341,16 @@ extension Event {
         languageCode: String?
         ) -> Event {
         return searched(for: query, languageCode: languageCode, timestamp: Date())
+    }
+    
+    public static func basicAnalytics(
+        category: String,
+        action: String,
+        appVersion: String,
+        screenName: String?,
+        label: String?
+        ) -> Event {
+        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, label: label, timestamp: Date())
     }
     
     public static func firstOfferOpenedAfterSearch(
@@ -380,16 +398,5 @@ extension Event {
         resultsViewedCount: Int
         ) -> Event {
         return searchResultsViewed(query: query, languageCode: languageCode, resultsViewedCount: resultsViewedCount, timestamp: Date())
-    }
-    
-    public static func potentialLocalBusinessVisit(
-        for storeId: CoreAPI.Store.Identifier,
-        dealerId: CoreAPI.Dealer.Identifier,
-        horizontalAccuracy: Double,
-        distanceToStore: Double,
-        timeSinceLastInteraction: TimeInterval?
-        ) -> Event {
-        
-        return potentialLocalBusinessVisit(for: storeId, dealerId: dealerId, horizontalAccuracy: horizontalAccuracy, distanceToStore: distanceToStore, timeSinceLastInteraction: timeSinceLastInteraction, timestamp: Date())
     }
 }
