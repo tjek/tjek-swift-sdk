@@ -136,6 +136,8 @@ extension CoreAPI {
             var urlRequest = request
                 .urlRequest(for: self.settings.baseURL, additionalParameters: self.additionalRequestParams)
                 .signedForCoreAPI(withToken: authToken, appInstallId: appInstallId, apiKey: self.settings.key, apiSecret: self.settings.secret)
+            // add the Accept-Language header
+            urlRequest.addValue(Locale.preferredLanguages.joined(separator: ", "), forHTTPHeaderField: "Accept-Language")
             
             // make a new RequestOperation and add it to the pending queue
             let reqOp = RequestOperation(id: token.id,
