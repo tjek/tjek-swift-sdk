@@ -83,8 +83,9 @@ extension Event {
             "_av": .string(appVersion),
             "c": .string(category),
             "a": .string(action),
-            "os": .string("iOS"),
-            "osv": .string(UIDevice.current.systemVersion)
+            "os": .string(UIDevice.current.systemName),
+            "osv": .string(UIDevice.current.systemVersion),
+            "d": .string(UIDevice.current.name)
         ]
         
         if let name = screenName {
