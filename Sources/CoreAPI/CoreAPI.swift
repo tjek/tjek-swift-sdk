@@ -126,7 +126,9 @@ extension CoreAPI {
         self.queue.async { [weak self] in
             guard let s = self else { return }
             
-            let urlRequest = request.urlRequest(for: s.settings.baseURL, additionalParameters: s.additionalRequestParams)
+            var urlRequest = request.urlRequest(for: s.settings.baseURL, additionalParameters: s.additionalRequestParams)
+            // add the Accept-Language header
+            urlRequest.addValue(Locale.preferredLanguages.joined(separator: ", "), forHTTPHeaderField: "Accept-Language")
             
             // make a new RequestOperation and add it to the pending queue
             let reqOp = RequestOperation(id: token.id,
