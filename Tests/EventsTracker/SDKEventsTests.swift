@@ -113,21 +113,6 @@ class SDKEventsTests: XCTestCase {
                         "vt": .string("ryYm+eb1bUU=")])
     }
     
-    func testClientSessionOpened() {
-        let testDate = Date(eventTimestamp: 12345)
-        
-        let event = Event.clientSessionOpened(timestamp: testDate)
-        
-        XCTAssertFalse(event.id.rawValue.isEmpty)
-        XCTAssertEqual(event.type, 4)
-        XCTAssertEqual(event.timestamp.eventTimestamp, 12345)
-        XCTAssertEqual(event.version, 2)
-        XCTAssertEqual(event.payload, [:])
-        
-        let nowTimestamp = Date().eventTimestamp
-        XCTAssert(abs(Event.clientSessionOpened().timestamp.eventTimestamp - nowTimestamp) <= 2)
-    }
-    
     func testSearched() {
         let testDate = Date(eventTimestamp: 12345)
         let query = "Søme Very Long Séarch string 🌈"

@@ -20,7 +20,6 @@ extension Event {
         case pagedPublicationOpened         = 1
         case pagedPublicationPageOpened     = 2
         case offerOpened                    = 3
-        case clientSessionOpened            = 4
         case searched                       = 5
         case firstOfferOpenedAfterSearch    = 6
         case offerOpenedAfterSearch         = 7
@@ -157,15 +156,6 @@ extension Event {
                      type: EventType.offerOpened.rawValue,
                      payload: payload)
             .addingViewToken(content: offerId.rawValue, tokenizer: tokenizer)
-    }
-    
-    /**
-     The event when the application is brought to the foreground. For phone apps this is every time the app is opened/resumed.
-     - parameter timestamp: The date that the event occurred. Defaults to now.
-     */
-    internal static func clientSessionOpened(timestamp: Date = Date()) -> Event {
-        return Event(timestamp: timestamp,
-                     type: EventType.clientSessionOpened.rawValue)
     }
     
     /**

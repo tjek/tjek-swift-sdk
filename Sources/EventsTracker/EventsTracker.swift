@@ -70,24 +70,12 @@ public final class EventsTracker {
         EventsTracker.legacyPoolCleaner(baseURL: settings.baseURL, enabled: settings.enabled) { (cleanedEvents) in
             Logger.log("LegacyEventsPool cleaned (\(cleanedEvents) events)", level: .debug, source: .EventsTracker)
         }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            // Assign the callback for the session handler.
-            // Note that the events must be triggered manually first time.
-            // We delay by a moment to make sure that context can be initialized for the very first time.
-            self.trackEvent(Event.clientSessionOpened())
-            self.sessionLifecycleHandler.didStartNewSession = { [weak self] in
-                self?.trackEvent(Event.clientSessionOpened())
-            }
-        }
     }
     private init() { fatalError("You must provide settings when creating an EventsTracker") }
     
     private weak var dataStore: ShopGunSDKDataStore?
 
     fileprivate let pool: EventsPool
-    
-    private let sessionLifecycleHandler = SessionLifecycleHandler()
 }
 
 // MARK: -
