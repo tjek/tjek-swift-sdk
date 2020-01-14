@@ -93,25 +93,6 @@ class SDKEventsTests: XCTestCase {
                         "vt": .string("VwMOrDD8zMk=")])
     }
     
-    func testPotentialLocalBusinessVisit() {
-        let testDate = Date(eventTimestamp: 12345)
-        let event = Event.potentialLocalBusinessVisit(for: .init(rawValue: "e3dclwL"), dealerId: .init(rawValue: "d7fazg"), horizontalAccuracy: 93, distanceToStore: 85, timeSinceLastInteraction: 3600, timestamp: testDate)
-        
-        XCTAssertFalse(event.id.rawValue.isEmpty)
-        XCTAssertEqual(event.type, 10)
-        XCTAssertEqual(event.timestamp.eventTimestamp, 12345)
-        XCTAssertEqual(event.version, 2)
-        
-        XCTAssertEqual(event.payload,
-                       ["lb.id": .string("e3dclwL"),
-                        "lb.bid": .string("d7fazg"),
-                        "l.hac": .int(93),
-                        "lb.dis": .int(85),
-                        "b.cin": .bool(true),
-                        "b.cint": .int(1),
-                        "vt": .string("JGwLh2htW9c=")])
-    }
-    
     func testOfferOpened() {
         let testDate = Date(eventTimestamp: 12345)
         let event = Event.offerOpened("offer_123", timestamp: testDate, tokenizer: self.tokenizer.tokenize)
@@ -130,21 +111,6 @@ class SDKEventsTests: XCTestCase {
         XCTAssertEqual(defaultEvent.payload,
                        ["of.id": .string("øffer_321"),
                         "vt": .string("ryYm+eb1bUU=")])
-    }
-    
-    func testClientSessionOpened() {
-        let testDate = Date(eventTimestamp: 12345)
-        
-        let event = Event.clientSessionOpened(timestamp: testDate)
-        
-        XCTAssertFalse(event.id.rawValue.isEmpty)
-        XCTAssertEqual(event.type, 4)
-        XCTAssertEqual(event.timestamp.eventTimestamp, 12345)
-        XCTAssertEqual(event.version, 2)
-        XCTAssertEqual(event.payload, [:])
-        
-        let nowTimestamp = Date().eventTimestamp
-        XCTAssert(abs(Event.clientSessionOpened().timestamp.eventTimestamp - nowTimestamp) <= 2)
     }
     
     func testSearched() {

@@ -53,6 +53,7 @@
 		AE50A3BE2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */; };
 		AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */; };
 		AE69DA732375759A00A5A360 /* Future.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE69DA6E2375758400A5A360 /* Future.framework */; };
+		AE6CA86323CE10F20099AC7E /* UIDevice+Hardware.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6CA84D23CE10F20099AC7E /* UIDevice+Hardware.swift */; };
 		AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6D65EC204ECBF50011E15C /* Logger.swift */; };
 		AE6D660B204EE2910011E15C /* KeychainDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6D65F9204EE2910011E15C /* KeychainDataStore.swift */; };
 		AE7D9B63204745C6000F3B7D /* CoreAPI_LegacyMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7D9B62204745C6000F3B7D /* CoreAPI_LegacyMigration.swift */; };
@@ -89,7 +90,6 @@
 		AEC28B6B1FF6ABFC0007AAB8 /* GenericIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC28B611FF6ABFC0007AAB8 /* GenericIdentifier.swift */; };
 		AEC28B6E1FF6AC2A0007AAB8 /* ShopGunSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = AEC28B6D1FF6AC2A0007AAB8 /* ShopGunSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AEC3D8571FFD87FB004C5947 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3D8551FFD87FB004C5947 /* SettingsTests.swift */; };
-		AECC8E1B204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */; };
 		AED992852063008300671F48 /* CoreAPI_OfferRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED992842063008300671F48 /* CoreAPI_OfferRequests.swift */; };
 		AEDCC2F02008BA14002644C2 /* CoreAPI_Dealer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDCC2EF2008BA14002644C2 /* CoreAPI_Dealer.swift */; };
 		AEE2CC902134303200E93556 /* LifecycleEventTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE2CC8F2134303200E93556 /* LifecycleEventTrackerTests.swift */; };
@@ -398,6 +398,7 @@
 		AE5A972820232098004E0799 /* Kingfisher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kingfisher.xcodeproj; path = External/Kingfisher/Kingfisher.xcodeproj; sourceTree = "<group>"; };
 		AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+EventHandler.swift"; sourceTree = "<group>"; };
 		AE69DA5E2375758400A5A360 /* Future.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Future.xcodeproj; path = "External/swift-future/Future.xcodeproj"; sourceTree = "<group>"; };
+		AE6CA84D23CE10F20099AC7E /* UIDevice+Hardware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Hardware.swift"; sourceTree = "<group>"; };
 		AE6D65EC204ECBF50011E15C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		AE6D65F9204EE2910011E15C /* KeychainDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainDataStore.swift; sourceTree = "<group>"; };
 		AE7D9B62204745C6000F3B7D /* CoreAPI_LegacyMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAPI_LegacyMigration.swift; sourceTree = "<group>"; };
@@ -456,7 +457,6 @@
 		AEC3D86E1FFD8E86004C5947 /* ShopGunSDK-Project-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Project-Release.xcconfig"; sourceTree = "<group>"; };
 		AEC3D86F1FFD8E86004C5947 /* ShopGunSDK-Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "ShopGunSDK-Tests.xcconfig"; sourceTree = "<group>"; };
 		AEC3D8701FFD8E86004C5947 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
-		AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventsTracker+SessionLifecycleHandler.swift"; sourceTree = "<group>"; };
 		AED992842063008300671F48 /* CoreAPI_OfferRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAPI_OfferRequests.swift; sourceTree = "<group>"; };
 		AEDCC2EF2008BA14002644C2 /* CoreAPI_Dealer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAPI_Dealer.swift; sourceTree = "<group>"; };
 		AEE2CC8F2134303200E93556 /* LifecycleEventTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleEventTrackerTests.swift; sourceTree = "<group>"; };
@@ -687,7 +687,6 @@
 			isa = PBXGroup;
 			children = (
 				AEC28B571FF6ABFB0007AAB8 /* EventsTracker.swift */,
-				AECC8E1A204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift */,
 				AE1027B92126F5B500104921 /* LegacyEventsPool */,
 				AE3B325320455D44001C75C9 /* EventsPool.swift */,
 				AE38B4692119EBDB008C1EA8 /* EventsShipper.swift */,
@@ -699,6 +698,7 @@
 				AEEE540F21188C6100528E3B /* Event+SDKEvents.swift */,
 				AEEE541321189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift */,
 				AEEE540B21187F1D00528E3B /* UniqueViewTokenizer.swift */,
+				AE6CA84D23CE10F20099AC7E /* UIDevice+Hardware.swift */,
 				AEEE54112118983500528E3B /* Geohash.swift */,
 			);
 			name = EventsTracker;
@@ -1239,6 +1239,7 @@
 				AE8E454F2010941F0042CCE2 /* CoreAPI_DealerRequests.swift in Sources */,
 				AEEE53F821187C5B00528E3B /* JSONValue.swift in Sources */,
 				AE8E453F200E29350042CCE2 /* CoreAPI_PagedPublication.swift in Sources */,
+				AE6CA86323CE10F20099AC7E /* UIDevice+Hardware.swift in Sources */,
 				AEEE541021188C6200528E3B /* Event+SDKEvents.swift in Sources */,
 				AE8E4544200E3CA70042CCE2 /* CoreAPI_PagedPublicationRequests.swift in Sources */,
 				AE8E4546200F6CAA0042CCE2 /* ImageURLSet.swift in Sources */,
@@ -1265,7 +1266,6 @@
 				AE04305F205BE24000F5D8C9 /* CoreAPI_StoreRequests.swift in Sources */,
 				AED992852063008300671F48 /* CoreAPI_OfferRequests.swift in Sources */,
 				AE7D9B63204745C6000F3B7D /* CoreAPI_LegacyMigration.swift in Sources */,
-				AECC8E1B204D5101007185B0 /* EventsTracker+SessionLifecycleHandler.swift in Sources */,
 				AE0D1C9E2122D8F2004A133D /* EventsCache.swift in Sources */,
 				AE85C5ED20017EE600263F8B /* URLSession_CoreAPI.swift in Sources */,
 				AE043056205BC15000F5D8C9 /* CoreAPI_Store.swift in Sources */,
