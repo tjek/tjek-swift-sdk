@@ -53,6 +53,7 @@
 		AE50A3BE2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE50A3BD2099069C00D50CF3 /* CLLocationCoordinate2D_Equatable.swift */; };
 		AE68D9442021D65700C433FB /* PagedPublicationView+EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */; };
 		AE69DA732375759A00A5A360 /* Future.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE69DA6E2375758400A5A360 /* Future.framework */; };
+		AE6CA86323CE10F20099AC7E /* UIDevice+Hardware.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6CA84D23CE10F20099AC7E /* UIDevice+Hardware.swift */; };
 		AE6D65ED204ECBF60011E15C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6D65EC204ECBF50011E15C /* Logger.swift */; };
 		AE6D660B204EE2910011E15C /* KeychainDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6D65F9204EE2910011E15C /* KeychainDataStore.swift */; };
 		AE7D9B63204745C6000F3B7D /* CoreAPI_LegacyMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7D9B62204745C6000F3B7D /* CoreAPI_LegacyMigration.swift */; };
@@ -398,6 +399,7 @@
 		AE5A972820232098004E0799 /* Kingfisher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kingfisher.xcodeproj; path = External/Kingfisher/Kingfisher.xcodeproj; sourceTree = "<group>"; };
 		AE68D9432021D65700C433FB /* PagedPublicationView+EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagedPublicationView+EventHandler.swift"; sourceTree = "<group>"; };
 		AE69DA5E2375758400A5A360 /* Future.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Future.xcodeproj; path = "External/swift-future/Future.xcodeproj"; sourceTree = "<group>"; };
+		AE6CA84D23CE10F20099AC7E /* UIDevice+Hardware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Hardware.swift"; sourceTree = "<group>"; };
 		AE6D65EC204ECBF50011E15C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		AE6D65F9204EE2910011E15C /* KeychainDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainDataStore.swift; sourceTree = "<group>"; };
 		AE7D9B62204745C6000F3B7D /* CoreAPI_LegacyMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAPI_LegacyMigration.swift; sourceTree = "<group>"; };
@@ -699,6 +701,7 @@
 				AEEE540F21188C6100528E3B /* Event+SDKEvents.swift */,
 				AEEE541321189A0E00528E3B /* EventsTrackerContext+CoreLocation.swift */,
 				AEEE540B21187F1D00528E3B /* UniqueViewTokenizer.swift */,
+				AE6CA84D23CE10F20099AC7E /* UIDevice+Hardware.swift */,
 				AEEE54112118983500528E3B /* Geohash.swift */,
 			);
 			name = EventsTracker;
@@ -1239,6 +1242,7 @@
 				AE8E454F2010941F0042CCE2 /* CoreAPI_DealerRequests.swift in Sources */,
 				AEEE53F821187C5B00528E3B /* JSONValue.swift in Sources */,
 				AE8E453F200E29350042CCE2 /* CoreAPI_PagedPublication.swift in Sources */,
+				AE6CA86323CE10F20099AC7E /* UIDevice+Hardware.swift in Sources */,
 				AEEE541021188C6200528E3B /* Event+SDKEvents.swift in Sources */,
 				AE8E4544200E3CA70042CCE2 /* CoreAPI_PagedPublicationRequests.swift in Sources */,
 				AE8E4546200F6CAA0042CCE2 /* ImageURLSet.swift in Sources */,
