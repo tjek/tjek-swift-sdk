@@ -18,9 +18,6 @@ final public class CoreAPI {
     public let settings: Settings.CoreAPI
     
     public var locale: Locale = Locale.autoupdatingCurrent
-//    {
-//        didSet { self.updateAuthVaultParams() }
-//    }
     
     internal init(tokenProvider: @escaping TokenProvider, settings: Settings.CoreAPI, dataStore: ShopGunSDKDataStore) {
         self.tokenProvider = tokenProvider
@@ -34,18 +31,10 @@ final public class CoreAPI {
         self.requstURLSession.sessionDescription = "ShopGunSDK.CoreAPI"
 
         self.requestOpQueue.name = "ShopGunSDK.CoreAPI.Requests"
-        
-        
-        
-//        self.authVault = AuthVault(baseURL: settings.baseURL, key: settings.key, secret: settings.secret, urlSession: self.requstURLSession, dataStore: dataStore)
-//
-//        self.authVault.authorizedUserDidChangeCallback = { [weak self] in self?.authorizedUserDidChange(prevAuthUser: $0, newAuthUser: $1) }
-//        self.updateAuthVaultParams()
     }
     
     private init() { fatalError("You must provide settings when creating the CoreAPI") }
     
-//    private let authVault: AuthVault
     private let requstURLSession: URLSession
     private let requestOpQueue: OperationQueue = OperationQueue()
     private let queue: DispatchQueue = DispatchQueue(label: "CoreAPI-Queue")
@@ -54,9 +43,6 @@ final public class CoreAPI {
             "r_locale": self.locale.identifier
         ]
     }
-//    private func updateAuthVaultParams() {
-//        self.authVault.additionalRequestParams.merge(self.additionalRequestParams) { (_, new) in new }
-//    }
 }
 
 // MARK: -
@@ -195,87 +181,23 @@ extension CoreAPI {
     }
 }
 
-// MARK: -
-
-//extension CoreAPI {
-//
-//    public enum ClientIdentifierType {}
-//    public typealias ClientIdentifier = GenericIdentifier<ClientIdentifierType>
-//
-//    public enum LoginCredentials: Equatable {
-//        case logout
-//        case shopgun(email: String, password: String)
-//        case facebook(token: String)
-//    }
-//
-//    // A user/provider pair
-//    public typealias AuthorizedUser = (person: CoreAPI.Person, provider: CoreAPI.AuthorizedUserProvider)
-//    public enum AuthorizedUserProvider: String, Codable {
-//        case shopgun    = "etilbudsavis" // TODO: do decoding manually to avoid eta/sgn distinction?
-//        case facebook   = "facebook"
-//    }
-//
-//    public func login(credentials: LoginCredentials, completion: ((Result<AuthorizedUser, Error>) -> Void)?) {
-//        self.queue.async { [weak self] in
-//
-//            self?.authVault.regenerate(.reauthorize(credentials), completion: { [weak self] (error) in
-//                if let user = self?.authorizedUser {
-//                    completion?(.success(user))
-//                } else {
-//                    completion?(.failure(error ?? APIError.unableToLogin))
-//                }
-//            })
-//        }
-//    }
-//
-//    public var authorizedUser: AuthorizedUser? {
-//        return self.authVault.currentAuthorizedUser
-//    }
-//
-//    /// The Id that represents this installation on this device to the CoreAPI.
-//    /// This will remain constant until the app is removed, or it is reset.
-//    /// It is created the first time the coreAPI communicates with the server
-//    public var clientId: ClientIdentifier? {
-//        return self.authVault.clientId
-//    }
-//
-//    /// Reset the cached clientId. The user will also be logged out, and the clientId will only be regenerated on future CoreAPI requests.
-//    public func resetClientId() {
-//        self.authVault.resetStoredAuthState()
-//    }
-//
-//    /// The current session token.
-//    public var sessionToken: String? {
-//        return self.authVault.sessionToken
-//    }
-//
-//    fileprivate func authorizedUserDidChange(prevAuthUser: AuthorizedUser?, newAuthUser: AuthorizedUser?) {
-//
-//        switch newAuthUser {
-//        case let (person, provider)?:
-//            Logger.log("User (\(provider)) logged In \(person)", level: .debug, source: .CoreAPI)
-//        case nil:
-//            Logger.log("User logged out", level: .debug, source: .CoreAPI)
-//        }
-//
-//        var userInfo: [AnyHashable: Any] = [:]
-//        userInfo["previous"] = prevAuthUser
-//        userInfo["current"] = newAuthUser
-//
-//        NotificationCenter.default.post(name: CoreAPI.authorizedUserDidChangeNotification, object: self, userInfo: userInfo)
-//    }
-//
-    /**
-     The name of the notification that is posted when the authorized user changes.
-     
-     The UserInfo contains the `previous` and `current` AuthorizedUser tuples.
-     - If we are logging in, the `previous` authorized user is nil.
-     - If we are logging out, the `current` authorized user is nil.
-     */
-//    public static let authorizedUserDidChangeNotification = Notification.Name("com.shopgun.ios.sdk.coreAPI.authorizedUserDidChange")
-//}
-
 extension CoreAPI {
     /// Simple namespace for keeping Requests
     public struct Requests { private init() {} }
+}
+
+extension URLRequest {
+    
+    /// Generates a new URLRequest that includes the signed HTTPHeaders, given a token & secret
+    func signedForCoreAPI(withToken authToken: String?, appInstallId: String?, apiKey: String, apiSecret: String) -> URLRequest {
+        var signedRequest = self
+        
+        signedRequest.setValue(apiKey, forHTTPHeaderField: "X-Api-Key")
+        signedRequest.setValue(apiSecret, forHTTPHeaderField: "X-Api-Secret")
+        
+        signedRequest.setValue(authToken.map { "Bearer \($0)" }, forHTTPHeaderField: "Authorization")
+        signedRequest.setValue(appInstallId, forHTTPHeaderField: "X-App-Install-Id")
+
+        return signedRequest
+    }
 }
