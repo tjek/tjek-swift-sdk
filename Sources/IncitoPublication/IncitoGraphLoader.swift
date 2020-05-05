@@ -18,7 +18,7 @@ enum IncitoGraphLoaderError: Error {
 }
 
 public func IncitoGraphLoader(
-    id: IncitoGraphIdentifier,
+    id: PublicationIdentifier,
     graphClient: GraphClient,
     width: Double,
     featureLabelWeights: [String: Double] = [:],

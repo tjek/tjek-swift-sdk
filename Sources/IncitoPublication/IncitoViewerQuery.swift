@@ -27,7 +27,7 @@ struct IncitoViewerQuery: GraphQuery {
         case coarse = "POINTER_COARSE"
     }
     
-    var id: IncitoGraphIdentifier
+    var id: PublicationIdentifier
     var featureLabelWeights: [String: Double]
     var maxWidth: Int
     var deviceCategory: DeviceCategory

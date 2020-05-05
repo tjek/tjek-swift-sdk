@@ -253,8 +253,8 @@ extension Event {
      */
     @available(*, deprecated, renamed: "incitoPublicationOpened(_:isAlsoPagedPublication:timestamp:tokenizer:)")
     internal static func incitoPublicationOpened(
-        _ incitoId: IncitoGraphIdentifier,
-        pagedPublicationId: PagedPublicationCoreAPIIdentifier?,
+        _ incitoId: PublicationIdentifier,
+        pagedPublicationId: PublicationIdentifier?,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
         ) -> Event {
@@ -274,7 +274,7 @@ extension Event {
     }
     
     internal static func incitoPublicationOpened(
-        _ incitoPublicationId: PagedPublicationCoreAPIIdentifier,
+        _ incitoPublicationId: PublicationIdentifier,
         isAlsoPagedPublication: Bool,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
@@ -366,8 +366,8 @@ extension Event {
     
     @available(*, deprecated, renamed: "incitoPublicationOpened(_:isAlsoPagedPublication:)")
     public static func incitoPublicationOpened(
-        _ incitoId: IncitoGraphIdentifier,
-        pagedPublicationId: PagedPublicationCoreAPIIdentifier?
+        _ incitoId: PublicationIdentifier,
+        pagedPublicationId: PublicationIdentifier?
         ) -> Event {
         return incitoPublicationOpened(
             incitoId,
@@ -377,7 +377,7 @@ extension Event {
     }
     
     public static func incitoPublicationOpened(
-        _ incitoPublicationId: PagedPublicationCoreAPIIdentifier,
+        _ incitoPublicationId: PublicationIdentifier,
         isAlsoPagedPublication: Bool
         ) -> Event {
         return incitoPublicationOpened(
