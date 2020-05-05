@@ -93,10 +93,10 @@ extension IncitoLoaderViewController {
     }
     
     public func load(
-        publicationId: CoreAPI.PagedPublication.Identifier,
+        publicationId: PublicationIdentifier,
         featureLabelWeights: [String: Double] = [:],
         graphClient: GraphClient = GraphAPI.shared.client,
-        publicationLoaded: ((Result<CoreAPI.PagedPublication, Error>) -> Void)? = nil,
+        publicationLoaded: ((Result<CoreAPI.Publication, Error>) -> Void)? = nil,
         businessLoaded: ((Result<GraphBusiness, Error>) -> Void)? = nil,
         completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
         ) {
@@ -135,7 +135,7 @@ extension IncitoLoaderViewController {
      If you specify a `lastReadPosition` it will scroll to this location once loading finishes. This is a 0-1 %, accessible via the `scrollProgress` property of the IncitoViewController.
      */
     public func load(
-        publication: CoreAPI.PagedPublication,
+        publication: CoreAPI.Publication,
         featureLabelWeights: [String: Double] = [:],
         graphClient: GraphClient = GraphAPI.shared.client,
         businessLoaded: ((Result<GraphBusiness, Error>) -> Void)? = nil,

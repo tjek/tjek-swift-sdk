@@ -11,8 +11,10 @@ import UIKit
 
 extension CoreAPI {
     
-    /// A `PagedPublication` is a catalog that has static images for each `Page`, with possible `Hotspot`s referencing `Offer`s on each page, that is published by a `Dealer`.
-    public struct PagedPublication: Decodable, Equatable {
+    /// A `Publication` is a catalog.
+    /// If it's type is 'paged' then it has static images for each `Page`, with possible `Hotspot`s referencing `Offer`s on each page, that is published by a `Dealer`.
+    /// If it's type is 'incito' then you can use the incito renderer to display it.
+    public struct Publication: Decodable, Equatable {
         
         public typealias Identifier = PublicationIdentifier
         
@@ -21,7 +23,7 @@ extension CoreAPI {
             case incito
         }
         
-        /// The unique identifier of this PagedPublication.
+        /// The unique identifier of this Publication.
         public var id: Identifier
         /// The name of the publication. eg. "Christmas Special".
         public var label: String?
@@ -41,12 +43,12 @@ extension CoreAPI {
         public var isAvailableInAllStores: Bool
         /// The unique identifier of the dealer that published this publication.
         public var dealerId: CoreAPI.Dealer.Identifier
-        /// The unique identifier of the nearest store. This will only contain a value if the `PagedPublication` was fetched with a request that includes store information (eg. one that takes a precise location as a parameter).
+        /// The unique identifier of the nearest store. This will only contain a value if the `Publication` was fetched with a request that includes store information (eg. one that takes a precise location as a parameter).
         public var storeId: CoreAPI.Store.Identifier?
         
         /// Defines what types of publication this represents.
         /// If it contains `paged`, the `id` can be used to view this in a PagedPublicationViewer
-        /// If it contains `incito`, the `incitoId` will always have a value, and it can be viewed with the IncitoViewer
+        /// If it contains `incito`, the `id` can be used to view this with the IncitoViewer
         /// If it ONLY contains `incito`, this cannot be viewed in a PagedPublicationViewer (see `isOnlyIncito`)
         public var types: Set<PublicationType>
         

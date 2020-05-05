@@ -131,7 +131,7 @@ extension CoreAPI.Requests {
      If no `sortOrder` is provided, it will be sorted by [.nearest, .businessName]
      Note: If a locationQuery is provided, the stores will be limited to that location. HOWEVER, if the stores are in a different country to the publication, the resulting stores will be any store filtered by the locationQuery. This is an API issue.
      */
-    public static func getStores(withPublicationIds publicationIds: [CoreAPI.PagedPublication.Identifier], near locationQuery: LocationQuery? = nil, sortedBy sortOrder: [StoresSortOrder]? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Store]> {
+    public static func getStores(withPublicationIds publicationIds: [PublicationIdentifier], near locationQuery: LocationQuery? = nil, sortedBy sortOrder: [StoresSortOrder]? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Store]> {
         
         var params = ["catalog_ids": publicationIds.map(String.init).joined(separator: ",")]
         if let locationQParams = locationQuery?.requestParams {

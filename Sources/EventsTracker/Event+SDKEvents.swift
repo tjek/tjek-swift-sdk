@@ -46,7 +46,7 @@ extension Event {
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
     internal static func pagedPublicationOpened(
-        _ publicationId: CoreAPI.PagedPublication.Identifier,
+        _ publicationId: PublicationIdentifier,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
         ) -> Event {
@@ -117,7 +117,7 @@ extension Event {
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
     internal static func pagedPublicationPageOpened(
-        _ publicationId: CoreAPI.PagedPublication.Identifier,
+        _ publicationId: PublicationIdentifier,
         pageNumber: Int,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize

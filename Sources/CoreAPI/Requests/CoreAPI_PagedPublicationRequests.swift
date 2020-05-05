@@ -12,13 +12,13 @@ import UIKit
 extension CoreAPI.Requests {
     
     /// Fetch the details about the specified publication
-    public static func getPagedPublication(withId pubId: CoreAPI.PagedPublication.Identifier) -> CoreAPI.Request<CoreAPI.PagedPublication> {
+    public static func getPagedPublication(withId pubId: PublicationIdentifier) -> CoreAPI.Request<CoreAPI.Publication> {
         return .init(path: "/v2/catalogs/\(pubId.rawValue)", method: .GET)
     }
     
     /// Fetch all the pages for the specified publication
-    public static func getPagedPublicationPages(withId pubId: CoreAPI.PagedPublication.Identifier, aspectRatio: Double? = nil) -> CoreAPI.Request<[CoreAPI.PagedPublication.Page]> {
-        return CoreAPI.Request<[CoreAPI.PagedPublication.Page]>(
+    public static func getPagedPublicationPages(withId pubId: PublicationIdentifier, aspectRatio: Double? = nil) -> CoreAPI.Request<[CoreAPI.Publication.Page]> {
+        return CoreAPI.Request<[CoreAPI.Publication.Page]>(
             path: "/v2/catalogs/\(pubId.rawValue)/pages",
             method: .GET,
             resultMapper: {
@@ -35,12 +35,12 @@ extension CoreAPI.Requests {
     
     /// Fetch all hotspots for the specified publication
     /// The `aspectRatio` (w/h) of the publication is needed in order to position the hotspots correctly
-    public static func getPagedPublicationHotspots(withId pubId: CoreAPI.PagedPublication.Identifier, aspectRatio: Double) -> CoreAPI.Request<[CoreAPI.PagedPublication.Hotspot]> {
-        return CoreAPI.Request<[CoreAPI.PagedPublication.Hotspot]>(
+    public static func getPagedPublicationHotspots(withId pubId: PublicationIdentifier, aspectRatio: Double) -> CoreAPI.Request<[CoreAPI.Publication.Hotspot]> {
+        return CoreAPI.Request<[CoreAPI.Publication.Hotspot]>(
             path: "/v2/catalogs/\(pubId.rawValue)/hotspots",
             method: .GET,
             resultMapper: {
-                $0.decodeJSON().map({ (hotspots: [CoreAPI.PagedPublication.Hotspot]) in
+                $0.decodeJSON().map({ (hotspots: [CoreAPI.Publication.Hotspot]) in
                     hotspots.map({
                         /// We do this to convert out of the awful old V2 coord system (which was x: 0->1, y: 0->(h/w))
                         $0.withScaledBounds(scale: CGPoint(x: 1, y: aspectRatio))
@@ -51,7 +51,7 @@ extension CoreAPI.Requests {
     }
     
     /// Given a publication's Id, this will return
-    public static func getSuggestedPublications(relatedTo pubId: CoreAPI.PagedPublication.Identifier, near locationQuery: LocationQuery? = nil, acceptedTypes: Set<CoreAPI.PagedPublication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+    public static func getSuggestedPublications(relatedTo pubId: PublicationIdentifier, near locationQuery: LocationQuery? = nil, acceptedTypes: Set<CoreAPI.Publication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Publication]> {
         
         var params = ["catalog_id": pubId.rawValue]
         params.merge(pagination.requestParams) { (_, new) in new }
@@ -95,7 +95,7 @@ extension CoreAPI.Requests {
         }
     }
     
-    public static func getPublications(near locationQuery: LocationQuery, sortedBy: PublicationSortOrder, acceptedTypes: Set<CoreAPI.PagedPublication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+    public static func getPublications(near locationQuery: LocationQuery, sortedBy: PublicationSortOrder, acceptedTypes: Set<CoreAPI.Publication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Publication]> {
         
         var params = ["order_by": sortedBy.sortKeys.joined(separator: ",")]
         params.merge(locationQuery.requestParams) { (_, new) in new }
@@ -108,7 +108,7 @@ extension CoreAPI.Requests {
                      parameters: params)
     }
     
-    public static func getPublications(matchingSearch searchString: String, near locationQuery: LocationQuery? = nil, acceptedTypes: Set<CoreAPI.PagedPublication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.PagedPublication]> {
+    public static func getPublications(matchingSearch searchString: String, near locationQuery: LocationQuery? = nil, acceptedTypes: Set<CoreAPI.Publication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Publication]> {
         
         var params = ["query": searchString]
         if let locationQParams = locationQuery?.requestParams {
@@ -123,8 +123,8 @@ extension CoreAPI.Requests {
                      parameters: params)
     }
     
-    public static func getPublications(forStores storeIds: [CoreAPI.Store.Identifier], acceptedTypes: Set<CoreAPI.PagedPublication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) ->
-        CoreAPI.Request<[CoreAPI.PagedPublication]> {
+    public static func getPublications(forStores storeIds: [CoreAPI.Store.Identifier], acceptedTypes: Set<CoreAPI.Publication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) ->
+        CoreAPI.Request<[CoreAPI.Publication]> {
             var params = ["store_ids": storeIds.map(String.init).joined(separator: ",")]
             params.merge(pagination.requestParams) { (_, new) in new }
             params["types"] = acceptedTypes.map({ $0.rawValue }).joined(separator: ",")
@@ -141,8 +141,8 @@ extension CoreAPI.Requests {
      * - parameter dealerIds: A list of `Dealer` identifiers defining which dealer's publications you want to fetch.
      * - parameter pagination: A `PaginationQuery` that lets you specify how many publications you wish to fetch, and with what page offset.
      */
-    public static func getPublications(forDealers dealerIds: [CoreAPI.Dealer.Identifier], acceptedTypes: Set<CoreAPI.PagedPublication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) ->
-        CoreAPI.Request<[CoreAPI.PagedPublication]> {
+    public static func getPublications(forDealers dealerIds: [CoreAPI.Dealer.Identifier], acceptedTypes: Set<CoreAPI.Publication.PublicationType> = [.paged, .incito], pagination: PaginatedQuery = PaginatedQuery(count: 24)) ->
+        CoreAPI.Request<[CoreAPI.Publication]> {
             var params = ["dealer_ids": dealerIds.map(String.init).joined(separator: ",")]
             params.merge(pagination.requestParams) { (_, new) in new }
             params["types"] = acceptedTypes.map({ $0.rawValue }).joined(separator: ",")

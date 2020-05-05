@@ -26,11 +26,11 @@ extension PagedPublicationView {
         fileprivate var coreAPI: CoreAPI = CoreAPI.shared
         fileprivate var cancelTokens: [RequestType: Cancellable] = [:]
         
-        typealias PublicationLoadedHandler = ((Result<CoreAPI.PagedPublication, Error>) -> Void)
-        typealias PagesLoadedHandler = ((Result<[CoreAPI.PagedPublication.Page], Error>) -> Void)
-        typealias HotspotsLoadedHandler = ((Result<[CoreAPI.PagedPublication.Hotspot], Error>) -> Void)
+        typealias PublicationLoadedHandler = ((Result<CoreAPI.Publication, Error>) -> Void)
+        typealias PagesLoadedHandler = ((Result<[CoreAPI.Publication.Page], Error>) -> Void)
+        typealias HotspotsLoadedHandler = ((Result<[CoreAPI.Publication.Hotspot], Error>) -> Void)
         
-        func startLoading(publicationId: PagedPublicationView.PublicationId, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler) {
+        func startLoading(publicationId: PublicationIdentifier, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler) {
             
             cancelLoading()
             

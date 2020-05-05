@@ -103,7 +103,7 @@ extension CoreAPI.Requests {
                      parameters: params)
     }
     
-    public static func getOffers(withPublicationIds publicationIds: [CoreAPI.PagedPublication.Identifier], near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Offer]> {
+    public static func getOffers(withPublicationIds publicationIds: [PublicationIdentifier], near locationQuery: LocationQuery? = nil, pagination: PaginatedQuery = PaginatedQuery(count: 24)) -> CoreAPI.Request<[CoreAPI.Offer]> {
         
         var params: [String: String] = [:]
         

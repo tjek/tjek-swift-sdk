@@ -16,7 +16,7 @@ public protocol PagedPublicationViewDataLoader {
     typealias PagesLoadedHandler = ((Result<[PagedPublicationView.PageModel], Error>) -> Void)
     typealias HotspotsLoadedHandler = ((Result<[PagedPublicationView.HotspotModel], Error>) -> Void)
     
-    func startLoading(publicationId: PagedPublicationView.PublicationId, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler)
+    func startLoading(publicationId: PublicationIdentifier, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler)
     func cancelLoading()
 }
 
@@ -57,10 +57,9 @@ public class PagedPublicationView: UIView {
     public typealias OutroView = VersoPageView
     public typealias OutroViewProperties = (viewClass: OutroView.Type, width: CGFloat, maxZoom: CGFloat)
     
-    public typealias PublicationId = CoreAPI.PagedPublication.Identifier
-    public typealias PublicationModel = CoreAPI.PagedPublication
-    public typealias PageModel = CoreAPI.PagedPublication.Page
-    public typealias HotspotModel = CoreAPI.PagedPublication.Hotspot
+    public typealias PublicationModel = CoreAPI.Publication
+    public typealias PageModel = CoreAPI.Publication.Page
+    public typealias HotspotModel = CoreAPI.Publication.Hotspot
     
     public typealias CoreProperties = (pageCount: Int?, bgColor: UIColor, aspectRatio: Double)
     
@@ -83,7 +82,7 @@ public class PagedPublicationView: UIView {
     
     fileprivate var postReloadPageIndex: Int = 0
     
-    public func reload(publicationId: PublicationId, initialPageIndex: Int = 0, initialProperties: CoreProperties = (nil, .white, 1.0)) {
+    public func reload(publicationId: PublicationIdentifier, initialPageIndex: Int = 0, initialProperties: CoreProperties = (nil, .white, 1.0)) {
         DispatchQueue.main.async { [weak self] in
             guard let s = self else { return }
             s.coreProperties = initialProperties
@@ -221,9 +220,9 @@ public class PagedPublicationView: UIView {
         case error(bgColor: UIColor, error: Error)
         
         init(coreProperties: CoreProperties,
-             publicationState: LoadingState<PublicationId, PublicationModel>,
-             pagesState: LoadingState<PublicationId, [PageModel]>,
-             hotspotsState: LoadingState<PublicationId, [IndexSet: [HotspotModel]]>) {
+             publicationState: LoadingState<PublicationIdentifier, PublicationModel>,
+             pagesState: LoadingState<PublicationIdentifier, [PageModel]>,
+             hotspotsState: LoadingState<PublicationIdentifier, [IndexSet: [HotspotModel]]>) {
             
             switch (publicationState, pagesState, hotspotsState) {
             case (.error(_, let error), _, _),
@@ -249,9 +248,9 @@ public class PagedPublicationView: UIView {
     }
     
     public internal(set) var coreProperties: CoreProperties = (nil, .white, 1.0)
-    var publicationState: LoadingState<PublicationId, PublicationModel> = .unloaded
-    var pagesState: LoadingState<PublicationId, [PageModel]> = .unloaded
-    var hotspotsState: LoadingState<PublicationId, [IndexSet: [HotspotModel]]> = .unloaded
+    var publicationState: LoadingState<PublicationIdentifier, PublicationModel> = .unloaded
+    var pagesState: LoadingState<PublicationIdentifier, [PageModel]> = .unloaded
+    var hotspotsState: LoadingState<PublicationIdentifier, [IndexSet: [HotspotModel]]> = .unloaded
     
     var currentViewState: ViewState = .initial
     
@@ -287,7 +286,7 @@ public class PagedPublicationView: UIView {
     }
     
     /// The publication Id that is being loaded, has been loaded, or failed to load
-    public var publicationId: PublicationId? {
+    public var publicationId: PublicationIdentifier? {
         switch publicationState {
         case .unloaded:
             return nil
@@ -341,7 +340,7 @@ public class PagedPublicationView: UIView {
     
     // MARK: - Data Loading
     
-    private func publicationDidLoad(forId publicationId: PublicationId, result: Result<PublicationModel, Error>) {
+    private func publicationDidLoad(forId publicationId: PublicationIdentifier, result: Result<PublicationModel, Error>) {
         switch result {
         case .success(let publicationModel):
             self.publicationState = .loaded(publicationId, publicationModel)
@@ -373,7 +372,7 @@ public class PagedPublicationView: UIView {
         self.updateCurrentViewState(initialPageIndex: self.postReloadPageIndex)
     }
     
-    private func pagesDidLoad(forId publicationId: PublicationId, result: Result<[PageModel], Error>) {
+    private func pagesDidLoad(forId publicationId: PublicationIdentifier, result: Result<[PageModel], Error>) {
         switch result {
         case .success(let pageModels):
             // generate page view states based on the pageModels
@@ -386,7 +385,7 @@ public class PagedPublicationView: UIView {
         self.updateCurrentViewState(initialPageIndex: self.postReloadPageIndex)
     }
     
-    private func hotspotsDidLoad(forId publicationId: PublicationId, result: Result<[HotspotModel], Error>) {
+    private func hotspotsDidLoad(forId publicationId: PublicationIdentifier, result: Result<[HotspotModel], Error>) {
         switch result {
         case .success(let hotspotModels):
             // key hotspots by their pageLocations

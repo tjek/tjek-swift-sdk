@@ -36,7 +36,7 @@ extension CoreAPI {
         public var storeId: CoreAPI.Store.Identifier?
         
         public struct PublicationPageReference: Equatable {
-            public var id: CoreAPI.PagedPublication.Identifier
+            public var id: PublicationIdentifier
             public var pageIndex: Int
         }
         
@@ -97,7 +97,7 @@ extension CoreAPI {
             
             self.branding = try? values.decode(CoreAPI.Branding.self, forKey: .branding)
             
-            if let catalogId = try? values.decode(CoreAPI.PagedPublication.Identifier.self, forKey: .catalogId),
+            if let catalogId = try? values.decode(PublicationIdentifier.self, forKey: .catalogId),
                 let catalogPageNum = try? values.decode(Int.self, forKey: .catalogPage),
                 catalogPageNum > 0 {
                 self.publication = PublicationPageReference(id: catalogId, pageIndex: catalogPageNum - 1)
