@@ -10,7 +10,7 @@
 import Foundation
 
 final public class CoreAPI {
-    public typealias TokenProvider = () -> (authToken: String?, appInstallId: String?)
+    public typealias TokenProvider = () -> String?
     
     /// Every time a request is made, this TokenProvider is called to ask for the auth token.
     public var tokenProvider: TokenProvider
@@ -62,7 +62,7 @@ extension CoreAPI {
     }
     
     /// This will cause a fatalError if KeychainDataStore hasnt been configured
-    public static func configure(tokenProvider: @escaping TokenProvider = { return (nil, nil) }, settings: Settings.CoreAPI? = nil, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
+    public static func configure(tokenProvider: @escaping TokenProvider = { nil }, settings: Settings.CoreAPI? = nil, dataStore: ShopGunSDKDataStore = KeychainDataStore.shared) {
         do {
             guard let settings = try (settings ?? Settings.loadShared().coreAPI) else {
                 fatalError("Required CoreAPI settings missing from '\(Settings.defaultSettingsFileName)'")
@@ -117,11 +117,11 @@ extension CoreAPI {
         self.queue.async { [weak self] in
             guard let self = self else { return }
             
-            let (authToken, appInstallId) = self.tokenProvider()
+            let authToken = self.tokenProvider()
             
             var urlRequest = request
                 .urlRequest(for: self.settings.baseURL, additionalParameters: self.additionalRequestParams)
-                .signedForCoreAPI(withToken: authToken, appInstallId: appInstallId, apiKey: self.settings.key, apiSecret: self.settings.secret)
+                .signedForCoreAPI(withToken: authToken, apiKey: self.settings.key, apiSecret: self.settings.secret)
             // add the Accept-Language header
             urlRequest.addValue(Locale.preferredLanguages.joined(separator: ", "), forHTTPHeaderField: "Accept-Language")
             
@@ -189,14 +189,13 @@ extension CoreAPI {
 extension URLRequest {
     
     /// Generates a new URLRequest that includes the signed HTTPHeaders, given a token & secret
-    func signedForCoreAPI(withToken authToken: String?, appInstallId: String?, apiKey: String, apiSecret: String) -> URLRequest {
+    func signedForCoreAPI(withToken authToken: String?, apiKey: String, apiSecret: String) -> URLRequest {
         var signedRequest = self
         
         signedRequest.setValue(apiKey, forHTTPHeaderField: "X-Api-Key")
         signedRequest.setValue(apiSecret, forHTTPHeaderField: "X-Api-Secret")
         
-        signedRequest.setValue(authToken.map { "Bearer \($0)" }, forHTTPHeaderField: "Authorization")
-        signedRequest.setValue(appInstallId, forHTTPHeaderField: "X-App-Install-Id")
+        signedRequest.setValue(authToken, forHTTPHeaderField: "X-Token")
 
         return signedRequest
     }
