@@ -26,6 +26,7 @@ extension PagedPublicationView {
         
         func update(properties: Properties) {
             self.properties = properties
+            pageNumberLabel.isHidden = shouldHidePageCountLabel
             updatePageNumberLabel(with: properties.pageLabelString)
             
             var spinnerFrame = additionalLoadingSpinner.frame
@@ -41,6 +42,8 @@ extension PagedPublicationView {
         
         var versoView = VersoView()
         fileprivate var pageNumberLabel = PageNumberLabel()
+        var shouldHidePageCountLabel: Bool = false
+        
         fileprivate var additionalLoadingSpinner: UIActivityIndicatorView = {
             let view = UIActivityIndicatorView(style: .white)
             view.hidesWhenStopped = false
