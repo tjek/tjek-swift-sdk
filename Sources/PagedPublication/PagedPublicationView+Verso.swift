@@ -175,5 +175,7 @@ extension PagedPublicationView: VersoViewDelegate {
                 pageView.startLoadingZoomImageIfNotLoaded()
             }
         }
+        
+        hotspotOverlayView.isZoomedIn = zoomScale > 1.0
     }
 }
