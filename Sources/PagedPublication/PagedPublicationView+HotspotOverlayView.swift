@@ -55,6 +55,8 @@ extension PagedPublicationView {
         fileprivate let dimmedOverlay: CutoutView
         fileprivate var hotspotViews: [UIView] = []
         
+        public var isZoomedIn: Bool = false
+        
         override init(frame: CGRect) {
             
             dimmedOverlay = CutoutView(frame: frame)
@@ -209,7 +211,7 @@ extension PagedPublicationView {
         
         @objc
         func didTouch(_ touch: UILongPressGestureRecognizer) {
-            guard bounds.size.width > 0 && bounds.size.height > 0 else {
+            guard bounds.size.width > 0 && bounds.size.height > 0 && !isZoomedIn else {
                 return
             }
             
