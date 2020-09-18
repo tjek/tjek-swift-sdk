@@ -80,6 +80,7 @@ public class PagedPublicationView: UIView {
     
     public weak var delegate: PagedPublicationViewDelegate?
     public weak var dataSource: PagedPublicationViewDataSource?
+    public var shouldHidePageCountLabel: Bool?
     
     fileprivate var postReloadPageIndex: Int = 0
     
@@ -141,11 +142,11 @@ public class PagedPublicationView: UIView {
     
     // MARK: - UIView Lifecycle
     
-    public init(shouldHidePageCountLabel: Bool) {
-        super.init(frame: .zero)
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
         
         addSubview(self.contentsView)
-        self.contentsView.shouldHidePageCountLabel = shouldHidePageCountLabel
+        self.contentsView.shouldHidePageCountLabel = shouldHidePageCountLabel ?? false
         self.contentsView.alpha = 0
         self.contentsView.versoView.delegate = self
         self.contentsView.versoView.dataSource = self
