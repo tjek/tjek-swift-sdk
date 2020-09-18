@@ -149,7 +149,6 @@ public class PagedPublicationView: UIView {
         super.init(frame: frame)
         
         addSubview(self.contentsView)
-        self.contentsView.shouldHidePageCountLabel = shouldHidePageCountLabel ?? false
         self.contentsView.alpha = 0
         self.contentsView.versoView.delegate = self
         self.contentsView.versoView.dataSource = self
