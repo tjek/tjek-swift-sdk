@@ -25,6 +25,7 @@ public protocol PagedPublicationViewDelegate: class {
     func pageIndexesChanged(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in pagedPublicationView: PagedPublicationView)
     func pageIndexesFinishedChanging(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in pagedPublicationView: PagedPublicationView)
     func didFinishLoadingPageImage(imageURL: URL, pageIndex: Int, in pagedPublicationView: PagedPublicationView)
+    func didEndZooming(zoomScale: CGFloat)
     
     // MARK: Hotspot events
     func didTap(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView)
@@ -79,6 +80,7 @@ public class PagedPublicationView: UIView {
     
     public weak var delegate: PagedPublicationViewDelegate?
     public weak var dataSource: PagedPublicationViewDataSource?
+    public var shouldHidePageCountLabel: Bool?
     
     fileprivate var postReloadPageIndex: Int = 0
     
@@ -144,6 +146,7 @@ public class PagedPublicationView: UIView {
         super.init(frame: frame)
         
         addSubview(self.contentsView)
+        self.contentsView.shouldHidePageCountLabel = shouldHidePageCountLabel ?? false
         self.contentsView.alpha = 0
         self.contentsView.versoView.delegate = self
         self.contentsView.versoView.dataSource = self
@@ -322,6 +325,11 @@ public class PagedPublicationView: UIView {
     /// Returns the pageview for the pageIndex, or nil if it hasnt been loaded yet
     public func pageViewIfLoaded(atPageIndex pageIndex: Int) -> UIView? {
         return self.contentsView.versoView.getPageViewIfLoaded(pageIndex)
+    }
+    
+    /// Zooms out the publication
+    public func resetPublicationZoom() {
+        self.contentsView.versoView.zoomOut()
     }
     
     let contentsView = PagedPublicationView.ContentsView()

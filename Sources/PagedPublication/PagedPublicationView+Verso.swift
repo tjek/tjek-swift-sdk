@@ -170,6 +170,7 @@ extension PagedPublicationView: VersoViewDelegate {
     
     public func didEndZooming(pages pageIndexes: IndexSet, zoomScale: CGFloat, in verso: VersoView) {
         
+        delegate?.didEndZooming(zoomScale: zoomScale)
         pageIndexes.forEach {
             if let pageView = verso.getPageViewIfLoaded($0) as? PagedPublicationView.PageView {
                 pageView.startLoadingZoomImageIfNotLoaded()
