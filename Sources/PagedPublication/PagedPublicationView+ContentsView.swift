@@ -30,8 +30,8 @@ extension PagedPublicationView {
             updatePageNumberLabel(with: properties.pageLabelString)
             
             var spinnerFrame = additionalLoadingSpinner.frame
-            spinnerFrame.origin.x = self.layoutMarginsGuide.layoutFrame.maxX - spinnerFrame.width
-            spinnerFrame.origin.y = pageNumberLabel.frame.midY - (spinnerFrame.height / 2)
+            spinnerFrame.origin.x = self.layoutMarginsGuide.layoutFrame.midX - (spinnerFrame.height / 2)
+            spinnerFrame.origin.y = self.layoutMarginsGuide.layoutFrame.minY + (spinnerFrame.height / 2)
             additionalLoadingSpinner.frame = spinnerFrame
             
             additionalLoadingSpinner.color = properties.isBackgroundBlack ? .white : UIColor(white: 0, alpha: 0.7)
