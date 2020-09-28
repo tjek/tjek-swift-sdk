@@ -46,7 +46,7 @@ extension PagedPublicationView: VersoViewDataSource {
             } else {
                 spreadPageCount = 2
             }
-            return (spreadPageCount, 4.0, 1.0)
+            return (spreadPageCount, 3.0, 1.0)
         })
     }
     
