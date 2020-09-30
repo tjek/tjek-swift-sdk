@@ -124,25 +124,6 @@ public class PagedPublicationView: UIView {
         }
     }
     
-    /// Tell the page publication that it is now visible again.
-    /// (eg. when a view that was placed over the top of this view is removed, and the content becomes visible again).
-    /// This will restart event collection. You MUST remember to call this if you previously called `didEnterBackground`, otherwise
-    /// the PagePublicationView will not function correctly.
-    public func didEnterForeground() {
-        // start listening for the app going into the background
-        NotificationCenter.default.addObserver(self, selector: #selector(willResignActiveNotification), name: UIApplication.willResignActiveNotification, object: nil)
-        lifecycleEventTracker?.didAppear()
-    }
-    
-    /// Tell the page publication that it is no longer visible.
-    /// (eg. a view has been placed over the top of the PagedPublicationView, so the content is no longer visible)
-    /// This will pause event collection, until `didEnterForeground` is called again.
-    public func didEnterBackground() {
-        // stop listening for going into the background
-        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
-        lifecycleEventTracker?.didDisappear()
-    }
-    
     // MARK: - UIView Lifecycle
     
     public override init(frame: CGRect) {
@@ -189,11 +170,6 @@ public class PagedPublicationView: UIView {
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
     }
     
     override public var backgroundColor: UIColor? {
@@ -256,12 +232,12 @@ public class PagedPublicationView: UIView {
     var publicationState: LoadingState<PublicationIdentifier, PublicationModel> = .unloaded
     var pagesState: LoadingState<PublicationIdentifier, [PageModel]> = .unloaded
     var hotspotsState: LoadingState<PublicationIdentifier, [IndexSet: [HotspotModel]]> = .unloaded
-    
+    var eventHandler: PagedPublicationView.EventsHandler?
+
     var currentViewState: ViewState = .initial
     
     public var dataLoader: PagedPublicationViewDataLoader = PagedPublicationView.CoreAPILoader()
     public var imageLoader: PagedPublicationViewImageLoader? = KingfisherImageLoader()
-    public var eventHandler: PagedPublicationViewEventHandler? = PagedPublicationView.EventsHandler()
     
     /// The pan gesture used to change the pages.
     public var panGestureRecognizer: UIPanGestureRecognizer {
@@ -346,8 +322,6 @@ public class PagedPublicationView: UIView {
         return tap
         }()
     
-    var lifecycleEventTracker: PagedPublicationView.LifecycleEventTracker?
-    
     // MARK: - Data Loading
     
     private func publicationDidLoad(forId publicationId: PublicationIdentifier, result: Result<PublicationModel, Error>) {
@@ -360,19 +334,15 @@ public class PagedPublicationView: UIView {
             self.coreProperties = (pageCount: publicationModel.pageCount,
                                    bgColor: bgColor,
                                    aspectRatio: publicationModel.aspectRatio)
-            
-            // successful reload, event handler can now call opened & didAppear (if new publication, or we havnt called it yet)
-            if lifecycleEventTracker?.publicationId != publicationModel.id, let eventHandler = self.eventHandler {
-                
-                lifecycleEventTracker = PagedPublicationView.LifecycleEventTracker(publicationId: publicationModel.id, eventHandler: eventHandler)
-                lifecycleEventTracker?.opened()
-                lifecycleEventTracker?.didAppear()
-                
-                let loadedIndexes = self.currentPageIndexes.filter { (self.contentsView.versoView.getPageViewIfLoaded($0) as? PagedPublicationView.PageView)?.isViewImageLoaded ?? false }
-                lifecycleEventTracker?.spreadDidAppear(
-                    pageIndexes: currentPageIndexes,
-                    loadedIndexes: IndexSet(loadedIndexes))
+
+            // successful reload, event handler can now be created if needed (if new publication, or we havnt called it yet)
+            if let tracker: EventsTracker = (EventsTracker.isConfigured ? EventsTracker.shared : nil),
+               (self.eventHandler == nil || self.eventHandler?.publicationId != publicationId) {
+                self.eventHandler = EventsHandler(eventsTracker: tracker, publicationId: publicationId)
             }
+            
+            self.eventHandler?.didOpenPublication()
+            self.eventHandler?.didOpenPublicationPages(currentPageIndexes)
             
             delegate?.didLoad(publication: publicationModel, in: self)
         case .failure(let error):
@@ -543,19 +513,6 @@ public class PagedPublicationView: UIView {
         
         self.reload(publicationId: pubId, initialPageIndex: self.postReloadPageIndex, initialProperties: self.coreProperties)
     }
-    
-    @objc
-    fileprivate func willResignActiveNotification(_ notification: Notification) {
-        // once in the background, listen for coming back to the foreground again
-        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActiveNotification), name: UIApplication.didBecomeActiveNotification, object: nil)
-        didEnterBackground()
-    }
-    @objc
-    fileprivate func didBecomeActiveNotification(_ notification: Notification) {
-        // once in the foreground, stop listen for that again
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
-        didEnterForeground()
-    }
 }
 
 // MARK: -
@@ -563,14 +520,7 @@ public class PagedPublicationView: UIView {
 private typealias PageViewDelegate = PagedPublicationView
 extension PageViewDelegate: PagedPublicationPageViewDelegate {
     func didFinishLoading(viewImage imageURL: URL, fromCache: Bool, in pageView: PagedPublicationView.PageView) {
-        
-        let pageIndex = pageView.pageIndex
-        
-        // tell the spread that the image loaded.
-        // Will be ignored if page isnt part of the spread
-        lifecycleEventTracker?.pageDidLoad(pageIndex: pageIndex)
-        
-        delegate?.didFinishLoadingPageImage(imageURL: imageURL, pageIndex: pageIndex, in: self)
+        delegate?.didFinishLoadingPageImage(imageURL: imageURL, pageIndex: pageView.pageIndex, in: self)
     }
 }
 

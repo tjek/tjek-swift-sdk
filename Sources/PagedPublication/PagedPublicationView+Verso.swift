@@ -110,11 +110,7 @@ extension PagedPublicationView: VersoViewDelegate {
         // this is a bit of a hack to cancel the touch-gesture when we start scrolling
         self.hotspotOverlayView.touchGesture?.isEnabled = false
         self.hotspotOverlayView.touchGesture?.isEnabled = true
-        
-        if currentPageIndexes != oldPageIndexes {
-            lifecycleEventTracker?.spreadDidDisappear()
-        }
-        
+                
         // remove the outro index when refering to page indexes outside of PagedPub
         var currentExOutro = currentPageIndexes
         var oldExOutro = oldPageIndexes
@@ -144,11 +140,7 @@ extension PagedPublicationView: VersoViewDelegate {
     public func currentPageIndexesFinishedChanging(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in verso: VersoView) {
         // make a new spreadEventHandler (unless it's the outro)
         if self.isOutroPage(inPageIndexes: currentPageIndexes) == false {
-           
-            let loadedIndexes = currentPageIndexes.filter { (verso.getPageViewIfLoaded($0) as? PagedPublicationView.PageView)?.isViewImageLoaded ?? false }
-            lifecycleEventTracker?.spreadDidAppear(
-                pageIndexes: currentPageIndexes,
-                loadedIndexes: IndexSet(loadedIndexes))
+            self.eventHandler?.didOpenPublicationPages(currentPageIndexes)
         }
         
         // remove the outro index when refering to page indexes outside of PagedPub

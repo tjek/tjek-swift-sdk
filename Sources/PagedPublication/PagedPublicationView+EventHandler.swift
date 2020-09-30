@@ -9,108 +9,34 @@
 
 import UIKit
 
-/// All the possible events that the paged publication can trigger
-public protocol PagedPublicationViewEventHandler {
-    func didOpenPublication(_ publicationId: PagedPublicationView.PublicationModel.Identifier)
-    func didCloseLoadedPublicationPage(_ publicationId: PagedPublicationView.PublicationModel.Identifier, pageIndex: Int)
-}
-
 extension PagedPublicationView {
     
-    /// The class that handles events via the shared EventsTracker.
-    class EventsHandler: PagedPublicationViewEventHandler {
+    struct EventsHandler {
         
-        private var eventsTracker: EventsTracker? {
-            return EventsTracker.isConfigured ? EventsTracker.shared : nil
+        let eventsTracker: EventsTracker
+        let publicationId: PagedPublicationView.PublicationModel.Identifier
+        
+        private var lastTrackedPageIndexes: IndexSet = IndexSet()
+        
+        func didOpenPublication() {
+            eventsTracker.trackEvent(.pagedPublicationOpened(publicationId))
         }
         
-        public func didOpenPublication(_ publicationId: PagedPublicationView.PublicationModel.Identifier) {
-            eventsTracker?.trackEvent(
-                .pagedPublicationOpened(publicationId)
-            )
-        }
-        
-        public func didCloseLoadedPublicationPage(_ publicationId: PagedPublicationView.PublicationModel.Identifier, pageIndex: Int) {
+        mutating func didOpenPublicationPages(_ pageIndexes: IndexSet) {
+            guard UIApplication.shared.applicationState == .active else {
+                return
+            }
+            let pageIndexesToTrack = pageIndexes.subtracting(lastTrackedPageIndexes)
+            pageIndexesToTrack.forEach { pageIndex in
+                eventsTracker.trackEvent(.pagedPublicationPageOpened(publicationId, pageNumber: pageIndex + 1))
+            }
             
-            eventsTracker?.trackEvent(
-                .pagedPublicationPageOpened(publicationId,
-                                            pageNumber: pageIndex + 1)
-            )
+            lastTrackedPageIndexes = pageIndexes
         }
-    }
-}
-
-extension PagedPublicationView {
-
-    class LifecycleEventTracker {
-
-        let eventHandler: PagedPublicationViewEventHandler
         
-        let publicationId: PublicationModel.Identifier
-        var currentSpreadPageIndexes: IndexSet = IndexSet()
-        var loadedSpreadPageIndexes: IndexSet = IndexSet()
-
-        fileprivate var hasAppeared: Bool = false
-
-        init(publicationId: PublicationModel.Identifier, eventHandler: PagedPublicationViewEventHandler) {
-            self.eventHandler = eventHandler
+        init(eventsTracker: EventsTracker, publicationId: PagedPublicationView.PublicationModel.Identifier) {
+            self.eventsTracker = eventsTracker
             self.publicationId = publicationId
-        }
-        deinit {
-            didDisappear()
-        }
-
-        // trigger an opened event
-        func opened() {
-           eventHandler.didOpenPublication(publicationId)
-        }
-
-        func didAppear() {
-            guard hasAppeared == false else { return }
-
-            hasAppeared = true
-        }
-
-        func didDisappear() {
-            guard hasAppeared == true else { return }
-
-            // trigger the disappear events without clearing the indexes
-            self.loadedSpreadPageIndexes.forEach {
-                eventHandler.didCloseLoadedPublicationPage(publicationId, pageIndex: $0)
-            }
-            
-            hasAppeared = false
-        }
-
-        // MARK: Child event handlers
-
-        func pageDidLoad(pageIndex: Int) {
-            guard currentSpreadPageIndexes.contains(pageIndex) else {
-                 return
-            }
-            
-            loadedSpreadPageIndexes.insert(pageIndex)
-        }
-        
-        func spreadDidAppear(pageIndexes: IndexSet, loadedIndexes: IndexSet) {
-            
-            // Figure out which loaded pageIndexes have been closed
-            let closedLoadedPageIndexes = loadedSpreadPageIndexes.subtracting(pageIndexes)
-            closedLoadedPageIndexes.forEach {
-                eventHandler.didCloseLoadedPublicationPage(publicationId, pageIndex: $0)
-            }
-            
-            self.currentSpreadPageIndexes = pageIndexes
-            self.loadedSpreadPageIndexes = loadedIndexes
-            
-        }
-        
-        func spreadDidDisappear() {
-            self.loadedSpreadPageIndexes.forEach {
-                eventHandler.didCloseLoadedPublicationPage(publicationId, pageIndex: $0)
-            }
-            self.loadedSpreadPageIndexes = IndexSet()
-            self.currentSpreadPageIndexes = IndexSet()
         }
     }
 }
