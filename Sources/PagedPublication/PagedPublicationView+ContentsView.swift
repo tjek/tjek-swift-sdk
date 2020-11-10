@@ -44,7 +44,7 @@ extension PagedPublicationView {
         fileprivate var pageNumberLabel = PageNumberLabel()
         var shouldHidePageCountLabel: Bool = false
         
-        fileprivate var additionalLoadingSpinner: UIActivityIndicatorView = {
+        var additionalLoadingSpinner: UIActivityIndicatorView = {
             let view = UIActivityIndicatorView(style: .white)
             view.hidesWhenStopped = false
             view.startAnimating()

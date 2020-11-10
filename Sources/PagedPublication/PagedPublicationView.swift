@@ -385,6 +385,10 @@ public class PagedPublicationView: UIView {
     
     // MARK: View updating
     
+    public func shouldHideLoadingSpinner(shouldHide: Bool) {
+        self.contentsView.additionalLoadingSpinner.isHidden = shouldHide
+    }
+    
     // given the loading states (and coreProperties, generate the correct viewState
     private func updateCurrentViewState(initialPageIndex: Int?) {
         let oldViewState = self.currentViewState
