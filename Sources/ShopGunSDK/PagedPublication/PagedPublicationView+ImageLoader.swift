@@ -45,7 +45,7 @@ extension PagedPublicationView {
         
         init() {
             // max 150 Mb of disk cache
-            KingfisherManager.shared.cache.maxDiskCacheSize = 150*1024*1024
+            KingfisherManager.shared.cache.diskStorage.config.sizeLimit = 150*1024*1024
         }
         
         func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, evenWhenCached: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool), Error>, URL) -> Void)) {
@@ -55,17 +55,13 @@ extension PagedPublicationView {
                 options.append(.forceTransition)
             }
             
-            imageView.kf.setImage(with: url, options: options) { (image, error, cacheType, _) in
-                if let img = image {
-                    completion(.success((img, cacheType.cached)), url)
-                } else {
-                    let err: Error
-                    // if it is a KingFisher cancellation error, convert into our own cancellation error
-                    if let nsErr: NSError = error, nsErr.domain == KingfisherErrorDomain, nsErr.code == KingfisherError.downloadCancelledBeforeStarting.rawValue {
-                        err = PagedPublicationView.ImageLoaderError.cancelled
-                    } else {
-                        err = error ?? PagedPublicationView.ImageLoaderError.unknownImageLoadError(url: url)
-                    }
+            imageView.kf.setImage(with: url, options: options) { result in
+                switch result {
+                case .success(let retrievedImage):
+                    completion(.success((retrievedImage.image, retrievedImage.cacheType.cached)), url)
+                    
+                case .failure(let error):
+                    let err: Error = error.isTaskCancelled ? PagedPublicationView.ImageLoaderError.cancelled : error
                     completion(.failure(err), url)
                 }
             }

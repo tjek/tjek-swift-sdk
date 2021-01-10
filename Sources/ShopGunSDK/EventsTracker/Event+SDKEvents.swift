@@ -127,8 +127,12 @@ extension Event {
                                     "ppp.n": .int(pageNumber)]
         
         let viewTokenContent: String = {
-            var intAddr = UInt32(pageNumber).bigEndian
-            let intData = Data(buffer: UnsafeBufferPointer(start: &intAddr, count: 1))
+            let pageInt = UInt32(pageNumber).bigEndian
+            
+            let intData = withUnsafePointer(to: pageInt) { intAddr in
+                Data(buffer: UnsafeBufferPointer(start: intAddr, count: 1))
+            }
+            
             return publicationId.rawValue + (String(data: intData, encoding: .utf8) ?? "")
         }()
         

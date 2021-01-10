@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
     s.name            = "ShopGunSDK"
-    s.version         = "4.2"
+    s.version         = "4.3"
     s.summary         = "ShopGun SDK for iOS."
     s.description     = <<-DESC
                          An SDK that makes it easy to talk to the ShopGun API.
@@ -25,8 +25,8 @@ Pod::Spec.new do |s|
         ss.dependency "ShopGunSDK/Shared"
         ss.dependency "ShopGunSDK/CoreAPI"
         ss.dependency "ShopGunSDK/EventsTracker"
-        ss.dependency "Verso", "~> 1.0.3"
-        ss.dependency "Kingfisher", "~> 4.10.0"
+        ss.dependency "Verso", "~> 1.0.4"
+        ss.dependency "Kingfisher", "~> 6.0.1"
         
         ss.resources = ["Sources/PagedPublication/Resources/**/*"]
     end
@@ -69,6 +69,6 @@ Pod::Spec.new do |s|
         ss.source_files = "Sources/Shared/**/*.{swift,h,m}"
         ss.frameworks   = "Foundation", "UIKit"
 
-        ss.dependency "Valet", "~> 3.1.6"
+        ss.dependency "Valet", "~> 4.1.1"
     end
 end

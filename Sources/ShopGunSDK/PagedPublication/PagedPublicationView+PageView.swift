@@ -200,7 +200,7 @@ extension PagedPublicationView {
                 guard let s = self else { return }
 
                 switch result {
-                case let .success(image, fromCache):
+                case let .success((image, fromCache)):
                     guard image.size.width > 0 && image.size.height > 0 else { return }
                     
                     s.imageLoadState = .loaded
@@ -232,7 +232,7 @@ extension PagedPublicationView {
                 guard let s = self else { return }
 
                 switch result {
-                case let .success(_, fromCache):
+                case let .success((_, fromCache)):
                     s.zoomImageLoadState = .loaded
                     s.delegate?.didFinishLoading(zoomImage: url, fromCache: fromCache, in: s)
 

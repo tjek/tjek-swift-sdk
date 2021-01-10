@@ -1,6 +1,3 @@
-[submodule "External/xctoolchain"]
-	path = External/xctoolchain
-	url = https://github.com/ParsePlatform/xctoolchain.git
 [submodule "External/Valet"]
 	path = External/Valet
 	url = https://github.com/square/Valet.git

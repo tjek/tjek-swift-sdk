@@ -9,18 +9,8 @@
 
 import Foundation
 
-extension String {
-
-    func sha256() -> String {
-        return CryptoInclude.sha256(self)
-    }
-    
+public protocol Cancellable {
+    func cancel()
 }
 
-extension Data {
-    
-    func md5() -> Data {
-        return CryptoInclude.md5(self)
-    }
-
-}
+extension URLSessionTask: Cancellable { }

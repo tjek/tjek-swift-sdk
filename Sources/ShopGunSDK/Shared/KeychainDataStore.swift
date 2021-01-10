@@ -22,10 +22,11 @@ final public class KeychainDataStore {
                 return nil
             }
             
+            // Based on the Valet documentation, on iOS this MUST be "group".
             if case .sharedKeychain(let groupId) = settings,
-                let keychainId = Identifier(nonEmpty: groupId) {
+               let keychainId = SharedGroupIdentifier(groupPrefix: "group", nonEmptyGroup: groupId) {
                 
-                let valet = Valet.sharedAccessGroupValet(with: keychainId, accessibility: .afterFirstUnlock)
+                let valet = Valet.sharedGroupValet(with: keychainId, accessibility: .afterFirstUnlock)
                 if valet.canAccessKeychain() {
                     return valet
                 } else {
@@ -59,14 +60,14 @@ extension KeychainDataStore: ShopGunSDKDataStore {
 
     public func set(value: String?, for key: String) {
         if let val = value {
-            valet?.set(string: val, forKey: key)
+            try? valet?.setString(val, forKey: key)
         } else {
-            valet?.removeObject(forKey: key)
+            try? valet?.removeObject(forKey: key)
         }
     }
     
     public func get(for key: String) -> String? {
-        return valet?.string(forKey: key)
+        return try? valet?.string(forKey: key)
     }
 }
 
