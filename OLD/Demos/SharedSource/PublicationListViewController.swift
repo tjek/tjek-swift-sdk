@@ -32,7 +32,7 @@ class PublicationListViewController: UIViewController {
         self.contentVC = LoadingViewController()
         
         // Build the request we wish to send to the coreAPI
-        let location = CoreAPI.Requests.LocationQuery(coordinate: CLLocationCoordinate2D(latitude:55.631090, longitude: 12.577236), radius: nil)
+        let location = CoreAPI.Requests.LocationQuery(coordinate: CLLocationCoordinate2D(latitude: 55.631090, longitude: 12.577236), radius: nil)
         let publicationReq = CoreAPI.Requests.getPublications(near: location, sortedBy: .newestPublished)
         
         // Perform the request

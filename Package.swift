@@ -5,13 +5,13 @@ let package = Package(
     name: "ShopGunSDK",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v10),
+        .iOS(.v10)
     ],
     products: [
         .library(
             name: "ShopGunSDK",
             targets: ["ShopGunSDK"]
-        ),
+        )
     ],
     dependencies: [
         .package(name: "Incito", url: "https://github.com/shopgun/incito-ios.git", from: "1.0.3"),
