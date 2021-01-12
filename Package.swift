@@ -16,7 +16,7 @@ let package = Package(
     dependencies: [
         .package(name: "Incito", url: "https://github.com/shopgun/incito-ios.git", from: "1.0.3"),
         .package(name: "Future", url: "https://github.com/shopgun/swift-future.git", from: "0.5.0"),
-        .package(name: "Verso", url: "https://github.com/shopgun/verso-ios.git", from: "1.0.4"),
+        .package(name: "Verso", url: "https://github.com/shopgun/verso-ios.git", from: "1.0.5"),
         .package(name: "Kingfisher", url: "https://github.com/onevcat/Kingfisher.git", from: "6.0.1"),
         .package(name: "Valet", url: "https://github.com/square/Valet.git", from: "4.1.1")
     ],

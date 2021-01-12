@@ -1,6 +1,6 @@
 
 github "square/Valet" ~> 4.1.1
-github "shopgun/verso-ios" ~> 1.0.4
+github "shopgun/verso-ios" ~> 1.0.5
 github "onevcat/Kingfisher" ~> 6.0.1
 github "shopgun/incito-ios" ~> 1.0.3
 github "shopgun/swift-future" ~> 0.5
