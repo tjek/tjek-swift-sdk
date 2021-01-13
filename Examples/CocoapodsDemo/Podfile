@@ -1,6 +1,6 @@
 workspace '../../ShopGunSDK.xcworkspace'
 project "CocoapodsDemo"
-platform :ios, '9.3'
+platform :ios, '10.0'
 
 target 'CocoapodsDemo' do
   use_frameworks!

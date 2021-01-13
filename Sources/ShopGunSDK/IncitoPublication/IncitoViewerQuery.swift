@@ -39,7 +39,12 @@ struct IncitoViewerQuery: GraphQuery {
     var time: Date? = Date()
 
     // MARK:
+    
+    #if SWIFT_PACKAGE
+    static let queryDocument: String = loadQueryFile(name: "IncitoViewer.graphql", bundle: Bundle.module)!
+    #else
     static let queryDocument: String = loadQueryFile(name: "IncitoViewer.graphql", bundle: .shopgunSDK)!
+    #endif
 
     var requestString: String { return IncitoViewerQuery.queryDocument }
     let operationName: String = "IncitoViewer"

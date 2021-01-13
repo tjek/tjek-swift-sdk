@@ -11,6 +11,11 @@ let package = Package(
         .library(
             name: "ShopGunSDK",
             targets: ["ShopGunSDK"]
+        ),
+        .library(
+            name: "ShopGunSDK-Dynamic",
+            type: .dynamic,
+            targets: ["ShopGunSDK"]
         )
     ],
     dependencies: [

@@ -1,0 +1,63 @@
+PODS:
+  - Incito (1.0.3)
+  - Kingfisher (6.0.1)
+  - ShopGun-Future (0.5.0)
+  - ShopGunSDK (4.3.0):
+    - ShopGunSDK/CoreAPI (= 4.3.0)
+    - ShopGunSDK/EventsTracker (= 4.3.0)
+    - ShopGunSDK/GraphAPI (= 4.3.0)
+    - ShopGunSDK/IncitoPublication (= 4.3.0)
+    - ShopGunSDK/PagedPublicationView (= 4.3.0)
+    - ShopGunSDK/Shared (= 4.3.0)
+  - ShopGunSDK/CoreAPI (4.3.0):
+    - ShopGunSDK/Shared
+  - ShopGunSDK/EventsTracker (4.3.0):
+    - ShopGunSDK/CoreAPI
+    - ShopGunSDK/Shared
+  - ShopGunSDK/GraphAPI (4.3.0):
+    - ShopGunSDK/Shared
+  - ShopGunSDK/IncitoPublication (4.3.0):
+    - Incito (~> 1.0)
+    - ShopGun-Future (~> 0.5)
+    - ShopGunSDK/EventsTracker
+    - ShopGunSDK/GraphAPI
+    - ShopGunSDK/Shared
+  - ShopGunSDK/PagedPublicationView (4.3.0):
+    - Kingfisher (~> 6.0.1)
+    - ShopGunSDK/CoreAPI
+    - ShopGunSDK/EventsTracker
+    - ShopGunSDK/Shared
+    - Verso (~> 1.0.5)
+  - ShopGunSDK/Shared (4.3.0):
+    - Valet (~> 4.1.1)
+  - Valet (4.1.1)
+  - Verso (1.0.5)
+
+DEPENDENCIES:
+  - Incito (from `../../External/incito-ios`)
+  - ShopGunSDK (from `../../`)
+
+SPEC REPOS:
+  trunk:
+    - Kingfisher
+    - ShopGun-Future
+    - Valet
+    - Verso
+
+EXTERNAL SOURCES:
+  Incito:
+    :path: "../../External/incito-ios"
+  ShopGunSDK:
+    :path: "../../"
+
+SPEC CHECKSUMS:
+  Incito: c95a17efcb8c8c1e1cbf0572f090c2e1276d9053
+  Kingfisher: adde87a4f74f6a3845395769354efff593581740
+  ShopGun-Future: c4c04e9b8ce43a7d58f9ab18f73a583a01aec2c8
+  ShopGunSDK: fc34a6af666427b1ea35c1bc21c73de947b2457a
+  Valet: 11ab0e318b7284888a81392e36136563b4af5deb
+  Verso: b6e66030671be9728a3e0d441ad531b5f2c6f2f4
+
+PODFILE CHECKSUM: 1389282fdc41e9d81c4f0bd95ff83fa5d37eb42a
+
+COCOAPODS: 1.10.1

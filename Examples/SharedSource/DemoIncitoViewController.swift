@@ -19,7 +19,7 @@ class DemoIncitoViewController: IncitoLoaderViewController {
         self.delegate = self
     }
     
-    func load(publication: CoreAPI.PagedPublication) {
+    func load(publication: CoreAPI.Publication) {
         self.title = publication.branding.name
         
         // Note: we are setting the `backgroundColor` on the View Controller (rather than `incitoVC.view.backgroundColor`)
@@ -39,14 +39,14 @@ extension DemoIncitoViewController: IncitoLoaderViewControllerDelegate {
         
         // get the first view at the point of tapping that is an offer.
         viewController.firstOffer(at: point) {
-            guard let (elementId, tappedOffer) = $0 else {
+            guard let tappedOffer = $0 else {
                 return
             }
             
             print("👉 Did Tap Offer:", tappedOffer)
             
             // scroll to that offer
-            viewController.scrollToElement(withId: elementId, animated: true)
+            viewController.scrollToElement(withId: tappedOffer.id, animated: true)
         }
     }
     
@@ -69,14 +69,14 @@ extension DemoIncitoViewController: IncitoLoaderViewControllerDelegate {
         
         // get the first view at the point of tapping that is an offer.
         incitoVC.firstOffer(at: point) {
-            guard let (elementId, pressedOffer) = $0 else {
+            guard let pressedOffer = $0 else {
                 return
             }
             
             print("👉👉 Did LongPress Offer:", pressedOffer)
             
             // scroll to the long-pressed offer
-            incitoVC.scrollToElement(withId: elementId, animated: true)
+            incitoVC.scrollToElement(withId: pressedOffer.id, animated: true)
         }
     }
 }

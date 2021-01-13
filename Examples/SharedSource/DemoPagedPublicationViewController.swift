@@ -30,7 +30,7 @@ class DemoPagedPublicationViewController: UIViewController {
         publicationView.delegate = self
     }
     
-    func load(publication: CoreAPI.PagedPublication) {
+    func load(publication: CoreAPI.Publication) {
         
         // If you havnt configured CoreAPI or EventsTracker (see `RootViewController.swift`), this is a simpler way of configuring both.
         // This, or the explicit CoreAPI configure method, MUST be called before the PagedPublication is reloaded.

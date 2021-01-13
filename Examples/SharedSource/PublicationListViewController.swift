@@ -52,7 +52,7 @@ class PublicationListViewController: UIViewController {
         }
     }
     
-    func openIncito(for publication: CoreAPI.PagedPublication) {
+    func openIncito(for publication: CoreAPI.Publication) {
         
         // Create an instance of `IncitoLoaderViewController`
         let incitoVC = DemoIncitoViewController()
@@ -62,7 +62,7 @@ class PublicationListViewController: UIViewController {
         self.navigationController?.pushViewController(incitoVC, animated: true)
     }
     
-    func openPagedPub(for publication: CoreAPI.PagedPublication) {
+    func openPagedPub(for publication: CoreAPI.Publication) {
         
         // Create a view controller containing a `PagedPublicationView`
         let pagedPubVC = DemoPagedPublicationViewController()

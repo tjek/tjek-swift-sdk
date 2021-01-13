@@ -1,0 +1,52 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Incito",
+        "repositoryURL": "https://github.com/shopgun/incito-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "66bce5e738f27becb6cf842f43151feba75c7f15",
+          "version": "1.0.3"
+        }
+      },
+      {
+        "package": "Kingfisher",
+        "repositoryURL": "https://github.com/onevcat/Kingfisher.git",
+        "state": {
+          "branch": null,
+          "revision": "0be276f6a7fd54af4c3eb03f2d12e12d8c8a1a1d",
+          "version": "6.0.1"
+        }
+      },
+      {
+        "package": "Future",
+        "repositoryURL": "https://github.com/shopgun/swift-future.git",
+        "state": {
+          "branch": null,
+          "revision": "972067fb5dac5b234fd278a94e77e3401bae9d33",
+          "version": "0.5.0"
+        }
+      },
+      {
+        "package": "Valet",
+        "repositoryURL": "https://github.com/square/Valet.git",
+        "state": {
+          "branch": null,
+          "revision": "c9e7a1e5e0cb73f07cafb403c53c4922e22e5357",
+          "version": "4.1.1"
+        }
+      },
+      {
+        "package": "Verso",
+        "repositoryURL": "https://github.com/shopgun/verso-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "a7258fd9414af99a37c964cb968e9c88de80a744",
+          "version": "1.0.5"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

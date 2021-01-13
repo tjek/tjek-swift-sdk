@@ -12,13 +12,13 @@ import ShopGunSDK
 
 class PublicationListContentsViewController: UITableViewController {
     
-    let publications: [CoreAPI.PagedPublication]
-    let shouldOpenIncito: (CoreAPI.PagedPublication) -> Void
-    let shouldOpenPagedPub: (CoreAPI.PagedPublication) -> Void
+    let publications: [CoreAPI.Publication]
+    let shouldOpenIncito: (CoreAPI.Publication) -> Void
+    let shouldOpenPagedPub: (CoreAPI.Publication) -> Void
     
-    init(publications: [CoreAPI.PagedPublication],
-         shouldOpenIncito: @escaping (CoreAPI.PagedPublication) -> Void,
-         shouldOpenPagedPub: @escaping (CoreAPI.PagedPublication) -> Void
+    init(publications: [CoreAPI.Publication],
+         shouldOpenIncito: @escaping (CoreAPI.Publication) -> Void,
+         shouldOpenPagedPub: @escaping (CoreAPI.Publication) -> Void
         ) {
         self.publications = publications
         self.shouldOpenIncito = shouldOpenIncito
@@ -43,7 +43,7 @@ class PublicationListContentsViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let publication = publications[indexPath.row]
-        let hasIncito = publication.incitoId != nil
+        let hasIncito = publication.hasIncito
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "PublicationListCell", for: indexPath) as! PublicationListCell
         
