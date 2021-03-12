@@ -160,6 +160,10 @@ extension PagedPublicationView: VersoViewDelegate {
         }
     }
     
+    public func didStartZooming(pages pageIndexes: IndexSet, zoomScale: CGFloat, in verso: VersoView) {
+        hotspotOverlayView.isZooming = true
+    }
+    
     public func didEndZooming(pages pageIndexes: IndexSet, zoomScale: CGFloat, in verso: VersoView) {
         
         delegate?.didEndZooming(zoomScale: zoomScale)
@@ -169,6 +173,6 @@ extension PagedPublicationView: VersoViewDelegate {
             }
         }
         
-        hotspotOverlayView.isZoomedIn = zoomScale > 1.0
+        hotspotOverlayView.isZooming = false
     }
 }
