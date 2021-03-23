@@ -116,8 +116,8 @@ extension CoreAPI {
 
 extension CoreAPI.Request where T: Decodable {
     /// If we know the responseType is decodable then allow for Request creation with a default jsonDecoder resultMapper.
-    public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String?]? = nil, httpBody: Any? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3) {
-        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, httpBody: httpBody, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: { $0.decodeJSON() })
+    public init(path: String, method: HTTPRequestMethod, requiresAuth: Bool = true, parameters: [String: String?]? = nil, httpBody: Any? = nil, timeoutInterval: TimeInterval = 30, maxRetryCount: Int = 3, jsonDecoder: JSONDecoder = JSONDecoder()) {
+        self.init(path: path, method: method, requiresAuth: requiresAuth, parameters: parameters, httpBody: httpBody, timeoutInterval: timeoutInterval, maxRetryCount: maxRetryCount, resultMapper: { $0.decodeJSON(with: jsonDecoder) })
     }
 }
 
