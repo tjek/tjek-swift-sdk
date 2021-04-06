@@ -36,7 +36,8 @@ let package = Package(
                 "Valet"
             ],
             resources: [
-                .process("IncitoPublication/Resources/IncitoViewer.graphql")
+                .process("IncitoPublication/Resources/IncitoViewer.graphql"),
+                .process("PagedPublication/Resources/")
             ]
         ),
         .testTarget(

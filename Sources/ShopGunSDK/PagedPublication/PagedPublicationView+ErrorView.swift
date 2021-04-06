@@ -169,7 +169,14 @@ extension PagedPublicationView.ErrorView.ErrorType {
         case .noContent:
             imgName = "nothing-found-icon"
         }
-        return UIImage(named: imgName, in: .shopgunSDK, compatibleWith: nil)!.withRenderingMode(.alwaysTemplate)
+        
+        #if SWIFT_PACKAGE
+        let bundle = Bundle.module
+        #else
+        let bundle = Bundle.shopgunSDK
+        #endif
+        
+        return UIImage(named: imgName, in: bundle, compatibleWith: nil)!.withRenderingMode(.alwaysTemplate)
     }
 }
 
