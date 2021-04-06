@@ -9,6 +9,14 @@
 
 import UIKit
 
+extension Bundle {
+    #if SWIFT_PACKAGE
+    fileprivate static let ppResourceBundle = Bundle.module
+    #else
+    fileprivate static let ppResourceBundle = Bundle.shopgunSDK
+    #endif
+}
+
 extension PagedPublicationView {
     
     class ErrorView: UIView {
@@ -110,7 +118,7 @@ extension PagedPublicationView {
 
 extension PagedPublicationView {
     static func localizedString(_ key: String) -> String {
-        return NSLocalizedString(key, tableName: "PagedPublicationView", bundle: .shopgunSDK, comment: "")
+        return NSLocalizedString(key, tableName: "PagedPublicationView", bundle: .ppResourceBundle, comment: "")
     }
 }
 extension PagedPublicationView.ErrorView.ErrorType {
@@ -170,13 +178,7 @@ extension PagedPublicationView.ErrorView.ErrorType {
             imgName = "nothing-found-icon"
         }
         
-        #if SWIFT_PACKAGE
-        let bundle = Bundle.module
-        #else
-        let bundle = Bundle.shopgunSDK
-        #endif
-        
-        return UIImage(named: imgName, in: bundle, compatibleWith: nil)!.withRenderingMode(.alwaysTemplate)
+        return UIImage(named: imgName, in: .ppResourceBundle, compatibleWith: nil)!.withRenderingMode(.alwaysTemplate)
     }
 }
 
