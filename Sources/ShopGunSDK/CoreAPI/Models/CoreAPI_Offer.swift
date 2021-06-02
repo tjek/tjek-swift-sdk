@@ -37,7 +37,7 @@ extension CoreAPI {
         
         public struct PublicationPageReference: Equatable {
             public var id: PublicationIdentifier
-            public var pageIndex: Int
+            public var pageIndex: Int?
         }
         
         // MARK: Decodable
@@ -97,10 +97,14 @@ extension CoreAPI {
             
             self.branding = try? values.decode(CoreAPI.Branding.self, forKey: .branding)
             
-            if let catalogId = try? values.decode(PublicationIdentifier.self, forKey: .catalogId),
-                let catalogPageNum = try? values.decode(Int.self, forKey: .catalogPage),
-                catalogPageNum > 0 {
-                self.publication = PublicationPageReference(id: catalogId, pageIndex: catalogPageNum - 1)
+            if let catalogId = try? values.decode(PublicationIdentifier.self, forKey: .catalogId) {
+                let catalogPageNum = try? values.decode(Int.self, forKey: .catalogPage)
+                // incito publications have pageNum == 0, so in that case set to nil.
+                // otherwise, convert pageNum to index.
+                self.publication = PublicationPageReference(
+                    id: catalogId,
+                    pageIndex: catalogPageNum.flatMap({ $0 > 0 ? $0 - 1 : nil })
+                )
             }
             
             self.dealerId = try? values.decode(CoreAPI.Dealer.Identifier.self, forKey: .dealerId)
