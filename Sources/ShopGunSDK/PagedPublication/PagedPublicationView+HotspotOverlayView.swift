@@ -120,6 +120,7 @@ extension PagedPublicationView {
             tapGesture!.cancelsTouchesInView = false
             
             longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress))
+            longPressGesture?.minimumPressDuration = 0.75
             longPressGesture!.delegate = self
             longPressGesture!.cancelsTouchesInView = false
             
