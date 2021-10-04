@@ -1,10 +1,9 @@
 [submodule "External/Valet"]
 	path = External/Valet
 	url = https://github.com/square/Valet.git
-[submodule "External/Verso"]
-	path = External/Verso
-	url = https://lozhuf@github.com/shopgun/verso-ios.git
-	branch = develop
+[submodule "External/verso-ios"]
+	path = External/verso-ios
+	url = https://github.com/shopgun/verso-ios.git
 [submodule "External/Kingfisher"]
 	path = External/Kingfisher
 	url = https://github.com/onevcat/Kingfisher.git
