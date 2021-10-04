@@ -11,7 +11,7 @@ import UIKit
 
 /// The object that knows how to load/cache the page images from a URL
 /// Loosely based on `Kingfisher` interface
-public protocol PagedPublicationViewImageLoader: class {
+public protocol PagedPublicationViewImageLoader: AnyObject {
     func loadImage(in imageView: UIImageView, url: URL, transition: (fadeDuration: TimeInterval, evenWhenCached: Bool), completion: @escaping ((Result<(image: UIImage, fromCache: Bool), Error>, URL) -> Void))
     func cancelImageLoad(for imageView: UIImageView)
 }

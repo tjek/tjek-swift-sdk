@@ -20,7 +20,7 @@ public protocol PagedPublicationViewDataLoader {
     func cancelLoading()
 }
 
-public protocol PagedPublicationViewDelegate: class {
+public protocol PagedPublicationViewDelegate: AnyObject {
     // MARK: Page Change events
     func pageIndexesChanged(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in pagedPublicationView: PagedPublicationView)
     func pageIndexesFinishedChanging(current currentPageIndexes: IndexSet, previous oldPageIndexes: IndexSet, in pagedPublicationView: PagedPublicationView)
@@ -45,7 +45,7 @@ public protocol PagedPublicationViewDelegate: class {
     func backgroundColor(publication publicationModel: PagedPublicationView.PublicationModel, in pagedPublicationView: PagedPublicationView) -> UIColor?
 }
 
-public protocol PagedPublicationViewDataSource: class {
+public protocol PagedPublicationViewDataSource: AnyObject {
     func outroViewProperties(for pagedPublicationView: PagedPublicationView) -> PagedPublicationView.OutroViewProperties?
     func configure(outroView: PagedPublicationView.OutroView, for pagedPublicationView: PagedPublicationView)
     func textForPageNumberLabel(pageIndexes: IndexSet, pageCount: Int, for pagedPublicationView: PagedPublicationView) -> String?

@@ -9,7 +9,7 @@
 
 import UIKit
 
-protocol HotspotOverlayViewDelegate: class {
+protocol HotspotOverlayViewDelegate: AnyObject {
     
     func didTapHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [PagedPublicationView.HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint)
     func didLongPressHotspot(overlay: PagedPublicationView.HotspotOverlayView, hotspots: [PagedPublicationView.HotspotModel], hotspotRects: [CGRect], locationInOverlay: CGPoint, pageIndex: Int, locationInPage: CGPoint)

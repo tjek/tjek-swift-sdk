@@ -64,7 +64,7 @@ public struct GenericIdentifier<T>: RawRepresentable, Hashable {
         if lowercased {
             uuid = uuid.lowercased()
         }
-        return .init(rawValue:uuid)
+        return .init(rawValue: uuid)
     }
 }
 

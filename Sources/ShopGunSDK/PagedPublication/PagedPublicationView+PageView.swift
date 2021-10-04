@@ -10,7 +10,7 @@
 import UIKit
 import Verso
 
-protocol PagedPublicationPageViewDelegate: class {
+protocol PagedPublicationPageViewDelegate: AnyObject {
     func didConfigure(pageView: PagedPublicationView.PageView, with properties: PagedPublicationView.PageView.Properties)
     func didFinishLoading(viewImage imageURL: URL, fromCache: Bool, in pageView: PagedPublicationView.PageView)
     func didFinishLoading(zoomImage imageURL: URL, fromCache: Bool, in pageView: PagedPublicationView.PageView)

@@ -1,7 +1,7 @@
 import Foundation
 import Valet
 
-public protocol ShopGunSDKDataStore: class {
+public protocol ShopGunSDKDataStore: AnyObject {
     func set(value: String?, for key: String)
     func get(for key: String) -> String?
 }
