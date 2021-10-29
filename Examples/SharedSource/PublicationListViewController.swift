@@ -1,15 +1,8 @@
-//
-//  ┌────┬─┐         ┌─────┐
-//  │  ──┤ └─┬───┬───┤  ┌──┼─┬─┬───┐
-//  ├──  │ ╷ │ · │ · │  ╵  │ ╵ │ ╷ │
-//  └────┴─┴─┴───┤ ┌─┴─────┴───┴─┴─┘
-//               └─┘
-//
-//  Copyright (c) 2019 ShopGun. All rights reserved.
+///
+///  Copyright (c) 2019 Tjek. All rights reserved.
+///
 
-import CoreLocation
-import Incito
-import ShopGunSDK
+import TjekAPI
 import UIKit
 
 class PublicationListViewController: UIViewController {
@@ -26,23 +19,18 @@ class PublicationListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "ShopGunSDK Demo"
+        self.title = "TjekSDK Demo"
         
         // Show the loading spinner
         self.contentVC = LoadingViewController()
         
-        // Build the request we wish to send to the coreAPI
-        let location = CoreAPI.Requests.LocationQuery(coordinate: CLLocationCoordinate2D(latitude: 55.631090, longitude: 12.577236), radius: nil)
-        let publicationReq = CoreAPI.Requests.getPublications(near: location, sortedBy: .newestPublished)
-        
-        // Perform the request
-        CoreAPI.shared.request(publicationReq) { [weak self] result in
-            
+        // Build & send the request. You need to have first called one of the `TjekAPI.initialize()` functions to use `TjekAPI.shared`.
+        TjekAPI.shared.send(.getPublications(near: LocationQuery(coordinate: (55.67376305237014, 12.590854433873217), maxRadius: nil))) { [weak self] result in
             // Show different contents depending upon the result of the request
             switch result {
             case let .success(publications):
                 self?.contentVC = PublicationListContentsViewController(
-                    publications: publications,
+                    publications: publications.results,
                     shouldOpenIncito: { [weak self] in self?.openIncito(for: $0) },
                     shouldOpenPagedPub: { [weak self] in self?.openPagedPub(for: $0) }
                 )
@@ -52,23 +40,23 @@ class PublicationListViewController: UIViewController {
         }
     }
     
-    func openIncito(for publication: CoreAPI.Publication) {
+    func openIncito(for publication: Publication_v2) {
         
         // Create an instance of `IncitoLoaderViewController`
-        let incitoVC = DemoIncitoViewController()
-        
-        incitoVC.load(publication: publication)
-
-        self.navigationController?.pushViewController(incitoVC, animated: true)
+//        let incitoVC = DemoIncitoViewController()
+//
+//        incitoVC.load(publication: publication)
+//
+//        self.navigationController?.pushViewController(incitoVC, animated: true)
     }
     
-    func openPagedPub(for publication: CoreAPI.Publication) {
+    func openPagedPub(for publication: Publication_v2) {
         
         // Create a view controller containing a `PagedPublicationView`
-        let pagedPubVC = DemoPagedPublicationViewController()
-       
-        pagedPubVC.load(publication: publication)
-       
-        self.navigationController?.pushViewController(pagedPubVC, animated: true)
+//        let pagedPubVC = DemoPagedPublicationViewController()
+//
+//        pagedPubVC.load(publication: publication)
+//
+//        self.navigationController?.pushViewController(pagedPubVC, animated: true)
     }
 }

@@ -1,24 +1,19 @@
-//
-//  ┌────┬─┐         ┌─────┐
-//  │  ──┤ └─┬───┬───┤  ┌──┼─┬─┬───┐
-//  ├──  │ ╷ │ · │ · │  ╵  │ ╵ │ ╷ │
-//  └────┴─┴─┴───┤ ┌─┴─────┴───┴─┴─┘
-//               └─┘
-//
-//  Copyright (c) 2019 ShopGun. All rights reserved.
+///
+///  Copyright (c) 2019 Tjek. All rights reserved.
+///
 
+import TjekAPI
 import UIKit
-import ShopGunSDK
 
 class PublicationListContentsViewController: UITableViewController {
     
-    let publications: [CoreAPI.Publication]
-    let shouldOpenIncito: (CoreAPI.Publication) -> Void
-    let shouldOpenPagedPub: (CoreAPI.Publication) -> Void
+    let publications: [Publication_v2]
+    let shouldOpenIncito: (Publication_v2) -> Void
+    let shouldOpenPagedPub: (Publication_v2) -> Void
     
-    init(publications: [CoreAPI.Publication],
-         shouldOpenIncito: @escaping (CoreAPI.Publication) -> Void,
-         shouldOpenPagedPub: @escaping (CoreAPI.Publication) -> Void
+    init(publications: [Publication_v2],
+         shouldOpenIncito: @escaping (Publication_v2) -> Void,
+         shouldOpenPagedPub: @escaping (Publication_v2) -> Void
         ) {
         self.publications = publications
         self.shouldOpenIncito = shouldOpenIncito
@@ -44,6 +39,7 @@ class PublicationListContentsViewController: UITableViewController {
         
         let publication = publications[indexPath.row]
         let hasIncito = publication.hasIncito
+        let hasPaged = publication.hasPagedPublication
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "PublicationListCell", for: indexPath) as! PublicationListCell
         
@@ -51,6 +47,7 @@ class PublicationListContentsViewController: UITableViewController {
         
         cell.textLabel?.text = publication.branding.name
         cell.incitoPubButton.isHidden = !hasIncito
+        cell.pagedPubButton.isHidden = !hasPaged
         
         cell.didTapIncitoButton = { [weak self] in
             self?.shouldOpenIncito(publication)
