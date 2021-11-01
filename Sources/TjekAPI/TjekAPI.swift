@@ -210,4 +210,3 @@ extension JSONDecoder.DateDecodingStrategy {
 public func shortBundleVersion(_ bundle: Bundle) -> String {
     bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
 }
-
