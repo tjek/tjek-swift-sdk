@@ -8,24 +8,24 @@ import TjekUtils
 public class TjekEventsTracker {
     
     public struct Config: Equatable {
-        public enum TrackingIdentiferTag {}
-        public typealias TrackingIdentifier = GenericIdentifier<TrackingIdentiferTag>
+        public enum AppIdentiferTag {}
+        public typealias AppIdentifier = GenericIdentifier<AppIdentiferTag>
         
-        public var trackId: TrackingIdentifier
+        public var appId: AppIdentifier
         
         public var baseURL: URL
         public var dispatchInterval: TimeInterval
         public var dispatchLimit: Int
         public var enabled: Bool
             
-        public init(trackId: TrackingIdentifier, baseURL: URL = URL(string: "https://wolf-api.tjek.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, enabled: Bool = true) throws {
+        public init(appId: AppIdentifier, baseURL: URL = URL(string: "https://wolf-api.tjek.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, enabled: Bool = true) throws {
             
-            guard !trackId.rawValue.isEmpty else {
-                struct TrackingIdEmpty: Error { }
-                throw TrackingIdEmpty()
+            guard !appId.rawValue.isEmpty else {
+                struct AppIdEmpty: Error { }
+                throw AppIdEmpty()
             }
             
-            self.trackId = trackId
+            self.appId = appId
             self.baseURL = baseURL
             self.dispatchInterval = dispatchInterval
             self.dispatchLimit = dispatchLimit
@@ -43,7 +43,7 @@ public class TjekEventsTracker {
      Config file should be placed in your main bundle, with the name `TjekSDK-Config.plist`.
      
      Its contents should map to the following dictionary:
-     `["EventsTracker": ["trackId": "<your trackId>"]]`
+     `["EventsTracker": ["appId": "<your appId>"]]`
      
      - Note: Throws if the config file is missing or malformed.
      */
@@ -88,7 +88,8 @@ extension TjekEventsTracker.Config {
         } catch {
             let legacyFileName = "ShopGunSDK-Config.plist"
             if let legacyFilePath = bundle.url(forResource: legacyFileName, withExtension: nil),
-                let legacyConfig = try? load(fromLegacyPlist: legacyFilePath) {
+                let legacyConfig = try? load(fromPlist: legacyFilePath) {
+                // legacy plist has same structure as updated plist
                 return legacyConfig
             } else {
                 throw error
@@ -101,23 +102,6 @@ extension TjekEventsTracker.Config {
         
         struct ConfigContainer: Decodable {
             struct Values: Decodable {
-                var trackId: String
-            }
-            var EventsTracker: Values
-        }
-        
-        let fileValues = (try PropertyListDecoder().decode(ConfigContainer.self, from: data)).EventsTracker
-        
-        return try Self(
-            trackId: TrackingIdentifier(rawValue: fileValues.trackId)
-        )
-    }
-    
-    static func load(fromLegacyPlist filePath: URL) throws -> Self {
-        let data = try Data(contentsOf: filePath, options: [])
-        
-        struct ConfigContainer: Decodable {
-            struct Values: Decodable {
                 var appId: String
             }
             var EventsTracker: Values
@@ -126,7 +110,7 @@ extension TjekEventsTracker.Config {
         let fileValues = (try PropertyListDecoder().decode(ConfigContainer.self, from: data)).EventsTracker
         
         return try Self(
-            trackId: TrackingIdentifier(rawValue: fileValues.appId)
+            appId: AppIdentifier(rawValue: fileValues.appId)
         )
     }
 }

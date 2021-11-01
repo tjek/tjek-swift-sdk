@@ -4,8 +4,8 @@
 <dict>
 	<key>EventsTracker</key>
 	<dict>
-		<key>trackId</key>
-		<string>&lt;sdk-demo trackId&gt;</string>
+		<key>appId</key>
+		<string>&lt;sdk-demo appId&gt;</string>
 	</dict>
 </dict>
 </plist>
