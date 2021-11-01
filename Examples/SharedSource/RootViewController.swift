@@ -8,7 +8,7 @@
 //  Copyright (c) 2019 ShopGun. All rights reserved.
 
 import UIKit
-//import ShopGunSDK
+import ShopGunSDK
 import TjekAPI
 
 class RootViewController: UIViewController {
@@ -26,8 +26,15 @@ class RootViewController: UIViewController {
 }
 
 func initializeTjekSDK() {
-    let clientVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
-    TjekAPI.initialize(clientVersion: clientVersion)
+    // Initialize the TjekAPI using the `TjekSDK-Config.plist` file.
+    do {
+        try TjekAPI.initialize()
+    } catch {
+        print("❌ Unable to initialize TjekAPI", error.localizedDescription)
+    }
+    
+    // You can instead initialize the TjekAPI programatically, if you need to.
+//    TjekAPI.initialize(config: .init(apiKey: "<your api key>", apiSecret: "<your api secret>"))
 }
 
 //func configureShopGunSDK() {

@@ -2,19 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>api</key>
-	<dict>
-		<key>key</key>
-		<string>sdk-demo-apikey</string>
-		<key>secret</key>
-		<string>sdk-demo-apisecret</string>
-	</dict>
 	<key>GraphAPI</key>
 	<dict>
 		<key>key</key>
 		<string>graphapi-file-key</string>
 	</dict>
-	<key>CoreAPI</key>
+	<key>TjekAPI</key>
 	<dict>
 		<key>key</key>
 		<string>coreapi-file-key</string>

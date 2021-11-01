@@ -6,7 +6,9 @@ let package = Package(
     defaultLocalization: "en",
     platforms: [
         .iOS(.v12),
-        .watchOS(.v6)
+        .watchOS(.v6),
+        .macOS(.v10_13),
+        .tvOS(.v12)
     ],
     products: [
         .library(name: "TjekSDK", targets: ["TjekSDK"]),

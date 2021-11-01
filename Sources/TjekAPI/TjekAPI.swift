@@ -10,44 +10,45 @@ public class TjekAPI {
         public var apiKey: String
         public var apiSecret: String
         public var clientVersion: String
-        public var baseURL: URL = URL(string: "https://squid-api.tjek.com")!
+        public var baseURL: URL
         
-        static func load(fromPlist fileName: String, clientVersion: String) throws -> Config {
-            #warning("throw an error here: LH - 29 Oct 2021")
-            guard let filePath = Bundle.main.url(forResource: fileName, withExtension: nil) else {
-                fatalError("Unable to find config file '\(fileName)'")
-            }
-            
-            let data = try Data(contentsOf: filePath, options: [])
-            
-            #warning("Also handle legacy files: LH - 29 Oct 2021")
-            struct ConfigContainer: Decodable {
-                struct Values: Decodable {
-                    var key: String
-                    var secret: String
-                }
-                var api: Values
-            }
-            
-            let fileValues = (try PropertyListDecoder().decode(ConfigContainer.self, from: data)).api
-            
-            return Config(
-                apiKey: fileValues.key,
-                apiSecret: fileValues.secret,
-                clientVersion: clientVersion
-            )
+        public init(apiKey: String, apiSecret: String, clientVersion: String = shortBundleVersion(.main), baseURL: URL = URL(string: "https://squid-api.tjek.com")!) {
+            self.apiKey = apiKey
+            self.apiSecret = apiSecret
+            self.clientVersion = clientVersion
+            self.baseURL = baseURL
         }
-        
     }
     
-    /// Initialize the `shared` TjekAPI
+    /// Initialize the `shared` TjekAPI using the specified `Config`.
     public static func initialize(config: Config) {
         _shared = TjekAPI(config: config)
     }
     
-    /// Initialize the `shared` TjekAPI using the config file
-    public static func initialize(clientVersion: String) {
-        initialize(config: try! .load(fromPlist: "ShopGunSDK-Config.plist", clientVersion: clientVersion))
+    /**
+     Initialize the `shared` TjekAPI using the config plist file.
+     Config file should be placed in your main bundle, with the name `TjekSDK-Config.plist`.
+     
+     Its contents should map to the following dictionary:
+     `["TjekAPI": ["key": "<your api key>", "secret": "<your api secret>"]]`
+     
+     By default, `clientVersion` is the `CFBundleShortVersionString` of your `Bundle.main`.
+     
+     - Note: Throws if the config file is missing or malformed.
+     */
+    public static func initialize(clientVersion: String = shortBundleVersion(.main)) throws {
+        let config: Config
+        do {
+            config = try Config.load(clientVersion: clientVersion)
+        } catch {
+            if let legacyConfig = try? Config.loadLegacyPlist(clientVersion: clientVersion) {
+                config = legacyConfig
+            } else {
+                throw error
+            }
+        }
+        
+        initialize(config: config)
     }
     
     private static var _shared: TjekAPI!
@@ -63,6 +64,8 @@ public class TjekAPI {
     // MARK: -
     
     public let config: Config
+    public let v2: APIClient
+    public let v4: APIClient
     
     public init(config: Config) {
         self.config = config
@@ -96,31 +99,115 @@ public class TjekAPI {
         
         v2.setAPIKey(config.apiKey, apiSecret: config.apiSecret)
         v2.setClientVersion(config.clientVersion)
+        
+        // Initialize v4 API
+        
+        let v4df = ISO8601DateFormatter()
+        v4df.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        self.v4 = APIClient(
+            baseURL: config.baseURL.appendingPathComponent("v4/rpc"),
+            headers: ["content-type": "application/json; charset=utf-8",
+                      "accept-encoding": "gzip",
+                      "accept-language": preferredLanguages.isEmpty ? nil : preferredLanguages
+                     ].compactMapValues({ $0 }),
+            defaultEncoder: {
+                let encoder = JSONEncoder()
+                encoder.dateEncodingStrategy = .customISO8601(v4df)
+                return encoder
+            }(),
+            defaultDecoder: {
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .customISO8601(v4df)
+                return decoder
+            }()
+        )
+        v4.setAPIKey(config.apiKey, apiSecret: config.apiSecret)
+        v4.setClientVersion(config.clientVersion)
     }
-    
-    public let v2: APIClient
-    
 }
 
-public struct LocationQuery {
-    public var coordinate: (lat: Double, lng: Double)
-    /// In Meters
-    public var maxRadius: Int? = nil
+// MARK: -
+
+extension TjekAPI.Config {
+    static func load(fromPlist fileName: String = "TjekSDK-Config.plist", clientVersion: String) throws -> Self {
+        guard let filePath = Bundle.main.url(forResource: fileName, withExtension: nil) else {
+            struct FileNotFound: Error { var fileName: String }
+            throw FileNotFound(fileName: fileName)
+        }
+        
+        let data = try Data(contentsOf: filePath, options: [])
+        
+        struct ConfigContainer: Decodable {
+            struct Values: Decodable {
+                var key: String
+                var secret: String
+            }
+            var TjekAPI: Values
+        }
+        
+        let fileValues = (try PropertyListDecoder().decode(ConfigContainer.self, from: data)).TjekAPI
+        
+        return Self(
+            apiKey: fileValues.key,
+            apiSecret: fileValues.secret,
+            clientVersion: clientVersion
+        )
+    }
     
-    public init(coordinate: (lat: Double, lng: Double), maxRadius: Int? = nil) {
-        self.coordinate = coordinate
-        self.maxRadius = maxRadius
+    static func loadLegacyPlist(_ fileName: String = "ShopGunSDK-Config.plist", clientVersion: String) throws -> Self {
+        guard let filePath = Bundle.main.url(forResource: fileName, withExtension: nil) else {
+            struct FileNotFound: Error { var fileName: String }
+            throw FileNotFound(fileName: fileName)
+        }
+        
+        let data = try Data(contentsOf: filePath, options: [])
+        
+        struct ConfigContainer: Decodable {
+            struct Values: Decodable {
+                var key: String
+                var secret: String
+            }
+            var CoreAPI: Values
+        }
+        
+        let fileValues = (try PropertyListDecoder().decode(ConfigContainer.self, from: data)).CoreAPI
+        
+        return Self(
+            apiKey: fileValues.key,
+            apiSecret: fileValues.secret,
+            clientVersion: clientVersion
+        )
     }
 }
 
-extension APIRequest {
-    func paginatedResponse<ResponseElement>(paginatedRequest: PaginatedRequest<Int>) -> APIRequest<PaginatedResponse<ResponseElement, Int>> where ResponseType == [ResponseElement] {
-        self.map({
-            PaginatedResponse(
-                results: $0,
-                expectedCount: paginatedRequest.itemCount,
-                startingAtOffset: paginatedRequest.startCursor
-            )
+// MARK: -
+
+extension JSONEncoder.DateEncodingStrategy {
+    fileprivate static func customISO8601(_ iso8601: ISO8601DateFormatter) -> Self {
+        .custom({ date, encoder in
+            var c = encoder.singleValueContainer()
+            let dateStr = iso8601.string(from: date)
+            try c.encode(dateStr)
         })
     }
 }
+
+extension JSONDecoder.DateDecodingStrategy {
+    fileprivate static func customISO8601(_ iso8601: ISO8601DateFormatter) -> Self {
+        .custom({ decoder in
+            let c = try decoder.singleValueContainer()
+            let dateStr = try c.decode(String.self)
+            if let date = iso8601.date(from: dateStr) {
+                return date
+            } else {
+                throw DecodingError.dataCorruptedError(in: c, debugDescription: "Unable to decode date-string '\(dateStr)'")
+            }
+        })
+    }
+}
+
+public func shortBundleVersion(_ bundle: Bundle) -> String {
+    bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+}
+
