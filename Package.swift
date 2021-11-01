@@ -7,7 +7,7 @@ let package = Package(
     platforms: [
         .iOS(.v12),
         .watchOS(.v6),
-        .macOS(.v10_13),
+        .macOS(.v10_14),
         .tvOS(.v12)
     ],
     products: [
@@ -26,50 +26,49 @@ let package = Package(
         .package(name: "Valet", url: "https://github.com/square/Valet.git", from: "4.1.1")
     ],
     targets: [
-        // TjekSDK
-        .target(name: "TjekSDK", dependencies: [
-            .target(name: "TjekAPI"),
-            .target(name: "TjekEventsTracker"),
-            .target(name: "TjekPublicationReader", condition: .when(platforms: [.iOS]))
-        ]),
-        .testTarget(name: "TjekSDKTests", dependencies: [
-            .target(name: "TjekSDK")
-        ]),
+        // MARK: -
+        .target(name: "TjekSDK",
+                dependencies: [
+                    .target(name: "TjekAPI"),
+                    .target(name: "TjekEventsTracker"),
+                    .target(name: "TjekPublicationReader", condition: .when(platforms: [.iOS]))
+                ]),
         
-        // TjekAPI
-        .target(name: "TjekAPI", dependencies: [
-            .product(name: "Future", package: "Future"),
-            .target(name: "TjekUtils")
-        ]),
-        .testTarget(name: "TjekAPITests", dependencies: [
-            .target(name: "TjekAPI")
-        ]),
+        // MARK: -
+        .target(name: "TjekAPI",
+                dependencies: [
+                    .product(name: "Future", package: "Future"),
+                    .target(name: "TjekUtils")
+                ]),
+        .testTarget(name: "TjekAPITests",
+                    dependencies: [.target(name: "TjekAPI")],
+                    resources: [.process("Resources")]
+                   ),
         
-        // TjekEventsTracker
-        .target(name: "TjekEventsTracker", dependencies: [
-        ]),
-        .testTarget(name: "TjekEventsTrackerTests", dependencies: [
-            .target(name: "TjekEventsTracker")
-        ]),
+        // MARK: -
+        .target(name: "TjekEventsTracker",
+                dependencies: [
+                    .target(name: "TjekUtils")
+                ]),
+        .testTarget(name: "TjekEventsTrackerTests",
+                    dependencies: [.target(name: "TjekEventsTracker")],
+                    resources: [.process("Resources")]
+                   ),
         
-        // TjekPublicationReader
-        .target(name: "TjekPublicationReader", dependencies: [
-            .target(name: "TjekAPI"),
-            .target(name: "TjekEventsTracker")
-//            .product(name: "Kingfisher", package: "Kingfisher")
-         ]),
-        .testTarget(name: "TjekPublicationReaderTests", dependencies: [
-            .target(name: "TjekPublicationReader")
-        ]),
+        // MARK: -
+        .target(name: "TjekPublicationReader",
+                dependencies: [
+                    .target(name: "TjekAPI"),
+                    .target(name: "TjekEventsTracker")
+//             .product(name: "Kingfisher", package: "Kingfisher")
+                ]),
         
-        // TjekUtils
-        .target(name: "TjekUtils", dependencies: [
-        ]),
-        .testTarget(name: "TjekUtilsTests", dependencies: [
-            .target(name: "TjekUtils")
-        ]),
+        // MARK: -
+        .target(name: "TjekUtils",
+                dependencies: []
+               ),
         
-        // LEGACY
+        // MARK: - LEGACY
         .target(
             name: "ShopGunSDK",
             dependencies: [

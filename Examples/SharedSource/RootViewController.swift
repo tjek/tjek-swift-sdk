@@ -8,8 +8,8 @@
 //  Copyright (c) 2019 ShopGun. All rights reserved.
 
 import UIKit
-import ShopGunSDK
-import TjekAPI
+//import ShopGunSDK
+import TjekSDK
 
 class RootViewController: UIViewController {
     override func viewDidLoad() {
@@ -26,11 +26,11 @@ class RootViewController: UIViewController {
 }
 
 func initializeTjekSDK() {
-    // Initialize the TjekAPI using the `TjekSDK-Config.plist` file.
+    // Initialize the TjekSDK using the `TjekSDK-Config.plist` file.
     do {
-        try TjekAPI.initialize()
+        try TjekSDK.initialize()
     } catch {
-        print("❌ Unable to initialize TjekAPI", error.localizedDescription)
+        print("❌ Unable to initialize TjekSDK", error.localizedDescription)
     }
     
     // You can instead initialize the TjekAPI programatically, if you need to.

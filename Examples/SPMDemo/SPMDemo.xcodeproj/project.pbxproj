@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AE3FB85B272C3D2F00633342 /* TjekAPI in Frameworks */ = {isa = PBXBuildFile; productRef = AE3FB85A272C3D2F00633342 /* TjekAPI */; };
+		AE0CCD572730412600DCB022 /* TjekSDK in Frameworks */ = {isa = PBXBuildFile; productRef = AE0CCD562730412600DCB022 /* TjekSDK */; };
 		AE4BDDB622830ECC008DB391 /* DemoPagedPublicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4BDDA722830ECC008DB391 /* DemoPagedPublicationViewController.swift */; };
 		AE4BDDB722830ECC008DB391 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4BDDA822830ECC008DB391 /* RootViewController.swift */; };
 		AE4BDDB822830ECC008DB391 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE4BDDA922830ECC008DB391 /* LaunchScreen.storyboard */; };
@@ -45,7 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE3FB85B272C3D2F00633342 /* TjekAPI in Frameworks */,
+				AE0CCD572730412600DCB022 /* TjekSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -116,7 +116,7 @@
 			);
 			name = SPMDemo;
 			packageProductDependencies = (
-				AE3FB85A272C3D2F00633342 /* TjekAPI */,
+				AE0CCD562730412600DCB022 /* TjekSDK */,
 			);
 			productName = CarthageSDKExample;
 			productReference = AE1027DD212D639C00104921 /* SPMDemo.app */;
@@ -394,9 +394,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		AE3FB85A272C3D2F00633342 /* TjekAPI */ = {
+		AE0CCD562730412600DCB022 /* TjekSDK */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = TjekAPI;
+			productName = TjekSDK;
 		};
 		AECD3BB525AF1E2500F7E770 /* ShopGunSDK */ = {
 			isa = XCSwiftPackageProductDependency;

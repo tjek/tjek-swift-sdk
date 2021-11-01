@@ -6,13 +6,23 @@ import Foundation
 
 public class TjekAPI {
     
-    public struct Config: Decodable {
+    public struct Config: Equatable {
         public var apiKey: String
         public var apiSecret: String
         public var clientVersion: String
         public var baseURL: URL
         
-        public init(apiKey: String, apiSecret: String, clientVersion: String = shortBundleVersion(.main), baseURL: URL = URL(string: "https://squid-api.tjek.com")!) {
+        public init(apiKey: String, apiSecret: String, clientVersion: String = shortBundleVersion(.main), baseURL: URL = URL(string: "https://squid-api.tjek.com")!) throws {
+            
+            guard !apiKey.isEmpty else {
+                struct APIKeyEmpty: Error { }
+                throw APIKeyEmpty()
+            }
+            guard !apiSecret.isEmpty else {
+                struct APISecretEmpty: Error { }
+                throw APISecretEmpty()
+            }
+            
             self.apiKey = apiKey
             self.apiSecret = apiSecret
             self.clientVersion = clientVersion
@@ -30,23 +40,14 @@ public class TjekAPI {
      Config file should be placed in your main bundle, with the name `TjekSDK-Config.plist`.
      
      Its contents should map to the following dictionary:
-     `["TjekAPI": ["key": "<your api key>", "secret": "<your api secret>"]]`
+     `["API": ["key": "<your api key>", "secret": "<your api secret>"]]`
      
      By default, `clientVersion` is the `CFBundleShortVersionString` of your `Bundle.main`.
      
      - Note: Throws if the config file is missing or malformed.
      */
     public static func initialize(clientVersion: String = shortBundleVersion(.main)) throws {
-        let config: Config
-        do {
-            config = try Config.load(clientVersion: clientVersion)
-        } catch {
-            if let legacyConfig = try? Config.loadLegacyPlist(clientVersion: clientVersion) {
-                config = legacyConfig
-            } else {
-                throw error
-            }
-        }
+        let config = try Config.loadFromPlist(clientVersion: clientVersion)
         
         initialize(config: config)
     }
@@ -130,12 +131,28 @@ public class TjekAPI {
 // MARK: -
 
 extension TjekAPI.Config {
-    static func load(fromPlist fileName: String = "TjekSDK-Config.plist", clientVersion: String) throws -> Self {
-        guard let filePath = Bundle.main.url(forResource: fileName, withExtension: nil) else {
-            struct FileNotFound: Error { var fileName: String }
-            throw FileNotFound(fileName: fileName)
+    /// Try to load from first the updated plist, and after that the legacy plist. If both fail, returns the error from the updated plist load.
+    static func loadFromPlist(inBundle bundle: Bundle = .main, clientVersion: String) throws -> Self {
+        do {
+            let fileName = "TjekSDK-Config.plist"
+            guard let filePath = bundle.url(forResource: fileName, withExtension: nil) else {
+                struct FileNotFound: Error { var fileName: String }
+                throw FileNotFound(fileName: fileName)
+            }
+            
+            return try load(fromPlist: filePath, clientVersion: clientVersion)
+        } catch {
+            let legacyFileName = "ShopGunSDK-Config.plist"
+            if let legacyFilePath = bundle.url(forResource: legacyFileName, withExtension: nil),
+                let legacyConfig = try? load(fromLegacyPlist: legacyFilePath, clientVersion: clientVersion) {
+                return legacyConfig
+            } else {
+                throw error
+            }
         }
-        
+    }
+    
+    static func load(fromPlist filePath: URL, clientVersion: String) throws -> Self {
         let data = try Data(contentsOf: filePath, options: [])
         
         struct ConfigContainer: Decodable {
@@ -143,24 +160,19 @@ extension TjekAPI.Config {
                 var key: String
                 var secret: String
             }
-            var TjekAPI: Values
+            var API: Values
         }
         
-        let fileValues = (try PropertyListDecoder().decode(ConfigContainer.self, from: data)).TjekAPI
+        let fileValues = (try PropertyListDecoder().decode(ConfigContainer.self, from: data)).API
         
-        return Self(
+        return try Self(
             apiKey: fileValues.key,
             apiSecret: fileValues.secret,
             clientVersion: clientVersion
         )
     }
     
-    static func loadLegacyPlist(_ fileName: String = "ShopGunSDK-Config.plist", clientVersion: String) throws -> Self {
-        guard let filePath = Bundle.main.url(forResource: fileName, withExtension: nil) else {
-            struct FileNotFound: Error { var fileName: String }
-            throw FileNotFound(fileName: fileName)
-        }
-        
+    static func load(fromLegacyPlist filePath: URL, clientVersion: String) throws -> Self {
         let data = try Data(contentsOf: filePath, options: [])
         
         struct ConfigContainer: Decodable {
@@ -173,7 +185,7 @@ extension TjekAPI.Config {
         
         let fileValues = (try PropertyListDecoder().decode(ConfigContainer.self, from: data)).CoreAPI
         
-        return Self(
+        return try Self(
             apiKey: fileValues.key,
             apiSecret: fileValues.secret,
             clientVersion: clientVersion
