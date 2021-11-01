@@ -48,7 +48,9 @@ let package = Package(
         // MARK: -
         .target(name: "TjekEventsTracker",
                 dependencies: [
-                    .target(name: "TjekUtils")
+                    .target(name: "TjekAPI"),
+                    .target(name: "TjekUtils"),
+                    .product(name: "Valet", package: "Valet")
                 ]),
         .testTarget(name: "TjekEventsTrackerTests",
                     dependencies: [.target(name: "TjekEventsTracker")],

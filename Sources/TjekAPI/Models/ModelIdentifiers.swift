@@ -15,3 +15,7 @@ public typealias BusinessId = GenericIdentifier<BusinessIdTag>
 /// The uniquely tag the StoreId
 public enum StoreIdTag {}
 public typealias StoreId = GenericIdentifier<StoreIdTag>
+
+/// The uniquely tag the OfferId
+public enum OfferIdTag {}
+public typealias OfferId = GenericIdentifier<OfferIdTag>

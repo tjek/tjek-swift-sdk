@@ -23,8 +23,7 @@
 // https://github.com/nh7a/Geohash
 
 import XCTest
-import CoreLocation
-@testable import ShopGunSDK
+@testable import TjekEventsTracker
 
 class GeohashTests: XCTestCase {
     func testDecode() {
@@ -47,7 +46,11 @@ class GeohashTests: XCTestCase {
         XCTAssertTrue(Geohash.encode(latitude: lat, longitude: lon, precision: .twentyFourHundredMeters) == String(chars.prefix(5)))
         XCTAssertTrue(Geohash.encode(latitude: lat, longitude: lon, precision: .seventyFourMillimeters) == String(chars.prefix(11)))
     }
-    
+}
+
+#if canImport(CoreLocation)
+import CoreLocation
+extension GeohashTests {
     func testCoreLocation() {
         XCTAssertFalse(CLLocationCoordinate2DIsValid(CLLocationCoordinate2D(geohash: "garbage")))
         
@@ -61,3 +64,4 @@ class GeohashTests: XCTestCase {
         XCTAssertTrue(c.geohash(precision: .seventyFourMillimeters) == hash)
     }
 }
+#endif

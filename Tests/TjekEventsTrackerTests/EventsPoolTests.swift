@@ -1,14 +1,9 @@
-//
-//  ┌────┬─┐         ┌─────┐
-//  │  ──┤ └─┬───┬───┤  ┌──┼─┬─┬───┐
-//  ├──  │ ╷ │ · │ · │  ╵  │ ╵ │ ╷ │
-//  └────┴─┴─┴───┤ ┌─┴─────┴───┴─┴─┘
-//               └─┘
-//
-//  Copyright (c) 2018 ShopGun. All rights reserved.
+///
+///  Copyright (c) 2018 Tjek. All rights reserved.
+///
 
 import XCTest
-@testable import ShopGunSDK
+@testable import TjekEventsTracker
 
 class EventsPoolTests: XCTestCase {
 

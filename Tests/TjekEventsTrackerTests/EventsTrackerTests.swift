@@ -1,16 +1,11 @@
-//
-//  ┌────┬─┐         ┌─────┐
-//  │  ──┤ └─┬───┬───┤  ┌──┼─┬─┬───┐
-//  ├──  │ ╷ │ · │ · │  ╵  │ ╵ │ ╷ │
-//  └────┴─┴─┴───┤ ┌─┴─────┴───┴─┴─┘
-//               └─┘
-//
-//  Copyright (c) 2018 ShopGun. All rights reserved.
+///
+///  Copyright (c) 2018 Tjek. All rights reserved.
+///
 
 import XCTest
-@testable import ShopGunSDK
+@testable import TjekEventsTracker
 
-class EventsTrackerTests: XCTestCase {
+class TjekEventsTrackerTests: XCTestCase {
 
     func testLegacyPoolCleaner() {
         
@@ -29,9 +24,9 @@ class EventsTrackerTests: XCTestCase {
         // wait for the cache to save to disk
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             
-            EventsTracker.legacyPoolCleaner(cacheFileName: legacyCacheFilename,
+            TjekEventsTracker.legacyPoolCleaner(cacheFileName: legacyCacheFilename,
                                             dispatchInterval: 1,
-                                            baseURL: URL(string: "https://events.service-staging.shopgun.com")!,
+                                            baseURL: URL(string: "https://wolf-api.tjek-staging.com")!,
                                             enabled: false) { (shippedCount) in
                 XCTAssertEqual(shippedCount, 2)
                 // TODO: make sure the cache has been cleared

@@ -1,29 +1,32 @@
-//
-//  ┌────┬─┐         ┌─────┐
-//  │  ──┤ └─┬───┬───┤  ┌──┼─┬─┬───┐
-//  ├──  │ ╷ │ · │ · │  ╵  │ ╵ │ ╷ │
-//  └────┴─┴─┴───┤ ┌─┴─────┴───┴─┴─┘
-//               └─┘
-//
-//  Copyright (c) 2018 ShopGun. All rights reserved.
+///
+///  Copyright (c) 2018 Tjek. All rights reserved.
+///
 
 import XCTest
-@testable import ShopGunSDK
+@testable import TjekEventsTracker
+import TjekAPI
+import TjekUtils
 
+extension SaltStore {
+    static func local(initial: String? = nil) -> SaltStore {
+        var salt = initial
+        return SaltStore(get: { salt }, set: { salt = $0 })
+    }
+}
+
+// https://gist.github.com/tbug/88c169d2ac5f5bebbf59211eb35ff23a
 class SDKEventsTests: XCTestCase {
-    // https://gist.github.com/tbug/88c169d2ac5f5bebbf59211eb35ff23a
+    
+    // A custom tokenizer
     var tokenizer: UniqueViewTokenizer!
-    fileprivate let dataStore = MockSaltDataStore()
     
     override func setUp() {
         super.setUp()
         
         self.tokenizer = UniqueViewTokenizer(salt: "salty")!
         
-        dataStore.salt = "myhash"
-        guard let settings = try? Settings.EventsTracker(appId: "appId_123") else { return }
-        EventsTracker.configure(settings,
-                                dataStore: self.dataStore)
+        // initialize the shared tracker, as this is used as the default tokenizer.
+        try! TjekEventsTracker.initialize(config: .init(appId: "appId_123"), saltStore: .local(initial: "myhash"))
     }
     
     func testDummy() {
@@ -173,7 +176,7 @@ class SDKEventsTests: XCTestCase {
     func testFirstOfferOpenedAfterSearch() {
         let testDate = Date(eventTimestamp: 12345)
         let query = "Another Very Long Séarch string 🌈"
-        let offerIds = ["b", "a", "c"].map(CoreAPI.Offer.Identifier.init(rawValue:))
+        let offerIds = ["b", "a", "c"].map(OfferId.init(rawValue:))
         let event = Event.firstOfferOpenedAfterSearch(offerId: "offer_123", precedingOfferIds: offerIds, query: query, languageCode: "DA", timestamp: testDate)
         
         XCTAssertFalse(event.id.rawValue.isEmpty)
@@ -196,7 +199,7 @@ class SDKEventsTests: XCTestCase {
                         "of.ids": .array([])
                         ])
         
-        let manyOfferIds = Array(50..<250).map({ CoreAPI.Offer.Identifier(rawValue: String($0)) })
+        let manyOfferIds = Array(50..<250).map({ OfferId(rawValue: String($0)) })
         
         let clampedOfferIds = manyOfferIds.prefix(100).map({ JSONValue.string($0.rawValue) })
         
@@ -229,18 +232,5 @@ class SDKEventsTests: XCTestCase {
         XCTAssertEqual(defaultEvent.payload,
                        ["sea.q": .string(""),
                         "sea.v": .int(1)])
-    }
-}
-
-fileprivate class MockSaltDataStore: ShopGunSDKDataStore {
-    var salt: String? = nil
-    
-    func set(value: String?, for key: String) {
-        guard key == "ShopGunSDK.EventsTracker.ClientId" else { return }
-        salt = value
-    }
-    func get(for key: String) -> String? {
-        guard key == "ShopGunSDK.EventsTracker.ClientId" else { return nil }
-        return salt
     }
 }

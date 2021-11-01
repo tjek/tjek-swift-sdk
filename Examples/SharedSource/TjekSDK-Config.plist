@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>KeychainPrivateId</key>
+	<string>Blah</string>
 	<key>GraphAPI</key>
 	<dict>
 		<key>key</key>
@@ -16,8 +18,8 @@
 	</dict>
 	<key>EventsTracker</key>
 	<dict>
-		<key>trackId</key>
-		<string>&lt;sdk-demo trackId&gt;</string>
+		<key>appId</key>
+		<string>&lt;sdk-demo appId&gt;</string>
 	</dict>
 </dict>
 </plist>
