@@ -16,6 +16,7 @@ let package = Package(
         .library(name: "TjekEventsTracker", targets: ["TjekEventsTracker"]),
         .library(name: "TjekPublicationReader", targets: ["TjekPublicationReader"]),
         
+        // Legacy SDK... do not use.
         .library(name: "ShopGunSDK", targets: ["ShopGunSDK"]),
     ],
     dependencies: [
@@ -62,7 +63,6 @@ let package = Package(
                 dependencies: [
                     .target(name: "TjekAPI"),
                     .target(name: "TjekEventsTracker")
-//             .product(name: "Kingfisher", package: "Kingfisher")
                 ]),
         
         // MARK: -
@@ -74,20 +74,18 @@ let package = Package(
         .target(
             name: "ShopGunSDK",
             dependencies: [
-                "Incito",
-                "Future",
-                "Verso",
-                "Kingfisher",
+                .product(name: "Incito", package: "Incito"),
+                .product(name: "Future", package: "Future"),
+                .product(name: "Verso", package: "Verso"),
+                .product(name: "Kingfisher", package: "Kingfisher"),
+                
+                .target(name: "TjekAPI"),
                 .target(name: "TjekEventsTracker")
             ],
             resources: [
                 .process("IncitoPublication/Resources/IncitoViewer.graphql"),
                 .process("PagedPublication/Resources/")
             ]
-        ),
-        .testTarget(
-            name: "ShopGunSDKTests",
-            dependencies: ["ShopGunSDK"]
         )
     ]
 )

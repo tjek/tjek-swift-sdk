@@ -37,7 +37,7 @@ public final class EventsTracker {
             set: { dataStore?.set(value: $0, for: "ShopGunSDK.EventsTracker.ClientId") }
         )
         
-        let config = try! TjekEventsTracker.Config(appId: .init(rawValue: settings.appId.rawValue), baseURL: settings.baseURL, dispatchInterval: settings.dispatchInterval, dispatchLimit: settings.dispatchLimit, enabled: settings.enabled)
+        let config = try! TjekEventsTracker.Config(trackId: .init(rawValue: settings.appId.rawValue), baseURL: settings.baseURL, dispatchInterval: settings.dispatchInterval, dispatchLimit: settings.dispatchLimit, enabled: settings.enabled)
         
         self.actualTracker = TjekEventsTracker(config: config, saltStore: saltStore)
         self.settings = settings

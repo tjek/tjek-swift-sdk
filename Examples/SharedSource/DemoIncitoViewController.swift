@@ -1,11 +1,6 @@
-////
-////  ┌────┬─┐         ┌─────┐
-////  │  ──┤ └─┬───┬───┤  ┌──┼─┬─┬───┐
-////  ├──  │ ╷ │ · │ · │  ╵  │ ╵ │ ╷ │
-////  └────┴─┴─┴───┤ ┌─┴─────┴───┴─┴─┘
-////               └─┘
-////
-////  Copyright (c) 2019 ShopGun. All rights reserved.
+///
+///  Copyright (c) 2019 Tjek. All rights reserved.
+///
 //
 //import UIKit
 //import ShopGunSDK
