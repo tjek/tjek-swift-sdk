@@ -29,15 +29,10 @@ public final class EventsTracker {
     }
     
     fileprivate let actualTracker: TjekEventsTracker
-    fileprivate var notificationToken: NSObjectProtocol?
     
     internal init(actualTracker: TjekEventsTracker, settings: Settings.EventsTracker) {
         self.actualTracker = actualTracker
         self.settings = settings
-        
-        self.notificationToken = NotificationCenter.default.addObserver(forName: TjekEventsTracker.didTrackEventNotification, object: actualTracker, queue: nil, using: { [weak self] in
-            NotificationCenter.default.post(name: $0.name, object: self, userInfo: $0.userInfo)
-        })
     }
     private init() { fatalError("You must provide settings when creating an EventsTracker") }
 }
