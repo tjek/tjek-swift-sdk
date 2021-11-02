@@ -4,6 +4,9 @@
 
 import Foundation
 import TjekUtils
+#if canImport(UIKit)
+import UIKit
+#endif
 
 public class TjekEventsTracker {
     
@@ -82,6 +85,8 @@ public class TjekEventsTracker {
         initialize(config: config, saltStore: .keychain(KeychainDataStore(config: keychainConfig)))
     }
     
+    public static var isInitialized: Bool { _shared != nil }
+    
     private static var _shared: TjekEventsTracker!
     
     /// Do not reference this instance of the TjekEventsTracker until you have called one of the static `initialize` functions.
@@ -103,6 +108,7 @@ public class TjekEventsTracker {
     internal var viewTokenizer: UniqueViewTokenizer
     fileprivate let saltStore: SaltStore
     fileprivate let pool: EventsPool
+    fileprivate var notificationToken: NSObjectProtocol?
     
     public init(config: Config, saltStore: SaltStore) {
         self.config = config
@@ -122,6 +128,17 @@ public class TjekEventsTracker {
 #warning("Log cleaned events?: LH - 1 Nov 2021")
             //            Logger.log("LegacyEventsPool cleaned (\(cleanedEvents) events)", level: .debug, source: .EventsTracker)
         }
+        
+        #if os(iOS) || os(tvOS)
+        // if we can get didEnterBG notifications, listen for them and flush the event pool.
+        notificationToken = NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: nil, using: { [weak self] _ in
+            self?.appDidEnterBackground()
+        })
+        #endif
+    }
+    
+    fileprivate func appDidEnterBackground() {
+        self.pool.flush()
     }
     
     private init() { fatalError("You must provide config when creating a TjekEventsTracker") }

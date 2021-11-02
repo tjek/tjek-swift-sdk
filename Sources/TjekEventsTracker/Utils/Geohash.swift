@@ -144,7 +144,7 @@ private func << (left: [String], right: String) -> [String] {
     return arr
 }
 
-#if os(OSX) || os(iOS)
+#if canImport(CoreFoundation)
 
 // MARK: - CLLocationCoordinate2D
 

@@ -2,11 +2,8 @@
 ///  Copyright (c) 2018 Tjek. All rights reserved.
 ///
 
-#if canImport(TjekAPI)
 import Foundation
 import TjekAPI
-import UIKit
-#warning("Dont import UIKit: LH - 1 Nov 2021")
 
 extension Event {
     
@@ -47,7 +44,7 @@ extension Event {
         _ publicationId: PublicationId,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         let payload: PayloadType = ["pp.id": .string(publicationId.rawValue)]
         
@@ -73,19 +70,20 @@ extension Event {
         appVersion: String,
         screenName: String?,
         label: String?,
+        deviceInfo: DeviceInfo,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         var payload: PayloadType = [
             "_av": .string(appVersion),
             "c": .string(category),
             "a": .string(action),
-            "os": .string(UIDevice.current.systemName),
-            "osv": .string(UIDevice.current.systemVersion)
+            "os": .string(deviceInfo.systemName),
+            "osv": .string(deviceInfo.systemVersion)
         ]
         
-        if let id = UIDevice.modelId {
+        if let id = deviceInfo.hardwareId {
             payload["d"] = .string(id)
         }
         
@@ -119,7 +117,7 @@ extension Event {
         pageNumber: Int,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         let payload: PayloadType = ["pp.id": .string(publicationId.rawValue),
                                     "ppp.n": .int(pageNumber)]
@@ -150,7 +148,7 @@ extension Event {
         _ offerId: OfferId,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         let payload: PayloadType = ["of.id": .string(offerId.rawValue)]
         
@@ -172,7 +170,7 @@ extension Event {
         languageCode: String?,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         var payload: PayloadType = ["sea.q": .string(query)]
         if let lang = languageCode {
@@ -199,14 +197,14 @@ extension Event {
         query: String,
         languageCode: String?,
         timestamp: Date = Date()
-        ) -> Event {
+    ) -> Event {
         
         var payload: PayloadType = [
             "sea.q": .string(query),
             "of.id": .string(offerId.rawValue),
             "of.ids": .array(precedingOfferIds
-                .prefix(100)
-                .map { .string($0.rawValue) })
+                                .prefix(100)
+                                .map { .string($0.rawValue) })
         ]
         
         if let lang = languageCode {
@@ -230,7 +228,7 @@ extension Event {
         query: String,
         languageCode: String?,
         timestamp: Date = Date()
-        ) -> Event {
+    ) -> Event {
         
         var payload: PayloadType = [
             "sea.q": .string(query),
@@ -259,7 +257,7 @@ extension Event {
         pagedPublicationId: PublicationId?,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         let payload: PayloadType = ["ip.id": .string(incitoId.rawValue)]
         
@@ -280,7 +278,7 @@ extension Event {
         isAlsoPagedPublication: Bool,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         let payload: PayloadType = [
             "ip.id": .string(incitoPublicationId.rawValue),
@@ -307,8 +305,8 @@ extension Event {
         languageCode: String?,
         resultsViewedCount: Int,
         timestamp: Date = Date()
-        ) -> Event {
-
+    ) -> Event {
+        
         var payload: PayloadType = [
             "sea.q": .string(query),
             "sea.v": .int(resultsViewedCount)
@@ -336,7 +334,7 @@ extension Event {
     public static func searched(
         for query: String,
         languageCode: String?
-        ) -> Event {
+    ) -> Event {
         return searched(for: query, languageCode: languageCode, timestamp: Date())
     }
     
@@ -345,9 +343,10 @@ extension Event {
         action: String,
         appVersion: String,
         screenName: String?,
-        label: String?
-        ) -> Event {
-        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, label: label, timestamp: Date())
+        label: String?,
+        deviceInfo: DeviceInfo = .current
+    ) -> Event {
+        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, label: label, deviceInfo: deviceInfo, timestamp: Date())
     }
     
     public static func firstOfferOpenedAfterSearch(
@@ -355,22 +354,35 @@ extension Event {
         precedingOfferIds: [OfferId],
         query: String,
         languageCode: String?
-        ) -> Event {
+    ) -> Event {
         return firstOfferOpenedAfterSearch(offerId: offerId, precedingOfferIds: precedingOfferIds, query: query, languageCode: languageCode, timestamp: Date())
     }
     public static func offerOpenedAfterSearch(
         offerId: OfferId,
         query: String,
         languageCode: String?
-        ) -> Event {
+    ) -> Event {
         return offerOpenedAfterSearch(offerId: offerId, query: query, languageCode: languageCode, timestamp: Date())
+    }
+    
+    public static func pagedPublicationOpened(
+        _ publicationId: PublicationId
+    ) -> Event {
+        return pagedPublicationOpened(publicationId, timestamp: Date())
+    }
+    
+    public static func pagedPublicationPageOpened(
+        _ publicationId: PublicationId,
+        pageNumber: Int
+    ) -> Event {
+        return pagedPublicationPageOpened(publicationId, pageNumber: pageNumber, timestamp: Date())
     }
     
     @available(*, deprecated, renamed: "incitoPublicationOpened(_:isAlsoPagedPublication:)")
     public static func incitoPublicationOpened(
         _ incitoId: PublicationId,
         pagedPublicationId: PublicationId?
-        ) -> Event {
+    ) -> Event {
         return incitoPublicationOpened(
             incitoId,
             pagedPublicationId: pagedPublicationId,
@@ -381,7 +393,7 @@ extension Event {
     public static func incitoPublicationOpened(
         _ incitoPublicationId: PublicationId,
         isAlsoPagedPublication: Bool
-        ) -> Event {
+    ) -> Event {
         return incitoPublicationOpened(
             incitoPublicationId,
             isAlsoPagedPublication: isAlsoPagedPublication,
@@ -393,9 +405,7 @@ extension Event {
         query: String,
         languageCode: String?,
         resultsViewedCount: Int
-        ) -> Event {
+    ) -> Event {
         return searchResultsViewed(query: query, languageCode: languageCode, resultsViewedCount: resultsViewedCount, timestamp: Date())
     }
 }
-
-#endif

@@ -7,6 +7,14 @@ import Foundation
 /// A class that handles the shipping of the Events
 class EventsShipper_v1: PoolShipper_v1Protocol {
     
+    /// The dateFormatter of all the dates in/out of the EventsTracker
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+        return formatter
+    }()
+    
     var baseURL: URL
     
     /// If true we dont really ship events, just pretend like it was successful
@@ -35,7 +43,7 @@ class EventsShipper_v1: PoolShipper_v1Protocol {
             // deserialize the jsonData and update the sent date
             if var jsonDict = try? JSONSerialization.jsonObject(with: obj.jsonData, options: []) as? [String: AnyObject] {
                 
-                jsonDict["sentAt"] = TjekEventsTracker.dateFormatter.string(from: Date()) as AnyObject?
+                jsonDict["sentAt"] = EventsShipper_v1.dateFormatter.string(from: Date()) as AnyObject?
                 
                 orderedEventDicts.append(jsonDict)
                 keyedEventDicts[obj.poolId] = jsonDict
@@ -108,7 +116,7 @@ class EventsShipper_v1: PoolShipper_v1Protocol {
                     if status == "nack" {
                         let maxAge: Double = 60*60*24*7 // 1 week
                         if let recordedDateStr = eventDict["recordedAt"] as? String,
-                            let recordedDate = TjekEventsTracker.dateFormatter.date(from: recordedDateStr),
+                            let recordedDate = EventsShipper_v1.dateFormatter.date(from: recordedDateStr),
                             recordedDate.timeIntervalSinceNow < -maxAge {
                             
                             idsToRemove.append(uuid)

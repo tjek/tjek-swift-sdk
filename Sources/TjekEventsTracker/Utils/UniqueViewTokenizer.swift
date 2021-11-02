@@ -36,6 +36,11 @@ struct UniqueViewTokenizer {
 public struct SaltStore {
     let get: () -> String?
     let set: (String?) -> Void
+    
+    public init(get: @escaping () -> String?, set: @escaping (String?) -> Void) {
+        self.get = get
+        self.set = set
+    }
 }
 
 extension UniqueViewTokenizer {

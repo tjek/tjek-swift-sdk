@@ -3,8 +3,7 @@
 ///
 
 import Foundation
-import UIKit
-#warning("Dont import UIKit: LH - 1 Nov 2021")
+
 /// The format that is saved to the cache, and that is sent to the shipper.
 /// This could be done in a better, more generic way, in the future
 typealias SerializedV1PoolObject = (poolId: String, jsonData: Data)
@@ -70,19 +69,6 @@ class EventsPool_v1 {
             } else {
                 self.startTimerIfNeeded()
             }
-        }
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-    }
-    
-    @objc
-    func appDidEnterBackground(_ notification: Notification) {
-        _poolQueue.async { [weak self] in
-            self?.flushPendingObjects()
         }
     }
     

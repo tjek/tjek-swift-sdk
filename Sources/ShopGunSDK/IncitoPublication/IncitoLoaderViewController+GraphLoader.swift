@@ -164,9 +164,10 @@ extension IncitoLoaderViewController {
         
         // On first successful load, trigger the incitoOpened event (if the events tracker has been configured)
         if EventsTracker.isConfigured {
+            #warning("Dont map ids like this: LH - 1 Nov 2021")
             EventsTracker.shared.trackEvent(
                 .incitoPublicationOpened(
-                    incitoPublicationId,
+                    .init(rawValue: incitoPublicationId.rawValue),
                     isAlsoPagedPublication: isAlsoPagedPublication
                 )
             )

@@ -19,7 +19,8 @@ extension PagedPublicationView {
         private var lastTrackedPageIndexes: IndexSet = IndexSet()
         
         func didOpenPublication() {
-            eventsTracker.trackEvent(.pagedPublicationOpened(publicationId))
+            #warning("Dont map ids like this: LH - 1 Nov 2021")
+            eventsTracker.trackEvent(.pagedPublicationOpened(.init(rawValue: publicationId.rawValue)))
         }
         
         mutating func didOpenPublicationPages(_ pageIndexes: IndexSet) {
@@ -28,7 +29,8 @@ extension PagedPublicationView {
             }
             let pageIndexesToTrack = pageIndexes.subtracting(lastTrackedPageIndexes)
             pageIndexesToTrack.forEach { pageIndex in
-                eventsTracker.trackEvent(.pagedPublicationPageOpened(publicationId, pageNumber: pageIndex + 1))
+                #warning("Dont map ids like this: LH - 1 Nov 2021")
+                eventsTracker.trackEvent(.pagedPublicationPageOpened(.init(rawValue: publicationId.rawValue), pageNumber: pageIndex + 1))
             }
             
             lastTrackedPageIndexes = pageIndexes

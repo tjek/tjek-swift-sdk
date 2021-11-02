@@ -6,7 +6,7 @@ import XCTest
 @testable import TjekEventsTracker
 
 class TjekEventsTrackerTests: XCTestCase {
-
+    
     func testLegacyPoolCleaner() {
         
         let legacyCacheFilename = "legacyCache.plist"

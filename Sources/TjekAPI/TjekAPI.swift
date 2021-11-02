@@ -52,6 +52,8 @@ public class TjekAPI {
         initialize(config: config)
     }
     
+    public static var isInitialized: Bool { _shared != nil }
+    
     private static var _shared: TjekAPI!
     
     /// Do not reference this instance of the TjekAPI until you have called one of the static `initialize` functions.

@@ -78,7 +78,7 @@ let package = Package(
                 "Future",
                 "Verso",
                 "Kingfisher",
-                "Valet"
+                .target(name: "TjekEventsTracker")
             ],
             resources: [
                 .process("IncitoPublication/Resources/IncitoViewer.graphql"),

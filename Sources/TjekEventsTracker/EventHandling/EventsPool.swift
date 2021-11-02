@@ -1,14 +1,8 @@
-//
-//  _____ _           _____
-// |   __| |_ ___ ___|   __|_ _ ___
-// |__   |   | . | . |  |  | | |   |
-// |_____|_|_|___|  _|_____|___|_|_|
-//               |_|
-//
-//  Copyright (c) 2016 ShopGun. All rights reserved.
+///
+///  Copyright (c) 2018 Tjek. All rights reserved.
+///
 
 import Foundation
-import UIKit
 
 class EventsPool {
     
@@ -38,12 +32,6 @@ class EventsPool {
                 self.startTimerIfNeeded()
             }
         }
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
     /// Add an object to the pool
@@ -61,18 +49,17 @@ class EventsPool {
         }
     }
     
+    func flush() {
+        poolQueue.async { [weak self] in
+            self?.flushPendingEvents()
+        }
+    }
+    
     // MARK: - Private
     
     fileprivate var dispatchIntervalDelay: TimeInterval = 0
     
     fileprivate let poolQueue: DispatchQueue = DispatchQueue(label: "com.shopgun.ios.sdk.pool.queue", attributes: [])
-    
-    @objc
-    private func appDidEnterBackground(_ notification: Notification) {
-        poolQueue.async { [weak self] in
-            self?.flushPendingEvents()
-        }
-    }
     
     // MARK: - Flushing
     
@@ -121,18 +108,19 @@ class EventsPool {
             }
         }
         
-        let counts = results.reduce(into: (success: 0, error: 0, retry: 0)) { (res, el) in
-            switch el.value {
-            case .error:
-                res.error += 1
-            case .success:
-                res.success += 1
-            case .retry:
-                res.retry += 1
-            }
-        }
-        
-        Logger.log("📦 Events Shipped \(counts)", level: .debug, source: .EventsTracker)
+        #warning("Log event shipped?: LH - 1 Nov 2021")
+//        let counts = results.reduce(into: (success: 0, error: 0, retry: 0)) { (res, el) in
+//            switch el.value {
+//            case .error:
+//                res.error += 1
+//            case .success:
+//                res.success += 1
+//            case .retry:
+//                res.retry += 1
+//            }
+//        }
+//
+//        Logger.log("📦 Events Shipped \(counts)", level: .debug, source: .EventsTracker)
         
         // remove the successfully shipped events
         self.cache.remove(ids: idsToRemove)
