@@ -1,9 +1,0 @@
-[submodule "External/verso-ios"]
-	path = External/verso-ios
-	url = https://github.com/shopgun/verso-ios.git
-[submodule "External/incito-ios"]
-	path = External/incito-ios
-	url = https://github.com/shopgun/incito-ios.git
-[submodule "External/swift-future"]
-	path = External/swift-future
-	url = https://github.com/shopgun/swift-future.git
