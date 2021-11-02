@@ -59,10 +59,10 @@ public class TjekAPI {
     
     /// Do not reference this instance of the TjekAPI until you have called one of the static `initialize` functions.
     public static var shared: TjekAPI {
-        guard let api = _shared else {
+        guard let shared = _shared else {
             fatalError("You must call `TjekAPI.initialize` before you access `TjekAPI.shared`.")
         }
-        return api
+        return shared
     }
     
     // MARK: -

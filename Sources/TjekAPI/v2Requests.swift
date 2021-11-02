@@ -146,7 +146,7 @@ struct v2ImageURLs: Decodable {
         Set([
             thumb.map({ ImageURL(url: $0, width: 177) }),
             view.map({ ImageURL(url: $0, width: 768) }),
-            zoom.map({ ImageURL(url: $0, width: 1536) }),
+            zoom.map({ ImageURL(url: $0, width: 1536) })
         ].compactMap({ $0 }))
     }
 }

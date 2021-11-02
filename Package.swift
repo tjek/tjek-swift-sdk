@@ -17,7 +17,7 @@ let package = Package(
         .library(name: "TjekPublicationReader", targets: ["TjekPublicationReader"]),
         
         // Legacy SDK... do not use.
-        .library(name: "ShopGunSDK", targets: ["ShopGunSDK"]),
+        .library(name: "ShopGunSDK", targets: ["ShopGunSDK"])
     ],
     dependencies: [
         .package(name: "Incito", url: "https://github.com/shopgun/incito-ios.git", from: "1.0.3"),

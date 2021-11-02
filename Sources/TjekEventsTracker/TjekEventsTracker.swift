@@ -92,10 +92,10 @@ public class TjekEventsTracker {
     
     /// Do not reference this instance of the TjekEventsTracker until you have called one of the static `initialize` functions.
     public static var shared: TjekEventsTracker {
-        guard let api = _shared else {
+        guard let shared = _shared else {
             fatalError("You must call `TjekEventsTracker.initialize` before you access `TjekEventsTracker.shared`.")
         }
-        return api
+        return shared
     }
     
     // MARK: -

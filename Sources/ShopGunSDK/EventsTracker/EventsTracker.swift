@@ -8,7 +8,7 @@
 //  Copyright (c) 2018 ShopGun. All rights reserved.
 
 import Foundation
-import TjekEventsTracker
+@_exported import TjekEventsTracker
 
 @available(*, deprecated, message: "Use TjekEventsTracker instead.")
 public final class EventsTracker {
@@ -31,15 +31,8 @@ public final class EventsTracker {
     fileprivate let actualTracker: TjekEventsTracker
     fileprivate var notificationToken: NSObjectProtocol?
     
-    internal init(settings: Settings.EventsTracker, dataStore: ShopGunSDKDataStore?) {
-        let saltStore = SaltStore(
-            get: { dataStore?.get(for: "ShopGunSDK.EventsTracker.ClientId") },
-            set: { dataStore?.set(value: $0, for: "ShopGunSDK.EventsTracker.ClientId") }
-        )
-        
-        let config = try! TjekEventsTracker.Config(trackId: .init(rawValue: settings.appId.rawValue), baseURL: settings.baseURL, dispatchInterval: settings.dispatchInterval, dispatchLimit: settings.dispatchLimit, enabled: settings.enabled)
-        
-        self.actualTracker = TjekEventsTracker(config: config, saltStore: saltStore)
+    internal init(actualTracker: TjekEventsTracker, settings: Settings.EventsTracker) {
+        self.actualTracker = actualTracker
         self.settings = settings
         
         self.notificationToken = NotificationCenter.default.addObserver(forName: TjekEventsTracker.didTrackEventNotification, object: actualTracker, queue: nil, using: { [weak self] in
@@ -87,7 +80,20 @@ extension EventsTracker {
             Logger.log("Configuring", level: .verbose, source: .EventsTracker)
         }
         
-        _shared = EventsTracker(settings: settings, dataStore: dataStore)
+        let saltStore = SaltStore(
+            get: { dataStore.get(for: "ShopGunSDK.EventsTracker.ClientId") },
+            set: { dataStore.set(value: $0, for: "ShopGunSDK.EventsTracker.ClientId") }
+        )
+        let config: TjekEventsTracker.Config
+        do {
+            config = try TjekEventsTracker.Config(trackId: .init(rawValue: settings.appId.rawValue), baseURL: settings.baseURL, dispatchInterval: settings.dispatchInterval, dispatchLimit: settings.dispatchLimit, enabled: settings.enabled)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+        
+        TjekEventsTracker.initialize(config: config, saltStore: saltStore)
+        
+        _shared = EventsTracker(actualTracker: TjekEventsTracker.shared, settings: settings)
     }
 }
 

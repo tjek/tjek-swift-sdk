@@ -9,7 +9,7 @@ public struct Publication_v2: Equatable {
     
     public enum PublicationType: String, Codable, CaseIterable {
         case paged
-        case incito        
+        case incito
     }
     
     /// The unique identifier of this Publication.
