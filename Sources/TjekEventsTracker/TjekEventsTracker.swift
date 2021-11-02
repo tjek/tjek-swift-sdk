@@ -11,24 +11,25 @@ import UIKit
 public class TjekEventsTracker {
     
     public struct Config: Equatable {
-        public enum AppIdentiferTag {}
-        public typealias AppIdentifier = GenericIdentifier<AppIdentiferTag>
+        public enum TrackIdTag {}
+        public typealias TrackId = GenericIdentifier<TrackIdTag>
         
-        public var appId: AppIdentifier
+        public var trackId: TrackId
         
         public var baseURL: URL
         public var dispatchInterval: TimeInterval
         public var dispatchLimit: Int
         public var enabled: Bool
         
-        public init(appId: AppIdentifier, baseURL: URL = URL(string: "https://wolf-api.tjek.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, enabled: Bool = true) throws {
+        /// Throws if `trackId` is an empty string.
+        public init(trackId: TrackId, baseURL: URL = URL(string: "https://wolf-api.tjek.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, enabled: Bool = true) throws {
             
-            guard !appId.rawValue.isEmpty else {
-                struct AppIdEmpty: Error { }
-                throw AppIdEmpty()
+            guard !trackId.rawValue.isEmpty else {
+                struct TrackIdEmpty: Error { }
+                throw TrackIdEmpty()
             }
             
-            self.appId = appId
+            self.trackId = trackId
             self.baseURL = baseURL
             self.dispatchInterval = dispatchInterval
             self.dispatchLimit = dispatchLimit
@@ -74,8 +75,8 @@ public class TjekEventsTracker {
      Initialize the `shared` TjekEventsTracker using the config plist file.
      Config file should be placed in your main bundle, with the name `TjekSDK-Config.plist`.
      
-     Its contents should map to the following dictionary:
-     `["EventsTracker": ["appId": "<your appId>"]]`
+     It must contain the following key/value:
+     - `trackId: "<your trackId>"`
      
      - Note: Throws if the config file is missing or malformed.
      */
@@ -116,7 +117,7 @@ public class TjekEventsTracker {
         self.saltStore = saltStore
         self.viewTokenizer = UniqueViewTokenizer.load(from: saltStore)
         
-        let eventsShipper = EventsShipper(baseURL: config.baseURL, dryRun: config.enabled == false, appContext: .init(id: config.appId))
+        let eventsShipper = EventsShipper(baseURL: config.baseURL, dryRun: config.enabled == false, appContext: .init(id: config.trackId))
         let eventsCache = EventsCache<ShippableEvent>(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.v2.plist")
         
         self.pool = EventsPool(dispatchInterval: config.dispatchInterval,
@@ -156,9 +157,9 @@ extension TjekEventsTracker {
         
         // TODO: Do on shared queue?
         
-        // Mark the event with the tracker's context & appId
+        // Mark the event with the tracker's context & trackId
         let eventToTrack = event
-            .addingAppIdentifier(self.config.appId)
+            .addingTrackId(self.config.trackId)
             .addingContext(self.context)
         
         // push the event to the cached pool
@@ -217,8 +218,7 @@ extension TjekEventsTracker.Config {
         } catch {
             let legacyFileName = "ShopGunSDK-Config.plist"
             if let legacyFilePath = bundle.url(forResource: legacyFileName, withExtension: nil),
-               let legacyConfig = try? load(fromPlist: legacyFilePath) {
-                // legacy plist has same structure as updated plist
+                let legacyConfig = try? load(fromLegacyPlist: legacyFilePath) {
                 return legacyConfig
             } else {
                 throw error
@@ -229,17 +229,31 @@ extension TjekEventsTracker.Config {
     static func load(fromPlist filePath: URL) throws -> Self {
         let data = try Data(contentsOf: filePath, options: [])
         
+        struct Config: Decodable {
+            var trackId: TrackId
+        }
+        
+        let configFile = (try PropertyListDecoder().decode(Config.self, from: data))
+        
+        return try Self(
+            trackId: configFile.trackId
+        )
+    }
+    
+    static func load(fromLegacyPlist filePath: URL) throws -> Self {
+        let data = try Data(contentsOf: filePath, options: [])
+        
         struct ConfigContainer: Decodable {
             struct Values: Decodable {
-                var appId: String
+                var appId: TrackId
             }
             var EventsTracker: Values
         }
         
-        let fileValues = (try PropertyListDecoder().decode(ConfigContainer.self, from: data)).EventsTracker
+        let configFile = (try PropertyListDecoder().decode(ConfigContainer.self, from: data))
         
         return try Self(
-            appId: AppIdentifier(rawValue: fileValues.appId)
+            trackId: configFile.EventsTracker.appId
         )
     }
 }

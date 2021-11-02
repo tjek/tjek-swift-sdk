@@ -44,7 +44,7 @@ struct EventsShipper {
         /// `id` is the same as in the events.
         /// This is used to identify the application for debugging purposes,
         /// even if all events in the events list are invalid.
-        var id: TjekEventsTracker.Config.AppIdentifier
+        var id: TjekEventsTracker.Config.TrackId
         
         /// An integer describing your applications build number.
         /// New versions of the build should have a build number strictly higher than versions that came before it.
@@ -55,7 +55,7 @@ struct EventsShipper {
         /// It can duplicate information also contained in the build number, if this is helpful for debugging.
         var name: String?
         
-        init(id: TjekEventsTracker.Config.AppIdentifier, buildNum: Int? = nil, name: String? = nil) {
+        init(id: TjekEventsTracker.Config.TrackId, buildNum: Int? = nil, name: String? = nil) {
             self.id = id
             
             let appBundle = Bundle.main

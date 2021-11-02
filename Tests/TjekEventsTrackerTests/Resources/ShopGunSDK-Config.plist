@@ -2,7 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>trackId</key>
-	<string>&lt;sdk-demo trackId&gt;</string>
+	<key>EventsTracker</key>
+	<dict>
+		<key>appId</key>
+		<string>&lt;legacy appId&gt;</string>
+	</dict>
 </dict>
 </plist>

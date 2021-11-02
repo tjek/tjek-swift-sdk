@@ -26,7 +26,7 @@ class SDKEventsTests: XCTestCase {
         self.tokenizer = UniqueViewTokenizer(salt: "salty")!
         
         // initialize the shared tracker, as this is used as the default tokenizer.
-        try! TjekEventsTracker.initialize(config: .init(appId: "appId_123"), saltStore: .local(initial: "myhash"))
+        try! TjekEventsTracker.initialize(config: .init(trackId: "appId_123"), saltStore: .local(initial: "myhash"))
     }
     
     func testDummy() {

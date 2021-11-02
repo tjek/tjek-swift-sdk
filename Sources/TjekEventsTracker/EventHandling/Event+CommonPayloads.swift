@@ -7,15 +7,15 @@ import Foundation
 extension Event {
     
     fileprivate enum CommonPayloadKeys: String {
-        case appId                  = "_a" // NOTE: AppId is a semi-special case. For shipping events it is required, but not for constructing events.
+        case trackId                = "_a" // NOTE: trackId is a semi-special case. For shipping events it is required, but not for constructing events.
         case locationHash           = "l.h"
         case locationHashTimestamp  = "l.ht"
         case viewToken              = "vt"
     }
     
-    func addingAppIdentifier(_ appId: TjekEventsTracker.Config.AppIdentifier) -> Event {
+    func addingTrackId(_ trackId: TjekEventsTracker.Config.TrackId) -> Event {
         var event = self
-        event.mergePayload([CommonPayloadKeys.appId.rawValue: .string(appId.rawValue)])
+        event.mergePayload([CommonPayloadKeys.trackId.rawValue: .string(trackId.rawValue)])
         return event
     }
     

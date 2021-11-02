@@ -39,8 +39,9 @@ public class TjekAPI {
      Initialize the `shared` TjekAPI using the config plist file.
      Config file should be placed in your main bundle, with the name `TjekSDK-Config.plist`.
      
-     Its contents should map to the following dictionary:
-     `["API": ["key": "<your api key>", "secret": "<your api secret>"]]`
+     It must contain the following key/values:
+     - `apiKey: "<your api key>"`
+     - `apiSecret: "<your api secret>"`
      
      By default, `clientVersion` is the `CFBundleShortVersionString` of your `Bundle.main`.
      
@@ -157,19 +158,16 @@ extension TjekAPI.Config {
     static func load(fromPlist filePath: URL, clientVersion: String) throws -> Self {
         let data = try Data(contentsOf: filePath, options: [])
         
-        struct ConfigContainer: Decodable {
-            struct Values: Decodable {
-                var key: String
-                var secret: String
-            }
-            var API: Values
+        struct Config: Decodable {
+            var apiKey: String
+            var apiSecret: String
         }
         
-        let fileValues = (try PropertyListDecoder().decode(ConfigContainer.self, from: data)).API
+        let configFile = (try PropertyListDecoder().decode(Config.self, from: data))
         
         return try Self(
-            apiKey: fileValues.key,
-            apiSecret: fileValues.secret,
+            apiKey: configFile.apiKey,
+            apiSecret: configFile.apiSecret,
             clientVersion: clientVersion
         )
     }
