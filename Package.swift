@@ -66,6 +66,8 @@ let package = Package(
                     .target(name: "TjekAPI"),
                     .target(name: "TjekEventsTracker"),
                     
+                    .product(name: "Incito", package: "Incito"),
+                    .product(name: "Future", package: "Future"),
                     .product(name: "Verso", package: "Verso"),
                     .product(name: "Kingfisher", package: "Kingfisher")
                 ],

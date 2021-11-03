@@ -6,27 +6,31 @@ import Foundation
 import TjekUtils
 
 public struct APIRequestEncoder {
-    var encode: (_ clientEncoder: JSONEncoder) throws -> Data?
+    public var encode: (_ clientEncoder: JSONEncoder) throws -> Data?
     
-    static func encodable<Input: Encodable>(_ input: Input, _ customEncoder: JSONEncoder? = nil) -> APIRequestEncoder {
+    public init(_ encode: @escaping (_ clientEncoder: JSONEncoder) throws -> Data?) {
+        self.encode = encode
+    }
+    
+    public static func encodable<Input: Encodable>(_ input: Input, _ customEncoder: JSONEncoder? = nil) -> APIRequestEncoder {
         APIRequestEncoder { clientEncoder in
             try (customEncoder ?? clientEncoder).encode(input)
         }
     }
-    static func args(_ args: [String: JSONValue], _ customEncoder: JSONEncoder? = nil) -> APIRequestEncoder {
+    public static func args(_ args: [String: JSONValue], _ customEncoder: JSONEncoder? = nil) -> APIRequestEncoder {
         encodable(args, customEncoder)
     }
     
     /// Adds a callback to the encoding action when it's performed.
     /// Use this to validate the data is as expected
-    func debugging(_ resultViewer: @escaping (Data?) -> Void) -> Self {
+    public func debugging(_ resultViewer: @escaping (Data?) -> Void) -> Self {
         APIRequestEncoder {
             let data = try self.encode($0)
             resultViewer(data)
             return data
         }
     }
-    func printDebugData(prefix: String = "") -> Self {
+    public func printDebugData(prefix: String = "") -> Self {
         self.debugging {
             print(prefix + ($0.flatMap({ String(data: $0, encoding: .utf8) }) ?? "<No Data>"))
         }
@@ -34,9 +38,13 @@ public struct APIRequestEncoder {
 }
 
 public struct APIRequestDecoder<ResponseType> {
-    var decode: (Data, _ clientDecoder: JSONDecoder) throws -> ResponseType
+    public var decode: (Data, _ clientDecoder: JSONDecoder) throws -> ResponseType
     
-    func map<NewResponseType>(_ transform: @escaping (ResponseType) -> NewResponseType) -> APIRequestDecoder<NewResponseType> {
+    public init(_ decode: @escaping (Data, _ clientDecoder: JSONDecoder) throws -> ResponseType) {
+        self.decode = decode
+    }
+    
+    public func map<NewResponseType>(_ transform: @escaping (ResponseType) -> NewResponseType) -> APIRequestDecoder<NewResponseType> {
         APIRequestDecoder<NewResponseType> { data, clientDecoder in
             transform(try decode(data, clientDecoder))
         }
@@ -44,14 +52,14 @@ public struct APIRequestDecoder<ResponseType> {
     
     /// Adds a callback to the decoding action when it's performed.
     /// Use this to validate the data is as expected
-    func debugging(_ resultViewer: @escaping (Data, ResponseType) -> Void) -> Self {
+    public func debugging(_ resultViewer: @escaping (Data, ResponseType) -> Void) -> Self {
         APIRequestDecoder { data, clientDecoder in
             let response = try decode(data, clientDecoder)
             resultViewer(data, response)
             return response
         }
     }
-    func printDebugData(prefix: String = "") -> Self {
+    public func printDebugData(prefix: String = "") -> Self {
         self.debugging { data, _ in
             print(prefix + (String(data: data, encoding: .utf8) ?? "<No Data>"))
         }

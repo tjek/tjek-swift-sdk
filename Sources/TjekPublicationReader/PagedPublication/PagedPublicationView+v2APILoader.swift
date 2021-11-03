@@ -7,6 +7,67 @@ import Foundation
 import Future
 import TjekAPI
 
+//public typealias PublicationLoader = Future<Result<Publication_v2, APIError>>
+//
+//extension PublicationLoader {
+//    public static func v2APILoader(publicationId: PublicationId, api: TjekAPI = .shared) -> PublicationLoader {
+//        api.send(.getPublication(withId: publicationId))
+//    }
+//    public static func modelLoader(_ publication: Publication_v2) -> PublicationLoader {
+//        .init(value: .success(publication))
+//    }
+//}
+//
+//public typealias PagedPublicationLoader = Future<Result<(publication: Publication_v2, pagesLoader: Future<Result<[PublicationPage_v2], APIError>>, hotspotsLoader: Future<Result<[PublicationHotspot_v2], APIError>>), APIError>>
+//
+//extension PagedPublicationLoader {
+//    func startLoading(publicationLoaded: @escaping (Result<Publication_v2, APIError>) -> Void,
+//                      pagesLoaded: @escaping (Result<[PublicationPage_v2], APIError>) -> Void,
+//                      hotspotsLoaded: @escaping (Result<[PublicationHotspot_v2], APIError>) -> Void) {
+//        self
+//            .receiving(on: .main)
+//            .run {
+//                switch $0 {
+//                case let .success((publication, pagesLoader, hotspotsLoader)):
+//                    publicationLoaded(.success(publication))
+//
+//                    pagesLoader
+//                        .receiving(on: .main)
+//                        .run(pagesLoaded)
+//
+//                    hotspotsLoader
+//                        .receiving(on: .main)
+//                        .run(hotspotsLoaded)
+//
+//                case let .failure(error):
+//                    publicationLoaded(.failure(error))
+//                }
+//            }
+//    }
+//    public static func v2APILoader(publicationLoader: PublicationLoader, api: TjekAPI = .shared) -> PagedPublicationLoader {
+//        publicationLoader
+//            .mapResult({ publication in
+//                (
+//                    publication,
+//                    api.send(.getPublicationPages(withId: publication.id, aspectRatio: publication.aspectRatio)),
+//                    api.send(.getPublicationHotspots(withId: publication.id, aspectRatio: publication.aspectRatio))
+//                )
+//            })
+//    }
+//
+//    public static func v2APILoader(publicationId: PublicationId, api: TjekAPI = .shared) -> PagedPublicationLoader {
+//        v2APILoader(publicationLoader: .v2APILoader(publicationId: publicationId, api: api), api: api)
+//    }
+//
+//    public static func modelLoader(publication: Publication_v2, pages: [PublicationPage_v2], hotspots: [PublicationHotspot_v2]) -> PagedPublicationLoader {
+//        .init(value: .success((
+//            publication,
+//            .init(value: .success(pages)),
+//            .init(value: .success(hotspots))
+//        )))
+//    }
+//}
+
 extension PagedPublicationView {
 
     class v2APILoader: PagedPublicationViewDataLoader {

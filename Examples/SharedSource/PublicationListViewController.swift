@@ -43,11 +43,11 @@ class PublicationListViewController: UIViewController {
     func openIncito(for publication: Publication_v2) {
         
         // Create an instance of `IncitoLoaderViewController`
-//        let incitoVC = DemoIncitoViewController()
-//
-//        incitoVC.load(publication: publication)
-//
-//        self.navigationController?.pushViewController(incitoVC, animated: true)
+        let incitoVC = DemoIncitoViewController()
+
+        incitoVC.load(publication: publication)
+
+        self.navigationController?.pushViewController(incitoVC, animated: true)
     }
     
     func openPagedPub(for publication: Publication_v2) {
