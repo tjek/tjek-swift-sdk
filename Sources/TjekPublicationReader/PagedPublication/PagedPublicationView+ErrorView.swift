@@ -7,11 +7,13 @@ import TjekUtils
 import TjekAPI
 
 extension Bundle {
-    #if SWIFT_PACKAGE
-    fileprivate static let ppResourceBundle = Bundle.module
-    #else
-    fileprivate static let ppResourceBundle = Bundle.shopgunSDK
-    #endif
+    fileprivate static var ppResourceBundle: Bundle {
+        #if SWIFT_PACKAGE
+        return .module
+        #else
+        return Bundle(for: PagedPublicationView.self)
+        #endif
+    }
 }
 
 extension PagedPublicationView {
