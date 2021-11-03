@@ -38,8 +38,9 @@ let package = Package(
         // MARK: -
         .target(name: "TjekAPI",
                 dependencies: [
-                    .product(name: "Future", package: "Future"),
-                    .target(name: "TjekUtils")
+                    .target(name: "TjekUtils"),
+                    
+                    .product(name: "Future", package: "Future")
                 ]),
         .testTarget(name: "TjekAPITests",
                     dependencies: [.target(name: "TjekAPI")],
@@ -51,6 +52,7 @@ let package = Package(
                 dependencies: [
                     .target(name: "TjekAPI"),
                     .target(name: "TjekUtils"),
+                    
                     .product(name: "Valet", package: "Valet")
                 ]),
         .testTarget(name: "TjekEventsTrackerTests",
@@ -62,8 +64,15 @@ let package = Package(
         .target(name: "TjekPublicationReader",
                 dependencies: [
                     .target(name: "TjekAPI"),
-                    .target(name: "TjekEventsTracker")
-                ]),
+                    .target(name: "TjekEventsTracker"),
+                    
+                    .product(name: "Verso", package: "Verso"),
+                    .product(name: "Kingfisher", package: "Kingfisher")
+                ],
+                resources: [
+                    .process("PagedPublication/Resources")
+                ]
+               ),
         
         // MARK: -
         .target(name: "TjekUtils",
@@ -74,13 +83,13 @@ let package = Package(
         .target(
             name: "ShopGunSDK",
             dependencies: [
+                .target(name: "TjekAPI"),
+                .target(name: "TjekEventsTracker"),
+                
                 .product(name: "Incito", package: "Incito"),
                 .product(name: "Future", package: "Future"),
                 .product(name: "Verso", package: "Verso"),
-                .product(name: "Kingfisher", package: "Kingfisher"),
-                
-                .target(name: "TjekAPI"),
-                .target(name: "TjekEventsTracker")
+                .product(name: "Kingfisher", package: "Kingfisher")
             ],
             resources: [
                 .process("IncitoPublication/Resources/IncitoViewer.graphql"),

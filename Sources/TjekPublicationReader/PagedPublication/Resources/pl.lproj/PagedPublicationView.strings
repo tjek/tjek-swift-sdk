@@ -1,0 +1,18 @@
+// Requested catalog is unavailable
+"errorView.noContent.title" = "Treści niedostępne";
+"errorView.noContent.message" = "Niestety nie udało się załadować żądanej publikacji.";
+
+// No Internet connection
+"errorView.noInternet.title" = "Brak internetu";
+"errorView.noInternet.message" = "Proszę sprawdzić połączenie sieciowe.";
+
+// Service unavailable
+"errorView.serviceUnavailable.title" = "Ups, coś poszło nie tak";
+"errorView.serviceUnavailable.message" = "Dziękujemy, otrzymaliśmy powiadomienie o problemie i postaramy się go jak najszybciej rozwiązać.";
+
+// Planned Maintenance
+"errorView.plannedMaintenance.title" = "Konserwacja";
+"errorView.plannedMaintenance.message" = "Pracujemy nad przywróceniem usługi Dziękujemy za cierpliwość.";
+
+// Retry Button
+"errorView.retryButton.title" = "Spróbuj ponownie";

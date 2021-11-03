@@ -2,7 +2,7 @@
 ///  Copyright (c) 2019 Tjek. All rights reserved.
 ///
 
-import TjekAPI
+import TjekSDK
 import UIKit
 
 class PublicationListContentsViewController: UITableViewController {

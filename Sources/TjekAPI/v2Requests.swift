@@ -137,12 +137,12 @@ extension PaginatedRequest {
 }
 
 /// A convert the v2 image response dictionary into a set of sized image urls
-struct v2ImageURLs: Decodable {
-    let thumb: URL?
-    let view: URL?
-    let zoom: URL?
+public struct v2ImageURLs: Decodable {
+    public let thumb: URL?
+    public let view: URL?
+    public let zoom: URL?
     
-    var imageURLSet: Set<ImageURL> {
+    public var imageURLSet: Set<ImageURL> {
         Set([
             thumb.map({ ImageURL(url: $0, width: 177) }),
             view.map({ ImageURL(url: $0, width: 768) }),

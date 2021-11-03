@@ -53,10 +53,10 @@ class PublicationListViewController: UIViewController {
     func openPagedPub(for publication: Publication_v2) {
         
         // Create a view controller containing a `PagedPublicationView`
-//        let pagedPubVC = DemoPagedPublicationViewController()
-//
-//        pagedPubVC.load(publication: publication)
-//
-//        self.navigationController?.pushViewController(pagedPubVC, animated: true)
+        let pagedPubVC = DemoPagedPublicationViewController()
+
+        pagedPubVC.load(publication: publication)
+
+        self.navigationController?.pushViewController(pagedPubVC, animated: true)
     }
 }

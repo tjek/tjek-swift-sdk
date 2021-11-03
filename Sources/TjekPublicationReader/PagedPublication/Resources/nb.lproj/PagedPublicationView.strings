@@ -1,0 +1,18 @@
+// Requested catalog is unavailable
+"errorView.noContent.title" = "Innhold ikke tilgjengelig";
+"errorView.noContent.message" = "Vi kunne dessverre ikke laste inn ønsket publikasjon.";
+
+// No Internet connection
+"errorView.noInternet.title" = "Ingen internettilgang";
+"errorView.noInternet.message" = "Kontroller nettilkoblingen din.";
+
+// Service unavailable
+"errorView.serviceUnavailable.title" = "Oops, noe gikk galt";
+"errorView.serviceUnavailable.message" = "Takk, vi har blitt informert om problemet og jobber med å løse det så fort som mulig.";
+
+// Planned Maintenance
+"errorView.plannedMaintenance.title" = "Vedlikehold";
+"errorView.plannedMaintenance.message" = "Vi jobber med å gjenopprette normal drift. Takk for din tålmodighet.";
+
+// Retry Button
+"errorView.retryButton.title" = "Forsøk igjen";

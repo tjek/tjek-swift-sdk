@@ -149,8 +149,199 @@ extension Branding_v2: Decodable {
 #if canImport(UIKit)
 import UIKit
 extension Branding_v2 {
-    var color: UIColor? {
+    public var color: UIColor? {
         colorHex.flatMap(UIColor.init(hex:))
     }
 }
 #endif
+
+// MARK: -
+
+public struct Offer_v2: Equatable {
+    public var id: OfferId
+    public var heading: String
+    public var description: String?
+    public var images: Set<ImageURL>?
+    public var webshopURL: URL?
+    
+    public var runDateRange: Range<Date>
+    public var publishDate: Date?
+    
+    public var price: Price?
+    public var quantity: Quantity?
+    
+    public var branding: Branding_v2?
+    
+    public var publication: PublicationPageReference?
+    public var businessId: BusinessId?
+    /// The id of the nearest store. Only available if a location was provided when fetching the offer.
+    public var storeId: StoreId?
+    
+    public struct PublicationPageReference: Equatable {
+        public var id: PublicationId
+        public var pageIndex: Int?
+    }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Offer_v2: Identifiable { }
+
+extension Offer_v2: Decodable {
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case heading
+        case description
+        case images
+        case links
+        case runFromDateStr     = "run_from"
+        case runTillDateStr     = "run_till"
+        case publishDateStr     = "publish"
+        case price              = "pricing"
+        case quantity
+        case branding
+        case catalogId          = "catalog_id"
+        case catalogPage        = "catalog_page"
+        case dealerId           = "dealer_id"
+        case storeId            = "store_id"
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.id = try values.decode(OfferId.self, forKey: .id)
+        self.heading = try values.decode(String.self, forKey: .heading)
+        self.description = try? values.decode(String.self, forKey: .description)
+        
+        self.images = (try? values.decode(v2ImageURLs.self, forKey: .images))?.imageURLSet ?? []
+        
+        if let links = try? values.decode([String: URL].self, forKey: .links) {
+            self.webshopURL = links["webshop"]
+        }
+        
+        let fromDate = (try? values.decode(Date.self, forKey: .runFromDateStr)) ?? Date.distantPast
+        let tillDate = (try? values.decode(Date.self, forKey: .runTillDateStr)) ?? Date.distantFuture
+        // make sure range is not malformed
+        self.runDateRange = min(tillDate, fromDate) ..< max(tillDate, fromDate)
+        
+        self.publishDate = try? values.decode(Date.self, forKey: .publishDateStr)
+        
+        self.price = try? values.decode(Price.self, forKey: .price)
+        self.quantity = try? values.decode(Quantity.self, forKey: .quantity)
+        
+        self.branding = try? values.decode(Branding_v2.self, forKey: .branding)
+        
+        if let catalogId = try? values.decode(PublicationId.self, forKey: .catalogId) {
+            let catalogPageNum = try? values.decode(Int.self, forKey: .catalogPage)
+            // incito publications have pageNum == 0, so in that case set to nil.
+            // otherwise, convert pageNum to index.
+            self.publication = PublicationPageReference(
+                id: catalogId,
+                pageIndex: catalogPageNum.flatMap({ $0 > 0 ? $0 - 1 : nil })
+            )
+        }
+        
+        self.businessId = try? values.decode(BusinessId.self, forKey: .dealerId)
+        self.storeId = try? values.decode(StoreId.self, forKey: .storeId)
+    }
+}
+
+extension Offer_v2 {
+    
+    public struct Price: Decodable, Equatable {
+        public var currency: String
+        public var price: Double
+        public var prePrice: Double?
+        
+        public init(currency: String, price: Double, prePrice: Double?) {
+            self.currency = currency
+            self.price = price
+            self.prePrice = prePrice
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case currency
+            case price
+            case prePrice = "pre_price"
+        }
+    }
+    
+    public struct Quantity: Decodable, Equatable {
+        public var unit: QuantityUnit?
+        public var size: QuantityRange
+        public var pieces: QuantityRange
+        
+        public struct QuantityRange: Equatable {
+            public var from: Double?
+            public var to: Double?
+            
+            public init(from: Double?, to: Double?) {
+                self.from = from
+                self.to = to
+            }
+        }
+        
+        public init(unit: QuantityUnit?, size: QuantityRange, pieces: QuantityRange) {
+            self.unit = unit
+            self.size = size
+            self.pieces = pieces
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case unit
+            case size
+            case pieces
+        }
+        
+        public init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            
+            self.unit = try? values.decode(QuantityUnit.self, forKey: .unit)
+            
+            if let sizeDict = try? values.decode([String: Double].self, forKey: .size) {
+                self.size = QuantityRange(from: sizeDict["from"], to: sizeDict["to"])
+            } else {
+                self.size = QuantityRange(from: nil, to: nil)
+            }
+            
+            if let piecesDict = try? values.decode([String: Double].self, forKey: .pieces) {
+                self.pieces = QuantityRange(from: piecesDict["from"], to: piecesDict["to"])
+            } else {
+                self.pieces = QuantityRange(from: nil, to: nil)
+            }
+        }
+    }
+    
+    public struct QuantityUnit: Decodable, Equatable {
+        
+        public var symbol: String
+        public var siUnit: SIUnit
+        
+        public struct SIUnit: Decodable, Equatable {
+            public var symbol: String
+            public var factor: Double
+            
+            public init(symbol: String, factor: Double) {
+                self.symbol = symbol
+                self.factor = factor
+            }
+        }
+        
+        public init(symbol: String, siUnit: SIUnit) {
+            self.symbol = symbol
+            self.siUnit = siUnit
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case symbol
+            case si
+        }
+        
+        public init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            
+            self.symbol = try values.decode(String.self, forKey: .symbol)
+            self.siUnit = try values.decode(SIUnit.self, forKey: .si)
+        }
+    }
+}
