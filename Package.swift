@@ -14,7 +14,7 @@ let package = Package(
         .library(name: "TjekSDK", targets: ["TjekSDK"]),
         .library(name: "TjekAPI", targets: ["TjekAPI"]),
         .library(name: "TjekEventsTracker", targets: ["TjekEventsTracker"]),
-        .library(name: "TjekPublicationReader", targets: ["TjekPublicationReader"]),
+        .library(name: "TjekCatalogViewer", targets: ["TjekCatalogViewer"]),
         
         // Legacy SDK... do not use.
         .library(name: "ShopGunSDK", targets: ["ShopGunSDK"])
@@ -32,7 +32,7 @@ let package = Package(
                 dependencies: [
                     .target(name: "TjekAPI"),
                     .target(name: "TjekEventsTracker"),
-                    .target(name: "TjekPublicationReader", condition: .when(platforms: [.iOS]))
+                    .target(name: "TjekCatalogViewer", condition: .when(platforms: [.iOS]))
                 ]),
         
         // MARK: -
@@ -61,7 +61,7 @@ let package = Package(
                    ),
         
         // MARK: -
-        .target(name: "TjekPublicationReader",
+        .target(name: "TjekCatalogViewer",
                 dependencies: [
                     .target(name: "TjekAPI"),
                     .target(name: "TjekEventsTracker"),

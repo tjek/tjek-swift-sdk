@@ -12,7 +12,6 @@
 		AE168678224A15EE00332DA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE168670224A15EE00332DA6 /* LaunchScreen.storyboard */; };
 		AE168679224A15EE00332DA6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE168672224A15EE00332DA6 /* Main.storyboard */; };
 		AE16867A224A15EE00332DA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE168674224A15EE00332DA6 /* AppDelegate.swift */; };
-		AE168697224A2A8500332DA6 /* ShopGunSDK-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE168696224A2A8500332DA6 /* ShopGunSDK-Config.plist */; };
 		AE168699224A2B2D00332DA6 /* UIViewController+Cycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE168698224A2B2D00332DA6 /* UIViewController+Cycle.swift */; };
 		AE16869B224A2B7400332DA6 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE16869A224A2B7400332DA6 /* LoadingViewController.swift */; };
 		AE16869D224A2BD100332DA6 /* ErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE16869C224A2BD100332DA6 /* ErrorViewController.swift */; };
@@ -20,6 +19,7 @@
 		AE1686A1224A5C0200332DA6 /* DemoPagedPublicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1686A0224A5C0200332DA6 /* DemoPagedPublicationViewController.swift */; };
 		AE1686A3224A72B800332DA6 /* PublicationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1686A2224A72B800332DA6 /* PublicationListViewController.swift */; };
 		AE1686A5224A76DD00332DA6 /* PublicationListContentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1686A4224A76DD00332DA6 /* PublicationListContentsViewController.swift */; };
+		AE9E92582732BC2D00782364 /* TjekSDK-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE9E92572732BC2D00782364 /* TjekSDK-Config.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,7 +32,6 @@
 		AE168673224A15EE00332DA6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		AE168674224A15EE00332DA6 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE168675224A15EE00332DA6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AE168696224A2A8500332DA6 /* ShopGunSDK-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ShopGunSDK-Config.plist"; sourceTree = "<group>"; };
 		AE168698224A2B2D00332DA6 /* UIViewController+Cycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Cycle.swift"; sourceTree = "<group>"; };
 		AE16869A224A2B7400332DA6 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		AE16869C224A2BD100332DA6 /* ErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorViewController.swift; sourceTree = "<group>"; };
@@ -42,6 +41,7 @@
 		AE1686A4224A76DD00332DA6 /* PublicationListContentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicationListContentsViewController.swift; sourceTree = "<group>"; };
 		AE4BDDCB22831590008DB391 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
 		AE69DA5D2375740800A5A360 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		AE9E92572732BC2D00782364 /* TjekSDK-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TjekSDK-Config.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,7 +88,7 @@
 		AE16866D224A15EE00332DA6 /* SharedSource */ = {
 			isa = PBXGroup;
 			children = (
-				AE168696224A2A8500332DA6 /* ShopGunSDK-Config.plist */,
+				AE9E92572732BC2D00782364 /* TjekSDK-Config.plist */,
 				AE168674224A15EE00332DA6 /* AppDelegate.swift */,
 				AE16866E224A15EE00332DA6 /* RootViewController.swift */,
 				AE1686A2224A72B800332DA6 /* PublicationListViewController.swift */,
@@ -174,8 +174,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE9E92582732BC2D00782364 /* TjekSDK-Config.plist in Resources */,
 				AE168679224A15EE00332DA6 /* Main.storyboard in Resources */,
-				AE168697224A2A8500332DA6 /* ShopGunSDK-Config.plist in Resources */,
 				AE168678224A15EE00332DA6 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -4,8 +4,8 @@
 
 @_exported import TjekAPI
 @_exported import TjekEventsTracker
-#if canImport(TjekPublicationReader)
-@_exported import TjekPublicationReader
+#if canImport(TjekCatalogViewer)
+@_exported import TjekCatalogViewer
 #endif
 
 public struct TjekSDK {
