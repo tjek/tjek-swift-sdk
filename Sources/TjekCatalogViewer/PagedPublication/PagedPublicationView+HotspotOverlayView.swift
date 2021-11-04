@@ -123,8 +123,6 @@ extension PagedPublicationView {
             doubleTapGesture!.numberOfTapsRequired = 2
             doubleTapGesture!.delegate = self
             
-            tapGesture?.require(toFail: longPressGesture!)
-            
             addGestureRecognizer(longPressGesture!)
             addGestureRecognizer(tapGesture!)
             addGestureRecognizer(touchGesture!)
