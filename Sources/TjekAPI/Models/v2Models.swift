@@ -173,7 +173,7 @@ public struct Offer_v2: Equatable {
     public var branding: Branding_v2?
     
     public var publication: PublicationPageReference?
-    public var businessId: BusinessId?
+    public var businessId: BusinessId
     /// The id of the nearest store. Only available if a location was provided when fetching the offer.
     public var storeId: StoreId?
     
@@ -241,7 +241,7 @@ extension Offer_v2: Decodable {
             )
         }
         
-        self.businessId = try? values.decode(BusinessId.self, forKey: .dealerId)
+        self.businessId = try values.decode(BusinessId.self, forKey: .dealerId)
         self.storeId = try? values.decode(StoreId.self, forKey: .storeId)
     }
 }
