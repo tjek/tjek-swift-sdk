@@ -59,7 +59,7 @@ public final class KeychainDataStore {
 
 extension KeychainDataStore {
 
-    func set(value: String?, for key: String) {
+    public func set(value: String?, for key: String) {
         if let val = value {
             try? valet?.setString(val, forKey: key)
         } else {
@@ -67,7 +67,7 @@ extension KeychainDataStore {
         }
     }
     
-    func get(for key: String) -> String? {
+    public func get(for key: String) -> String? {
         return try? valet?.string(forKey: key)
     }
 }
