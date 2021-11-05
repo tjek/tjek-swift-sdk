@@ -4,7 +4,8 @@
 
 @_exported import TjekAPI
 @_exported import TjekEventsTracker
-#if canImport(TjekCatalogViewer)
+@_exported import TjekUtils
+#if os(iOS)
 @_exported import TjekCatalogViewer
 #endif
 

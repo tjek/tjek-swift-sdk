@@ -13,6 +13,10 @@ public struct APIv4Request<ResponseType> {
     }
 }
 
+extension APIRequest {
+    public var v4Request: APIv4Request<ResponseType> { APIv4Request<ResponseType>(self) }
+}
+
 extension TjekAPI {
     
     /// Send an API Request to the v4 API client.

@@ -13,6 +13,10 @@ public struct APIv2Request<ResponseType> {
     }
 }
 
+extension APIRequest {
+    public var v2Request: APIv2Request<ResponseType> { APIv2Request<ResponseType>(self) }
+}
+
 extension TjekAPI {
     
     /// Send an API Request to the v4 API client.
@@ -100,10 +104,10 @@ extension APIv2Request {
 // MARK: - v2 Request Utils
 
 extension LocationQuery {
-    func v2RequestParams() -> [String: String] {
+    public func v2RequestParams() -> [String: String] {
         var params = [
-            "r_lat": String(coordinate.lat),
-            "r_lng": String(coordinate.lng)
+            "r_lat": String(coordinate.latitude),
+            "r_lng": String(coordinate.longitude)
         ]
         
         if let radius = maxRadius {
@@ -114,21 +118,21 @@ extension LocationQuery {
 }
 
 extension PaginatedRequest {
-    func v2RequestParams() -> [String: String] where CursorType == Int {
+    public func v2RequestParams() -> [String: String] where CursorType == Int {
         [
             "offset": String(self.startCursor),
             "limit": String(self.itemCount)
         ]
     }
     
-    func v2RequestParams() -> [String: String] where CursorType == String {
+    public func v2RequestParams() -> [String: String] where CursorType == String {
         [
             "offset": self.startCursor,
             "limit": String(self.itemCount)
         ]
     }
     
-    func v2RequestParams() -> [String: String] where CursorType == String? {
+    public func v2RequestParams() -> [String: String] where CursorType == String? {
         [
             "offset": self.startCursor,
             "limit": String(self.itemCount)

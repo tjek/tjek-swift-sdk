@@ -10,7 +10,7 @@ public class APIClient {
     
     public typealias ResponseListener = (queue: DispatchQueue, callback: (_ endpointName: String, Result<HTTPURLResponse, APIError>) -> Void)
     
-    public let baseURL: URL
+    public var baseURL: URL
     public let defaultEncoder: JSONEncoder
     public let defaultDecoder: JSONDecoder
     

@@ -130,7 +130,7 @@ extension PaginatedResponse where CursorType == Int {
 }
 
 extension APIRequest {
-    func paginatedResponse<ResponseElement>(paginatedRequest: PaginatedRequest<Int>) -> APIRequest<PaginatedResponse<ResponseElement, Int>> where ResponseType == [ResponseElement] {
+    public func paginatedResponse<ResponseElement>(paginatedRequest: PaginatedRequest<Int>) -> APIRequest<PaginatedResponse<ResponseElement, Int>> where ResponseType == [ResponseElement] {
         self.map({
             PaginatedResponse(
                 results: $0,
@@ -148,7 +148,7 @@ import Future
 
 extension Future {
     /// Makes a Future that repeatedly performs the paginatedFuture until the response says there are no more pages.
-    static func getAllPages<ResultsType, CursorType, ErrorType: Error>(
+    public static func getAllPages<ResultsType, CursorType, ErrorType: Error>(
         for paginatedFuture: @escaping (_ afterCursor: CursorType?) -> Future<Result<PaginatedResponse<ResultsType, CursorType>, ErrorType>>
     ) -> Future<Result<[ResultsType], ErrorType>> {
         func getNextPage(after cursor: CursorType?, resultsSoFar: [ResultsType]) -> Future<Result<[ResultsType], ErrorType>> {

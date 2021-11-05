@@ -66,10 +66,10 @@ let package = Package(
                     .target(name: "TjekAPI"),
                     .target(name: "TjekEventsTracker"),
                     
-                    .product(name: "Incito", package: "Incito"),
-                    .product(name: "Future", package: "Future"),
-                    .product(name: "Verso", package: "Verso"),
-                    .product(name: "Kingfisher", package: "Kingfisher")
+                    .product(name: "Incito", package: "Incito", condition: .when(platforms: [.iOS])),
+                    .product(name: "Future", package: "Future", condition: .when(platforms: [.iOS])),
+                    .product(name: "Verso", package: "Verso", condition: .when(platforms: [.iOS])),
+                    .product(name: "Kingfisher", package: "Kingfisher", condition: .when(platforms: [.iOS]))
                 ],
                 resources: [
                     .process("PagedPublication/Resources")

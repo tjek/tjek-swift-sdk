@@ -161,7 +161,7 @@ public struct Offer_v2: Equatable {
     public var id: OfferId
     public var heading: String
     public var description: String?
-    public var images: Set<ImageURL>?
+    public var images: Set<ImageURL>
     public var webshopURL: URL?
     
     public var runDateRange: Range<Date>
@@ -344,4 +344,138 @@ extension Offer_v2 {
             self.siUnit = try values.decode(SIUnit.self, forKey: .si)
         }
     }
+}
+
+// MARK: -
+
+public struct Business_v2: Equatable {
+    public var id: BusinessId
+    public var name: String
+    public var website: URL?
+    public var description: String?
+    public var descriptionMarkdown: String?
+    public var logoOnWhite: URL
+    public var logoOnBrandColor: URL
+    public var brandColorHex: String?
+    public var country: String
+    public var favoriteCount: Int
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Business_v2: Identifiable { }
+
+extension Business_v2: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case website
+        case description
+        case descriptionMarkdown = "description_markdown"
+        case logoOnWhite = "logo"
+        case colorStr = "color"
+        case pageFlip = "pageflip"
+        case country
+        case favoriteCount = "favorite_count"
+        
+        enum PageFlipKeys: String, CodingKey {
+            case logo
+            case colorStr = "color"
+        }
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.id = try values.decode(BusinessId.self, forKey: .id)
+        self.name = try values.decode(String.self, forKey: .name)
+        self.website = try? values.decode(URL.self, forKey: .website)
+        self.description = try? values.decode(String.self, forKey: .description)
+        self.descriptionMarkdown = try? values.decode(String.self, forKey: .descriptionMarkdown)
+        self.logoOnWhite = try values.decode(URL.self, forKey: .logoOnWhite)
+        self.brandColorHex = try? values.decode(String.self, forKey: .colorStr)
+        
+        let pageflipValues = try values.nestedContainer(keyedBy: CodingKeys.PageFlipKeys.self, forKey: .pageFlip)
+        self.logoOnBrandColor = try pageflipValues.decode(URL.self, forKey: .logo)
+
+        self.country = (try values.decode(Country_v2.self, forKey: .country)).id
+        self.favoriteCount = try values.decode(Int.self, forKey: .favoriteCount)
+    }
+}
+
+#if canImport(UIKit)
+import UIKit
+extension Business_v2 {
+    public var brandColor: UIColor? {
+        brandColorHex.flatMap(UIColor.init(hex:))
+    }
+}
+#endif
+
+// MARK: -
+
+public struct Store_v2: Equatable {
+    public var id: StoreId
+    
+    public var street: String?
+    public var city: String?
+    public var zipCode: String?
+    public var country: String
+    public var coordinate: Coordinate
+    
+    public var businessId: BusinessId
+    public var branding: Branding_v2
+    public var contact: String?
+    
+    public init(id: StoreId, street: String?, city: String?, zipCode: String?, country: String, coordinate: Coordinate, businessId: BusinessId, branding: Branding_v2, contact: String?) {
+        self.id = id
+        self.street = street
+        self.city = city
+        self.zipCode = zipCode
+        self.country = country
+        self.coordinate = coordinate
+        self.businessId = businessId
+        self.branding = branding
+        self.contact = contact
+    }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Store_v2: Identifiable { }
+
+extension Store_v2: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case street
+        case city
+        case zipCode    = "zip_code"
+        case country
+        case latitude
+        case longitude
+        case dealerId   = "dealer_id"
+        case branding
+        case contact
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.id = try container.decode(StoreId.self, forKey: .id)
+        self.street = try? container.decode(String.self, forKey: .street)
+        self.city = try? container.decode(String.self, forKey: .city)
+        self.zipCode = try? container.decode(String.self, forKey: .zipCode)
+        self.country = (try container.decode(Country_v2.self, forKey: .country)).id
+        
+        let lat = try container.decode(Double.self, forKey: .latitude)
+        let lng = try container.decode(Double.self, forKey: .longitude)
+        self.coordinate = Coordinate(latitude: lat, longitude: lng)
+
+        self.businessId = try container.decode(BusinessId.self, forKey: .dealerId)
+        self.branding = try container.decode(Branding_v2.self, forKey: .branding)
+        self.contact = try? container.decode(String.self, forKey: .contact)
+    }
+}
+
+/// just needed for decoding purposes
+struct Country_v2: Decodable {
+    var id: String
 }

@@ -32,7 +32,11 @@ public class TjekAPI {
     
     /// Initialize the `shared` TjekAPI using the specified `Config`.
     public static func initialize(config: Config) {
-        _shared = TjekAPI(config: config)
+        if let currShared = _shared {
+            currShared.config = config
+        } else {
+            _shared = TjekAPI(config: config)
+        }
     }
     
     /**
@@ -67,7 +71,18 @@ public class TjekAPI {
     
     // MARK: -
     
-    public let config: Config
+    public var config: Config {
+        didSet {
+            v2.baseURL = config.baseURL.appendingPathComponent("v2")
+            v2.setAPIKey(config.apiKey, apiSecret: config.apiSecret)
+            v2.setClientVersion(config.clientVersion)
+            
+            v4.baseURL = config.baseURL.appendingPathComponent("v4/rpc")
+            v4.setAPIKey(config.apiKey, apiSecret: config.apiSecret)
+            v4.setClientVersion(config.clientVersion)
+        }
+    }
+    
     public let v2: APIClient
     public let v4: APIClient
     
@@ -128,6 +143,21 @@ public class TjekAPI {
         )
         v4.setAPIKey(config.apiKey, apiSecret: config.apiSecret)
         v4.setClientVersion(config.clientVersion)
+    }
+}
+
+extension TjekAPI {
+    /// Update the AuthToken on all the API clients
+    public func setAuthToken(_ authToken: AuthToken?) {
+        self.v2.setAuthToken(authToken)
+        self.v4.setAuthToken(authToken)
+    }
+    
+    /// The response listener callback will be called on the specified queue whenever a request completes. It receives the url response or the error.
+    /// It is added to all API clients
+    public func addResponseListener(on queue: DispatchQueue, _ callback: @escaping (_ endpointName: String, Result<HTTPURLResponse, APIError>) -> Void) {
+        self.v2.addResponseListener(on: queue, callback)
+        self.v4.addResponseListener(on: queue, callback)
     }
 }
 

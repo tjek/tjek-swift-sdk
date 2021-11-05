@@ -105,7 +105,6 @@ extension PagedPublicationView {
     }
 }
 
-
 extension APIv2Request {
     
     /// Fetch all the pages for the specified publication
