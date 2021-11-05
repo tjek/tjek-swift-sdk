@@ -352,7 +352,7 @@ extension Event {
         label: String?,
         deviceInfo: DeviceInfo = .current
     ) -> Event {
-        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, label: label, deviceInfo: deviceInfo, timestamp: Date())
+        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, previousScreenName: previousScreenName, label: label, deviceInfo: deviceInfo, timestamp: Date())
     }
     
     public static func firstOfferOpenedAfterSearch(
