@@ -49,7 +49,7 @@ extension Event {
         _ publicationId: PublicationIdentifier,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         let payload: PayloadType = ["pp.id": .string(publicationId.rawValue)]
         
@@ -74,10 +74,11 @@ extension Event {
         action: String,
         appVersion: String,
         screenName: String?,
+        previousScreenName: String?,
         label: String?,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         var payload: PayloadType = [
             "_av": .string(appVersion),
@@ -93,6 +94,10 @@ extension Event {
         
         if let name = screenName {
             payload["s"] = .string(name)
+        }
+        
+        if let previousName = previousScreenName {
+            payload["ps"] = .string(previousName)
         }
         
         if let lbl = label {
@@ -121,7 +126,7 @@ extension Event {
         pageNumber: Int,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         let payload: PayloadType = ["pp.id": .string(publicationId.rawValue),
                                     "ppp.n": .int(pageNumber)]
@@ -152,7 +157,7 @@ extension Event {
         _ offerId: CoreAPI.Offer.Identifier,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         let payload: PayloadType = ["of.id": .string(offerId.rawValue)]
         
@@ -174,7 +179,7 @@ extension Event {
         languageCode: String?,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         var payload: PayloadType = ["sea.q": .string(query)]
         if let lang = languageCode {
@@ -201,14 +206,14 @@ extension Event {
         query: String,
         languageCode: String?,
         timestamp: Date = Date()
-        ) -> Event {
+    ) -> Event {
         
         var payload: PayloadType = [
             "sea.q": .string(query),
             "of.id": .string(offerId.rawValue),
             "of.ids": .array(precedingOfferIds
-                .prefix(100)
-                .map { .string($0.rawValue) })
+                                .prefix(100)
+                                .map { .string($0.rawValue) })
         ]
         
         if let lang = languageCode {
@@ -232,7 +237,7 @@ extension Event {
         query: String,
         languageCode: String?,
         timestamp: Date = Date()
-        ) -> Event {
+    ) -> Event {
         
         var payload: PayloadType = [
             "sea.q": .string(query),
@@ -261,7 +266,7 @@ extension Event {
         pagedPublicationId: PublicationIdentifier?,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         let payload: PayloadType = ["ip.id": .string(incitoId.rawValue)]
         
@@ -282,7 +287,7 @@ extension Event {
         isAlsoPagedPublication: Bool,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
-        ) -> Event {
+    ) -> Event {
         
         let payload: PayloadType = [
             "ip.id": .string(incitoPublicationId.rawValue),
@@ -309,8 +314,8 @@ extension Event {
         languageCode: String?,
         resultsViewedCount: Int,
         timestamp: Date = Date()
-        ) -> Event {
-
+    ) -> Event {
+        
         var payload: PayloadType = [
             "sea.q": .string(query),
             "sea.v": .int(resultsViewedCount)
@@ -338,7 +343,7 @@ extension Event {
     public static func searched(
         for query: String,
         languageCode: String?
-        ) -> Event {
+    ) -> Event {
         return searched(for: query, languageCode: languageCode, timestamp: Date())
     }
     
@@ -347,9 +352,10 @@ extension Event {
         action: String,
         appVersion: String,
         screenName: String?,
+        previousScreenName: String?,
         label: String?
-        ) -> Event {
-        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, label: label, timestamp: Date())
+    ) -> Event {
+        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, previousScreenName: previousScreenName, label: label, timestamp: Date())
     }
     
     public static func firstOfferOpenedAfterSearch(
@@ -357,14 +363,14 @@ extension Event {
         precedingOfferIds: [CoreAPI.Offer.Identifier],
         query: String,
         languageCode: String?
-        ) -> Event {
+    ) -> Event {
         return firstOfferOpenedAfterSearch(offerId: offerId, precedingOfferIds: precedingOfferIds, query: query, languageCode: languageCode, timestamp: Date())
     }
     public static func offerOpenedAfterSearch(
         offerId: CoreAPI.Offer.Identifier,
         query: String,
         languageCode: String?
-        ) -> Event {
+    ) -> Event {
         return offerOpenedAfterSearch(offerId: offerId, query: query, languageCode: languageCode, timestamp: Date())
     }
     
@@ -372,7 +378,7 @@ extension Event {
     public static func incitoPublicationOpened(
         _ incitoId: PublicationIdentifier,
         pagedPublicationId: PublicationIdentifier?
-        ) -> Event {
+    ) -> Event {
         return incitoPublicationOpened(
             incitoId,
             pagedPublicationId: pagedPublicationId,
@@ -383,7 +389,7 @@ extension Event {
     public static func incitoPublicationOpened(
         _ incitoPublicationId: PublicationIdentifier,
         isAlsoPagedPublication: Bool
-        ) -> Event {
+    ) -> Event {
         return incitoPublicationOpened(
             incitoPublicationId,
             isAlsoPagedPublication: isAlsoPagedPublication,
@@ -395,7 +401,7 @@ extension Event {
         query: String,
         languageCode: String?,
         resultsViewedCount: Int
-        ) -> Event {
+    ) -> Event {
         return searchResultsViewed(query: query, languageCode: languageCode, resultsViewedCount: resultsViewedCount, timestamp: Date())
     }
 }
