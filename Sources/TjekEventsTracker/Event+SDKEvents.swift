@@ -69,6 +69,7 @@ extension Event {
         action: String,
         appVersion: String,
         screenName: String?,
+        previousScreenName: String?,
         label: String?,
         deviceInfo: DeviceInfo,
         timestamp: Date = Date(),
@@ -89,6 +90,10 @@ extension Event {
         
         if let name = screenName {
             payload["s"] = .string(name)
+        }
+        
+        if let previousName = previousScreenName {
+            payload["ps"] = .string(previousName)
         }
         
         if let lbl = label {
@@ -343,6 +348,7 @@ extension Event {
         action: String,
         appVersion: String,
         screenName: String?,
+        previousScreenName: String?,
         label: String?,
         deviceInfo: DeviceInfo = .current
     ) -> Event {
