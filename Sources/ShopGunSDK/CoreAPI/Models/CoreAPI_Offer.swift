@@ -17,6 +17,7 @@ extension CoreAPI {
         public typealias Identifier = GenericIdentifier<Offer>
         
         public var id: Identifier
+        public var catalogViewId: String?
         public var heading: String
         public var description: String?
         public var images: ImageURLSet?
@@ -44,6 +45,7 @@ extension CoreAPI {
         
         enum CodingKeys: String, CodingKey {
             case id
+            case catalogViewId = "catalog_view_id"
             case heading
             case description
             case images
@@ -64,6 +66,7 @@ extension CoreAPI {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             
             self.id = try values.decode(Identifier.self, forKey: .id)
+            self.catalogViewId = try? values.decode(String.self, forKey: .catalogViewId)
             self.heading = try values.decode(String.self, forKey: .heading)
             self.description = try? values.decode(String.self, forKey: .description)
             
