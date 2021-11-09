@@ -17,7 +17,6 @@ extension CoreAPI {
         public typealias Identifier = GenericIdentifier<Offer>
         
         public var id: Identifier
-        public var catalogViewId: String?
         public var heading: String
         public var description: String?
         public var images: ImageURLSet?
@@ -31,7 +30,10 @@ extension CoreAPI {
         
         public var branding: Branding?
         
-        public var publication: PublicationPageReference?
+        public var publicationId: PublicationIdentifier?
+        public var publicationPageIndex: Int?
+        public var incitoViewId: String?
+        
         public var dealerId: CoreAPI.Dealer.Identifier?
         /// The id of the nearest store. Only available if a location was provided when fetching the offer.
         public var storeId: CoreAPI.Store.Identifier?
@@ -41,11 +43,19 @@ extension CoreAPI {
             public var pageIndex: Int?
         }
         
+        public var publication: PublicationPageReference? {
+            guard let pubId = publicationId else { return nil }
+
+            return PublicationPageReference(
+                id: pubId,
+                pageIndex: pageIndex
+            )
+        }
+        
         // MARK: Decodable
         
         enum CodingKeys: String, CodingKey {
             case id
-            case catalogViewId = "catalog_view_id"
             case heading
             case description
             case images
@@ -58,6 +68,7 @@ extension CoreAPI {
             case branding
             case catalogId          = "catalog_id"
             case catalogPage        = "catalog_page"
+            case catalogViewId      = "catalog_view_id"
             case dealerId           = "dealer_id"
             case storeId            = "store_id"
         }
@@ -66,7 +77,6 @@ extension CoreAPI {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             
             self.id = try values.decode(Identifier.self, forKey: .id)
-            self.catalogViewId = try? values.decode(String.self, forKey: .catalogViewId)
             self.heading = try values.decode(String.self, forKey: .heading)
             self.description = try? values.decode(String.self, forKey: .description)
             
@@ -100,15 +110,11 @@ extension CoreAPI {
             
             self.branding = try? values.decode(CoreAPI.Branding.self, forKey: .branding)
             
-            if let catalogId = try? values.decode(PublicationIdentifier.self, forKey: .catalogId) {
-                let catalogPageNum = try? values.decode(Int.self, forKey: .catalogPage)
-                // incito publications have pageNum == 0, so in that case set to nil.
-                // otherwise, convert pageNum to index.
-                self.publication = PublicationPageReference(
-                    id: catalogId,
-                    pageIndex: catalogPageNum.flatMap({ $0 > 0 ? $0 - 1 : nil })
-                )
-            }
+            self.publicationId = try? values.decode(PublicationIdentifier.self, forKey: .catalogId)
+            // incito publications have pageNum == 0, so in that case set to nil.
+            // otherwise, convert pageNum to index.
+            self.publicationPageIndex = (try? values.decode(Int.self, forKey: .catalogPage)).flatMap({ $0 > 0 ? $0 - 1 : nil })
+            self.incitoViewId = try? values.decode(String.self, forKey: .catalogViewId)
             
             self.dealerId = try? values.decode(CoreAPI.Dealer.Identifier.self, forKey: .dealerId)
             self.storeId = try? values.decode(CoreAPI.Store.Identifier.self, forKey: .storeId)
