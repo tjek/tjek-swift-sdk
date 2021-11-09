@@ -48,7 +48,7 @@ extension CoreAPI {
 
             return PublicationPageReference(
                 id: pubId,
-                pageIndex: pageIndex
+                pageIndex: publicationPageIndex
             )
         }
         
