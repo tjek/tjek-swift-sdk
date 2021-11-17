@@ -19,6 +19,7 @@ public class APIClient {
     private var clientHeaders: [String: String?]
     private var responseListeners: [ResponseListener] = []
     private let urlSession: URLSession
+    private let requestQueue: DispatchQueue = DispatchQueue(label: "APIClient Queue")
     
     // MARK: - Public funcs
     
@@ -90,6 +91,17 @@ extension APIClient {
     public func send<ResponseType>(
         _ request: APIRequest<ResponseType>,
         completesOn completionQueue: DispatchQueue = .main,
+        completion: @escaping (Result<ResponseType, APIError>) -> Void
+    ) {
+        self.requestQueue.async { [weak self] in
+            self?.queuedSend(request, completesOn: completionQueue, completion: completion)
+        }
+    }
+    
+    /// Actually does the sending of the request. This must be run on the `requestQueue`
+    fileprivate func queuedSend<ResponseType>(
+        _ request: APIRequest<ResponseType>,
+        completesOn completionQueue: DispatchQueue,
         completion: @escaping (Result<ResponseType, APIError>) -> Void
     ) {
         let handleResult: (Result<(ResponseType, HTTPURLResponse), APIError>) -> Void = { [weak self] result in
