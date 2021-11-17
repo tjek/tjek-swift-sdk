@@ -111,7 +111,6 @@ extension PaginatedResponse {
 }
 
 extension PaginatedResponse where CursorType == Int {
-    /// Build a String-based PaginatedResponse from an integer offset cursor
     public init(results: [ResultsType], expectedCount: Int, startingAtOffset: Int) {
         self.init(
             results: results,
@@ -122,6 +121,7 @@ extension PaginatedResponse where CursorType == Int {
         )
     }
     
+    /// Build a String-based PaginatedResponse from an integer offset cursor
     public func withStringCursor() -> PaginatedResponse<ResultsType, String> {
         self.mapCursor({ (oldCursor: Int?) -> String? in
             (self.results.isEmpty && oldCursor == 0) ? nil : oldCursor.map(String.init)
@@ -130,6 +130,15 @@ extension PaginatedResponse where CursorType == Int {
 }
 
 extension APIRequest {
+    public func paginatedResponse<ResponseElement, NewResponseElement>(_ transform: @escaping (ResponseElement) -> NewResponseElement, paginatedRequest: PaginatedRequest<Int>) -> APIRequest<PaginatedResponse<NewResponseElement, Int>, VersionTag> where ResponseType == [ResponseElement] {
+        self.map({
+            PaginatedResponse(
+                results: $0.map(transform),
+                expectedCount: paginatedRequest.itemCount,
+                startingAtOffset: paginatedRequest.startCursor
+            )
+        })
+    }
     public func paginatedResponse<ResponseElement>(paginatedRequest: PaginatedRequest<Int>) -> APIRequest<PaginatedResponse<ResponseElement, Int>, VersionTag> where ResponseType == [ResponseElement] {
         self.map({
             PaginatedResponse(
