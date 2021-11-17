@@ -130,7 +130,7 @@ extension PaginatedResponse where CursorType == Int {
 }
 
 extension APIRequest {
-    public func paginatedResponse<ResponseElement>(paginatedRequest: PaginatedRequest<Int>) -> APIRequest<PaginatedResponse<ResponseElement, Int>> where ResponseType == [ResponseElement] {
+    public func paginatedResponse<ResponseElement>(paginatedRequest: PaginatedRequest<Int>) -> APIRequest<PaginatedResponse<ResponseElement, Int>, VersionTag> where ResponseType == [ResponseElement] {
         self.map({
             PaginatedResponse(
                 results: $0,

@@ -252,3 +252,42 @@ extension JSONDecoder.DateDecodingStrategy {
 public func shortBundleVersion(_ bundle: Bundle) -> String {
     bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
 }
+
+// MARK: - Request Versioning
+
+/// This is a v2 version tag, used to mark which API a request will be sent to.
+public enum API_v2 { }
+/// This is a v4 version tag, used to mark which API a request will be sent to.
+public enum API_v4 { }
+
+extension TjekAPI {
+    /// Send an API Request to the v2 API client.
+    /// The result is received in the `completion` handler, on the `completesOn` queue (defaults to `.main`).
+    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v2>, completesOn: DispatchQueue = .main, completion: @escaping (Result<ResponseType, APIError>) -> Void) {
+        v2.send(request, completesOn: completesOn, completion: completion)
+    }
+    
+    /// Send an API Request to the v4 API client.
+    /// The result is received in the `completion` handler, on the `completesOn` queue (defaults to `.main`).
+    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v4>, completesOn: DispatchQueue = .main, completion: @escaping (Result<ResponseType, APIError>) -> Void) {
+        v4.send(request, completesOn: completesOn, completion: completion)
+    }
+}
+
+#if canImport(Future)
+import Future
+
+extension TjekAPI {
+    /// Returns a Future, which, when run, sends an API Request to the v2 API client.
+    /// Future's completion-handler is called on the `completesOn` queue (defaults to `.main`)
+    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v2>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
+        v2.send(request, completesOn: completesOn)
+    }
+    
+    /// Returns a Future, which, when run, sends an API Request to the v4 API client.
+    /// Future's completion-handler is called on the `completesOn` queue (defaults to `.main`)
+    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v4>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
+        v4.send(request, completesOn: completesOn)
+    }
+}
+#endif

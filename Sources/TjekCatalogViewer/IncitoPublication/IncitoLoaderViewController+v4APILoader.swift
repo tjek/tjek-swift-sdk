@@ -42,8 +42,8 @@ struct IncitoAPIQuery: Encodable {
     var time: Date?
     var featureLabels: [String: Double]
     
-    var apiRequest: APIv4Request<IncitoDocument> {
-        .init(APIRequest<IncitoDocument>(
+    var apiRequest: APIRequest<IncitoDocument, API_v4> {
+        APIRequest<IncitoDocument, API_v4>(
             endpoint: "generate_incito_from_publication",
             body: .encodable(self),
             decoder: APIRequestDecoder { data, _ in
@@ -54,7 +54,7 @@ struct IncitoAPIQuery: Encodable {
                 
                 return try IncitoDocument(jsonDict: jsonDict, jsonStr: jsonStr)
             }
-        ))
+        )
     }
     
     enum CodingKeys: String, CodingKey {
@@ -115,7 +115,7 @@ extension IncitoLoaderViewController {
         var isAlsoPagedPublication: Bool = false
         
         // every time the loader is called, fetch the width of the screen
-        let incitoLoaderBuilder: (PublicationId) -> FutureResult<IncitoDocument> = { [weak self] incitoId in
+        let incitoLoaderBuilder: (PublicationId) -> Future<Result<IncitoDocument, Error>> = { [weak self] incitoId in
             Future<IncitoAPIQuery>(work: { [weak self] in
                 let viewWidth = Int(self?.view.frame.size.width ?? 0)
                 let windowWidth = Int(self?.view.window?.frame.size.width ?? 0)

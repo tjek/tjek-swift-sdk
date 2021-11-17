@@ -88,8 +88,8 @@ extension APIClient {
      Will report the HTTPURLResponse or API error to the `responseListeners`.
      Calls the completionHandler async on the `completesOn` queue.
      */
-    public func send<ResponseType>(
-        _ request: APIRequest<ResponseType>,
+    public func send<ResponseType, VersionTag>(
+        _ request: APIRequest<ResponseType, VersionTag>,
         completesOn completionQueue: DispatchQueue = .main,
         completion: @escaping (Result<ResponseType, APIError>) -> Void
     ) {
@@ -99,8 +99,8 @@ extension APIClient {
     }
     
     /// Actually does the sending of the request. This must be run on the `requestQueue`
-    fileprivate func queuedSend<ResponseType>(
-        _ request: APIRequest<ResponseType>,
+    fileprivate func queuedSend<ResponseType, VersionTag>(
+        _ request: APIRequest<ResponseType, VersionTag>,
         completesOn completionQueue: DispatchQueue,
         completion: @escaping (Result<ResponseType, APIError>) -> Void
     ) {
@@ -216,7 +216,7 @@ extension APIClient {
 import Future
 
 extension APIClient {
-    public func send<ResponseType>(_ request: APIRequest<ResponseType>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
+    public func send<ResponseType, VersionTag>(_ request: APIRequest<ResponseType, VersionTag>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
         .init(run: { [weak self] cb in
             self?.send(request, completesOn: completesOn, completion: cb)
         })

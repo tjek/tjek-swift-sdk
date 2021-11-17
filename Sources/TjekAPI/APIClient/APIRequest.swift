@@ -73,7 +73,7 @@ public enum APIRequestMethod: String {
     case DELETE
 }
 
-public struct APIRequest<ResponseType> {
+public struct APIRequest<ResponseType, VersionTag> {
     
     public let endpoint: String
     public let method: APIRequestMethod
@@ -101,7 +101,7 @@ public struct APIRequest<ResponseType> {
 
 extension APIRequest {
     /// Converts an APIRequest of one responseType into an APIRequest of a different type, by modifying the decoder.
-    public func map<NewResponseType>(_ transform: @escaping (ResponseType) -> NewResponseType) -> APIRequest<NewResponseType> {
+    public func map<NewResponseType>(_ transform: @escaping (ResponseType) -> NewResponseType) -> APIRequest<NewResponseType, VersionTag> {
         return .init(endpoint: endpoint, method: method, body: body, queryParams: queryParams, headerOverrides: headerOverrides, timeoutInterval: timeoutInterval, cachePolicy: cachePolicy, decoder: decoder.map(transform))
     }
 }
