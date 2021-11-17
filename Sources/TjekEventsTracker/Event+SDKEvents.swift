@@ -356,7 +356,7 @@ extension Event {
         screenName: String?,
         previousScreenName: String?,
         label: String?,
-        value: Int? = nil
+        value: Int? = nil,
         deviceInfo: DeviceInfo = .current
     ) -> Event {
         return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, previousScreenName: previousScreenName, label: label, value: value, deviceInfo: deviceInfo, timestamp: Date())

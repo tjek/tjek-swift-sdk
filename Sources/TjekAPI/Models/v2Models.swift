@@ -230,7 +230,7 @@ extension Offer_v2: Decodable {
         
         self.branding = try? values.decode(Branding_v2.self, forKey: .branding)
         
-        self.publicationId = try? values.decode(PublicationIdentifier.self, forKey: .catalogId)
+        self.publicationId = try? values.decode(PublicationId.self, forKey: .catalogId)
         // incito publications have pageNum == 0, so in that case set to nil.
         // otherwise, convert pageNum to index.
         self.publicationPageIndex = (try? values.decode(Int.self, forKey: .catalogPage)).flatMap({ $0 > 0 ? $0 - 1 : nil })
