@@ -7,13 +7,15 @@ import Foundation
 /// A `Publication` is a catalog, that can be rendered in multiple forms, paged or incito.
 public struct Publication_v2: Equatable {
     
+    public typealias ID = PublicationId
+    
     public enum PublicationType: String, Codable, CaseIterable {
         case paged
         case incito
     }
     
     /// The unique identifier of this Publication.
-    public var id: PublicationId
+    public var id: ID
     /// The name of the publication. eg. "Christmas Special".
     public var label: String?
     /// How many pages this publication has.
@@ -31,16 +33,18 @@ public struct Publication_v2: Equatable {
     /// Whether this publication is available in all stores, or just in a select few stores.
     public var isAvailableInAllStores: Bool
     /// The unique identifier of the business that published this publication.
-    public var businessId: BusinessId
+    public var businessId: Business_v2.ID
     /// The unique identifier of the nearest store. This will only contain a value if the `Publication` was fetched with a request that includes store information (eg. one that takes a precise location as a parameter).
-    public var storeId: StoreId?
+    public var storeId: Store_v2.ID?
     
     /// Defines what types of publication this represents.
     /// If it contains `paged`, the `id` can be used to view this in a PagedPublicationViewer
     /// If it contains `incito`, the `id` can be used to view this with the IncitoViewer
     /// If it ONLY contains `incito`, this cannot be viewed in a PagedPublicationViewer (see `isOnlyIncito`)
     public var types: Set<PublicationType>
-    
+}
+
+extension Publication_v2 {
     /// True if this publication can only be viewed as an incito (if viewed in a PagedPublication view it would appear as a single-page pdf)
     public var isOnlyIncito: Bool {
         return types == [.incito]
@@ -75,7 +79,7 @@ extension Publication_v2: Decodable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.id = try values.decode(PublicationId.self, forKey: .id)
+        self.id = try values.decode(ID.self, forKey: .id)
         self.label = try? values.decode(String.self, forKey: .label)
         self.branding = try values.decode(Branding_v2.self, forKey: .branding)
         
@@ -97,9 +101,9 @@ extension Publication_v2: Decodable {
         
         self.isAvailableInAllStores = (try? values.decode(Bool.self, forKey: .availableAllStores)) ?? true
         
-        self.businessId = try values.decode(BusinessId.self, forKey: .businessId)
+        self.businessId = try values.decode(Business_v2.ID.self, forKey: .businessId)
         
-        self.storeId = try? values.decode(StoreId.self, forKey: .storeId)
+        self.storeId = try? values.decode(Store_v2.ID.self, forKey: .storeId)
         
         self.frontPageImages = (try? values.decode(v2ImageURLs.self, forKey: .frontPageImageURLs))?.imageURLSet ?? []
                 
@@ -158,7 +162,10 @@ extension Branding_v2 {
 // MARK: -
 
 public struct Offer_v2: Equatable {
-    public var id: OfferId
+    
+    public typealias ID = OfferId
+    
+    public var id: ID
     public var heading: String
     public var description: String?
     public var images: Set<ImageURL>
@@ -172,13 +179,13 @@ public struct Offer_v2: Equatable {
     
     public var branding: Branding_v2?
     
-    public var publicationId: PublicationId?
+    public var publicationId: Publication_v2.ID?
     public var publicationPageIndex: Int?
     public var incitoViewId: String?
     
-    public var businessId: BusinessId
+    public var businessId: Business_v2.ID
     /// The id of the nearest store. Only available if a location was provided when fetching the offer.
-    public var storeId: StoreId?
+    public var storeId: Store_v2.ID?
 }
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
@@ -208,7 +215,7 @@ extension Offer_v2: Decodable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.id = try values.decode(OfferId.self, forKey: .id)
+        self.id = try values.decode(ID.self, forKey: .id)
         self.heading = try values.decode(String.self, forKey: .heading)
         self.description = try? values.decode(String.self, forKey: .description)
         
@@ -230,14 +237,14 @@ extension Offer_v2: Decodable {
         
         self.branding = try? values.decode(Branding_v2.self, forKey: .branding)
         
-        self.publicationId = try? values.decode(PublicationId.self, forKey: .catalogId)
+        self.publicationId = try? values.decode(Publication_v2.ID.self, forKey: .catalogId)
         // incito publications have pageNum == 0, so in that case set to nil.
         // otherwise, convert pageNum to index.
         self.publicationPageIndex = (try? values.decode(Int.self, forKey: .catalogPage)).flatMap({ $0 > 0 ? $0 - 1 : nil })
         self.incitoViewId = try? values.decode(String.self, forKey: .catalogViewId)
         
-        self.businessId = try values.decode(BusinessId.self, forKey: .dealerId)
-        self.storeId = try? values.decode(StoreId.self, forKey: .storeId)
+        self.businessId = try values.decode(Business_v2.ID.self, forKey: .dealerId)
+        self.storeId = try? values.decode(Store_v2.ID.self, forKey: .storeId)
     }
 }
 
@@ -344,7 +351,9 @@ extension Offer_v2 {
 // MARK: -
 
 public struct Business_v2: Equatable {
-    public var id: BusinessId
+    public typealias ID = BusinessId
+    
+    public var id: ID
     public var name: String
     public var website: URL?
     public var description: String?
@@ -381,7 +390,7 @@ extension Business_v2: Decodable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.id = try values.decode(BusinessId.self, forKey: .id)
+        self.id = try values.decode(ID.self, forKey: .id)
         self.name = try values.decode(String.self, forKey: .name)
         self.website = try? values.decode(URL.self, forKey: .website)
         self.description = try? values.decode(String.self, forKey: .description)
@@ -399,6 +408,7 @@ extension Business_v2: Decodable {
 
 #if canImport(UIKit)
 import UIKit
+
 extension Business_v2 {
     public var brandColor: UIColor? {
         brandColorHex.flatMap(UIColor.init(hex:))
@@ -409,7 +419,10 @@ extension Business_v2 {
 // MARK: -
 
 public struct Store_v2: Equatable {
-    public var id: StoreId
+    
+    public typealias ID = StoreId
+    
+    public var id: ID
     
     public var street: String?
     public var city: String?
@@ -417,11 +430,11 @@ public struct Store_v2: Equatable {
     public var country: String
     public var coordinate: Coordinate
     
-    public var businessId: BusinessId
+    public var businessId: Business_v2.ID
     public var branding: Branding_v2
     public var contact: String?
     
-    public init(id: StoreId, street: String?, city: String?, zipCode: String?, country: String, coordinate: Coordinate, businessId: BusinessId, branding: Branding_v2, contact: String?) {
+    public init(id: ID, street: String?, city: String?, zipCode: String?, country: String, coordinate: Coordinate, businessId: Business_v2.ID, branding: Branding_v2, contact: String?) {
         self.id = id
         self.street = street
         self.city = city
@@ -454,7 +467,7 @@ extension Store_v2: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.id = try container.decode(StoreId.self, forKey: .id)
+        self.id = try container.decode(Store_v2.ID.self, forKey: .id)
         self.street = try? container.decode(String.self, forKey: .street)
         self.city = try? container.decode(String.self, forKey: .city)
         self.zipCode = try? container.decode(String.self, forKey: .zipCode)
@@ -464,13 +477,13 @@ extension Store_v2: Decodable {
         let lng = try container.decode(Double.self, forKey: .longitude)
         self.coordinate = Coordinate(latitude: lat, longitude: lng)
 
-        self.businessId = try container.decode(BusinessId.self, forKey: .dealerId)
+        self.businessId = try container.decode(Business_v2.ID.self, forKey: .dealerId)
         self.branding = try container.decode(Branding_v2.self, forKey: .branding)
         self.contact = try? container.decode(String.self, forKey: .contact)
     }
 }
 
 /// just needed for decoding purposes
-struct Country_v2: Decodable {
+fileprivate struct Country_v2: Decodable {
     var id: String
 }

@@ -11,6 +11,10 @@ public struct APIv2Request<ResponseType> {
     public init(_ request: APIRequest<ResponseType>) {
         self.request = request
     }
+    
+    public func map<NewResponseType>(_ transform: @escaping (ResponseType) -> NewResponseType) -> APIv2Request<NewResponseType> {
+        APIv2Request<NewResponseType>(self.request.map(transform))
+    }
 }
 
 extension APIRequest {
