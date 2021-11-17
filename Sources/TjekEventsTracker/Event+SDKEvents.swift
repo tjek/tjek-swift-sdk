@@ -61,6 +61,7 @@ extension Event {
      - parameter appVersion: Version of the app.
      - parameter screenName: Name of the view currently being presented.
      - parameter label: Event label if you want to describe it.
+     - parameter value: An optional Int for recording metrics. Is not included in the tokenizer
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
@@ -71,6 +72,7 @@ extension Event {
         screenName: String?,
         previousScreenName: String?,
         label: String?,
+        value: Int?,
         deviceInfo: DeviceInfo,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
@@ -98,6 +100,10 @@ extension Event {
         
         if let lbl = label {
             payload["l"] = .string(lbl)
+        }
+        
+        if let val = value {
+            payload["v"] = .int(val)
         }
         
         let viewTokenContent: String = [category, action, label, screenName]
@@ -350,9 +356,10 @@ extension Event {
         screenName: String?,
         previousScreenName: String?,
         label: String?,
+        value: Int? = nil
         deviceInfo: DeviceInfo = .current
     ) -> Event {
-        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, previousScreenName: previousScreenName, label: label, deviceInfo: deviceInfo, timestamp: Date())
+        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, previousScreenName: previousScreenName, label: label, value: value, deviceInfo: deviceInfo, timestamp: Date())
     }
     
     public static func firstOfferOpenedAfterSearch(

@@ -172,15 +172,13 @@ public struct Offer_v2: Equatable {
     
     public var branding: Branding_v2?
     
-    public var publication: PublicationPageReference?
+    public var publicationId: PublicationId?
+    public var publicationPageIndex: Int?
+    public var incitoViewId: String?
+    
     public var businessId: BusinessId
     /// The id of the nearest store. Only available if a location was provided when fetching the offer.
     public var storeId: StoreId?
-    
-    public struct PublicationPageReference: Equatable {
-        public var id: PublicationId
-        public var pageIndex: Int?
-    }
 }
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
@@ -202,6 +200,7 @@ extension Offer_v2: Decodable {
         case branding
         case catalogId          = "catalog_id"
         case catalogPage        = "catalog_page"
+        case catalogViewId      = "catalog_view_id"
         case dealerId           = "dealer_id"
         case storeId            = "store_id"
     }
@@ -231,15 +230,11 @@ extension Offer_v2: Decodable {
         
         self.branding = try? values.decode(Branding_v2.self, forKey: .branding)
         
-        if let catalogId = try? values.decode(PublicationId.self, forKey: .catalogId) {
-            let catalogPageNum = try? values.decode(Int.self, forKey: .catalogPage)
-            // incito publications have pageNum == 0, so in that case set to nil.
-            // otherwise, convert pageNum to index.
-            self.publication = PublicationPageReference(
-                id: catalogId,
-                pageIndex: catalogPageNum.flatMap({ $0 > 0 ? $0 - 1 : nil })
-            )
-        }
+        self.publicationId = try? values.decode(PublicationIdentifier.self, forKey: .catalogId)
+        // incito publications have pageNum == 0, so in that case set to nil.
+        // otherwise, convert pageNum to index.
+        self.publicationPageIndex = (try? values.decode(Int.self, forKey: .catalogPage)).flatMap({ $0 > 0 ? $0 - 1 : nil })
+        self.incitoViewId = try? values.decode(String.self, forKey: .catalogViewId)
         
         self.businessId = try values.decode(BusinessId.self, forKey: .dealerId)
         self.storeId = try? values.decode(StoreId.self, forKey: .storeId)
