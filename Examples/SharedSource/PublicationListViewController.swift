@@ -25,7 +25,13 @@ class PublicationListViewController: UIViewController {
         self.contentVC = LoadingViewController()
         
         // Build & send the request. You need to have first called one of the `TjekAPI.initialize()` functions to use `TjekAPI.shared`.
-        TjekSDK.api.send(.getPublications(near: LocationQuery(coordinate: (55.67376305237014, 12.590854433873217), maxRadius: nil))) { [weak self] result in
+        let request: APIRequest = .getPublications(
+            near: LocationQuery(
+                coordinate: Coordinate(latitude: 55.67376305237014, longitude: 12.590854433873217),
+                maxRadius: nil
+            )
+        )
+        TjekSDK.api.send(request) { [weak self] result in
             // Show different contents depending upon the result of the request
             switch result {
             case let .success(publications):

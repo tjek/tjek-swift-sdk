@@ -13,11 +13,7 @@ let package = Package(
     products: [
         .library(name: "TjekSDK", targets: ["TjekSDK"]),
         .library(name: "TjekAPI", targets: ["TjekAPI"]),
-        .library(name: "TjekEventsTracker", targets: ["TjekEventsTracker"]),
-        .library(name: "TjekCatalogViewer", targets: ["TjekCatalogViewer"]),
-        
-        // Legacy SDK... do not use.
-        .library(name: "ShopGunSDK", targets: ["ShopGunSDK"])
+        .library(name: "TjekCatalogViewer", targets: ["TjekCatalogViewer"])
     ],
     dependencies: [
         .package(name: "Incito", url: "https://github.com/shopgun/incito-ios.git", from: "1.0.3"),
@@ -40,23 +36,10 @@ let package = Package(
                 dependencies: [
                     .target(name: "TjekUtils"),
                     
-                    .product(name: "Future", package: "Future")
+                        .product(name: "Future", package: "Future")
                 ]),
         .testTarget(name: "TjekAPITests",
                     dependencies: [.target(name: "TjekAPI")],
-                    resources: [.process("Resources")]
-                   ),
-        
-        // MARK: -
-        .target(name: "TjekEventsTracker",
-                dependencies: [
-                    .target(name: "TjekAPI"),
-                    .target(name: "TjekUtils"),
-                    
-                    .product(name: "Valet", package: "Valet")
-                ]),
-        .testTarget(name: "TjekEventsTrackerTests",
-                    dependencies: [.target(name: "TjekEventsTracker")],
                     resources: [.process("Resources")]
                    ),
         
@@ -66,7 +49,7 @@ let package = Package(
                     .target(name: "TjekAPI"),
                     .target(name: "TjekEventsTracker"),
                     
-                    .product(name: "Incito", package: "Incito", condition: .when(platforms: [.iOS])),
+                        .product(name: "Incito", package: "Incito", condition: .when(platforms: [.iOS])),
                     .product(name: "Future", package: "Future", condition: .when(platforms: [.iOS])),
                     .product(name: "Verso", package: "Verso", condition: .when(platforms: [.iOS])),
                     .product(name: "Kingfisher", package: "Kingfisher", condition: .when(platforms: [.iOS]))
@@ -77,26 +60,21 @@ let package = Package(
                ),
         
         // MARK: -
+        .target(name: "TjekEventsTracker",
+                dependencies: [
+                    .target(name: "TjekAPI"),
+                    .target(name: "TjekUtils"),
+                    
+                        .product(name: "Valet", package: "Valet")
+                ]),
+        .testTarget(name: "TjekEventsTrackerTests",
+                    dependencies: [.target(name: "TjekEventsTracker")],
+                    resources: [.process("Resources")]
+                   ),
+        
+        // MARK: -
         .target(name: "TjekUtils",
                 dependencies: []
-               ),
-        
-        // MARK: - LEGACY
-        .target(
-            name: "ShopGunSDK",
-            dependencies: [
-                .target(name: "TjekAPI"),
-                .target(name: "TjekEventsTracker"),
-                
-                .product(name: "Incito", package: "Incito"),
-                .product(name: "Future", package: "Future"),
-                .product(name: "Verso", package: "Verso"),
-                .product(name: "Kingfisher", package: "Kingfisher")
-            ],
-            resources: [
-                .process("IncitoPublication/Resources/IncitoViewer.graphql"),
-                .process("PagedPublication/Resources/")
-            ]
-        )
+               )
     ]
 )

@@ -1,5 +1,30 @@
 # Change Log
 
+## v5.0
+
+> This release is not backwards-compatible with the previous versions.
+
+This release sees a major overhaul of the structure of the SDK, to modularize it so that the separate components can be loaded independently. It also adds full support for Swift Package Manager.
+
+### v4 -> v5 migration
+
+A number of types and functions have been renamed, while others have stayed the same.
+
+- `ShopGunSDK` is now `TjekSDK`:
+	- Use `import TjekSDK` instead of `import ShopGunSDK`.
+	- `ShopGunSDK-Config.plist` is now `TjekSDK-Config.plist`, and the structure of the file has been flattened (see the Examples projects).
+	- Previously you had to call `PagedPublicationView.configure()` to initialize the SDK. Now you need to call `TjekSDK.initialize()`.
+
+- `CoreAPI` has been replaced with `TjekAPI`:
+	- To send a request you now use `send(_:)` on a `TjekAPI` instance, instead of `request(_:)` on a `CoreAPI` instance.
+	- All the model objects from `CoreAPI` have been renamed to `<ModelObject>_v2`, and some of their properties have been adjusted/unified slightly.
+	- We have added a number of `*_v4` model objects too, which are accessible view v4 api requests.
+	- `ImageURLSet` has been replaced with `Set<ImageURL>` for more flexibility.
+
+- Both `IncitoLoaderViewController` and `PagedPublicationView` are now included in the same library: `TjekCatalogViewer`. This is imported by default when importing `TjekSDK`.
+	- `IncitoLoaderViewController` is unchanged (apart from now using TjekAPI instead of the old GraphAPI).
+	- `PagedPublicationView` is unchanged (apart from now using TjekAPI under the hood).
+
 ## v4.2
 **Swift 5.0.1 now required**
 
