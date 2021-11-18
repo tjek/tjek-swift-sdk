@@ -157,15 +157,26 @@ extension Event {
      The event when an offer has been "presented" to the user. "presented" in this context means any action that results in the offer information (often, but not necessarily the offer image) being drawn to the screen.
      - parameter offerId: The uuid of the offer.
      - parameter timestamp: The date that the event occurred. Defaults to now.
+     - parameter action: The type of interaction with the offer
+     - parameter screenName: The name of the screen where actio has been taken
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
     internal static func offerOpened(
         _ offerId: CoreAPI.Offer.Identifier,
         timestamp: Date = Date(),
+        action: String?,
+        screenName: String?,
         tokenizer: Tokenizer = EventsTracker.shared.viewTokenizer.tokenize
     ) -> Event {
         
-        let payload: PayloadType = ["of.id": .string(offerId.rawValue)]
+        var payload: PayloadType = ["of.id": .string(offerId.rawValue)]
+        if let a = action {
+            payload["a"] = .string(a)
+        }
+        
+        if let s = screenName {
+            payload["s"] = .string(s)
+        }
         
         return Event(timestamp: timestamp,
                      type: EventType.offerOpened.rawValue,
@@ -339,10 +350,12 @@ extension Event {
 
 extension Event {
     
-    public static func offerOpened(_ offerId: CoreAPI.Offer.Identifier) -> Event {
+    public static func offerOpened(_ offerId: CoreAPI.Offer.Identifier, action: String?, screenName: String?) -> Event {
         return offerOpened(
             offerId,
-            timestamp: Date()
+            timestamp: Date(),
+            action: action,
+            screenName: screenName
         )
     }
     
