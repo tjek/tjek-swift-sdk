@@ -483,7 +483,22 @@ extension Store_v2: Decodable {
     }
 }
 
-/// just needed for decoding purposes
+/// Used to convert the v2 image response dictionary into a set of sized image urls
+public struct v2ImageURLs: Decodable {
+    public let thumb: URL?
+    public let view: URL?
+    public let zoom: URL?
+    
+    public var imageURLSet: Set<ImageURL> {
+        Set([
+            thumb.map({ ImageURL(url: $0, width: 177) }),
+            view.map({ ImageURL(url: $0, width: 768) }),
+            zoom.map({ ImageURL(url: $0, width: 1536) })
+        ].compactMap({ $0 }))
+    }
+}
+
+/// Just needed for decoding purposes
 fileprivate struct Country_v2: Decodable {
     var id: String
 }

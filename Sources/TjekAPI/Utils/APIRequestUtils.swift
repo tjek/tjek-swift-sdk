@@ -38,3 +38,42 @@ extension Coordinate {
     }
 }
 #endif
+
+// MARK: - v2 Request Utils
+
+extension LocationQuery {
+    public func v2RequestParams() -> [String: String] {
+        var params = [
+            "r_lat": String(coordinate.latitude),
+            "r_lng": String(coordinate.longitude)
+        ]
+        
+        if let radius = maxRadius {
+            params["r_radius"] = String(radius)
+        }
+        return params
+    }
+}
+
+extension PaginatedRequest {
+    public func v2RequestParams() -> [String: String] where CursorType == Int {
+        [
+            "offset": String(self.startCursor),
+            "limit": String(self.itemCount)
+        ]
+    }
+    
+    public func v2RequestParams() -> [String: String] where CursorType == String {
+        [
+            "offset": self.startCursor,
+            "limit": String(self.itemCount)
+        ]
+    }
+    
+    public func v2RequestParams() -> [String: String] where CursorType == String? {
+        [
+            "offset": self.startCursor,
+            "limit": String(self.itemCount)
+        ].compactMapValues({ $0 })
+    }
+}
