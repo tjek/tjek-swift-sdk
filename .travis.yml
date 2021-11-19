@@ -1,8 +1,0 @@
-language: swift
-osx_image: xcode10.2
-before_install: 
-- gem install xcpretty
-- gem install cocoapods
-- pod repo update
-script: 
-- pod lib lint --verbose
