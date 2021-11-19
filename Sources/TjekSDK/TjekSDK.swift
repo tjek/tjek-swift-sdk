@@ -28,6 +28,7 @@ public struct TjekSDK {
     
     public static var api: TjekAPI { TjekAPI.shared }
     public static var eventsTracker: TjekEventsTracker { TjekEventsTracker.shared }
+    public static var logger: TjekLogger { TjekLogger.shared }
     
     public static func initialize(clientVersion: String = shortBundleVersion(.main)) throws {
         try TjekAPI.initialize(clientVersion: clientVersion)

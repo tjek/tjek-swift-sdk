@@ -117,6 +117,8 @@ public class TjekEventsTracker {
         self.saltStore = saltStore
         self.viewTokenizer = UniqueViewTokenizer.load(from: saltStore)
         
+        TjekLogger.info("[TjekSDK] Initializing TjekEventsTracker")
+        
         let eventsShipper = EventsShipper(baseURL: config.baseURL, dryRun: config.enabled == false, appContext: .init(id: config.trackId))
         let eventsCache = EventsCache<ShippableEvent>(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.v2.plist")
         
@@ -125,9 +127,10 @@ public class TjekEventsTracker {
                                shippingHandler: eventsShipper.ship,
                                cache: eventsCache)
         
-        TjekEventsTracker.legacyPoolCleaner(baseURL: config.baseURL, enabled: config.enabled) { (cleanedEvents) in
-#warning("Log cleaned events?: LH - 1 Nov 2021")
-            //            Logger.log("LegacyEventsPool cleaned (\(cleanedEvents) events)", level: .debug, source: .EventsTracker)
+        TjekEventsTracker.legacyPoolCleaner(baseURL: config.baseURL, enabled: config.enabled) { (cleanedEventsCount) in
+            if cleanedEventsCount > 0 {
+                TjekLogger.debug("[TjekSDK] LegacyEventsPool cleaned (\(cleanedEventsCount) events)")
+            }
         }
         
         #if os(iOS) || os(tvOS)
@@ -169,8 +172,7 @@ extension TjekEventsTracker {
         
         let eventInfo = [TjekEventsTracker.trackedEventNotificationKey: eventToTrack]
         
-#warning("Log event tracked: LH - 1 Nov 2021")
-        //        Logger.log("📩 Event Tracked: \(shippableEvent)", level: .debug, source: .EventsTracker)
+        TjekLogger.debug("[TjekSDK] Event Tracked: \(shippableEvent)")
         
         // send a notification
         NotificationCenter.default.post(name: TjekEventsTracker.didTrackEventNotification,

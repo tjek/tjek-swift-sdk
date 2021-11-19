@@ -3,6 +3,7 @@
 ///
 
 import Foundation
+import TjekUtils
 
 /// A class that handles the shipping of the Events
 class EventsShipper_v1: PoolShipper_v1Protocol {
@@ -76,8 +77,7 @@ class EventsShipper_v1: PoolShipper_v1Protocol {
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.httpBody = jsonData
         
-        #warning("Log event shipped?: LH - 1 Nov 2021")
-//        Logger.log("Shipping \(orderedEventDicts.count) events (\(String(format: "%.3f", Double(jsonData.count) / 1024.0)) kb)", level: .debug, source: .EventsTracker)
+        TjekLogger.debug("[TjekSDK] Shipping \(orderedEventDicts.count) events (\(String(format: "%.3f", Double(jsonData.count) / 1024.0)) kb)")
         
         // actually do the shipping of the events
         let task = EventsShipper_v1.networkSession.dataTask(with: request) { (responseData, response, error) in
@@ -121,22 +121,20 @@ class EventsShipper_v1: PoolShipper_v1Protocol {
                             
                             idsToRemove.append(uuid)
                             
-                            #warning("Log events not shipped?: LH - 1 Nov 2021")
-//                            Logger.log("Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with 'nack' and event > 7 days old", level: .important, source: .EventsTracker)
+                            TjekLogger.info("[TjekSDK] Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with 'nack' and event > 7 days old")
                         }
                     } else {
                         // send back all event Ids that were received (even if they were errors)
                         idsToRemove.append(uuid)
                         
-                        #warning("Log events not received?: LH - 1 Nov 2021")
-//                        if let firstError = (eventResponse["errors"] as? [[String: AnyObject]])?.first, let errType = firstError["type"] as? String {
-//
-//                            let errPath: [String] = firstError["path"] as? [String] ?? []
-//
-//                            Logger.log("Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with '\(status)': \(errType) \(errPath.joined(separator: ", "))", level: .important, source: .EventsTracker)
-//                        } else {
-//                            Logger.log("Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with '\(status)'", level: .important, source: .EventsTracker)
-//                        }
+                        if let firstError = (eventResponse["errors"] as? [[String: AnyObject]])?.first, let errType = firstError["type"] as? String {
+                            
+                            let errPath: [String] = firstError["path"] as? [String] ?? []
+                            
+                            TjekLogger.info("[TjekSDK] Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with '\(status)': \(errType) \(errPath.joined(separator: ", "))")
+                        } else {
+                            TjekLogger.info("[TjekSDK] Unable to ship event ('\(eventDict["type"] as? String ?? "")'): server responded with '\(status)'")
+                        }
                     }
                 }
             }

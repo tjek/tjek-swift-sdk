@@ -3,6 +3,7 @@
 ///
 
 import Foundation
+import TjekUtils
 
 class EventsPool {
     
@@ -108,19 +109,18 @@ class EventsPool {
             }
         }
         
-        #warning("Log event shipped?: LH - 1 Nov 2021")
-//        let counts = results.reduce(into: (success: 0, error: 0, retry: 0)) { (res, el) in
-//            switch el.value {
-//            case .error:
-//                res.error += 1
-//            case .success:
-//                res.success += 1
-//            case .retry:
-//                res.retry += 1
-//            }
-//        }
-//
-//        Logger.log("📦 Events Shipped \(counts)", level: .debug, source: .EventsTracker)
+        let counts = results.reduce(into: (success: 0, error: 0, retry: 0)) { (res, el) in
+            switch el.value {
+            case .error:
+                res.error += 1
+            case .success:
+                res.success += 1
+            case .retry:
+                res.retry += 1
+            }
+        }
+
+        TjekLogger.debug("[TjekSDK] Events Shipped \(counts)")
         
         // remove the successfully shipped events
         self.cache.remove(ids: idsToRemove)

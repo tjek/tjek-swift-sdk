@@ -3,6 +3,7 @@
 ///
 
 import Foundation
+import TjekUtils
 
 public class TjekAPI {
     
@@ -88,6 +89,9 @@ public class TjekAPI {
     
     public init(config: Config) {
         self.config = config
+        
+        TjekLogger.info("[TjekSDK] Initializing TjekAPI")
+        
         let urlSession = URLSession.shared
         let preferredLanguages = Locale.preferredLanguages.joined(separator: ",")
         

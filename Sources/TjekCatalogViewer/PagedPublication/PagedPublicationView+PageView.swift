@@ -3,6 +3,7 @@
 ///
 
 import TjekAPI
+import TjekUtils
 import UIKit
 import Verso
 
@@ -211,8 +212,7 @@ extension PagedPublicationView {
                         // TODO: handle failed image load
                         // tell delegate? show error? retry?
                         // maybe cache failed image urls to re-fail quickly?
-#warning("Logging?: LH - 2 Nov 2021")
-                        //                    Logger.log("ViewImage load failed (page: \(s.pageIndex))'\(error.localizedDescription)' (\((error as NSError).code)", level: .error, source: .PagedPublicationViewer)
+                        TjekLogger.warning("[TjekSDK] ViewImage load failed (page: \(s.pageIndex))'\(error.localizedDescription)' (\((error as NSError).code)")
                         
                         s.imageLoadState = .failed
                     }
@@ -243,8 +243,7 @@ extension PagedPublicationView {
                         // TODO: handle failed image load
                         // tell delegate? show error? retry?
                         // maybe cache failed image urls to re-fail quickly?
-#warning("Logging?: LH - 2 Nov 2021")
-                        //                    Logger.log("ZoomImage load failed (page: \(s.pageIndex))'\(error.localizedDescription)' (\((error as NSError).code)", level: .error, source: .PagedPublicationViewer)
+                        TjekLogger.warning("[TjekSDK] ZoomImage load failed (page: \(s.pageIndex))'\(error.localizedDescription)' (\((error as NSError).code)")
                         
                         s.zoomImageLoadState = .failed
                     }

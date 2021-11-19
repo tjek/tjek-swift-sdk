@@ -18,11 +18,15 @@ class RootViewController: UIViewController {
 }
 
 func initializeTjekSDK() {
+    
+    // update the logger to print all logs.
+    TjekSDK.logger.setHandler(.printLogs())
+    
     do {
         // Initialize the TjekSDK using the `TjekSDK-Config.plist` file.
         try TjekSDK.initialize()
         
-        // Initialize the TjekSDK manually
+        // Alternatively, initialize the TjekSDK manually
 //        TjekSDK.initialize(
 //            config: try .init(
 //                apiKey: "<your api key>",
