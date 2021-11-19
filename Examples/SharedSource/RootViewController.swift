@@ -20,7 +20,7 @@ class RootViewController: UIViewController {
 func initializeTjekSDK() {
     
     // update the logger to print all logs.
-    TjekSDK.logger.setHandler(.printLogs())
+//    TjekSDK.logger.handler = .consolePrinter()
     
     do {
         // Initialize the TjekSDK using the `TjekSDK-Config.plist` file.

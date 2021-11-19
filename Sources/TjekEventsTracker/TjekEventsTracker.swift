@@ -172,7 +172,7 @@ extension TjekEventsTracker {
         
         let eventInfo = [TjekEventsTracker.trackedEventNotificationKey: eventToTrack]
         
-        TjekLogger.debug("[TjekSDK] Event Tracked: \(shippableEvent)")
+        TjekLogger.debug("[TjekSDK] Event Tracked: \(event.loggableString)")
         
         // send a notification
         NotificationCenter.default.post(name: TjekEventsTracker.didTrackEventNotification,
@@ -182,6 +182,19 @@ extension TjekEventsTracker {
 }
 
 // MARK: - Tracking Notifications
+
+extension Event {
+    // { [2021-11-19 12:37:57] type: 1, pp.id: "9zP1DN7w", ppp.n: 1, vt: "8gNSWnlftgE=", id: "83874h43hfkjnkwf" }
+    var loggableString: String {
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd HH:mm:ssZ"
+        let dateStr = df.string(from: timestamp)
+        
+        let properties: [String] = ["type: \(type)"] + payload.map({ "\($0): \($1)" }).sorted(by: <) + ["id: \(id)"]
+        
+        return "{ [\(dateStr)] \(properties.joined(separator: ", ")) }"
+    }
+}
 
 extension TjekEventsTracker {
     

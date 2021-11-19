@@ -26,19 +26,27 @@ public class TjekLogger {
         }
         
         public func appending(_ handler: LogHandler) -> LogHandler {
-            LogHandler { type, message, location in
-                self.handle(type, message, location)
+            var copy = self
+            copy.append(handler)
+            return copy
+        }
+        
+        /// Add an additional LogHander. Any handlers that have already been set will still be called (before this handler), when a message is logged.
+        public mutating func append(_ handler: LogHandler) {
+            let oldHandler = self.handle
+            self.handle = { type, message, location in
+                oldHandler(type, message, location)
                 handler.handle(type, message, location)
             }
         }
     }
-
+    
     /**
      When logging a message, this defines its 'type' or 'severity'. It is important to pick the correct LogType for the type of message that is being logged.
      
      The LogType can be used by the `TjekLogger.LogHandler` to filter messages that are too verbose or not of interest, or to change how the message is printed to the console (eg. prefix an emoji)
      */
-    public enum LogType: Equatable, CaseIterable {
+    public enum LogType: Equatable {
         /// Critical errors within the SDK (eg. unable to complete a request).
         case error
         /// Anything that isnt an error, but should be seen by the developer (eg. unable to do something, so a fallback was triggered).
@@ -47,8 +55,6 @@ public class TjekLogger {
         case info
         /// For logs whose purpose is solely for debugging the SDK. Probably only relevant while in the process of developing a feature.
         case debug
-        
-        public static let allTypes: Set<LogType> = Set(LogType.allCases)
     }
     
     /**
@@ -73,20 +79,14 @@ public class TjekLogger {
             self.lineNumber = lineNumber
         }
     }
-
-    fileprivate var handler: LogHandler = .printLogs([.error])
     
-    /// Replace the current LogHandler with a new one.
-    /// By default we print 'error' logs to the console.
-    public func setHandler(_ handler: LogHandler) -> Void {
-        self.handler = handler
-    }
+    /**
+     The `handle` function of this handler will be called whenever a message is logged.
+     
+     By default we print 'error' logs to the console.
+     */
+    public var handler: LogHandler = .consolePrinter([.error])
     
-    /// Add an additional LogHander. Any handlers that have already been set will still be called (before this handler), when a message is logged.
-    public func addHandler(_ handler: LogHandler) -> Void {
-        self.handler = self.handler.appending(handler)
-    }
-
     /**
      Send a log message of the specified `type` to any handlers that have been added to this logger.
      
@@ -101,6 +101,7 @@ public class TjekLogger {
         handler.handle(type, message, location)
     }
 }
+
 extension TjekLogger {
     public func debug(_ message: String, file: String = #file, function: String = #function, line: Int = #line) {
         log(.debug, message, file: file, function: function, line: line)
@@ -156,7 +157,7 @@ extension TjekLogger.LogHandler {
     /// Builds a LogHandler that prints a message to the console.
     /// The `print` command is called on the main queue.
     /// - parameter logTypeMask: Defines which log types to print. If nil (the default), all logs are printed
-    public static func printLogs(_ logTypeMask: Set<TjekLogger.LogType>? = nil) -> TjekLogger.LogHandler {
+    public static func consolePrinter(_ logTypeMask: Set<TjekLogger.LogType>? = nil) -> TjekLogger.LogHandler {
         TjekLogger.LogHandler { type, message, location in
             // check if we are looking for this specific type of log. otherwise eject.
             if let mask = logTypeMask, !mask.contains(type) {
@@ -182,5 +183,10 @@ extension TjekLogger.LogHandler {
                 print(output)
             }
         }
+    }
+    
+    /// A simple log handler that does nothing with the messages.
+    public static func ignoreMessages() -> TjekLogger.LogHandler {
+        TjekLogger.LogHandler { _, _, _ in }
     }
 }

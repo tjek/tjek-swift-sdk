@@ -35,8 +35,7 @@ let package = Package(
         .target(name: "TjekAPI",
                 dependencies: [
                     .target(name: "TjekUtils"),
-                    
-                        .product(name: "Future", package: "Future")
+                    .product(name: "Future", package: "Future")
                 ]),
         .testTarget(name: "TjekAPITests",
                     dependencies: [.target(name: "TjekAPI")],
@@ -48,8 +47,7 @@ let package = Package(
                 dependencies: [
                     .target(name: "TjekAPI"),
                     .target(name: "TjekEventsTracker"),
-                    
-                        .product(name: "Incito", package: "Incito", condition: .when(platforms: [.iOS])),
+                    .product(name: "Incito", package: "Incito", condition: .when(platforms: [.iOS])),
                     .product(name: "Future", package: "Future", condition: .when(platforms: [.iOS])),
                     .product(name: "Verso", package: "Verso", condition: .when(platforms: [.iOS])),
                     .product(name: "Kingfisher", package: "Kingfisher", condition: .when(platforms: [.iOS]))
@@ -64,8 +62,7 @@ let package = Package(
                 dependencies: [
                     .target(name: "TjekAPI"),
                     .target(name: "TjekUtils"),
-                    
-                        .product(name: "Valet", package: "Valet")
+                    .product(name: "Valet", package: "Valet")
                 ]),
         .testTarget(name: "TjekEventsTrackerTests",
                     dependencies: [.target(name: "TjekEventsTracker")],
