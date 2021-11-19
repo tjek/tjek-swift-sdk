@@ -2,7 +2,9 @@
 ///  Copyright (c) 2021 Tjek. All rights reserved.
 ///
 
+#if !COCOAPODS // Cocoapods merges these modules
 import TjekUtils
+#endif
 
 /// The uniquely tag the PublicationId
 public enum PublicationIdTag {}

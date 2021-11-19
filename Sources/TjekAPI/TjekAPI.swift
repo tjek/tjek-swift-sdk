@@ -3,7 +3,9 @@
 ///
 
 import Foundation
+#if !COCOAPODS // Cocoapods merges these modules
 import TjekUtils
+#endif
 
 public class TjekAPI {
     

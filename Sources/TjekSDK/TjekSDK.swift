@@ -2,11 +2,13 @@
 ///  Copyright (c) 2021 Tjek. All rights reserved.
 ///
 
+#if !COCOAPODS // Cocoapods merges these modules
 @_exported import TjekAPI
 @_exported import TjekEventsTracker
 @_exported import TjekUtils
 #if os(iOS)
 @_exported import TjekCatalogViewer
+#endif
 #endif
 
 public struct TjekSDK {

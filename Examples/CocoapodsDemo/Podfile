@@ -1,16 +1,13 @@
-workspace '../../ShopGunSDK.xcworkspace'
+workspace '../../TjekSDK.xcworkspace'
 project "CocoapodsDemo"
-platform :ios, '10.0'
+platform :ios, '12.0'
 
 target 'CocoapodsDemo' do
   use_frameworks!
+  
+  pod 'TjekSDK', :path => '../../'  # In your actual project you would not use the path-based pod.
 
-  # In your actual project you would not use the path-based pod.
-  # Instead, something like `pod "ShopGunSDK"``
-  # You can also specify subspecs if you only want to use a subsection of the functionality.
-  # For example `pod "ShopGunSDK/PagedPublicationView"`
-  pod 'ShopGunSDK', :path => '../../'
+#  pod 'TjekSDK' # imports the entire SDK, including CatalogViewer
+#  pod 'TjekSDK/API' # imports just the API for making network requests.
 
-  # You do not need to do this in your Podfile... this is simply to allow use to build against the latest build of Incito without having to publish a new pod version each time.  
-  pod 'Incito', :path => '../../External/incito-ios'
 end

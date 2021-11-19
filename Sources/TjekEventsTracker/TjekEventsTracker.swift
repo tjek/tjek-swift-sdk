@@ -3,8 +3,8 @@
 ///
 
 import Foundation
+#if !COCOAPODS // Cocoapods merges these modules
 import TjekUtils
-#if canImport(UIKit)
 import UIKit
 #endif
 

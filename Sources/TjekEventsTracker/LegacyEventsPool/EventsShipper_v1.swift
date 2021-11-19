@@ -3,7 +3,9 @@
 ///
 
 import Foundation
+#if !COCOAPODS // Cocoapods merges these modules
 import TjekUtils
+#endif
 
 /// A class that handles the shipping of the Events
 class EventsShipper_v1: PoolShipper_v1Protocol {

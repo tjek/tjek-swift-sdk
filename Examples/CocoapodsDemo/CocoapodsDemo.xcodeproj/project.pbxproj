@@ -13,12 +13,12 @@
 		AE168679224A15EE00332DA6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE168672224A15EE00332DA6 /* Main.storyboard */; };
 		AE16867A224A15EE00332DA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE168674224A15EE00332DA6 /* AppDelegate.swift */; };
 		AE168699224A2B2D00332DA6 /* UIViewController+Cycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE168698224A2B2D00332DA6 /* UIViewController+Cycle.swift */; };
-		AE16869B224A2B7400332DA6 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE16869A224A2B7400332DA6 /* LoadingViewController.swift */; };
 		AE16869D224A2BD100332DA6 /* ErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE16869C224A2BD100332DA6 /* ErrorViewController.swift */; };
-		AE16869F224A4DC100332DA6 /* DemoIncitoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE16869E224A4DC100332DA6 /* DemoIncitoViewController.swift */; };
-		AE1686A1224A5C0200332DA6 /* DemoPagedPublicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1686A0224A5C0200332DA6 /* DemoPagedPublicationViewController.swift */; };
 		AE1686A3224A72B800332DA6 /* PublicationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1686A2224A72B800332DA6 /* PublicationListViewController.swift */; };
-		AE1686A5224A76DD00332DA6 /* PublicationListContentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1686A4224A76DD00332DA6 /* PublicationListContentsViewController.swift */; };
+		AE941076274847CB0085E6E2 /* DemoIncitoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE16869E224A4DC100332DA6 /* DemoIncitoViewController.swift */; };
+		AE941077274847CB0085E6E2 /* DemoPagedPublicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1686A0224A5C0200332DA6 /* DemoPagedPublicationViewController.swift */; };
+		AE941078274847CB0085E6E2 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE16869A224A2B7400332DA6 /* LoadingViewController.swift */; };
+		AE941079274847CB0085E6E2 /* PublicationListContentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1686A4224A76DD00332DA6 /* PublicationListContentsViewController.swift */; };
 		AE9E92582732BC2D00782364 /* TjekSDK-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE9E92572732BC2D00782364 /* TjekSDK-Config.plist */; };
 /* End PBXBuildFile section */
 
@@ -230,14 +230,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE16869D224A2BD100332DA6 /* ErrorViewController.swift in Sources */,
-				AE1686A1224A5C0200332DA6 /* DemoPagedPublicationViewController.swift in Sources */,
+				AE941077274847CB0085E6E2 /* DemoPagedPublicationViewController.swift in Sources */,
 				AE16867A224A15EE00332DA6 /* AppDelegate.swift in Sources */,
-				AE1686A5224A76DD00332DA6 /* PublicationListContentsViewController.swift in Sources */,
+				AE941079274847CB0085E6E2 /* PublicationListContentsViewController.swift in Sources */,
+				AE941078274847CB0085E6E2 /* LoadingViewController.swift in Sources */,
 				AE1686A3224A72B800332DA6 /* PublicationListViewController.swift in Sources */,
+				AE941076274847CB0085E6E2 /* DemoIncitoViewController.swift in Sources */,
 				AE168699224A2B2D00332DA6 /* UIViewController+Cycle.swift in Sources */,
-				AE16869F224A4DC100332DA6 /* DemoIncitoViewController.swift in Sources */,
 				AE168676224A15EE00332DA6 /* RootViewController.swift in Sources */,
-				AE16869B224A2B7400332DA6 /* LoadingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

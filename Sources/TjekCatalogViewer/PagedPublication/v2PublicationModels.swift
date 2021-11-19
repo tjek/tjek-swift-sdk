@@ -2,9 +2,11 @@
 ///  Copyright (c) 2021 Tjek. All rights reserved.
 ///
 
-import Foundation
-import TjekAPI
 import CoreGraphics
+import Foundation
+#if !COCOAPODS // Cocoapods merges these modules
+import TjekAPI
+#endif
 
 public struct PublicationPage_v2: Equatable {
     public var index: Int

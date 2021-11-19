@@ -2,9 +2,11 @@
 ///  Copyright (c) 2018 Tjek. All rights reserved.
 ///
 
-import UIKit
+#if !COCOAPODS // Cocoapods merges these modules
 import TjekUtils
 import TjekAPI
+#endif
+import UIKit
 
 extension Bundle {
     fileprivate static var ppResourceBundle: Bundle {

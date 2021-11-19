@@ -5,10 +5,12 @@
 import Foundation
 import Future
 @_exported import Incito
+#if !COCOAPODS // Cocoapods merges these modules
 import TjekAPI
-import TjekUtils
-import UIKit
 import TjekEventsTracker
+import enum TjekUtils.JSONValue
+#endif
+import UIKit
 
 enum IncitoAPIQueryError: Error {
     case invalidData
@@ -83,7 +85,7 @@ struct IncitoAPIQuery: Encodable {
         try c.encode(self.localeCode, forKey: .localeCode)
         try c.encode(self.time, forKey: .time)
         
-        let features: [[String: TjekUtils.JSONValue]] = self.featureLabels.map({ ["key": $0.jsonValue, "value": $1.jsonValue] })
+        let features: [[String: JSONValue]] = self.featureLabels.map({ ["key": $0.jsonValue, "value": $1.jsonValue] })
         try c.encode(features, forKey: .featureLabels)
     }
 }

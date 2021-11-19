@@ -2,8 +2,10 @@
 ///  Copyright (c) 2018 Tjek. All rights reserved.
 ///
 
+#if !COCOAPODS // Cocoapods merges these modules
 import TjekAPI
 import TjekEventsTracker
+#endif
 import UIKit
 
 extension PagedPublicationView {

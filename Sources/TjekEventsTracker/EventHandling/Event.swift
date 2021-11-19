@@ -3,7 +3,9 @@
 ///
 
 import Foundation
+#if !COCOAPODS // Cocoapods merges these modules
 import TjekUtils
+#endif
 
 /**
  An Event defines a package of data that can be sent to the EventsTracker. There are some core properties that are required, and any additional metadata is added to the `payload`.
