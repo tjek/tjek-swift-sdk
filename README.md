@@ -1,7 +1,7 @@
 TjekSDK
 ==========
 
-![Build Status](https://github.com/shopgun/shopgun-ios-sdk/actions/workflows/main.yml/badge.svg?branch=modularize)
+[![Build Status](https://github.com/shopgun/shopgun-ios-sdk/actions/workflows/main.yml/badge.svg)](https://github.com/shopgun/shopgun-ios-sdk/actions/workflows/main.yml)
 [![Version](https://img.shields.io/cocoapods/v/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![Swift](http://img.shields.io/badge/swift-5.0-brightgreen.svg)](https://swift.org)
