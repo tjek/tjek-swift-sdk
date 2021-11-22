@@ -3,7 +3,6 @@ TjekSDK
 
 [![Build Status](https://travis-ci.org/shopgun/shopgun-ios-sdk.svg?branch=master)](https://travis-ci.org/shopgun/shopgun-ios-sdk)
 [![Version](https://img.shields.io/cocoapods/v/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![Swift](http://img.shields.io/badge/swift-5.0-brightgreen.svg)](https://swift.org)
 
@@ -25,7 +24,7 @@ For your convenience, these libraries are wrapped by the **`TjekSDK`** library. 
 
 ## Installation
 
-TjekSDK supports most popular dependency managers. Choose your preferred method to see the instructions:
+TjekSDK supports the following dependency managers. Choose your preferred method to see the instructions:
 
 <details><summary>Swift Package Manager</summary>
 
@@ -54,19 +53,6 @@ You can also choose to only install the API subspec, if you dont need the Catalo
 pod 'TjekSDK/API', '5.0.0'
 ```
 
-</details>
-
-<details><summary>Carthage</summary>
-
-TjekSDK can only be built for iOS using Carthage. For other platforms, please use Swift Package Manager.
-
-Add the following entry in your `Cartfile`:
-
-```
-github "shopgun/shopgun-ios-sdk" "5.0.0"
-```
-
-There are some additional steps to take as explained in the [Carthage documentation](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application).
 </details>
 
 ## Getting Started
@@ -121,7 +107,7 @@ do {
 
 Open `TjekSDK.xcworkspace` to build and explore the different demo projects.
 
-> There is a demo for each dependency type (`SPMDemo`, `CarthageDemo`, `CocoapodsDemo`). Check their individual `Readme` files for more details.
+> There is a demo for each dependency manager type (`SPMDemo` & `CocoapodsDemo`). Check their individual `Readme` files for more details.
 
 ## Usage
 

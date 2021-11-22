@@ -1,4 +1,0 @@
-# This is just to use the specific version
-github "shopgun/shopgun-ios-sdk" "modularize"
-
-# github "shopgun/shopgun-ios-sdk" ~> 5.0.0

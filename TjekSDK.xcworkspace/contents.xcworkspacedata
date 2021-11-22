@@ -8,9 +8,6 @@
       location = "group:Examples/SPMDemo/SPMDemo.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Examples/CarthageDemo/CarthageDemo.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Examples/CocoapodsDemo/CocoapodsDemo.xcodeproj">
    </FileRef>
    <FileRef
