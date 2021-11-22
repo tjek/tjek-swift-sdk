@@ -25,7 +25,8 @@ A number of types and functions have been renamed, while others have stayed the 
 	- `IncitoLoaderViewController` is unchanged (apart from now using TjekAPI instead of the old GraphAPI).
 	- `PagedPublicationView` is unchanged (apart from now using TjekAPI under the hood).
 
-*Carthage* support has been removed. Due to the addition of SPM support, and the amount of work needed to continue supporting this dependency manager, along with a number of technical hurdles, we have decided to drop support. We recommend you use the Swift Package Manager instead. If anyone wishes to add support, we will gladly accept a PR.      
+**Carthage** support has been removed. 
+> Due to the addition of SPM support, and the amount of work needed to continue supporting this dependency manager, along with a number of technical hurdles, we have decided to drop support. We recommend you use the Swift Package Manager instead. If anyone wishes to add support, we will gladly accept a PR.      
 
 ## v4.2
 **Swift 5.0.1 now required**

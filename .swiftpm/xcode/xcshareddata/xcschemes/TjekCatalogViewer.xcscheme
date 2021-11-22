@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1300"
+   LastUpgradeVersion = "1310"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ShopGunSDK"
-               BuildableName = "ShopGunSDK"
-               BlueprintName = "ShopGunSDK"
+               BlueprintIdentifier = "TjekCatalogViewer"
+               BuildableName = "TjekCatalogViewer"
+               BlueprintName = "TjekCatalogViewer"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -50,9 +50,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "ShopGunSDK"
-            BuildableName = "ShopGunSDK"
-            BlueprintName = "ShopGunSDK"
+            BlueprintIdentifier = "TjekCatalogViewer"
+            BuildableName = "TjekCatalogViewer"
+            BlueprintName = "TjekCatalogViewer"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
