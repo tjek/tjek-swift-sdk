@@ -21,15 +21,11 @@ class TjekEventsTrackerTests: XCTestCase {
         
         let expectLegacyCacheEmptied = expectation(description: "Cache should be emptied")
         
-        // wait for the cache to save to disk
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            
-            TjekEventsTracker.legacyPoolCleaner(cacheFileName: legacyCacheFilename,
+        TjekEventsTracker.legacyPoolCleaner(cache: legacyCacheWriter,
                                             dispatchInterval: 1,
                                             baseURL: URL(string: "https://wolf-api.tjek-staging.com")!,
                                             enabled: false) { (shippedCount) in
-                XCTAssertEqual(shippedCount, 2)
-                // TODO: make sure the cache has been cleared
+            if shippedCount == 2 {
                 expectLegacyCacheEmptied.fulfill()
             }
         }

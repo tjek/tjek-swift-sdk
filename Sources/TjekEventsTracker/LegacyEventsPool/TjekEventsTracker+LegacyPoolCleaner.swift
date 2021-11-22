@@ -6,10 +6,10 @@ import Foundation
 
 extension TjekEventsTracker {
     /// A function that uses the old legacy Cache, Pool, & Shipper, to send any pending legacy events, using the old system.
-    static func legacyPoolCleaner(cacheFileName: String = "com.shopgun.ios.sdk.events_pool.disk_cache.plist", dispatchInterval: TimeInterval = 5, baseURL: URL, enabled: Bool, completion: @escaping (_ shippedCount: Int) -> Void) {
+    static func legacyPoolCleaner(
+        cache: EventsCache_v1 = EventsCache_v1(fileName: "com.shopgun.ios.sdk.events_pool.disk_cache.plist"),
+        dispatchInterval: TimeInterval = 5, baseURL: URL, enabled: Bool, completion: @escaping (_ shippedCount: Int) -> Void) {
         DispatchQueue.global().async {
-            let cache = EventsCache_v1(fileName: cacheFileName)
-            
             let shippedCount: Int = cache.objectCount
             guard shippedCount > 0 else {
                 completion(shippedCount)
