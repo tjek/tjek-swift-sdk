@@ -44,7 +44,7 @@ class EventsPoolTests: XCTestCase {
         expectShipping = expectation(description: "DispatchInterval ships events")
         
         // make sure the last event is shipped after the dispatch interval
-        wait(for: [expectShipping], timeout: 5)
+        wait(for: [expectShipping], timeout: 10)
         XCTAssertEqual(cache.objectCount, 0)
         XCTAssertEqual(shippedEvents.map({ $0.cacheId }), ["c"])
     }
