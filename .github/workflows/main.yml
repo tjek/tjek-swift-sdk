@@ -6,10 +6,12 @@ jobs:
   build:
     runs-on: macos-latest
     strategy:
+      fail-fast: false
       matrix:
         destination: [
+          'macOS',
           'iOS Simulator,OS=14.4,name=iPhone 8',
-          'watchOS Simulator,OS=7.2,name=Apple Watch Series 4 - 40mm'
+          'watchOS Simulator,name=Apple Watch Series 6 - 44mm'
         ]
     steps:
     - uses: actions/checkout@v2    
