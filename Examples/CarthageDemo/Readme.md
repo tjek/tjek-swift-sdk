@@ -2,13 +2,13 @@
 
 ## Carthage Demo (deprecated)
 
-* Note: Due to `swift package generate-xcodeproj` being deprecated, and the hoops needed to jump through in order to support Carthage, we can no longer guarantee support in the future. 
+* Note: Due to `swift package generate-xcodeproj` being deprecated, and the hoops needed to jump through in order to support Carthage, we can no longer guarantee support in the future.* 
 
 In order to build this demo you need to first checkout all the carthage dependencies:
 
 ```bash
 $ cd Examples/CarthageDemo/
-$ carthage checkout --use-submodules
+$ carthage update --no-build
 ```
 
 Then you must generate xcode projects for all the SPM-only dependencies:
@@ -16,6 +16,8 @@ Then you must generate xcode projects for all the SPM-only dependencies:
 ```bash
 $ (cd Carthage/Checkouts/incito-ios && swift package generate-xcodeproj)
 $ (cd Carthage/Checkouts/verso-ios && swift package generate-xcodeproj)
+$ (cd Carthage/Checkouts/swift-future && swift package generate-xcodeproj)
+$ (cd Carthage/Checkouts/shopgun-ios-sdk && swift package generate-xcodeproj)
 ```
 
 Finally, you can build the dependencies:
