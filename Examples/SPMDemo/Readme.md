@@ -1,13 +1,6 @@
 # TjekSDK
 
-## Cocoapods Demo
-
-In order to build this demo you need to first install all the dependant pods:
-
-```
-$ cd Examples/CocoapodsDemo/
-$ pod install
-```
+## Swift Package Manager Demo
 
 If you have previously built a different dependency demo, you must first clean your build folder.
 

@@ -45,8 +45,15 @@ TjekSDK can only be built for iOS using CocoaPods. For other platforms, please u
 Add the following entry in your `Podfile`:
 
 ```ruby
-pod 'ShopGunSDK', '5.0.0'
+pod 'TjekSDK', '5.0.0'
 ```
+
+You can also choose to only install the API subspec, if you dont need the CatalogViewer:
+
+```ruby
+pod 'TjekSDK/API', '5.0.0'
+```
+
 </details>
 
 <details><summary>Carthage</summary>
@@ -112,9 +119,9 @@ do {
 
 ## Examples
 
-Open `TjekSDK.xcworkspace` to build and explore the different demo projects. 
+Open `TjekSDK.xcworkspace` to build and explore the different demo projects.
 
-> There is a demo for each dependency type (`SPMDemo`, `CarthageDemo`, `CocoapodsDemo`).
+> There is a demo for each dependency type (`SPMDemo`, `CarthageDemo`, `CocoapodsDemo`). Check their individual `Readme` files for more details.
 
 ## Usage
 
