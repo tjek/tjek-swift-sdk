@@ -48,9 +48,8 @@ class EventsCacheTests: XCTestCase {
         XCTAssertEqual(readB.map { $0.val }, ((400-maxCnt)..<400).map({ $0 }))
         
         let expectCallback = expectation(description: "Sleeping for disk write")
-
-        // wait for it to write to disk
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        
+        cacheA.didWriteCallback = {
             
             let cacheB = EventsCache<TestEvent>(fileName: self.fileName, directory: self.directory, maxCount: 10)
             

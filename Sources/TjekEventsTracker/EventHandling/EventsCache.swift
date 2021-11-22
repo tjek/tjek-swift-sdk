@@ -14,6 +14,7 @@ class EventsCache<T: CacheableEvent> {
     
     let diskCachePath: URL?
     let maxCount: Int
+    var didWriteCallback: (() -> Void)?
     
     // If directory is nil, it will never cache to disk, only to memory.
     init(fileName: String, directory: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first, maxCount: Int = 1000) {
@@ -99,6 +100,8 @@ class EventsCache<T: CacheableEvent> {
                 } else {
                     // reset timer so that another request can be made
                     self.writeToDiskTimer = nil
+                    
+                    self.didWriteCallback?()
                 }
             }
         }
