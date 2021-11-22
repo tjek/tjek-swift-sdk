@@ -40,13 +40,6 @@ class EventsCacheTests: XCTestCase {
         XCTAssertEqual(readA.count, maxCnt)
         XCTAssertEqual(readA.map { $0.val }, ((200-maxCnt)..<200).map({ $0 }))
         
-        cacheA.write(toTail: (200..<400).map { TestEvent(cacheId: "\($0)", val: $0) })
-        XCTAssertEqual(cacheA.objectCount, maxCnt)
-        
-        let readB = cacheA.read(fromHead: 500)
-        XCTAssertEqual(readB.count, maxCnt)
-        XCTAssertEqual(readB.map { $0.val }, ((400-maxCnt)..<400).map({ $0 }))
-        
         let expectCallback = expectation(description: "Sleeping for disk write")
         
         cacheA.didWriteCallback = {
@@ -60,6 +53,13 @@ class EventsCacheTests: XCTestCase {
             
             expectCallback.fulfill()
         }
+        
+        cacheA.write(toTail: (200..<400).map { TestEvent(cacheId: "\($0)", val: $0) })
+        XCTAssertEqual(cacheA.objectCount, maxCnt)
+        
+        let readB = cacheA.read(fromHead: 500)
+        XCTAssertEqual(readB.count, maxCnt)
+        XCTAssertEqual(readB.map { $0.val }, ((400-maxCnt)..<400).map({ $0 }))
         
         waitForExpectations(timeout: 10)
     }
