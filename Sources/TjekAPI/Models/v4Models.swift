@@ -281,7 +281,7 @@ extension Offer_v4: Codable {
         self.business = try c.decode(Business_v4.self, forKey: .business)
         
         // due to some rather foolish data-modelling, we need to pull old format into a 'flatted' version of the same data.
-        lazy var oldPublicationLocation = try? c.decode(OldPublicationLocation.self, forKey: .oldPubLocation)
+        let oldPublicationLocation = try? c.decode(OldPublicationLocation.self, forKey: .oldPubLocation)
         self.publicationId = (try? c.decode(PublicationId.self, forKey: .publicationId)) ?? oldPublicationLocation?.id
         self.publicationPageIndex = (try? c.decode(Int.self, forKey: .publicationPageIndex)) ?? oldPublicationLocation?.pageIndex
         self.incitoViewId = try? c.decode(String.self, forKey: .incitoViewId)
