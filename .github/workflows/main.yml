@@ -1,0 +1,19 @@
+name: Build & Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        destination: [
+          'iOS Simulator,OS=14.4,name=iPhone 8',
+          'watchOS Simulator,OS=7.2,name=Apple Watch Series 4 - 40mm'
+        ]
+    steps:
+    - uses: actions/checkout@v2    
+    - name: Build
+      run: xcodebuild build -destination 'platform=${{ matrix.destination }}' -scheme 'TjekSDK' | xcpretty && exit ${PIPESTATUS[0]}
+    - name: Run Tests
+      run: xcodebuild test -destination 'platform=${{ matrix.destination }}' -scheme 'TjekSDK' | xcpretty && exit ${PIPESTATUS[0]}
