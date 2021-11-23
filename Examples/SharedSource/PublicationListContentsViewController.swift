@@ -38,7 +38,7 @@ class PublicationListContentsViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let publication = publications[indexPath.row]
-        let hasIncito = publication.hasIncito
+        let hasIncito = publication.hasIncitoPublication
         let hasPaged = publication.hasPagedPublication
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "PublicationListCell", for: indexPath) as! PublicationListCell

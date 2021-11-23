@@ -49,7 +49,7 @@ class PublicationListViewController: UIViewController {
     func openIncito(for publication: Publication_v2) {
         
         // Create an instance of `IncitoLoaderViewController`
-        let incitoVC = DemoIncitoViewController()
+        let incitoVC = DemoIncitoPublicationViewController()
 
         incitoVC.load(publication: publication)
 

@@ -189,7 +189,7 @@ extension IncitoLoaderViewController {
             .map({
                 switch $0 {
                 case let .success(publication):
-                    if publication.hasIncito {
+                    if publication.hasIncitoPublication {
                         return .success((publicationId: publication.id, isAlsoPagedPublication: publication.hasPagedPublication))
                     } else {
                         return .failure(IncitoAPIQueryError.notAnIncitoPublication)
@@ -225,7 +225,7 @@ extension IncitoLoaderViewController {
         ) {
         
         // if the publication doesnt have a graphId, then just eject with an error
-        guard publication.hasIncito else {
+        guard publication.hasIncitoPublication else {
             self.load(IncitoLoader(load: { cb in cb(.failure(IncitoAPIQueryError.notAnIncitoPublication)) })) { vcResult in
                 completion?(vcResult.map({ ($0, false) }))
             }

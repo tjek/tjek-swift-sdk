@@ -46,11 +46,11 @@ public struct Publication_v2: Equatable {
 
 extension Publication_v2 {
     /// True if this publication can only be viewed as an incito (if viewed in a PagedPublication view it would appear as a single-page pdf)
-    public var isOnlyIncito: Bool {
+    public var isOnlyIncitoPublication: Bool {
         return types == [.incito]
     }
     /// True if this publication can be viewed as an incito
-    public var hasIncito: Bool { types.contains(.incito) }
+    public var hasIncitoPublication: Bool { types.contains(.incito) }
     /// True if this publication can be viewed as an paged publication
     public var hasPagedPublication: Bool { types.contains(.paged) }
 }

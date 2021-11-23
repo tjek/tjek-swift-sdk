@@ -5,7 +5,7 @@
 import UIKit
 import TjekSDK
 
-class DemoIncitoViewController: IncitoLoaderViewController {
+class DemoIncitoPublicationViewController: IncitoLoaderViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +27,7 @@ class DemoIncitoViewController: IncitoLoaderViewController {
 }
 
 
-extension DemoIncitoViewController: IncitoLoaderViewControllerDelegate {
+extension DemoIncitoPublicationViewController: IncitoLoaderViewControllerDelegate {
     
     func incitoDidReceiveTap(at point: CGPoint, in viewController: IncitoViewController) {
         

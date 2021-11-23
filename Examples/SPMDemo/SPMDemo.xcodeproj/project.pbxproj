@@ -17,7 +17,7 @@
 		AE4BDDBC22830ECC008DB391 /* PublicationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4BDDAF22830ECC008DB391 /* PublicationListViewController.swift */; };
 		AE4BDDBD22830ECC008DB391 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4BDDB022830ECC008DB391 /* AppDelegate.swift */; };
 		AE4BDDBE22830ECC008DB391 /* TjekSDK-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE4BDDB122830ECC008DB391 /* TjekSDK-Config.plist */; };
-		AE4BDDBF22830ECC008DB391 /* DemoIncitoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4BDDB222830ECC008DB391 /* DemoIncitoViewController.swift */; };
+		AE4BDDBF22830ECC008DB391 /* DemoIncitoPublicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4BDDB222830ECC008DB391 /* DemoIncitoPublicationViewController.swift */; };
 		AE4BDDC122830ECC008DB391 /* UIViewController+Cycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4BDDB422830ECC008DB391 /* UIViewController+Cycle.swift */; };
 		AE4BDDC222830ECC008DB391 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4BDDB522830ECC008DB391 /* LoadingViewController.swift */; };
 /* End PBXBuildFile section */
@@ -33,7 +33,7 @@
 		AE4BDDAF22830ECC008DB391 /* PublicationListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicationListViewController.swift; sourceTree = "<group>"; };
 		AE4BDDB022830ECC008DB391 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE4BDDB122830ECC008DB391 /* TjekSDK-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TjekSDK-Config.plist"; sourceTree = "<group>"; };
-		AE4BDDB222830ECC008DB391 /* DemoIncitoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoIncitoViewController.swift; sourceTree = "<group>"; };
+		AE4BDDB222830ECC008DB391 /* DemoIncitoPublicationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoIncitoPublicationViewController.swift; sourceTree = "<group>"; };
 		AE4BDDB322830ECC008DB391 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE4BDDB422830ECC008DB391 /* UIViewController+Cycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Cycle.swift"; sourceTree = "<group>"; };
 		AE4BDDB522830ECC008DB391 /* LoadingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
@@ -80,7 +80,7 @@
 				AE4BDDA822830ECC008DB391 /* RootViewController.swift */,
 				AE4BDDAF22830ECC008DB391 /* PublicationListViewController.swift */,
 				AE4BDDAE22830ECC008DB391 /* PublicationListContentsViewController.swift */,
-				AE4BDDB222830ECC008DB391 /* DemoIncitoViewController.swift */,
+				AE4BDDB222830ECC008DB391 /* DemoIncitoPublicationViewController.swift */,
 				AE4BDDA722830ECC008DB391 /* DemoPagedPublicationViewController.swift */,
 				AE4BDDB522830ECC008DB391 /* LoadingViewController.swift */,
 				AE4BDDAD22830ECC008DB391 /* ErrorViewController.swift */,
@@ -177,7 +177,7 @@
 			files = (
 				AE4BDDBD22830ECC008DB391 /* AppDelegate.swift in Sources */,
 				AE4BDDB722830ECC008DB391 /* RootViewController.swift in Sources */,
-				AE4BDDBF22830ECC008DB391 /* DemoIncitoViewController.swift in Sources */,
+				AE4BDDBF22830ECC008DB391 /* DemoIncitoPublicationViewController.swift in Sources */,
 				AE4BDDBC22830ECC008DB391 /* PublicationListViewController.swift in Sources */,
 				AE4BDDBB22830ECC008DB391 /* PublicationListContentsViewController.swift in Sources */,
 				AE4BDDC222830ECC008DB391 /* LoadingViewController.swift in Sources */,

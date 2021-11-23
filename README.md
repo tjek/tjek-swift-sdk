@@ -114,13 +114,13 @@ Open `TjekSDK.xcworkspace` to build and explore the different demo projects.
 
 ### CatalogViewer
 
-There are two different ways of showing catalogs - as an Incito (vertically scrolling dynamic content) or as a PDF (horizontally paged static images). 
+There are two different ways of showing catalogs - as an [`Incito`](https://tjek.com/incito/) (vertically scrolling dynamic content) or as a PDF (horizontally paged static images). 
 
-You choose which one to use based on the `hasIncito` and `hasPagedPublication` properties on the `Publication_v2` model - you can fetch this model using one of the publication requests in `TjekAPI/CommonRequests.swift`.
+You choose which one to use based on the `hasIncitoPublication` and `hasPagedPublication` properties on the `Publication_v2` model - you can fetch this model using one of the publication requests in `TjekAPI/CommonRequests.swift`.
 
 #### Incito Viewer
 
-In order to show an Incito catalog, you subclass `IncitoLoaderViewController` and call one of the `super.load()` functions. See `Examples/SharedSource/DemoIncitoViewController.swift` for more details.
+In order to show an Incito catalog, you subclass `IncitoLoaderViewController` and call one of the `super.load()` functions. See `Examples/SharedSource/DemoIncitoPublicationViewController.swift` for more details.
 
 #### PDF Viewer
 
