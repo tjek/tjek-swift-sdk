@@ -350,7 +350,7 @@ extension Event {
 
 extension Event {
     
-    public static func offerOpened(_ offerId: CoreAPI.Offer.Identifier, action: String?, screenName: String?) -> Event {
+    public static func offerInteraction(_ offerId: CoreAPI.Offer.Identifier, action: String?, screenName: String?) -> Event {
         return offerOpened(
             offerId,
             timestamp: Date(),
