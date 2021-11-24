@@ -7,7 +7,7 @@
 @_exported import TjekEventsTracker
 @_exported import TjekUtils
 #if os(iOS)
-@_exported import TjekCatalogViewer
+@_exported import TjekPublicationViewer
 #endif
 #endif
 

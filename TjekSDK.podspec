@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
     s.summary         = "Tjek SDK for iOS."
     s.description     = <<-DESC
                          An SDK that makes it easy to talk to the Tjek API.
-                         Also allows you to easily embed an interactive catalog view into your own iOS app.
+                         Also allows you to easily embed an interactive publication view into your own iOS app.
                         DESC
     s.homepage         = "https://github.com/shopgun/shopgun-ios-sdk"
     s.license          = "MIT"
@@ -28,11 +28,11 @@ Pod::Spec.new do |s|
         ss.dependency "Valet", "~> 4.1.1"
     end
     
-    # API + Catalog viewer UI
-    s.subspec 'CatalogViewer' do |ss|
+    # API + Publication viewer UI
+    s.subspec 'PublicationViewer' do |ss|
         ss.dependency "TjekSDK/API"
-        ss.source_files = "Sources/TjekCatalogViewer/**/*.swift"
-        ss.resources = ["Sources/TjekCatalogViewer/PagedPublication/Resources/**/*"]
+        ss.source_files = "Sources/TjekPublicationViewer/**/*.swift"
+        ss.resources = ["Sources/TjekPublicationViewer/PagedPublication/Resources/**/*"]
         
         ss.frameworks   = "Foundation", "UIKit"
         

@@ -13,7 +13,7 @@ let package = Package(
     products: [
         .library(name: "TjekSDK", targets: ["TjekSDK"]),
         .library(name: "TjekAPI", targets: ["TjekAPI"]),
-        .library(name: "TjekCatalogViewer", targets: ["TjekCatalogViewer"])
+        .library(name: "TjekPublicationViewer", targets: ["TjekPublicationViewer"])
     ],
     dependencies: [
         .package(name: "Incito", url: "https://github.com/shopgun/incito-ios.git", from: "1.0.3"),
@@ -28,7 +28,7 @@ let package = Package(
                 dependencies: [
                     .target(name: "TjekAPI"),
                     .target(name: "TjekEventsTracker"),
-                    .target(name: "TjekCatalogViewer", condition: .when(platforms: [.iOS]))
+                    .target(name: "TjekPublicationViewer", condition: .when(platforms: [.iOS]))
                 ]),
         
         // MARK: -
@@ -43,7 +43,7 @@ let package = Package(
                    ),
         
         // MARK: -
-        .target(name: "TjekCatalogViewer",
+        .target(name: "TjekPublicationViewer",
                 dependencies: [
                     .target(name: "TjekAPI"),
                     .target(name: "TjekEventsTracker"),

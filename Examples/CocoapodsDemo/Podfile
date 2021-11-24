@@ -7,7 +7,7 @@ target 'CocoapodsDemo' do
   
   pod 'TjekSDK', :path => '../../'  # In your actual project you would not use the path-based pod.
 
-#  pod 'TjekSDK' # imports the entire SDK, including CatalogViewer
+#  pod 'TjekSDK' # imports the entire SDK, including PublicationViewer
 #  pod 'TjekSDK/API' # imports just the API for making network requests.
 
 end

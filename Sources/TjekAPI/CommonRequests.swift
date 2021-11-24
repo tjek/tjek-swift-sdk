@@ -30,7 +30,7 @@ extension APIRequest {
         - storeIds: Limit the list of publications by the ids of the stores they cover.
         - near: Specify a coordinate to return publications in relation to. Also optionally limit the publications to within a max radius from that coordinate.
         - acceptedTypes: Choose which types of publications to return (defaults to all)
-        - pagination: The count & cursor of the request's page. Defaults to the first page of 24 catalogs. `itemCount` must not be more than 100. `startCursor` must not be greater than 1000.
+        - pagination: The count & cursor of the request's page. Defaults to the first page of 24 publications. `itemCount` must not be more than 100. `startCursor` must not be greater than 1000.
      - Returns:
         An APIRequest with a response type of a paginated array of `Publication_v2`. This request is sent to the `v2` api.
      */

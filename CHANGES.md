@@ -21,7 +21,7 @@ A number of types and functions have been renamed, while others have stayed the 
 	- We have added a number of `*_v4` model objects too, which are accessible view v4 api requests.
 	- `ImageURLSet` has been replaced with `Set<ImageURL>` for more flexibility.
 
-- Both `IncitoLoaderViewController` and `PagedPublicationView` are now included in the same library: `TjekCatalogViewer`. This is imported by default when importing `TjekSDK`.
+- Both `IncitoLoaderViewController` and `PagedPublicationView` are now included in the same library: `TjekPublicationViewer`. This is imported by default when importing `TjekSDK`.
 	- `IncitoLoaderViewController` is unchanged (apart from now using TjekAPI instead of the old GraphAPI).
 	- `PagedPublicationView` is unchanged (apart from now using TjekAPI under the hood).
 

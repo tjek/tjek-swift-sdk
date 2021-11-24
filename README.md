@@ -11,7 +11,7 @@ TjekSDK
 
 This is an SDK for interacting with the different Tjek services from within your own apps. The SDK has been split into several libraries, which can be loaded independently if you wish:
 
-- **`TjekCatalogViewer`**: Includes several UIViewControllers for fetching, rendering, and interacting with, digital catalogs. These can be in `PDF` or [`Incito`](https://tjek.com/incito/) formats.
+- **`TjekPublicationViewer`**: Includes several UIViewControllers for fetching, rendering, and interacting with, digital publications. These can be in `PDF` or [`Incito`](https://tjek.com/incito/) formats.
 - **`TjekAPI`**: Makes sending requests to our API simple and type-safe. Contains all the model objects, and a number of specific requests, needed for interacting with our API. 
 
 For your convenience, these libraries are wrapped by the **`TjekSDK`** library. This is a simple wrapper around all the other libraries, allowing you to easily import and initialize them all.
@@ -48,7 +48,7 @@ Add the following entry in your `Podfile`:
 pod 'TjekSDK', '5.0.0'
 ```
 
-You can also choose to only install the API subspec, if you dont need the CatalogViewer:
+You can also choose to only install the API subspec, if you dont need the PublicationViewer:
 
 ```ruby
 pod 'TjekSDK/API', '5.0.0'
@@ -112,19 +112,19 @@ Open `TjekSDK.xcworkspace` to build and explore the different demo projects.
 
 ## Usage
 
-### CatalogViewer
+### PublicationViewer
 
-There are two different ways of showing catalogs - as an [`Incito`](https://tjek.com/incito/) (vertically scrolling dynamic content) or as a PDF (horizontally paged static images). 
+There are two different ways of showing publications - as an [`Incito`](https://tjek.com/incito/) (vertically scrolling dynamic content) or as a PDF (horizontally paged static images). 
 
 You choose which one to use based on the `hasIncitoPublication` and `hasPagedPublication` properties on the `Publication_v2` model - you can fetch this model using one of the publication requests in `TjekAPI/CommonRequests.swift`.
 
 #### Incito Viewer
 
-In order to show an Incito catalog, you subclass `IncitoLoaderViewController` and call one of the `super.load()` functions. See `Examples/SharedSource/DemoIncitoPublicationViewController.swift` for more details.
+In order to show an Incito publication, you subclass `IncitoLoaderViewController` and call one of the `super.load()` functions. See `Examples/SharedSource/DemoIncitoPublicationViewController.swift` for more details.
 
 #### PDF Viewer
 
-To show a PDF catalog, add an instance of `PagedPublicationView` to your view controller, and then call `reload()` on this view. See `Examples/SharedSource/DemoPagedPublicationViewController.swift` for more details.
+To show a PDF publication, add an instance of `PagedPublicationView` to your view controller, and then call `reload()` on this view. See `Examples/SharedSource/DemoPagedPublicationViewController.swift` for more details.
 
 ### TjekAPI
 
