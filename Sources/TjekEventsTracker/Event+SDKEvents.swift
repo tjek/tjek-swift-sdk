@@ -16,7 +16,7 @@ extension Event {
         case dummy                          = 0
         case pagedPublicationOpened         = 1
         case pagedPublicationPageOpened     = 2
-        case offerOpened                    = 3
+        case offerInteraction               = 3
         case searched                       = 5
         case firstOfferOpenedAfterSearch    = 6
         case offerOpenedAfterSearch         = 7
@@ -152,14 +152,14 @@ extension Event {
     }
     
     /**
-     The event when an offer has been "presented" to the user. "presented" in this context means any action that results in the offer information (often, but not necessarily the offer image) being drawn to the screen.
+     The event when an offer has been interacted with by the user.
      - parameter offerId: The uuid of the offer.
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter action: The type of interaction with the offer
      - parameter screenName: The name of the screen where actio has been taken
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
-    internal static func offerOpened(
+    internal static func offerInteraction(
         _ offerId: OfferId,
         timestamp: Date = Date(),
         action: String?,
@@ -177,7 +177,7 @@ extension Event {
         }
         
         return Event(timestamp: timestamp,
-                     type: EventType.offerOpened.rawValue,
+                     type: EventType.offerInteraction.rawValue,
                      payload: payload)
             .addingViewToken(content: offerId.rawValue, tokenizer: tokenizer)
     }
@@ -348,8 +348,8 @@ extension Event {
 
 extension Event {
     
-    public static func offerOpened(_ offerId: OfferId, action: String?, screenName: String?) -> Event {
-        return offerOpened(
+    public static func offerInteraction(_ offerId: OfferId, action: String?, screenName: String?) -> Event {
+        return offerInteraction(
             offerId,
             timestamp: Date(),
             action: action,
