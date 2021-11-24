@@ -102,7 +102,7 @@ class SDKEventsTests: XCTestCase {
     
     func testOfferOpened() {
         let testDate = Date(eventTimestamp: 12345)
-        let event = Event.offerOpened("offer_123", timestamp: testDate, action: "action_123", screenName: "screenName_567", tokenizer: self.tokenizer.tokenize)
+        let event = Event.offerInteraction("offer_123", timestamp: testDate, action: "action_123", screenName: "screenName_567", tokenizer: self.tokenizer.tokenize)
         
         XCTAssertFalse(event.id.rawValue.isEmpty)
         XCTAssertEqual(event.type, 3)
@@ -115,7 +115,7 @@ class SDKEventsTests: XCTestCase {
                         "vt": .string("YNcV9px8d8U=")])
         
         let nowTimestamp = Date().eventTimestamp
-        let defaultEvent = Event.offerOpened("øffer_321", action: nil, screenName: nil)
+        let defaultEvent = Event.offerInteraction("øffer_321", action: nil, screenName: nil)
         XCTAssert(abs(defaultEvent.timestamp.eventTimestamp - nowTimestamp) <= 2)
         XCTAssertEqual(defaultEvent.payload,
                        ["of.id": .string("øffer_321"),
