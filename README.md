@@ -2,10 +2,10 @@ TjekSDK
 ==========
 
 [![Build Status](https://github.com/shopgun/shopgun-ios-sdk/actions/workflows/main.yml/badge.svg)](https://github.com/shopgun/shopgun-ios-sdk/actions/workflows/main.yml)
-[![Version](https://img.shields.io/cocoapods/v/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
-[![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![Swift](http://img.shields.io/badge/swift-5.0-brightgreen.svg)](https://swift.org)
 [![SPM](https://img.shields.io/badge/SPM-supported-DE5C43.svg?style=flat)](https://swift.org/package-manager/)
+[![Version](https://img.shields.io/cocoapods/v/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
+[![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 
 ## Introduction
 
@@ -27,7 +27,7 @@ For your convenience, these libraries are wrapped by the **`TjekSDK`** library. 
 
 TjekSDK supports the following dependency managers. Choose your preferred method to see the instructions:
 
-<details><summary>**Swift Package Manager**</summary>
+<details><summary>Swift Package Manager</summary>
 
 TjekSDK can be built for all Apple platforms using the Swift Package Manager.
 
@@ -38,7 +38,7 @@ Add the following entry to your `Package.swift`:
 ```
 </details>
 
-<details><summary>**CocoaPods**</summary>
+<details><summary>CocoaPods</summary>
 
 TjekSDK can only be built for iOS using CocoaPods. For other platforms, please use Swift Package Manager.
 
