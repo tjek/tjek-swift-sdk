@@ -34,7 +34,7 @@ Carthage/Build
 *.secret.json
 
 ## Demos
-Demos/CocoapodsDemo/Pods/
-Demos/CocoapodsDemo/Podfile.lock
-Demos/CarthageDemo/Carthage/
-Demos/CarthageDemo/Cartfile.resolved
+Examples/CocoapodsDemo/Pods/
+Examples/CocoapodsDemo/Podfile.lock
+Examples/CarthageDemo/Carthage/
+Examples/CarthageDemo/Cartfile.resolved

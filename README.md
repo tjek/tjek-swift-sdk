@@ -1,78 +1,165 @@
-ShopGunSDK
+TjekSDK
 ==========
 
-[![Build Status](https://travis-ci.org/shopgun/shopgun-ios-sdk.svg?branch=master)](https://travis-ci.org/shopgun/shopgun-ios-sdk)
+[![Build Status](https://github.com/shopgun/shopgun-ios-sdk/actions/workflows/main.yml/badge.svg)](https://github.com/shopgun/shopgun-ios-sdk/actions/workflows/main.yml)
 [![Version](https://img.shields.io/cocoapods/v/ShopGunSDK.svg?style=flat)](http://cocoapods.org/pods/ShopGunSDK)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
-[![Swift](http://img.shields.io/badge/swift-4.2-brightgreen.svg)](https://swift.org)
+[![Swift](http://img.shields.io/badge/swift-5.0-brightgreen.svg)](https://swift.org)
+[![SPM](https://img.shields.io/badge/SPM-supported-DE5C43.svg?style=flat)](https://swift.org/package-manager/)
 
 ## Introduction
 
-This is a framework for interacting with the ShopGun APIs from within your own apps. The SDK has been split into several components:
+This is an SDK for interacting with the different Tjek services from within your own apps. The SDK has been split into several libraries, which can be loaded independently if you wish:
 
-| Component | Description |
-| :--- | :--- |
-| **`PagedPublicationView`** | A view for fetching, rendering, and interacting with, a catalog. |
-| **`IncitoPublication`** | A view controller for fetching, rendering, and interacting with, a digital catalog (an "[Incito](https://github.com/shopgun/incito-ios)"). |
-| 🤝 **`CoreAPI`** | Simplifies auth & communication with the ShopGun REST API. |
-| 🔗 **`GraphAPI`** | An interface for easily making requests to ShopGun's GraphQL API. |
-| 📡 **`EventsTracker`** | An events tracker for efficiently sending analytics events. |
+- **`TjekPublicationViewer`**: Includes several UIViewControllers for fetching, rendering, and interacting with, digital publications. These can be in `PDF` or [`Incito`](https://tjek.com/incito/) formats.
+- **`TjekAPI`**: Makes sending requests to our API simple and type-safe. Contains all the model objects, and a number of specific requests, needed for interacting with our API. 
 
+For your convenience, these libraries are wrapped by the **`TjekSDK`** library. This is a simple wrapper around all the other libraries, allowing you to easily import and initialize them all.
 
-## Guides
+## Compatibility
+| Environment | Details     |
+| ----------- |-------------|
+| 📱 iOS      | 12.0+      |
+| 🛠 Xcode    | 12.0+       |
+| 🐦 Language | Swift 5.0  |
 
-#### 💾 [Installation](Guides/Installation.md) 
+## Installation
 
-#### 💡[Getting Started](Guides/Getting-Started.md)
+TjekSDK supports the following dependency managers. Choose your preferred method to see the instructions:
 
-#### 📚 [API Documentation](http://shopgun.github.io/shopgun-ios-sdk/) 
+<details><summary>**Swift Package Manager**</summary>
 
-### Detailed Guides
-- [Configuration](Guides/Configuration.md)
-- [PagedPublicationView](Guides/PagedPublicationView.md)
-- [IncitoPublication](Guides/IncitoPublication.md)
-- [CoreAPI](Guides/CoreAPI.md)
-- [GraphAPI](Guides/GraphAPI.md)
-- [EventsTracker](Guides/EventsTracker.md)
-- [Logging](Guides/Logging.md)
+TjekSDK can be built for all Apple platforms using the Swift Package Manager.
 
-## Quick Start
+Add the following entry to your `Package.swift`:
 
-### Requirements
+```swift
+.package(url: "https://github.com/shopgun/shopgun-ios-sdk.git", .upToNextMajor(from: "5.0.0"))
+```
+</details>
 
-- iOS 9.3+
-- Xcode 9.0+
-- Swift 4.2+
+<details><summary>**CocoaPods**</summary>
 
-### Installation
+TjekSDK can only be built for iOS using CocoaPods. For other platforms, please use Swift Package Manager.
 
-The preferred way to install the `ShopGunSDK` framework into your own app is using [CocoaPods](https://cocoapods.org/). Add the following to your `Podfile`:
+Add the following entry in your `Podfile`:
 
 ```ruby
-pod 'ShopGunSDK'
+pod 'TjekSDK', '5.0.0'
 ```
 
-For more detailed instructions, see the [Installation](Guides/Installation.md) guide.
+You can also choose to only install the API subspec, if you dont need the PublicationViewer:
 
-### Examples
+```ruby
+pod 'TjekSDK/API', '5.0.0'
+```
 
-The repo uses a swift playground to demonstrate example uses of the components. 
+</details>
 
-- Download/checkout this repo.
-- Make sure you recursively checkout all the submodules in the `External` folder.
-- Open the `ShopGunSDK.xcodeproj`, and build the ShopGunSDK scheme (using a simulator destination)
-- Open the `ShopGunSDK.playground` that is referenced inside the project. From here, you will be able experiment with the SDK.
+## Getting Started
 
-> **Note:** In order to use the components properly they must be configured with the correct API keys. Set the values in the playground's `Resources/ShopGunSDK-Config.plist` file with your own API keys (accessible from the [ShopGun Developer page](https://shopgun.com/developers))
-> 
-> **Also Note:** Xcode Playgrounds can be a bit flaky when it comes to importing external frameworks. If it complains, try cleaning the build folder and rebuilding the SDK (targetting a simulator), and if it continues, restart Xcode. Also sometimes commenting out contents of the `playgroundLogHandler.swift` file, and then uncommenting again, helps.
+In order to use our SDK you will need to sign up for a free [developer account](https://etilbudsavis.dk/developers). 
 
-For a more detailed guide, see the [Getting Started](Guides/Getting-Started.md) guide.
+This will give you an `API key`, `API secret`, and a `Track ID`. The SDK must be initialized with these 3 values in order to work.
 
+### Initialization via Config file 
+
+The easiest way to initialize the SDK is to simply save these 3 keys in a config file.
+
+The file is called `TjekSDK-Config.plist`, and must be copied into your app's main bundle. 
+
+> You can see an example of this file in the Examples project (located at `./Examples/SharedSource/TjekSDK-Config.plist`)
+
+Then, when your app starts, you just need to import the SDK and call `initialize`: 
+
+```swift
+import TjekSDK
+
+do {
+    // Initialize the TjekSDK using the `TjekSDK-Config.plist` file.
+    try TjekSDK.initialize()
+} catch {
+    print("❌ Unable to initialize TjekSDK", error.localizedDescription)
+}
+```
+
+### Initialize manually
+
+If you would rather initialize the SDK programmatically, you can do so in code instead:
+
+```swift
+import TjekSDK
+
+do {
+    // Initialize the TjekSDK manually
+    TjekSDK.initialize(
+        config: try .init(
+            apiKey: "<your api key>",
+            apiSecret: "<your api secret>",
+            trackId: .init(rawValue: "<your track id>")
+        )
+    )
+} catch {
+    print("❌ Unable to initialize TjekSDK", error.localizedDescription)
+}
+```
+
+## Examples
+
+Open `TjekSDK.xcworkspace` to build and explore the different demo projects.
+
+> There is a demo for each dependency manager type (`SPMDemo` & `CocoapodsDemo`). Check their individual `Readme` files for more details.
+
+## Usage
+
+### PublicationViewer
+
+There are two different ways of showing publications - as an [`Incito`](https://tjek.com/incito/) (vertically scrolling dynamic content) or as a PDF (horizontally paged static images). 
+
+You choose which one to use based on the `hasIncitoPublication` and `hasPagedPublication` properties on the `Publication_v2` model - you can fetch this model using one of the publication requests in `TjekAPI/CommonRequests.swift`.
+
+#### Incito Viewer
+
+In order to show an Incito publication, you subclass `IncitoLoaderViewController` and call one of the `super.load()` functions. See `Examples/SharedSource/DemoIncitoPublicationViewController.swift` for more details.
+
+#### PDF Viewer
+
+To show a PDF publication, add an instance of `PagedPublicationView` to your view controller, and then call `reload()` on this view. See `Examples/SharedSource/DemoPagedPublicationViewController.swift` for more details.
+
+### TjekAPI
+
+Once initialized (using `TjekSDK.initialize`, or `TjekAPI.initialize`), you will be able to use `TjekSDK.api` to access an instance of the `TjekAPI` class. 
+
+> Note: you can also use `TjekAPI.shared` if you are only importing the TjekAPI library - `TjekSDK.api` is simply a reference to the `TjekAPI.shared` singleton.
+
+It is via this `TjekAPI` class that you send `APIRequests` to our server.
+
+An `APIRequest` is a struct that contains all the knowledge about how and where to send a server request, and how to parse the input and output data. We provide implementations of a number of our api requests.
+
+> The common pattern is to use a static function on the APIRequest type to generate the request object. You can also build APIRequests yourself, though this shouldnt be necessary.
+
+Once you have a request object, you 'send' it to the API.
+
+```swift
+let request: APIRequest = .getPublication(withId: "<publication id>")
+TjekSDK.api.send(request) { result in
+	switch result {
+	case let .success(publication):
+		// `publication` is a concrete Publication type, as defined in the APIRequest
+	case let .failure(error):
+		// `error` is of type APIError
+	}
+}
+```
+
+The `send` function takes an APIRequest, and has a completion handler that is called (on `main` queue by default). Once completed you recieve a result `Result<ResponseType, APIError>` which contains either the success type (defined by the APIRequest) or an `APIError`.
+
+> We also provide an implementation of `send` that returns a `Future` - a promise of work to be done, which can be run at a later date. Details about using these Future types can be found [here](https://github.com/shopgun/swift-future).
 
 ## Changelog
-For a history of changes to the SDK, see the [CHANGES](CHANGES.md) file.
+For a history of changes to the SDK, see the [CHANGES](CHANGES.md) file. 
+
+> This also includes migration steps, where necessary.
 
 ## License
-The `ShopGunSDK` is released under the MIT license. See [LICENSE](LICENSE.md) for details.
+The `TjekSDK` is released under the MIT license. See [LICENSE](LICENSE.md) for details.

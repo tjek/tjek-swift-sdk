@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>trackId</key>
+	<string>&lt;sdk-demo trackId&gt;</string>
+	<key>apiKey</key>
+	<string>&lt;sdk-demo api key&gt;</string>
+	<key>apiSecret</key>
+	<string>&lt;sdk-demo api secret&gt;</string>
+</dict>
+</plist>

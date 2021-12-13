@@ -1,3 +1,0 @@
-# IncitoPublication
-
-> TODO: Example uses

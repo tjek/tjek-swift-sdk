@@ -1,0 +1,13 @@
+workspace '../../TjekSDK.xcworkspace'
+project "CocoapodsDemo"
+platform :ios, '12.0'
+
+target 'CocoapodsDemo' do
+  use_frameworks!
+  
+  pod 'TjekSDK', :path => '../../'  # In your actual project you would not use the path-based pod.
+
+#  pod 'TjekSDK' # imports the entire SDK, including PublicationViewer
+#  pod 'TjekSDK/API' # imports just the API for making network requests.
+
+end
