@@ -67,7 +67,7 @@ struct EventsShipper {
                 return Int(buildStr)
             }()
             
-            // use the passed-in app name, or use a bundle-derived useragent
+            // use the passed-in app name, or use a bundle-derived useragent (eg. `com.team.appId/1.2.3 (com.shopgun.ios.sdk/3.2.1)`)
             self.name = name ?? {
                 var appName = ""
                 
@@ -76,7 +76,7 @@ struct EventsShipper {
                 }
                 
                 let sdkBundle = Bundle(for: TjekEventsTracker.self)
-                if let sdkUA = sdkBundle.userAgent {
+                if appBundle != sdkBundle, let sdkUA = sdkBundle.userAgent {
                     if appName.isEmpty {
                         appName = sdkUA
                     } else {

@@ -108,7 +108,8 @@ public class TjekAPI {
             urlSession: urlSession,
             headers: ["content-type": "application/json; charset=utf-8",
                       "accept-encoding": "gzip",
-                      "accept-language": preferredLanguages.isEmpty ? nil : preferredLanguages
+                      "accept-language": preferredLanguages.isEmpty ? nil : preferredLanguages,
+                      "user-agent": generateUserAgent()
                      ].compactMapValues({ $0 }),
             defaultEncoder: {
                 let encoder = JSONEncoder()
