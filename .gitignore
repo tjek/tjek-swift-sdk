@@ -29,6 +29,7 @@ xcuserdata
 ## Dependency Managers
 Pods/
 Carthage/Build
+Package.resolved
 
 ## Project specific
 *.secret.json
