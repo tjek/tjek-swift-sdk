@@ -67,6 +67,7 @@ extension APIError.ServerResponse {
         case emailAlreadyExists             = "EMAIL_ALREADY_EXISTS"
         
         case offerNotFound                  = "OFFER_NOT_FOUND"
+        case offersNotFound                 = "OFFERS_NOT_FOUND"
         case catalogNotFound                = "CATALOG_NOT_FOUND"
         case incitoNotFound                 = "INCITO_NOT_FOUND"
         
@@ -109,6 +110,7 @@ extension APIError.ServerResponse {
                 return 1530 // content already exists
             case .notFound,
                     .offerNotFound,
+                    .offersNotFound,
                     .catalogNotFound,
                     .incitoNotFound:
                 return 1501 // not found
