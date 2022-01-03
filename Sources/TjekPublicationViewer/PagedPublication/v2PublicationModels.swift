@@ -17,9 +17,55 @@ public struct PublicationPage_v2: Equatable {
 
 // MARK: -
 
+public struct HotspotOffer_v2: Equatable {
+    
+    public typealias ID = OfferId
+    
+    public var id: ID
+    public var heading: String
+    public var price: Offer_v2.Price?
+    public var quantity: Offer_v2.Quantity?
+    public var runDateRange: Range<Date>
+    public var publishDate: Date?
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension HotspotOffer_v2: Identifiable { }
+
+extension HotspotOffer_v2: Decodable {
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case heading
+        case runFromDateStr     = "run_from"
+        case runTillDateStr     = "run_till"
+        case publishDateStr     = "publish"
+        case price              = "pricing"
+        case quantity
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.id = try values.decode(ID.self, forKey: .id)
+        self.heading = try values.decode(String.self, forKey: .heading)
+        let fromDate = (try? values.decode(Date.self, forKey: .runFromDateStr)) ?? Date.distantPast
+        let tillDate = (try? values.decode(Date.self, forKey: .runTillDateStr)) ?? Date.distantFuture
+        // make sure range is not malformed
+        self.runDateRange = min(tillDate, fromDate) ..< max(tillDate, fromDate)
+        
+        self.publishDate = try? values.decode(Date.self, forKey: .publishDateStr)
+        
+        self.price = try? values.decode(Offer_v2.Price.self, forKey: .price)
+        self.quantity = try? values.decode(Offer_v2.Quantity.self, forKey: .quantity)
+    }
+}
+
+// MARK: -
+
 public struct PublicationHotspot_v2: Equatable {
     
-    public var offer: Offer_v2?
+    public var offer: HotspotOffer_v2?
     /// The 0->1 range bounds of the hotspot, keyed by the pageIndex.
     public var pageLocations: [Int: CGRect]
     
@@ -48,7 +94,7 @@ extension PublicationHotspot_v2: Decodable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.offer = try? values.decode(Offer_v2.self, forKey: .offer)
+        self.offer = try? values.decode(HotspotOffer_v2.self, forKey: .offer)
         
         if let pageCoords = try? values.decode([Int: [[CGFloat]]].self, forKey: .pageCoords) {
             
