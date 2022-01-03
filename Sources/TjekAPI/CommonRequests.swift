@@ -126,6 +126,46 @@ extension APIRequest {
             queryParams: params
         ).paginatedResponse(paginatedRequest: pagination)
     }
+    
+    /**
+     Builds a request that, when performed, will fetch all the active offers matching a `searchString`. The results can optionally be limited to those that have been published by a list of specified `Business` ids, and by their proximity to a location.
+     
+     - Parameters:
+        - matchingSearch: The string to search for.
+        - businessIds: Limit the list of offers by the id of the business that published them. Defaults to empty.
+        - near: Specify a coordinate to return offers in relation to. Also optionally limit the offers to within a max radius from that coordinate.
+        - pagination: The count & cursor of the request's page. Defaults to the first page of 24 offers. `itemCount` must not be more than 100. `startCursor` must not be greater than 1000.
+     */
+    public static func getOffers(
+        matchingSearch searchString: String,
+        businessIds: Set<BusinessId> = [],
+        near location: LocationQuery? = nil,
+        pagination: PaginatedRequest<Int> = .firstPage(24)
+    ) -> APIRequest<PaginatedResponse<Offer_v2, Int>, API_v2> {
+        
+        guard !searchString.isEmpty else {
+            return getOffers(businessIds: businessIds, near: location, pagination: pagination)
+        }
+        
+        var params: [String: String] = [:]
+        params.merge(pagination.v2RequestParams()) { (_, new) in new }
+        
+        params["query"] = searchString
+        
+        if let locationQ = location {
+            params.merge(locationQ.v2RequestParams()) { (_, new) in new }
+        }
+        
+        if !businessIds.isEmpty {
+            params["dealer_ids"] = businessIds.map(\.rawValue).joined(separator: ",")
+        }
+
+        return APIRequest<[Offer_v2], API_v2>(
+            endpoint: "offers/search",
+            method: .GET,
+            queryParams: params
+        ).paginatedResponse(paginatedRequest: pagination)
+    }
 }
 
 // MARK: - Store Requests
