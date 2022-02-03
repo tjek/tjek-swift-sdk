@@ -48,7 +48,7 @@ extension APIRequest {
         if !businessIds.isEmpty {
             params["dealer_ids"] = businessIds.map(\.rawValue).joined(separator: ",")
         }
-        if !businessIds.isEmpty {
+        if !storeIds.isEmpty {
             params["store_ids"] = storeIds.map(\.rawValue).joined(separator: ",")
         }
         if let locationQ = location {
