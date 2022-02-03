@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
     s.name            = "TjekSDK"
-    s.version         = "5.0.1"
+    s.version         = "5.0.2"
     s.summary         = "Tjek SDK for iOS."
     s.description     = <<-DESC
                          An SDK that makes it easy to talk to the Tjek API.
