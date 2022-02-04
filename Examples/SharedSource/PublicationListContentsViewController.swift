@@ -67,7 +67,7 @@ class PublicationListCell: UITableViewCell {
     lazy var incitoPubButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("Incito", for: .normal)
-        btn.backgroundColor = .orange
+        btn.backgroundColor = UIColor(red: 72/255, green: 68/255, blue: 148/255, alpha: 1)
         btn.setTitleColor(.white, for: .normal)
         btn.layer.cornerRadius = 4
         btn.contentEdgeInsets = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
@@ -78,7 +78,7 @@ class PublicationListCell: UITableViewCell {
     lazy var pagedPubButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("PDF", for: .normal)
-        btn.backgroundColor = .orange
+        btn.backgroundColor = UIColor(red: 233/255, green: 90/255, blue: 26/255, alpha: 1)
         btn.setTitleColor(.white, for: .normal)
         btn.layer.cornerRadius = 4
         btn.contentEdgeInsets = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)

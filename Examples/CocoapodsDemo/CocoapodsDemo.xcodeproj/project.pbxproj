@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		019EC5DA3E6578C427A62B9E /* Pods_CocoapodsDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B68A66621FDC995765BD8FE /* Pods_CocoapodsDemo.framework */; };
+		AE05B89E27AD80C800CEE434 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE05B89D27AD80C800CEE434 /* Images.xcassets */; };
 		AE168676224A15EE00332DA6 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE16866E224A15EE00332DA6 /* RootViewController.swift */; };
 		AE168678224A15EE00332DA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE168670224A15EE00332DA6 /* LaunchScreen.storyboard */; };
 		AE168679224A15EE00332DA6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE168672224A15EE00332DA6 /* Main.storyboard */; };
@@ -26,6 +27,7 @@
 		0CBBEC063EFCB310797572A3 /* Pods-CocoapodsDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CocoapodsDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CocoapodsDemo/Pods-CocoapodsDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		3B68A66621FDC995765BD8FE /* Pods_CocoapodsDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CocoapodsDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CEFA9F606EACB3AEA6097E0 /* Pods-CocoapodsDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CocoapodsDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-CocoapodsDemo/Pods-CocoapodsDemo.release.xcconfig"; sourceTree = "<group>"; };
+		AE05B89D27AD80C800CEE434 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		AE168658224A158D00332DA6 /* CocoapodsDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CocoapodsDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE16866E224A15EE00332DA6 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		AE168671224A15EE00332DA6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 		AE16866D224A15EE00332DA6 /* SharedSource */ = {
 			isa = PBXGroup;
 			children = (
+				AE05B89D27AD80C800CEE434 /* Images.xcassets */,
 				AE9E92572732BC2D00782364 /* TjekSDK-Config.plist */,
 				AE168674224A15EE00332DA6 /* AppDelegate.swift */,
 				AE16866E224A15EE00332DA6 /* RootViewController.swift */,
@@ -175,6 +178,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE9E92582732BC2D00782364 /* TjekSDK-Config.plist in Resources */,
+				AE05B89E27AD80C800CEE434 /* Images.xcassets in Resources */,
 				AE168679224A15EE00332DA6 /* Main.storyboard in Resources */,
 				AE168678224A15EE00332DA6 /* LaunchScreen.storyboard in Resources */,
 			);
@@ -385,6 +389,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0CBBEC063EFCB310797572A3 /* Pods-CocoapodsDemo.debug.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MN86AVA6GX;
 				INFOPLIST_FILE = "$(SRCROOT)/../SharedSource/Info.plist";
@@ -404,6 +410,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3CEFA9F606EACB3AEA6097E0 /* Pods-CocoapodsDemo.release.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MN86AVA6GX;
 				INFOPLIST_FILE = "$(SRCROOT)/../SharedSource/Info.plist";
