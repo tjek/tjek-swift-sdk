@@ -362,7 +362,6 @@ public struct Business_v2: Equatable {
     public var logoOnBrandColor: URL
     public var brandColorHex: String?
     public var country: String
-    public var favoriteCount: Int
 }
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
@@ -379,7 +378,6 @@ extension Business_v2: Decodable {
         case colorStr = "color"
         case pageFlip = "pageflip"
         case country
-        case favoriteCount = "favorite_count"
         
         enum PageFlipKeys: String, CodingKey {
             case logo
@@ -402,7 +400,6 @@ extension Business_v2: Decodable {
         self.logoOnBrandColor = try pageflipValues.decode(URL.self, forKey: .logo)
 
         self.country = (try values.decode(Country_v2.self, forKey: .country)).id
-        self.favoriteCount = try values.decode(Int.self, forKey: .favoriteCount)
     }
 }
 
