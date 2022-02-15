@@ -250,7 +250,7 @@ extension Offer_v2: Decodable {
 
 extension Offer_v2 {
     
-    public struct Price: Decodable, Equatable {
+    public struct Price: Codable, Equatable {
         public var currency: String
         public var price: Double
         public var prePrice: Double?
