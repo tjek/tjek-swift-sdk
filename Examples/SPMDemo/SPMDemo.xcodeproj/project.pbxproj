@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AE05B89B27AD809F00CEE434 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE05B89A27AD809F00CEE434 /* Images.xcassets */; };
 		AE0CCD572730412600DCB022 /* TjekSDK in Frameworks */ = {isa = PBXBuildFile; productRef = AE0CCD562730412600DCB022 /* TjekSDK */; };
 		AE4BDDB622830ECC008DB391 /* DemoPagedPublicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4BDDA722830ECC008DB391 /* DemoPagedPublicationViewController.swift */; };
 		AE4BDDB722830ECC008DB391 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4BDDA822830ECC008DB391 /* RootViewController.swift */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AE05B89A27AD809F00CEE434 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		AE1027DD212D639C00104921 /* SPMDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SPMDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE4BDDA722830ECC008DB391 /* DemoPagedPublicationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPagedPublicationViewController.swift; sourceTree = "<group>"; };
 		AE4BDDA822830ECC008DB391 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 		AE4BDDA622830ECC008DB391 /* SharedSource */ = {
 			isa = PBXGroup;
 			children = (
+				AE05B89A27AD809F00CEE434 /* Images.xcassets */,
 				AE4BDDB122830ECC008DB391 /* TjekSDK-Config.plist */,
 				AE4BDDB022830ECC008DB391 /* AppDelegate.swift */,
 				AE4BDDA822830ECC008DB391 /* RootViewController.swift */,
@@ -163,6 +166,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE4BDDB822830ECC008DB391 /* LaunchScreen.storyboard in Resources */,
+				AE05B89B27AD809F00CEE434 /* Images.xcassets in Resources */,
 				AE4BDDBE22830ECC008DB391 /* TjekSDK-Config.plist in Resources */,
 				AE4BDDB922830ECC008DB391 /* Main.storyboard in Resources */,
 			);
@@ -337,6 +341,7 @@
 		AE1027F0212D63A000104921 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MN86AVA6GX;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -356,6 +361,7 @@
 		AE1027F1212D63A000104921 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MN86AVA6GX;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
