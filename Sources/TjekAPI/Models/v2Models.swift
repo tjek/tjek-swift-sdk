@@ -429,9 +429,10 @@ public struct Store_v2: Equatable {
     
     public var businessId: Business_v2.ID
     public var branding: Branding_v2
+    public var openingHours: Set<OpeningHours_v2>
     public var contact: String?
     
-    public init(id: ID, street: String?, city: String?, zipCode: String?, country: String, coordinate: Coordinate, businessId: Business_v2.ID, branding: Branding_v2, contact: String?) {
+    public init(id: ID, street: String?, city: String?, zipCode: String?, country: String, coordinate: Coordinate, businessId: Business_v2.ID, branding: Branding_v2, openingHours: Set<OpeningHours_v2>, contact: String?) {
         self.id = id
         self.street = street
         self.city = city
@@ -440,6 +441,7 @@ public struct Store_v2: Equatable {
         self.coordinate = coordinate
         self.businessId = businessId
         self.branding = branding
+        self.openingHours = openingHours
         self.contact = contact
     }
 }
@@ -452,12 +454,13 @@ extension Store_v2: Decodable {
         case id
         case street
         case city
-        case zipCode    = "zip_code"
+        case zipCode        = "zip_code"
         case country
         case latitude
         case longitude
-        case dealerId   = "dealer_id"
+        case dealerId       = "dealer_id"
         case branding
+        case openingHours   = "opening_hours"
         case contact
     }
     
@@ -476,7 +479,45 @@ extension Store_v2: Decodable {
 
         self.businessId = try container.decode(Business_v2.ID.self, forKey: .dealerId)
         self.branding = try container.decode(Branding_v2.self, forKey: .branding)
+        self.openingHours = try container.decode(Set<OpeningHours_v2>.self, forKey: .openingHours)
         self.contact = try? container.decode(String.self, forKey: .contact)
+    }
+}
+
+public struct OpeningHours_v2: Hashable, Equatable {
+    public var dayfOfWeek: String?
+    public var validFrom: String?
+    public var validUntil: String?
+    public var opens: String?
+    public var closes: String?
+    
+    public init(dayfOfWeek: String?, validFrom: String?, validUntil: String?, opens: String?, closes: String?) {
+        self.dayfOfWeek = dayfOfWeek
+        self.validFrom = validFrom
+        self.validUntil = validUntil
+        self.opens = opens
+        self.closes = closes
+    }
+}
+
+extension OpeningHours_v2: Decodable {
+    
+    enum CodingKeys: String, CodingKey {
+        case dayfOfWeek     = "day_of_week"
+        case validFrom      = "valid_from"
+        case validUntil     = "valid_until"
+        case opens
+        case closes
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.dayfOfWeek = try? values.decode(String.self, forKey: .dayfOfWeek)
+        self.validFrom = try? values.decode(String.self, forKey: .validFrom)
+        self.validUntil = try? values.decode(String.self, forKey: .validUntil)
+        self.opens = try? values.decode(String.self, forKey: .opens)
+        self.closes = try? values.decode(String.self, forKey: .closes)
     }
 }
 
