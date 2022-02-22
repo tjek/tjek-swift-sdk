@@ -429,10 +429,10 @@ public struct Store_v2: Equatable {
     
     public var businessId: Business_v2.ID
     public var branding: Branding_v2
-    public var openingHours: Set<OpeningHours_v2>
+    public var openingHours: [OpeningHours_v2]
     public var contact: String?
     
-    public init(id: ID, street: String?, city: String?, zipCode: String?, country: String, coordinate: Coordinate, businessId: Business_v2.ID, branding: Branding_v2, openingHours: Set<OpeningHours_v2>, contact: String?) {
+    public init(id: ID, street: String?, city: String?, zipCode: String?, country: String, coordinate: Coordinate, businessId: Business_v2.ID, branding: Branding_v2, openingHours: [OpeningHours_v2], contact: String?) {
         self.id = id
         self.street = street
         self.city = city
@@ -479,31 +479,80 @@ extension Store_v2: Decodable {
 
         self.businessId = try container.decode(Business_v2.ID.self, forKey: .dealerId)
         self.branding = try container.decode(Branding_v2.self, forKey: .branding)
-        self.openingHours = try container.decode(Set<OpeningHours_v2>.self, forKey: .openingHours)
+        self.openingHours = (try? container.decode([OpeningHours_v2].self, forKey: .openingHours)) ?? []
         self.contact = try? container.decode(String.self, forKey: .contact)
     }
 }
 
-public struct OpeningHours_v2: Hashable, Equatable {
-    public var dayfOfWeek: String?
-    public var validFrom: String?
-    public var validUntil: String?
-    public var opens: String?
-    public var closes: String?
+#warning("Make Tests")
+public struct OpeningHours_v2: Hashable {
     
-    public init(dayfOfWeek: String?, validFrom: String?, validUntil: String?, opens: String?, closes: String?) {
-        self.dayfOfWeek = dayfOfWeek
-        self.validFrom = validFrom
-        self.validUntil = validUntil
+    public enum Period: Hashable {
+        case dayOfWeek(DayOfWeek)
+        case dateRange(ClosedRange<Date>)
+    }
+    
+    public enum DayOfWeek: String, CaseIterable, Hashable, Decodable {
+        case monday, tuesday, wednesday, thursday, friday, saturday, sunday
+        
+        var weekdayComponent: Int {
+            return DayOfWeek.allCases.firstIndex(of: self) ?? 0
+        }
+    }
+    
+    public struct TimeOfDay: Hashable {
+        public var hours: Int
+        public var minutes: Int
+        public var seconds: Int
+        
+        init(string: String) {
+            let components = string.components(separatedBy: ":").compactMap(Int.init)
+            self.hours = components.count > 0 ? components[0] : 0
+            self.minutes = components.count > 1 ? components[1] : 0
+            self.seconds = components.count > 2 ? components[2] : 0
+        }
+    }
+    
+    public var period: Period
+    public var opens: TimeOfDay
+    public var closes: TimeOfDay
+    
+    public init(period: Period, opens: TimeOfDay, closes: TimeOfDay) {
+        self.period = period
         self.opens = opens
         self.closes = closes
+    }
+    
+    func contains(date: Date) -> Bool {
+        var cal = Calendar(identifier: .gregorian)
+        cal.firstWeekday = 2
+        
+        switch period {
+        case .dayOfWeek(let dayOfWeek):
+            
+            let weekDay = cal.component(.weekday, from: date)
+            
+            if dayOfWeek.weekdayComponent != weekDay {
+                return false
+            }
+            
+        case .dateRange(let dateRange):
+            if !dateRange.contains(date) {
+                return false
+            }
+        }
+
+        let openDate = cal.date(bySettingHour: opens.hours, minute: opens.minutes, second: opens.seconds, of: date) ?? .distantPast
+        let closeDate = cal.date(bySettingHour: closes.hours, minute: closes.minutes, second: closes.seconds, of: date) ?? .distantFuture
+        
+        return date >= openDate && date <= closeDate
     }
 }
 
 extension OpeningHours_v2: Decodable {
     
     enum CodingKeys: String, CodingKey {
-        case dayfOfWeek     = "day_of_week"
+        case dayOfWeek     = "day_of_week"
         case validFrom      = "valid_from"
         case validUntil     = "valid_until"
         case opens
@@ -513,11 +562,20 @@ extension OpeningHours_v2: Decodable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.dayfOfWeek = try? values.decode(String.self, forKey: .dayfOfWeek)
-        self.validFrom = try? values.decode(String.self, forKey: .validFrom)
-        self.validUntil = try? values.decode(String.self, forKey: .validUntil)
-        self.opens = try? values.decode(String.self, forKey: .opens)
-        self.closes = try? values.decode(String.self, forKey: .closes)
+        if let dayOfWeek = try? values.decode(DayOfWeek.self, forKey: .dayOfWeek) {
+            self.period = .dayOfWeek(dayOfWeek)
+        } else {
+            let validFrom = try values.decode(Date.self, forKey: .validFrom)
+            let validUntil = try values.decode(Date.self, forKey: .validUntil)
+            self.period = .dateRange(validFrom...validUntil)
+        }
+        
+        let openHour = try values.decode(String.self, forKey: .opens)
+        let closeHour = try values.decode(String.self, forKey: .closes)
+        
+        self.opens = TimeOfDay(string: openHour)
+        self.closes = TimeOfDay(string: closeHour)
+        print("Opens: \(opens), Closes: \(closes)")
     }
 }
 
