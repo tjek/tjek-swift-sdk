@@ -266,14 +266,6 @@ extension Offer_v2 {
             case price
             case prePrice = "pre_price"
         }
-        
-        public init(from decoder: Decoder) throws {
-            let c = try decoder.container(keyedBy: CodingKeys.self)
-            
-            self.currency = (try? c.decode(String.self, forKey: .currency)) ?? "DKK"
-            self.price = try c.decode(Double.self, forKey: .price)
-            self.prePrice = try? c.decode(Double.self, forKey: .prePrice)
-        }
     }
     
     public struct Quantity: Decodable, Equatable {
