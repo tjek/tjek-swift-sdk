@@ -70,6 +70,7 @@ extension APIError.ServerResponse {
         case offersNotFound                 = "OFFERS_NOT_FOUND"
         case catalogNotFound                = "CATALOG_NOT_FOUND"
         case incitoNotFound                 = "INCITO_NOT_FOUND"
+        case businessNotFound               = "DEALER_NOT_FOUND"
         
         /// An error that means the AuthToken passed to a request is no longer valid.
         /// All future requests will fail if the same token is passed.
@@ -112,7 +113,8 @@ extension APIError.ServerResponse {
                     .offerNotFound,
                     .offersNotFound,
                     .catalogNotFound,
-                    .incitoNotFound:
+                    .incitoNotFound,
+                    .businessNotFound:
                 return 1501 // not found
             }
         }
