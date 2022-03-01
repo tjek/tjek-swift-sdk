@@ -490,13 +490,36 @@ public struct OpeningHours_v2: Hashable {
     public enum Period: Hashable {
         case dayOfWeek(DayOfWeek)
         case dateRange(ClosedRange<Date>)
+        
+        public func contains(date: Date) -> Bool {
+            var cal = Calendar(identifier: .gregorian)
+            cal.firstWeekday = 2
+            
+            switch self {
+            case .dayOfWeek(let dayOfWeek):
+                
+                let weekDay = cal.component(.weekday, from: date)
+                
+                return dayOfWeek.weekdayComponent == weekDay
+                
+            case .dateRange(let dateRange):
+                return dateRange.contains(date)
+            }
+        }
     }
     
     public enum DayOfWeek: String, CaseIterable, Hashable, Decodable {
-        case monday, tuesday, wednesday, thursday, friday, saturday, sunday
+        case sunday, monday, tuesday, wednesday, thursday, friday, saturday
         
-        var weekdayComponent: Int {
-            return DayOfWeek.allCases.firstIndex(of: self) ?? 0
+        // sunday = 1
+        public init?(weekdayComponent: Int) {
+            let allDays = Self.allCases
+            guard weekdayComponent <= allDays.count else { return nil }
+            self = allDays[weekdayComponent - 1]
+        }
+        // sunday = 1
+        public var weekdayComponent: Int {
+            return (DayOfWeek.allCases.firstIndex(of: self) ?? 0) + 1
         }
     }
     
@@ -505,7 +528,7 @@ public struct OpeningHours_v2: Hashable {
         public var minutes: Int
         public var seconds: Int
         
-        init(string: String) {
+        public init(string: String) {
             let components = string.components(separatedBy: ":").compactMap(Int.init)
             self.hours = components.count > 0 ? components[0] : 0
             self.minutes = components.count > 1 ? components[1] : 0
@@ -523,25 +546,11 @@ public struct OpeningHours_v2: Hashable {
         self.closes = closes
     }
     
-    func contains(date: Date) -> Bool {
-        var cal = Calendar(identifier: .gregorian)
-        cal.firstWeekday = 2
+    public func contains(date: Date) -> Bool {
         
-        switch period {
-        case .dayOfWeek(let dayOfWeek):
-            
-            let weekDay = cal.component(.weekday, from: date)
-            
-            if dayOfWeek.weekdayComponent != weekDay {
-                return false
-            }
-            
-        case .dateRange(let dateRange):
-            if !dateRange.contains(date) {
-                return false
-            }
-        }
+        guard period.contains(date: date) else { return false }
 
+        let cal = Calendar(identifier: .gregorian)
         let openDate = cal.date(bySettingHour: opens.hours, minute: opens.minutes, second: opens.seconds, of: date) ?? .distantPast
         let closeDate = cal.date(bySettingHour: closes.hours, minute: closes.minutes, second: closes.seconds, of: date) ?? .distantFuture
         
@@ -575,7 +584,6 @@ extension OpeningHours_v2: Decodable {
         
         self.opens = TimeOfDay(string: openHour)
         self.closes = TimeOfDay(string: closeHour)
-        print("Opens: \(opens), Closes: \(closes)")
     }
 }
 
