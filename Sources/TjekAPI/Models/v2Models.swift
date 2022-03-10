@@ -540,6 +540,9 @@ public struct OpeningHours_v2: Hashable {
         }
         
         public func toString() -> String {
+            if hours == 23 && minutes == 59 {
+                return "00:00"
+            }
             return String(format: "%d:%02d", hours, minutes)
         }
     }
