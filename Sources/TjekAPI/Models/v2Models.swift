@@ -534,6 +534,14 @@ public struct OpeningHours_v2: Hashable {
             self.minutes = components.count > 1 ? components[1] : 0
             self.seconds = components.count > 2 ? components[2] : 0
         }
+        
+        public func date(on day: Date, usingCalendar: Calendar) -> Date? {
+            return usingCalendar.date(bySettingHour: hours, minute: minutes, second: seconds, of: day)
+        }
+        
+        public func toString() -> String {
+            return String(format: "%d:%02d", hours, minutes)
+        }
     }
     
     public var period: Period
