@@ -82,8 +82,6 @@ class OpeningHoursTests: XCTestCase {
 }
 """
         XCTAssertThrowsError(try decoder.decode(OpeningHours_v2.self, from: corruptJson.data(using: .utf8)!))
-        
-        
     }
     
     func testOpeningHoursContains() {
