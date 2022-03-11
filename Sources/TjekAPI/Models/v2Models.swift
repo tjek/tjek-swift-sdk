@@ -484,7 +484,6 @@ extension Store_v2: Decodable {
     }
 }
 
-#warning("Make Tests")
 public struct OpeningHours_v2: Hashable {
     
     public enum Period: Hashable {
@@ -493,7 +492,7 @@ public struct OpeningHours_v2: Hashable {
         
         public func contains(date: Date) -> Bool {
             var cal = Calendar(identifier: .gregorian)
-            cal.firstWeekday = 2
+            cal.firstWeekday = 2 // Monday
             
             switch self {
             case .dayOfWeek(let dayOfWeek):
@@ -541,7 +540,7 @@ public struct OpeningHours_v2: Hashable {
         
         public func toString() -> String {
             if hours == 23 && minutes == 59 {
-                return "00:00"
+                return "24:00"
             }
             return String(format: "%d:%02d", hours, minutes)
         }
@@ -582,12 +581,13 @@ extension OpeningHours_v2: Decodable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        if let dayOfWeek = try? values.decode(DayOfWeek.self, forKey: .dayOfWeek) {
+        if let validFrom = try? values.decode(Date.self, forKey: .validFrom),
+           let validUntil = try? values.decode(Date.self, forKey: .validUntil) {
+            self.period = .dateRange(validFrom...validUntil)
+        } else if let dayOfWeek = try? values.decode(DayOfWeek.self, forKey: .dayOfWeek) {
             self.period = .dayOfWeek(dayOfWeek)
         } else {
-            let validFrom = try values.decode(Date.self, forKey: .validFrom)
-            let validUntil = try values.decode(Date.self, forKey: .validUntil)
-            self.period = .dateRange(validFrom...validUntil)
+            self.period = .dateRange(.distantPast ... .distantFuture)
         }
         
         let openHour = try values.decode(String.self, forKey: .opens)
