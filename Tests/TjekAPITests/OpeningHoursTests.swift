@@ -41,8 +41,6 @@ class OpeningHoursTests: XCTestCase {
         let openingHours: OpeningHours_v2 = try decoder.decode(OpeningHours_v2.self, from: maxJson.data(using: .utf8)!)
         
         XCTAssertEqual(openingHours, expectedDateRange)
-        XCTAssertNotEqual(openingHours, expectedWeekday)
-        XCTAssertNoThrow(try decoder.decode(OpeningHours_v2.self, from: maxJson.data(using: .utf8)!))
         
         let midJson = """
 {
@@ -54,8 +52,6 @@ class OpeningHoursTests: XCTestCase {
         let openingHours1: OpeningHours_v2 = try decoder.decode(OpeningHours_v2.self, from: midJson.data(using: .utf8)!)
         
         XCTAssertNotEqual(openingHours1, expectedDateRange)
-        XCTAssertEqual(openingHours1, expectedWeekday)
-        XCTAssertNoThrow(try decoder.decode(OpeningHours_v2.self, from: midJson.data(using: .utf8)!))
         
         let minJson = """
 {
@@ -67,7 +63,6 @@ class OpeningHoursTests: XCTestCase {
         let openingHours2: OpeningHours_v2 = try decoder.decode(OpeningHours_v2.self, from: minJson.data(using: .utf8)!)
         
         XCTAssertEqual(openingHours2, expectedNoPeriod)
-        XCTAssertNotEqual(openingHours2, expectedDateRange)
         
         let emptyJson = """
 {}
@@ -95,11 +90,13 @@ class OpeningHoursTests: XCTestCase {
         let startDate = v2df.date(from: "2022-03-09T09:00:00+0000")!
         let endDate = v2df.date(from: "2022-03-10T19:00:00+0000")!
         let testDate = v2df.date(from: "2022-03-10T16:00:00+0000")!
+        let mondayTestDate = v2df.date(from: "2022-03-14T14:00:00+0000")!
         
         let openingHours = OpeningHours_v2(period: .dateRange(startDate...endDate), opens: .init(string: opens), closes: .init(string: closes))
         let mondayHours = OpeningHours_v2(period: .dayOfWeek(.monday), opens: .init(string: opens), closes: .init(string: closes))
         
         XCTAssertTrue(openingHours.contains(date: testDate))
+        XCTAssertTrue(mondayHours.contains(date: mondayTestDate))
         XCTAssertFalse(mondayHours.contains(date: testDate))
         XCTAssertFalse(openingHours.contains(date: Date()))
     }

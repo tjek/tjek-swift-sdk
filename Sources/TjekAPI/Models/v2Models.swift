@@ -583,7 +583,7 @@ extension OpeningHours_v2: Decodable {
         
         if let validFrom = try? values.decode(Date.self, forKey: .validFrom),
            let validUntil = try? values.decode(Date.self, forKey: .validUntil) {
-            self.period = .dateRange(validFrom...validUntil)
+            self.period = .dateRange(min(validFrom, validUntil)...max(validFrom, validUntil))
         } else if let dayOfWeek = try? values.decode(DayOfWeek.self, forKey: .dayOfWeek) {
             self.period = .dayOfWeek(dayOfWeek)
         } else {
