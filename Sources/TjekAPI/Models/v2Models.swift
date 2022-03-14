@@ -516,9 +516,14 @@ public struct OpeningHours_v2: Hashable {
             guard weekdayComponent <= allDays.count else { return nil }
             self = allDays[weekdayComponent - 1]
         }
+        
         // sunday = 1
         public var weekdayComponent: Int {
             return (DayOfWeek.allCases.firstIndex(of: self) ?? 0) + 1
+        }
+        
+        public func localizedWeekdaySymbol(for calendar: Calendar = .autoupdatingCurrent) -> String {
+           calendar.weekdaySymbols[self.weekdayComponent - 1]
         }
     }
     
