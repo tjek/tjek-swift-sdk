@@ -522,8 +522,21 @@ public struct OpeningHours_v2: Hashable {
             return (DayOfWeek.allCases.firstIndex(of: self) ?? 0) + 1
         }
         
-        public func localizedWeekdaySymbol(for calendar: Calendar = .autoupdatingCurrent) -> String {
-           calendar.weekdaySymbols[self.weekdayComponent - 1]
+        // i.e. Monday
+        public func localizedWeekdaySymbol(for locale: Locale = .autoupdatingCurrent) -> String {
+            var cal = Calendar(identifier: .gregorian)
+            cal.locale = locale
+            return cal.weekdaySymbols[self.weekdayComponent - 1]
+        }
+        
+        public func date(relativeTo date: Date = Date(), usingCalendar: Calendar) -> Date? {
+            if usingCalendar.component(.weekday, from: date) == self.weekdayComponent {
+                return date
+            } else {
+                // Get the next day matching this weekday
+                let components = DateComponents(weekday: self.weekdayComponent)
+                return usingCalendar.nextDate(after: date, matching: components, matchingPolicy: .nextTime)
+            }
         }
     }
     
