@@ -529,13 +529,16 @@ public struct OpeningHours_v2: Hashable {
             return cal.weekdaySymbols[self.weekdayComponent - 1]
         }
         
-        public func date(relativeTo date: Date = Date(), usingCalendar: Calendar) -> Date? {
-            if usingCalendar.component(.weekday, from: date) == self.weekdayComponent {
+        public func date(relativeTo date: Date = Date()) -> Date? {
+            var cal = Calendar(identifier: .gregorian)
+            cal.firstWeekday = 2
+            
+            if cal.component(.weekday, from: date) == self.weekdayComponent {
                 return date
             } else {
                 // Get the next day matching this weekday
                 let components = DateComponents(weekday: self.weekdayComponent)
-                return usingCalendar.nextDate(after: date, matching: components, matchingPolicy: .nextTime)
+                return cal.nextDate(after: date, matching: components, matchingPolicy: .nextTime)
             }
         }
     }
@@ -552,7 +555,7 @@ public struct OpeningHours_v2: Hashable {
             self.seconds = components.count > 2 ? components[2] : 0
         }
         
-        public func date(on day: Date, usingCalendar: Calendar) -> Date? {
+        public func date(on day: Date, usingCalendar: Calendar = .autoupdatingCurrent) -> Date? {
             return usingCalendar.date(bySettingHour: hours, minute: minutes, second: seconds, of: day)
         }
         
