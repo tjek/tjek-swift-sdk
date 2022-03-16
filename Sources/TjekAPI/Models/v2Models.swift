@@ -429,10 +429,10 @@ public struct Store_v2: Equatable {
     
     public var businessId: Business_v2.ID
     public var branding: Branding_v2
-    public var openingHours: Set<OpeningHours_v2>
+    public var openingHours: [OpeningHours_v2]
     public var contact: String?
     
-    public init(id: ID, street: String?, city: String?, zipCode: String?, country: String, coordinate: Coordinate, businessId: Business_v2.ID, branding: Branding_v2, openingHours: Set<OpeningHours_v2>, contact: String?) {
+    public init(id: ID, street: String?, city: String?, zipCode: String?, country: String, coordinate: Coordinate, businessId: Business_v2.ID, branding: Branding_v2, openingHours: [OpeningHours_v2], contact: String?) {
         self.id = id
         self.street = street
         self.city = city
@@ -479,31 +479,120 @@ extension Store_v2: Decodable {
 
         self.businessId = try container.decode(Business_v2.ID.self, forKey: .dealerId)
         self.branding = try container.decode(Branding_v2.self, forKey: .branding)
-        self.openingHours = try container.decode(Set<OpeningHours_v2>.self, forKey: .openingHours)
+        self.openingHours = (try? container.decode([OpeningHours_v2].self, forKey: .openingHours)) ?? []
         self.contact = try? container.decode(String.self, forKey: .contact)
     }
 }
 
-public struct OpeningHours_v2: Hashable, Equatable {
-    public var dayfOfWeek: String?
-    public var validFrom: String?
-    public var validUntil: String?
-    public var opens: String?
-    public var closes: String?
+public struct OpeningHours_v2: Hashable {
     
-    public init(dayfOfWeek: String?, validFrom: String?, validUntil: String?, opens: String?, closes: String?) {
-        self.dayfOfWeek = dayfOfWeek
-        self.validFrom = validFrom
-        self.validUntil = validUntil
+    public enum Period: Hashable {
+        case dayOfWeek(DayOfWeek)
+        case dateRange(ClosedRange<Date>)
+        
+        public func contains(date: Date) -> Bool {
+            var cal = Calendar(identifier: .gregorian)
+            cal.firstWeekday = 2 // Monday
+            
+            switch self {
+            case .dayOfWeek(let dayOfWeek):
+                
+                let weekDay = cal.component(.weekday, from: date)
+                
+                return dayOfWeek.weekdayComponent == weekDay
+                
+            case .dateRange(let dateRange):
+                return dateRange.contains(date)
+            }
+        }
+    }
+    
+    public enum DayOfWeek: String, CaseIterable, Hashable, Decodable {
+        case sunday, monday, tuesday, wednesday, thursday, friday, saturday
+        
+        // sunday = 1
+        public init?(weekdayComponent: Int) {
+            let allDays = Self.allCases
+            guard weekdayComponent <= allDays.count else { return nil }
+            self = allDays[weekdayComponent - 1]
+        }
+        
+        // sunday = 1
+        public var weekdayComponent: Int {
+            return (DayOfWeek.allCases.firstIndex(of: self) ?? 0) + 1
+        }
+        
+        // i.e. Monday
+        public func localizedWeekdaySymbol(for locale: Locale = .autoupdatingCurrent) -> String {
+            var cal = Calendar(identifier: .gregorian)
+            cal.locale = locale
+            return cal.weekdaySymbols[self.weekdayComponent - 1]
+        }
+        
+        public func date(relativeTo date: Date = Date()) -> Date? {
+            var cal = Calendar(identifier: .gregorian)
+            cal.firstWeekday = 2
+            
+            if cal.component(.weekday, from: date) == self.weekdayComponent {
+                return date
+            } else {
+                // Get the next day matching this weekday
+                let components = DateComponents(weekday: self.weekdayComponent)
+                return cal.nextDate(after: date, matching: components, matchingPolicy: .nextTime)
+            }
+        }
+    }
+    
+    public struct TimeOfDay: Hashable {
+        public var hours: Int
+        public var minutes: Int
+        public var seconds: Int
+        
+        public init(string: String) {
+            let components = string.components(separatedBy: ":").compactMap(Int.init)
+            self.hours = components.count > 0 ? components[0] : 0
+            self.minutes = components.count > 1 ? components[1] : 0
+            self.seconds = components.count > 2 ? components[2] : 0
+        }
+        
+        public func date(on day: Date, usingCalendar: Calendar = .autoupdatingCurrent) -> Date? {
+            return usingCalendar.date(bySettingHour: hours, minute: minutes, second: seconds, of: day)
+        }
+        
+        public func toString() -> String {
+            if hours == 23 && minutes == 59 {
+                return "24:00"
+            }
+            return String(format: "%d:%02d", hours, minutes)
+        }
+    }
+    
+    public var period: Period
+    public var opens: TimeOfDay
+    public var closes: TimeOfDay
+    
+    public init(period: Period, opens: TimeOfDay, closes: TimeOfDay) {
+        self.period = period
         self.opens = opens
         self.closes = closes
+    }
+    
+    public func contains(date: Date) -> Bool {
+        
+        guard period.contains(date: date) else { return false }
+
+        let cal = Calendar(identifier: .gregorian)
+        let openDate = cal.date(bySettingHour: opens.hours, minute: opens.minutes, second: opens.seconds, of: date) ?? .distantPast
+        let closeDate = cal.date(bySettingHour: closes.hours, minute: closes.minutes, second: closes.seconds, of: date) ?? .distantFuture
+        
+        return date >= openDate && date <= closeDate
     }
 }
 
 extension OpeningHours_v2: Decodable {
     
     enum CodingKeys: String, CodingKey {
-        case dayfOfWeek     = "day_of_week"
+        case dayOfWeek     = "day_of_week"
         case validFrom      = "valid_from"
         case validUntil     = "valid_until"
         case opens
@@ -513,11 +602,20 @@ extension OpeningHours_v2: Decodable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.dayfOfWeek = try? values.decode(String.self, forKey: .dayfOfWeek)
-        self.validFrom = try? values.decode(String.self, forKey: .validFrom)
-        self.validUntil = try? values.decode(String.self, forKey: .validUntil)
-        self.opens = try? values.decode(String.self, forKey: .opens)
-        self.closes = try? values.decode(String.self, forKey: .closes)
+        if let validFrom = try? values.decode(Date.self, forKey: .validFrom),
+           let validUntil = try? values.decode(Date.self, forKey: .validUntil) {
+            self.period = .dateRange(min(validFrom, validUntil)...max(validFrom, validUntil))
+        } else if let dayOfWeek = try? values.decode(DayOfWeek.self, forKey: .dayOfWeek) {
+            self.period = .dayOfWeek(dayOfWeek)
+        } else {
+            self.period = .dateRange(.distantPast ... .distantFuture)
+        }
+        
+        let openHour = try values.decode(String.self, forKey: .opens)
+        let closeHour = try values.decode(String.self, forKey: .closes)
+        
+        self.opens = TimeOfDay(string: openHour)
+        self.closes = TimeOfDay(string: closeHour)
     }
 }
 
