@@ -568,10 +568,10 @@ public struct OpeningHours_v2: Hashable {
     }
     
     public var period: Period
-    public var opens: TimeOfDay
-    public var closes: TimeOfDay
+    public var opens: TimeOfDay?
+    public var closes: TimeOfDay?
     
-    public init(period: Period, opens: TimeOfDay, closes: TimeOfDay) {
+    public init(period: Period, opens: TimeOfDay?, closes: TimeOfDay?) {
         self.period = period
         self.opens = opens
         self.closes = closes
@@ -579,11 +579,11 @@ public struct OpeningHours_v2: Hashable {
     
     public func contains(date: Date) -> Bool {
         
-        guard period.contains(date: date) else { return false }
+        guard let openTime = opens, let closeTime = closes, period.contains(date: date) else { return false }
 
         let cal = Calendar(identifier: .gregorian)
-        let openDate = cal.date(bySettingHour: opens.hours, minute: opens.minutes, second: opens.seconds, of: date) ?? .distantPast
-        let closeDate = cal.date(bySettingHour: closes.hours, minute: closes.minutes, second: closes.seconds, of: date) ?? .distantFuture
+        let openDate = cal.date(bySettingHour: openTime.hours, minute: openTime.minutes, second: openTime.seconds, of: date) ?? .distantPast
+        let closeDate = cal.date(bySettingHour: closeTime.hours, minute: closeTime.minutes, second: closeTime.seconds, of: date) ?? .distantFuture
         
         return date >= openDate && date <= closeDate
     }
@@ -611,11 +611,10 @@ extension OpeningHours_v2: Decodable {
             self.period = .dateRange(.distantPast ... .distantFuture)
         }
         
-        let openHour = try values.decode(String.self, forKey: .opens)
-        let closeHour = try values.decode(String.self, forKey: .closes)
-        
-        self.opens = TimeOfDay(string: openHour)
-        self.closes = TimeOfDay(string: closeHour)
+        if let openHour = try? values.decode(String.self, forKey: .opens), let closeHour = try? values.decode(String.self, forKey: .closes) {
+            self.opens = TimeOfDay(string: openHour)
+            self.closes = TimeOfDay(string: closeHour)
+        }
     }
 }
 
