@@ -10,10 +10,10 @@ class OpeningHoursTests: XCTestCase {
     
     func testOpeningHoursDecodable() throws {
         let dayOfWeek = "monday"
-        let opens = "10:00:00"
-        let closes = "18:00:00"
-        let validFrom = "2022-03-09T09:00:00+0000"
-        let validUntil = "2022-03-10T19:00:00+0000"
+        let opens = "09:00:00"
+        let closes = "21:00:00"
+        let validFrom = "2022-04-03T00:00:00+02:00"
+        let validUntil = "2022-04-04T00:00:00+02:00"
         
         let v2df = DateFormatter()
         v2df.locale = Locale(identifier: "en_US_POSIX")
@@ -23,51 +23,77 @@ class OpeningHoursTests: XCTestCase {
         let fromDate = v2df.date(from: validFrom)!
         let toDate = v2df.date(from: validUntil)!
         
-        let expectedDateRange = OpeningHours_v2(period: .dateRange(fromDate...toDate), opens: .init(string: opens), closes: .init(string: closes))
+//
+// MARK: Test only dayOfWeek
+//
         
-        let expectedWeekday = OpeningHours_v2(period: .dayOfWeek(.monday), opens: .init(string: opens), closes: .init(string: closes))
+        let minDayJson = """
+{
+        "day_of_week": "\(dayOfWeek)"
+}
+"""
+        let result1: OpeningHours_v2 = try decoder.decode(OpeningHours_v2.self, from: minDayJson.data(using: .utf8)!)
+        let expectedResult1 = OpeningHours_v2(period: .dayOfWeek(.monday), opens: nil, closes: nil)
         
-        let expectedNoPeriod = OpeningHours_v2(period: .dateRange(.distantPast ... .distantFuture ), opens: .init(string: opens), closes: .init(string: closes))
+        XCTAssertEqual(result1, expectedResult1)
+
+//
+// MARK: Test dayOfWeek with hours
+//
         
-        let maxJson = """
+        let maxDayJson = """
 {
     "day_of_week": "\(dayOfWeek)",
     "opens": "\(opens)",
-    "closes": "\(closes)",
+    "closes": "\(closes)"
+}
+"""
+        let result2: OpeningHours_v2 = try decoder.decode(OpeningHours_v2.self, from: maxDayJson.data(using: .utf8)!)
+        let expectedResult2 = OpeningHours_v2(period: .dayOfWeek(.monday), opens: .init(string: opens), closes: .init(string: closes))
+        
+        XCTAssertEqual(result2, expectedResult2)
+        
+//
+// MARK: Test dateRange
+//
+        
+        let minRangeJson = """
+{
     "valid_from": "\(validFrom)",
     "valid_until": "\(validUntil)"
 }
 """
-        let openingHours: OpeningHours_v2 = try decoder.decode(OpeningHours_v2.self, from: maxJson.data(using: .utf8)!)
         
-        XCTAssertEqual(openingHours, expectedDateRange)
+        let result3: OpeningHours_v2 = try decoder.decode(OpeningHours_v2.self, from: minRangeJson.data(using: .utf8)!)
+        let expectedResult3 = OpeningHours_v2(period: .dateRange(fromDate ... toDate), opens: nil, closes: nil)
         
-        let midJson = """
+        XCTAssertEqual(result3, expectedResult3)
+        
+//
+// MARK: Test dateRange with hours
+//
+        
+        let maxRangeJson = """
 {
-    "day_of_week": "\(dayOfWeek)",
-    "opens": "\(opens)",
-    "closes": "\(closes)"
-}
-"""
-        let openingHours1: OpeningHours_v2 = try decoder.decode(OpeningHours_v2.self, from: midJson.data(using: .utf8)!)
-        
-        XCTAssertNotEqual(openingHours1, expectedDateRange)
-        
-        let minJson = """
-{
-    "opens": "\(opens)",
-    "closes": "\(closes)"
+        "valid_from": "\(validFrom)",
+        "valid_until": "\(validUntil)",
+        "opens": "\(opens)",
+        "closes": "\(closes)"
 }
 """
         
-        let openingHours2: OpeningHours_v2 = try decoder.decode(OpeningHours_v2.self, from: minJson.data(using: .utf8)!)
+        let result4: OpeningHours_v2 = try decoder.decode(OpeningHours_v2.self, from: maxRangeJson.data(using: .utf8)!)
+        let expectedResult4 = OpeningHours_v2(period: .dateRange(fromDate ... toDate), opens: .init(string: opens), closes: .init(string: closes))
         
-        XCTAssertEqual(openingHours2, expectedNoPeriod)
+        XCTAssertEqual(result4, expectedResult4)
         
         let emptyJson = """
 {}
 """
-        XCTAssertThrowsError(try decoder.decode(OpeningHours_v2.self, from: emptyJson.data(using: .utf8)!))
+        let result5: OpeningHours_v2 = try decoder.decode(OpeningHours_v2.self, from: emptyJson.data(using: .utf8)!)
+        let expectedResult5 = OpeningHours_v2(period: .dateRange(.distantPast ... .distantPast), opens: nil, closes: nil)
+        
+        XCTAssertEqual(result5, expectedResult5)
         
         let corruptJson = """
 {
@@ -76,7 +102,10 @@ class OpeningHoursTests: XCTestCase {
     "valid_until": "12-03-2022"
 }
 """
-        XCTAssertThrowsError(try decoder.decode(OpeningHours_v2.self, from: corruptJson.data(using: .utf8)!))
+        let result6: OpeningHours_v2 = try decoder.decode(OpeningHours_v2.self, from: corruptJson.data(using: .utf8)!)
+        let expectedResult6 = OpeningHours_v2(period: .dayOfWeek(.monday), opens: nil, closes: nil)
+        
+        XCTAssertEqual(result6, expectedResult6)
     }
     
     func testOpeningHoursContains() {

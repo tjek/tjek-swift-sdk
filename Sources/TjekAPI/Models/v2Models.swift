@@ -608,7 +608,7 @@ extension OpeningHours_v2: Decodable {
         } else if let dayOfWeek = try? values.decode(DayOfWeek.self, forKey: .dayOfWeek) {
             self.period = .dayOfWeek(dayOfWeek)
         } else {
-            self.period = .dateRange(.distantPast ... .distantFuture)
+            self.period = .dateRange(.distantPast ... .distantPast)
         }
         
         if let openHour = try? values.decode(String.self, forKey: .opens), let closeHour = try? values.decode(String.self, forKey: .closes) {
