@@ -63,7 +63,7 @@ pod 'TjekSDK/API', '5.0.0'
 
 In order to use our SDK you will need to sign up for a free [developer account](https://etilbudsavis.dk/developers). 
 
-This will give you an `API key`, `API secret`, and a `Track ID`. The SDK must be initialized with these 3 values in order to work.
+This will give you an `API key` and a `Track ID`. The SDK must be initialized with these values in order to work.
 
 ### Initialization via Config file 
 
@@ -98,7 +98,6 @@ do {
     TjekSDK.initialize(
         config: try .init(
             apiKey: "<your api key>",
-            apiSecret: "<your api secret>",
             trackId: .init(rawValue: "<your track id>")
         )
     )

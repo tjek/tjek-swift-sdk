@@ -22,9 +22,14 @@ public struct TjekSDK {
             self.eventsTracker = eventsTracker
         }
         
-        public init(apiKey: String, apiSecret: String, trackId: TjekEventsTracker.Config.TrackId, clientVersion: String = shortBundleVersion(.main)) throws {
-            self.api = try .init(apiKey: apiKey, apiSecret: apiSecret, clientVersion: clientVersion)
+        public init(apiKey: String, trackId: TjekEventsTracker.Config.TrackId, clientVersion: String = shortBundleVersion(.main)) throws {
+            self.api = try .init(apiKey: apiKey, clientVersion: clientVersion)
             self.eventsTracker = try .init(trackId: trackId)
+        }
+        
+        @available(*, deprecated, message: "apiSecret is no longer needed")
+        public init(apiKey: String, apiSecret: String, trackId: TjekEventsTracker.Config.TrackId, clientVersion: String = shortBundleVersion(.main)) throws {
+            try self.init(apiKey: apiKey, trackId: trackId, clientVersion: clientVersion)
         }
     }
     
