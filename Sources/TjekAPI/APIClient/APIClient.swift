@@ -67,10 +67,14 @@ extension APIClient {
         self.clientHeaders["X-Token"] = authToken
     }
     
-    /// All future requests will use the specified APIKey/secret.
-    public func setAPIKey(_ apiKey: String, apiSecret: String) {
+    /// All future requests will use the specified APIKey
+    public func setAPIKey(_ apiKey: String) {
         self.clientHeaders["X-Api-Key"] = apiKey
-        self.clientHeaders["X-Api-Secret"] = apiSecret
+    }
+    
+    @available(*, deprecated, message: "apiSecret is no longer needed")
+    public func setAPIKey(_ apiKey: String, apiSecret: String) {
+        setAPIKey(apiKey)
     }
     
     /// All future requests will use the specified app version (in simVer).

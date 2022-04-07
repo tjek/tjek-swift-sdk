@@ -11,25 +11,23 @@ public class TjekAPI {
     
     public struct Config: Equatable {
         public var apiKey: String
-        public var apiSecret: String
         public var clientVersion: String
         public var baseURL: URL
         
-        public init(apiKey: String, apiSecret: String, clientVersion: String = shortBundleVersion(.main), baseURL: URL = URL(string: "https://squid-api.tjek.com")!) throws {
-            
+        public init(apiKey: String, clientVersion: String = shortBundleVersion(.main), baseURL: URL = URL(string: "https://squid-api.tjek.com")!) throws {
             guard !apiKey.isEmpty else {
                 struct APIKeyEmpty: Error { }
                 throw APIKeyEmpty()
             }
-            guard !apiSecret.isEmpty else {
-                struct APISecretEmpty: Error { }
-                throw APISecretEmpty()
-            }
             
             self.apiKey = apiKey
-            self.apiSecret = apiSecret
             self.clientVersion = clientVersion
             self.baseURL = baseURL
+        }
+        
+        @available(*, deprecated, message: "apiSecret is no longer needed")
+        public init(apiKey: String, apiSecret: String, clientVersion: String = shortBundleVersion(.main), baseURL: URL = URL(string: "https://squid-api.tjek.com")!) throws {
+            try self.init(apiKey: apiKey, clientVersion: clientVersion, baseURL: baseURL)
         }
     }
     
@@ -46,9 +44,8 @@ public class TjekAPI {
      Initialize the `shared` TjekAPI using the config plist file.
      Config file should be placed in your main bundle, with the name `TjekSDK-Config.plist`.
      
-     It must contain the following key/values:
+     It must contain the following key/value:
      - `apiKey: "<your api key>"`
-     - `apiSecret: "<your api secret>"`
      
      By default, `clientVersion` is the `CFBundleShortVersionString` of your `Bundle.main`.
      
@@ -77,11 +74,11 @@ public class TjekAPI {
     public var config: Config {
         didSet {
             v2.baseURL = config.baseURL.appendingPathComponent("v2")
-            v2.setAPIKey(config.apiKey, apiSecret: config.apiSecret)
+            v2.setAPIKey(config.apiKey)
             v2.setClientVersion(config.clientVersion)
             
             v4.baseURL = config.baseURL.appendingPathComponent("v4/rpc")
-            v4.setAPIKey(config.apiKey, apiSecret: config.apiSecret)
+            v4.setAPIKey(config.apiKey)
             v4.setClientVersion(config.clientVersion)
         }
     }
@@ -123,7 +120,7 @@ public class TjekAPI {
             }()
         )
         
-        v2.setAPIKey(config.apiKey, apiSecret: config.apiSecret)
+        v2.setAPIKey(config.apiKey)
         v2.setClientVersion(config.clientVersion)
         
         // Initialize v4 API
@@ -148,7 +145,7 @@ public class TjekAPI {
                 return decoder
             }()
         )
-        v4.setAPIKey(config.apiKey, apiSecret: config.apiSecret)
+        v4.setAPIKey(config.apiKey)
         v4.setClientVersion(config.clientVersion)
     }
 }
@@ -197,14 +194,12 @@ extension TjekAPI.Config {
         
         struct Config: Decodable {
             var apiKey: String
-            var apiSecret: String
         }
         
         let configFile = (try PropertyListDecoder().decode(Config.self, from: data))
         
         return try Self(
             apiKey: configFile.apiKey,
-            apiSecret: configFile.apiSecret,
             clientVersion: clientVersion
         )
     }
@@ -215,7 +210,6 @@ extension TjekAPI.Config {
         struct ConfigContainer: Decodable {
             struct Values: Decodable {
                 var key: String
-                var secret: String
             }
             var CoreAPI: Values
         }
@@ -224,7 +218,6 @@ extension TjekAPI.Config {
         
         return try Self(
             apiKey: fileValues.key,
-            apiSecret: fileValues.secret,
             clientVersion: clientVersion
         )
     }

@@ -11,34 +11,30 @@ class TjekAPIConfigTests: XCTestCase {
         
         // 1. given
         let testKey = "test-key"
-        let testSecret = "test-secret"
         let testClientVersion = "1.2.3"
         let testURL = URL(string: "test-url")!
         let defaultURL = URL(string: "https://squid-api.tjek.com")!
         let defaultClientVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
         
         // 2. when
-        let fullSettings = try TjekAPI.Config(apiKey: testKey, apiSecret: testSecret, clientVersion: testClientVersion, baseURL: testURL)
-        let minimalSettings = try TjekAPI.Config(apiKey: testKey, apiSecret: testSecret)
+        let fullSettings = try TjekAPI.Config(apiKey: testKey, clientVersion: testClientVersion, baseURL: testURL)
+        let minimalSettings = try TjekAPI.Config(apiKey: testKey)
         
         // 3. then
         XCTAssertEqual(fullSettings.apiKey, testKey)
-        XCTAssertEqual(fullSettings.apiSecret, testSecret)
         XCTAssertEqual(fullSettings.clientVersion, testClientVersion)
         XCTAssertEqual(fullSettings.baseURL, testURL)
         
         XCTAssertEqual(minimalSettings.apiKey, testKey)
-        XCTAssertEqual(minimalSettings.apiSecret, testSecret)
         XCTAssertEqual(minimalSettings.clientVersion, defaultClientVersion)
         XCTAssertEqual(minimalSettings.baseURL, defaultURL)
         
         // test empty input
-        XCTAssertThrowsError(try TjekAPI.Config(apiKey: "", apiSecret: "foo"))
-        XCTAssertThrowsError(try TjekAPI.Config(apiKey: "bar", apiSecret: ""))
+        XCTAssertThrowsError(try TjekAPI.Config(apiKey: ""))
     }
     
     func testLoadingPlist() throws {
-        let expectedHappyConfig = try TjekAPI.Config(apiKey: "<sdk-demo api key>", apiSecret: "<sdk-demo api secret>", clientVersion: "a.b.c", baseURL: URL(string: "https://squid-api.tjek.com")!)
+        let expectedHappyConfig = try TjekAPI.Config(apiKey: "<sdk-demo api key>", clientVersion: "a.b.c", baseURL: URL(string: "https://squid-api.tjek.com")!)
         let testBundle = Bundle.tjekAPITests
         // try to load the updated config
         let happyConfig = try TjekAPI.Config.loadFromPlist(inBundle: testBundle, clientVersion: "a.b.c")
@@ -50,7 +46,7 @@ class TjekAPIConfigTests: XCTestCase {
         // test legacy config file
         let legacyFilePath = try XCTUnwrap(testBundle.url(forResource: "ShopGunSDK-Config.plist", withExtension: nil))
         let legacyConfig = try TjekAPI.Config.load(fromLegacyPlist: legacyFilePath, clientVersion: "5.6.7")
-        let expectedLegacyConfig = try TjekAPI.Config(apiKey: "<legacy api key>", apiSecret: "<legacy api secret>", clientVersion: "5.6.7", baseURL: URL(string: "https://squid-api.tjek.com")!)
+        let expectedLegacyConfig = try TjekAPI.Config(apiKey: "<legacy api key>", clientVersion: "5.6.7", baseURL: URL(string: "https://squid-api.tjek.com")!)
         XCTAssertEqual(legacyConfig, expectedLegacyConfig)
     }
 }
