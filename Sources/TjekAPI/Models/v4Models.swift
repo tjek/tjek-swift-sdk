@@ -276,7 +276,8 @@ extension Offer_v4: Codable {
         
         let validityRange: APIRange<Date?> = try c.decode(APIRange<Date?>.self, forKey: .validity)
         self.validFrom = validityRange.from
-        self.validUntil = validityRange.to
+        // because v4 API `_until` dates mean "until, but not including", we subtract 1 sec so that decoded v4 dates match v2 dates.
+        self.validUntil = validityRange.to?.addingTimeInterval(-1)
         self.visibleFrom = try c.decode(Date.self, forKey: .visibleFrom)
         self.business = try c.decode(Business_v4.self, forKey: .business)
         
@@ -301,7 +302,8 @@ extension Offer_v4: Codable {
         try c.encode(APIRange(self.pieceCountRange), forKey: .pieceCount)
         try c.encode(self.unitSymbol, forKey: .unitSymbol)
         try c.encode(APIRange(self.unitSizeRange), forKey: .unitSize)
-        try c.encode(APIRange(from: self.validFrom, to: self.validUntil), forKey: .validity)
+        // because v4 API `_until` dates mean "until, but not including", we add 1 sec when encoding
+        try c.encode(APIRange(from: self.validFrom, to: self.validUntil?.addingTimeInterval(1)), forKey: .validity)
         try c.encode(self.visibleFrom, forKey: .visibleFrom)
         try c.encode(self.business, forKey: .business)
         try c.encode(self.publicationId, forKey: .publicationId)
