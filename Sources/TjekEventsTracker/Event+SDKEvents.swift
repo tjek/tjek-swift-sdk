@@ -108,7 +108,7 @@ extension Event {
             payload["v"] = .int(val)
         }
         
-        let viewTokenContent: String = [category, action, label, screenName]
+        let viewTokenContent: String = [category, action, screenName]
             .compactMap { $0 }
             .joined(separator: ".")
         
