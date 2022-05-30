@@ -104,17 +104,13 @@ extension IncitoAPIQuery.DeviceCategory {
 extension IncitoLoaderViewController {
     
     private func load(
-        incitoPublicationId: PublicationId,
         incitoPropertyLoader: FutureResult<(publicationId: PublicationId, isAlsoPagedPublication: Bool)>,
         featureLabelWeights: [String: Double],
         apiClient: TjekAPI,
         completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
-        ) {
-        
-        // Keep track of the id of the incitoId once it is loaded.
-        var expectedIncitoId: PublicationId? = nil
-        var firstLoadedIncitoId: PublicationId? = nil
-        var isAlsoPagedPublication: Bool = false
+    ) {
+        var hasLoadedIncito: Bool = false
+        var eventTriggeredForId: PublicationId? = nil
         
         // every time the loader is called, fetch the width of the screen
         let incitoLoaderBuilder: (PublicationId) -> Future<Result<IncitoDocument, Error>> = { [weak self] incitoId in
@@ -147,8 +143,16 @@ extension IncitoLoaderViewController {
         let loader = IncitoLoader { callback in
             incitoPropertyLoader
                 .observeResultSuccess({
-                    expectedIncitoId = $0.publicationId
-                    isAlsoPagedPublication = $0.isAlsoPagedPublication
+                    if eventTriggeredForId != $0.publicationId && TjekEventsTracker.isInitialized {
+                        eventTriggeredForId = $0.publicationId
+                        
+                        TjekEventsTracker.shared.trackEvent(
+                            .incitoPublicationOpened(
+                                $0.publicationId,
+                                isAlsoPagedPublication: $0.isAlsoPagedPublication
+                            )
+                        )
+                    }
                 })
                 .flatMapResult({
                     incitoLoaderBuilder($0.publicationId)
@@ -156,19 +160,12 @@ extension IncitoLoaderViewController {
                 .run(callback)
         }
         
-        self.load(loader) { [weak self] vcResult in
+        self.load(loader) { vcResult in
             switch vcResult {
             case let .success(viewController):
-                var firstSuccessfulReload: Bool = false
-                if let incitoId = expectedIncitoId {
-                    firstSuccessfulReload = (firstLoadedIncitoId != incitoId)
-                    
-                    if firstSuccessfulReload {
-                        firstLoadedIncitoId = incitoId
-                        self?.firstSuccessfulReload(incitoPublicationId: incitoPublicationId, isAlsoPagedPublication: isAlsoPagedPublication)
-                    }
-                }
-                completion?(.success((viewController, firstSuccessfulReload)))
+                let firstLoad = !hasLoadedIncito
+                hasLoadedIncito = true
+                completion?(.success((viewController, firstLoad)))
             case let .failure(error):
                 completion?(.failure(error))
             }
@@ -200,7 +197,6 @@ extension IncitoLoaderViewController {
             })
         
         self.load(
-            incitoPublicationId: publicationId,
             incitoPropertyLoader: incitoPropertyLoader,
             featureLabelWeights: featureLabelWeights,
             apiClient: apiClient,
@@ -233,24 +229,10 @@ extension IncitoLoaderViewController {
         }
         
         self.load(
-            incitoPublicationId: publication.id,
             incitoPropertyLoader: .init(value: .success((publication.id, publication.hasPagedPublication))),
             featureLabelWeights: featureLabelWeights,
             apiClient: apiClient,
             completion: completion
         )
-    }
-    
-    private func firstSuccessfulReload(incitoPublicationId: PublicationId, isAlsoPagedPublication: Bool) {
-        
-        // On first successful load, trigger the incitoOpened event (if the events tracker has been configured)
-        if TjekEventsTracker.isInitialized {
-            TjekEventsTracker.shared.trackEvent(
-                .incitoPublicationOpened(
-                    incitoPublicationId,
-                    isAlsoPagedPublication: isAlsoPagedPublication
-                )
-            )
-        }
     }
 }
