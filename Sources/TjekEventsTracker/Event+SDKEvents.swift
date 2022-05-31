@@ -275,7 +275,7 @@ extension Event {
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
-    @available(*, deprecated, renamed: "incitoPublicationOpened(_:isAlsoPagedPublication:timestamp:tokenizer:)")
+    @available(*, deprecated, renamed: "incitoPublicationOpened(_:timestamp:tokenizer:)")
     internal static func incitoPublicationOpened(
         _ incitoId: PublicationId,
         pagedPublicationId: PublicationId?,
@@ -299,14 +299,12 @@ extension Event {
     
     internal static func incitoPublicationOpened(
         _ incitoPublicationId: PublicationId,
-        isAlsoPagedPublication: Bool,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
     ) -> Event {
         
         let payload: PayloadType = [
-            "ip.id": .string(incitoPublicationId.rawValue),
-            "ip.paged": .bool(isAlsoPagedPublication)
+            "ip.id": .string(incitoPublicationId.rawValue)
         ]
         
         let event = Event(timestamp: timestamp,
@@ -406,7 +404,7 @@ extension Event {
         return pagedPublicationPageOpened(publicationId, pageNumber: pageNumber, timestamp: Date())
     }
     
-    @available(*, deprecated, renamed: "incitoPublicationOpened(_:isAlsoPagedPublication:)")
+    @available(*, deprecated, renamed: "incitoPublicationOpened(_:)")
     public static func incitoPublicationOpened(
         _ incitoId: PublicationId,
         pagedPublicationId: PublicationId?
@@ -418,13 +416,19 @@ extension Event {
         )
     }
     
+    @available(*, deprecated, renamed: "incitoPublicationOpened(_:)")
     public static func incitoPublicationOpened(
         _ incitoPublicationId: PublicationId,
         isAlsoPagedPublication: Bool
     ) -> Event {
+        return incitoPublicationOpened(incitoPublicationId)
+    }
+    
+    public static func incitoPublicationOpened(
+        _ incitoPublicationId: PublicationId
+    ) -> Event {
         return incitoPublicationOpened(
             incitoPublicationId,
-            isAlsoPagedPublication: isAlsoPagedPublication,
             timestamp: Date()
         )
     }
