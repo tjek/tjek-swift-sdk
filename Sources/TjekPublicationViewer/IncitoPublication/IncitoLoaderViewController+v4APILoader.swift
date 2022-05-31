@@ -103,21 +103,22 @@ extension IncitoAPIQuery.DeviceCategory {
 
 extension IncitoLoaderViewController {
     
-    private func load(
-        incitoPublicationId: PublicationId,
-        incitoPropertyLoader: FutureResult<(publicationId: PublicationId, isAlsoPagedPublication: Bool)>,
-        featureLabelWeights: [String: Double],
-        apiClient: TjekAPI,
+    public func load(
+        publicationId: PublicationId,
+        featureLabelWeights: [String: Double] = [:],
+        apiClient: TjekAPI = .shared,
+        publicationLoaded: ((Result<Publication_v2, Error>) -> Void)? = nil,
         completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
-        ) {
+    ) {
+        var hasLoadedIncito: Bool = false
         
-        // Keep track of the id of the incitoId once it is loaded.
-        var expectedIncitoId: PublicationId? = nil
-        var firstLoadedIncitoId: PublicationId? = nil
-        var isAlsoPagedPublication: Bool = false
+        if TjekEventsTracker.isInitialized {
+            TjekEventsTracker.shared.trackEvent(
+                .incitoPublicationOpened(publicationId)
+            )
+        }
         
-        // every time the loader is called, fetch the width of the screen
-        let incitoLoaderBuilder: (PublicationId) -> Future<Result<IncitoDocument, Error>> = { [weak self] incitoId in
+        let loader = IncitoLoader { [weak self] callback in
             Future<IncitoAPIQuery>(work: { [weak self] in
                 let viewWidth = Int(self?.view.frame.size.width ?? 0)
                 let windowWidth = Int(self?.view.window?.frame.size.width ?? 0)
@@ -125,7 +126,7 @@ extension IncitoLoaderViewController {
                 let minWidth = 100
                 // build the query on the main queue.
                 return IncitoAPIQuery(
-                    id: incitoId,
+                    id: publicationId,
                     deviceCategory: .init(device: .current),
                     orientation: .vertical,
                     pointer: .coarse,
@@ -141,82 +142,21 @@ extension IncitoLoaderViewController {
                 .flatMap({ query in apiClient.send(query.apiRequest) })
                 .eraseToAnyError()
 //                .measure(print: " 🌈 Incito Fully Loaded")
-        }
-        
-        // make a loader that first fetches the publication, then gets the incito id from that publication, then calls the graphLoader with that incitoId
-        let loader = IncitoLoader { callback in
-            incitoPropertyLoader
-                .observeResultSuccess({
-                    expectedIncitoId = $0.publicationId
-                    isAlsoPagedPublication = $0.isAlsoPagedPublication
-                })
-                .flatMapResult({
-                    incitoLoaderBuilder($0.publicationId)
-                })
                 .run(callback)
         }
         
-        self.load(loader) { [weak self] vcResult in
+        self.load(loader) { vcResult in
             switch vcResult {
             case let .success(viewController):
-                var firstSuccessfulReload: Bool = false
-                if let incitoId = expectedIncitoId {
-                    firstSuccessfulReload = (firstLoadedIncitoId != incitoId)
-                    
-                    if firstSuccessfulReload {
-                        firstLoadedIncitoId = incitoId
-                        self?.firstSuccessfulReload(incitoPublicationId: incitoPublicationId, isAlsoPagedPublication: isAlsoPagedPublication)
-                    }
-                }
-                completion?(.success((viewController, firstSuccessfulReload)))
+                let firstLoad = !hasLoadedIncito
+                hasLoadedIncito = true
+                completion?(.success((viewController, firstLoad)))
             case let .failure(error):
                 completion?(.failure(error))
             }
         }
     }
     
-    public func load(
-        publicationId: PublicationId,
-        featureLabelWeights: [String: Double] = [:],
-        apiClient: TjekAPI = .shared,
-        publicationLoaded: ((Result<Publication_v2, Error>) -> Void)? = nil,
-        completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
-    ) {
-        
-        let incitoPropertyLoader: FutureResult<(publicationId: PublicationId, isAlsoPagedPublication: Bool)> = apiClient.send(.getPublication(withId: publicationId))
-            .eraseToAnyError()
-            .observe({ publicationLoaded?($0) })
-            .map({
-                switch $0 {
-                case let .success(publication):
-                    if publication.hasIncitoPublication {
-                        return .success((publicationId: publication.id, isAlsoPagedPublication: publication.hasPagedPublication))
-                    } else {
-                        return .failure(IncitoAPIQueryError.notAnIncitoPublication)
-                    }
-                case let .failure(err):
-                    return .failure(err)
-                }
-            })
-        
-        self.load(
-            incitoPublicationId: publicationId,
-            incitoPropertyLoader: incitoPropertyLoader,
-            featureLabelWeights: featureLabelWeights,
-            apiClient: apiClient,
-            completion: completion
-        )
-    }
-    
-    /**
-     Will start loading the incito specified by the publication, using the graphClient.
-     
-     During the loading process (but before the incito is completely parsed) the businessLoaded callback will be called, containing the GraphBusiness object associated with the Incito. You can use this to customize the screen (bg color etc) before the incito is fully loaded.
-     
-     Once the incito is fully parsed, and the view is ready to be shown, the completion handler will be called.
-     
-     If you specify a `lastReadPosition` it will scroll to this location once loading finishes. This is a 0-1 %, accessible via the `scrollProgress` property of the IncitoViewController.
-     */
     public func load(
         publication: Publication_v2,
         featureLabelWeights: [String: Double] = [:],
@@ -233,24 +173,10 @@ extension IncitoLoaderViewController {
         }
         
         self.load(
-            incitoPublicationId: publication.id,
-            incitoPropertyLoader: .init(value: .success((publication.id, publication.hasPagedPublication))),
+            publicationId: publication.id,
             featureLabelWeights: featureLabelWeights,
             apiClient: apiClient,
             completion: completion
         )
-    }
-    
-    private func firstSuccessfulReload(incitoPublicationId: PublicationId, isAlsoPagedPublication: Bool) {
-        
-        // On first successful load, trigger the incitoOpened event (if the events tracker has been configured)
-        if TjekEventsTracker.isInitialized {
-            TjekEventsTracker.shared.trackEvent(
-                .incitoPublicationOpened(
-                    incitoPublicationId,
-                    isAlsoPagedPublication: isAlsoPagedPublication
-                )
-            )
-        }
     }
 }

@@ -88,6 +88,14 @@ public class PagedPublicationView: UIView {
             
             s.delegate?.didStartReloading(in: s)
             
+            // successful reload, event handler can now be created if needed (if new publication, or we havnt called it yet)
+            if let tracker: TjekEventsTracker = (TjekEventsTracker.isInitialized ? TjekEventsTracker.shared : nil),
+               (self?.eventHandler == nil || self?.eventHandler?.publicationId != publicationId) {
+                self?.eventHandler = EventsHandler(eventsTracker: tracker, publicationId: publicationId)
+                
+                self?.eventHandler?.didOpenPublication()
+            }
+            
             // do the loading
             s.dataLoader.startLoading(publicationId: publicationId, publicationLoaded: { [weak self] in self?.publicationDidLoad(forId: publicationId, result: $0) },
                                       pagesLoaded: { [weak self] in self?.pagesDidLoad(forId: publicationId, result: $0) },
@@ -317,14 +325,7 @@ public class PagedPublicationView: UIView {
             self.coreProperties = (pageCount: publicationModel.pageCount,
                                    bgColor: bgColor,
                                    aspectRatio: publicationModel.aspectRatio)
-
-            // successful reload, event handler can now be created if needed (if new publication, or we havnt called it yet)
-            if let tracker: TjekEventsTracker = (TjekEventsTracker.isInitialized ? TjekEventsTracker.shared : nil),
-               (self.eventHandler == nil || self.eventHandler?.publicationId != publicationId) {
-                self.eventHandler = EventsHandler(eventsTracker: tracker, publicationId: publicationId)
-            }
             
-            self.eventHandler?.didOpenPublication()
             self.eventHandler?.didOpenPublicationPages(currentPageIndexes)
             
             delegate?.didLoad(publication: publicationModel, in: self)
