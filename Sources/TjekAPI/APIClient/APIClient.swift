@@ -48,11 +48,9 @@ public class APIClient {
     // MARK: - Private funcs
     
     private func callResponseListeners(endpointName: String, result: Result<HTTPURLResponse, APIError>) {
-        DispatchQueue.main.async {
-            for listener in self.responseListeners {
-                listener.queue.async {
-                    listener.callback(endpointName, result)
-                }
+        for listener in self.responseListeners {
+            listener.queue.async {
+                listener.callback(endpointName, result)
             }
         }
     }
