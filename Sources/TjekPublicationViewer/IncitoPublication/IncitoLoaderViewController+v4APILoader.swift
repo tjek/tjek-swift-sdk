@@ -118,6 +118,12 @@ extension IncitoLoaderViewController {
             )
         }
         
+        if let publicationLoadedCallback = publicationLoaded {
+            apiClient.send(.getPublication(withId: publicationId))
+                .eraseToAnyError()
+                .run(publicationLoadedCallback)
+        }
+        
         let loader = IncitoLoader { [weak self] callback in
             Future<IncitoAPIQuery>(work: { [weak self] in
                 let viewWidth = Int(self?.view.frame.size.width ?? 0)
