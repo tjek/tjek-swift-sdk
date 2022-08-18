@@ -75,7 +75,7 @@ extension Event {
         previousScreenName: String?,
         label: String?,
         value: Int?,
-        experiments: [String],
+        flags: [String],
         deviceInfo: DeviceInfo,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
@@ -109,8 +109,8 @@ extension Event {
             payload["v"] = .int(val)
         }
         
-        if !experiments.isEmpty {
-            payload["exp"] = .array(experiments.map({ .string($0) }))
+        if !flags.isEmpty {
+            payload["f"] = .array(flags.map({ .string($0) }))
         }
         
         let viewTokenContent: String = [category, action, screenName]
@@ -375,10 +375,10 @@ extension Event {
         previousScreenName: String?,
         label: String?,
         value: Int? = nil,
-        experiments: [String] = [],
+        flags: [String] = [],
         deviceInfo: DeviceInfo = .current
     ) -> Event {
-        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, previousScreenName: previousScreenName, label: label, value: value, experiments: experiments, deviceInfo: deviceInfo, timestamp: Date())
+        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, previousScreenName: previousScreenName, label: label, value: value, flags: flags, deviceInfo: deviceInfo, timestamp: Date())
     }
     
     public static func firstOfferOpenedAfterSearch(
