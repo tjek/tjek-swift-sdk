@@ -40,7 +40,7 @@
 		AE4BDDB422830ECC008DB391 /* UIViewController+Cycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Cycle.swift"; sourceTree = "<group>"; };
 		AE4BDDB522830ECC008DB391 /* LoadingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		AE94107A274B95940085E6E2 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
-		AECD3BAE25AF1DD800F7E770 /* shopgun-ios-sdk */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "shopgun-ios-sdk"; path = ../..; sourceTree = "<group>"; };
+		AECD3BAE25AF1DD800F7E770 /* tjek-swift-sdk */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "tjek-swift-sdk"; path = ../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,7 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				AE94107A274B95940085E6E2 /* Readme.md */,
-				AECD3BAE25AF1DD800F7E770 /* shopgun-ios-sdk */,
+				AECD3BAE25AF1DD800F7E770 /* tjek-swift-sdk */,
 				AE4BDDA622830ECC008DB391 /* SharedSource */,
 				AE1027DE212D639C00104921 /* Products */,
 				AECD3BB225AF1E1A00F7E770 /* Frameworks */,
@@ -135,7 +135,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1000;
 				LastUpgradeCheck = 1230;
-				ORGANIZATIONNAME = ShopGun;
+				ORGANIZATIONNAME = Tjek;
 				TargetAttributes = {
 					AE1027DC212D639C00104921 = {
 						CreatedOnToolsVersion = 10.0;
@@ -196,7 +196,7 @@
 /* Begin PBXTargetDependency section */
 		AECD3BB625AF1E2500F7E770 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = AECD3BB525AF1E2500F7E770 /* ShopGunSDK */;
+			productRef = AECD3BB525AF1E2500F7E770 /* TjekSDK */;
 		};
 /* End PBXTargetDependency section */
 
@@ -351,7 +351,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ShopGun.sdk.SPMDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Tjek.sdk.SPMDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -371,7 +371,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ShopGun.sdk.SPMDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Tjek.sdk.SPMDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -406,9 +406,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = TjekSDK;
 		};
-		AECD3BB525AF1E2500F7E770 /* ShopGunSDK */ = {
+		AECD3BB525AF1E2500F7E770 /* TjekSDK */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = ShopGunSDK;
+			productName = TjekSDK;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

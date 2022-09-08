@@ -1,17 +1,17 @@
 PODS:
   - Incito (1.0.3)
   - Kingfisher (7.1.2)
-  - ShopGun-Future (0.5.0)
-  - TjekSDK (5.0.0):
-    - TjekSDK/API (= 5.0.0)
-    - TjekSDK/PublicationViewer (= 5.0.0)
-  - TjekSDK/API (5.0.0):
-    - ShopGun-Future (~> 0.5)
+  - Tjek-Future (0.5.3)
+  - TjekSDK (5.0.3):
+    - TjekSDK/API (= 5.0.3)
+    - TjekSDK/PublicationViewer (= 5.0.3)
+  - TjekSDK/API (5.0.3):
+    - Tjek-Future (~> 0.5)
     - Valet (~> 4.1.1)
-  - TjekSDK/PublicationViewer (5.0.0):
+  - TjekSDK/PublicationViewer (5.0.3):
     - Incito (~> 1.0)
     - Kingfisher (~> 7.0)
-    - ShopGun-Future (~> 0.5)
+    - Tjek-Future (~> 0.5)
     - TjekSDK/API
     - Verso (~> 1.0)
   - Valet (4.1.1)
@@ -24,7 +24,7 @@ SPEC REPOS:
   trunk:
     - Incito
     - Kingfisher
-    - ShopGun-Future
+    - Tjek-Future
     - Valet
     - Verso
 
@@ -35,11 +35,11 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Incito: c95a17efcb8c8c1e1cbf0572f090c2e1276d9053
   Kingfisher: 44ed6a8504763f27bab46163adfac83f5deb240c
-  ShopGun-Future: c4c04e9b8ce43a7d58f9ab18f73a583a01aec2c8
-  TjekSDK: 6c99e217fe611ef1518201f2118436723ed91a9d
+  Tjek-Future: c9588d0c52852e6f66374cb64ca84308ef516e7a
+  TjekSDK: ff6c5e32b2b57862dbaf7797eb2b0265db7cb272
   Valet: 11ab0e318b7284888a81392e36136563b4af5deb
   Verso: b6e66030671be9728a3e0d441ad531b5f2c6f2f4
 
 PODFILE CHECKSUM: 58c750740da68469ee681c69922f88ef3aee3b0a
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3
