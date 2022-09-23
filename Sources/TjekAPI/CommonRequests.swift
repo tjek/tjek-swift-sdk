@@ -15,8 +15,8 @@ extension APIRequest {
      - Returns:
         An APIRequest with a response type of `Publication_v2`. This request is sent to the `v2` api.
      */
-    public static func getPublication(withId publicationId: PublicationId) -> APIRequest<Publication_v2, API_v2> {
-        APIRequest<Publication_v2, API_v2>(
+    public static func getPublication(withId publicationId: PublicationId) -> APIRequest<Publication_v2> {
+        APIRequest<Publication_v2>.v2(
             endpoint: "catalogs/\(publicationId)",
             method: .GET
         )
@@ -40,7 +40,7 @@ extension APIRequest {
         near location: LocationQuery? = nil,
         acceptedTypes: Set<Publication_v2.PublicationType> = Set(Publication_v2.PublicationType.allCases),
         pagination: PaginatedRequest<Int> = .firstPage(24)
-    ) -> APIRequest<PaginatedResponse<Publication_v2, Int>, API_v2> {
+    ) -> APIRequest<PaginatedResponse<Publication_v2, Int>> {
         
         var params = ["types": acceptedTypes.map(\.rawValue).joined(separator: ",")]
         params.merge(pagination.v2RequestParams()) { (_, new) in new }
@@ -55,7 +55,7 @@ extension APIRequest {
             params.merge(locationQ.v2RequestParams()) { (_, new) in new }
         }
         
-        return APIRequest<[Publication_v2], API_v2>(
+        return APIRequest<[Publication_v2]>.v2(
             endpoint: "catalogs",
             method: .GET,
             queryParams: params
@@ -74,8 +74,8 @@ extension APIRequest {
      - Returns:
         An APIRequest with a response type of `Offer_v2`. This request is sent to the `v2` api.
      */
-    public static func getOffer(withId offerId: OfferId) -> APIRequest<Offer_v2, API_v2> {
-        APIRequest<Offer_v2, API_v2>(
+    public static func getOffer(withId offerId: OfferId) -> APIRequest<Offer_v2> {
+        APIRequest<Offer_v2>.v2(
             endpoint: "offers/\(offerId)",
             method: .GET
         )
@@ -99,7 +99,7 @@ extension APIRequest {
         storeIds: Set<StoreId> = [],
         near location: LocationQuery? = nil,
         pagination: PaginatedRequest<Int> = .firstPage(24)
-    ) -> APIRequest<PaginatedResponse<Offer_v2, Int>, API_v2> {
+    ) -> APIRequest<PaginatedResponse<Offer_v2, Int>> {
         
         var params: [String: String] = [:]
         params.merge(pagination.v2RequestParams()) { (_, new) in new }
@@ -120,7 +120,7 @@ extension APIRequest {
             params.merge(locationQ.v2RequestParams()) { (_, new) in new }
         }
 
-        return APIRequest<[Offer_v2], API_v2>(
+        return APIRequest<[Offer_v2]>.v2(
             endpoint: "offers",
             method: .GET,
             queryParams: params
@@ -141,7 +141,7 @@ extension APIRequest {
         businessIds: Set<BusinessId> = [],
         near location: LocationQuery? = nil,
         pagination: PaginatedRequest<Int> = .firstPage(24)
-    ) -> APIRequest<PaginatedResponse<Offer_v2, Int>, API_v2> {
+    ) -> APIRequest<PaginatedResponse<Offer_v2, Int>> {
         
         guard !searchString.isEmpty else {
             return getOffers(businessIds: businessIds, near: location, pagination: pagination)
@@ -160,7 +160,7 @@ extension APIRequest {
             params["dealer_ids"] = businessIds.map(\.rawValue).joined(separator: ",")
         }
 
-        return APIRequest<[Offer_v2], API_v2>(
+        return APIRequest<[Offer_v2]>.v2(
             endpoint: "offers/search",
             method: .GET,
             queryParams: params
@@ -184,8 +184,8 @@ extension APIRequest {
      - Returns:
         An APIRequest with a response type of `Store_v2`. This request is sent to the `v2` api.
      */
-    public static func getStore(withId storeId: StoreId) -> APIRequest<Store_v2, API_v2> {
-        APIRequest<Store_v2, API_v2>(
+    public static func getStore(withId storeId: StoreId) -> APIRequest<Store_v2> {
+        APIRequest<Store_v2>.v2(
             endpoint: "stores/\(storeId)",
             method: .GET
         )
@@ -211,7 +211,7 @@ extension APIRequest {
         near location: LocationQuery? = nil,
         sortedBy sortOrder: [StoresRequestSortOrder] = [],
         pagination: PaginatedRequest<Int> = .firstPage(24)
-    ) -> APIRequest<PaginatedResponse<Store_v2, Int>, API_v2> {
+    ) -> APIRequest<PaginatedResponse<Store_v2, Int>> {
         
         var params: [String: String] = [:]
         params.merge(pagination.v2RequestParams()) { (_, new) in new }
@@ -236,7 +236,7 @@ extension APIRequest {
             params.merge(locationQ.v2RequestParams()) { (_, new) in new }
         }
         
-        return APIRequest<[Store_v2], API_v2>(
+        return APIRequest<[Store_v2]>.v2(
             endpoint: "stores",
             method: .GET,
             queryParams: params
@@ -255,8 +255,8 @@ extension APIRequest {
      - Returns:
         An APIRequest with a response type of `Business_v2`. This request is sent to the `v2` api.
      */
-    public static func getBusiness(withId businessId: BusinessId) -> APIRequest<Business_v2, API_v2> {
-        APIRequest<Business_v2, API_v2>(
+    public static func getBusiness(withId businessId: BusinessId) -> APIRequest<Business_v2> {
+        APIRequest<Business_v2>.v2(
             endpoint: "dealers/\(businessId)",
             method: .GET
         )

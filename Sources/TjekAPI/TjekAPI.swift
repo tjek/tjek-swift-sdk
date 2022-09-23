@@ -73,18 +73,22 @@ public class TjekAPI {
     
     public var config: Config {
         didSet {
-            v2.baseURL = config.baseURL.appendingPathComponent("v2")
-            v2.setAPIKey(config.apiKey)
-            v2.setClientVersion(config.clientVersion)
+            if config != oldValue {
+                client = APIClient(baseURL: config.baseURL)
+            }
+//            client.baseURL = config.baseURL
+            //                .appendingPathComponent("v2")
+            //            v2.setAPIKey(config.apiKey)
+            //            v2.setClientVersion(config.clientVersion)
             
-            v4.baseURL = config.baseURL.appendingPathComponent("v4/rpc")
-            v4.setAPIKey(config.apiKey)
-            v4.setClientVersion(config.clientVersion)
+            //            v4.baseURL = config.baseURL
+            //                .appendingPathComponent("v4/rpc")
+            //            v4.setAPIKey(config.apiKey)
+            //            v4.setClientVersion(config.clientVersion)
         }
     }
     
-    public let v2: APIClient
-    public let v4: APIClient
+    public var client: APIClient
     
     public init(config: Config) {
         self.config = config
@@ -94,14 +98,8 @@ public class TjekAPI {
         let urlSession = URLSession.shared
         let preferredLanguages = Locale.preferredLanguages.joined(separator: ",")
         
-        // Initialize v2 API
-        
-        let v2df = DateFormatter()
-        v2df.locale = Locale(identifier: "en_US_POSIX")
-        v2df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        
-        self.v2 = APIClient(
-            baseURL: config.baseURL.appendingPathComponent("v2"),
+        self.client = APIClient(
+            baseURL: config.baseURL,
             urlSession: urlSession,
             headers: ["content-type": "application/json; charset=utf-8",
                       "accept-encoding": "gzip",
@@ -127,7 +125,7 @@ public class TjekAPI {
         
         let v4df = ISO8601DateFormatter()
         v4df.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-
+        
         self.v4 = APIClient(
             baseURL: config.baseURL.appendingPathComponent("v4/rpc"),
             headers: ["content-type": "application/json; charset=utf-8",
@@ -181,7 +179,7 @@ extension TjekAPI.Config {
         } catch {
             let legacyFileName = "ShopGunSDK-Config.plist"
             if let legacyFilePath = bundle.url(forResource: legacyFileName, withExtension: nil),
-                let legacyConfig = try? load(fromLegacyPlist: legacyFilePath, clientVersion: clientVersion) {
+               let legacyConfig = try? load(fromLegacyPlist: legacyFilePath, clientVersion: clientVersion) {
                 return legacyConfig
             } else {
                 throw error
@@ -225,69 +223,69 @@ extension TjekAPI.Config {
 
 // MARK: -
 
-extension JSONEncoder.DateEncodingStrategy {
-    fileprivate static func customISO8601(_ iso8601: ISO8601DateFormatter) -> Self {
-        .custom({ date, encoder in
-            var c = encoder.singleValueContainer()
-            let dateStr = iso8601.string(from: date)
-            try c.encode(dateStr)
-        })
-    }
-}
-
-extension JSONDecoder.DateDecodingStrategy {
-    fileprivate static func customISO8601(_ iso8601: ISO8601DateFormatter) -> Self {
-        .custom({ decoder in
-            let c = try decoder.singleValueContainer()
-            let dateStr = try c.decode(String.self)
-            if let date = iso8601.date(from: dateStr) {
-                return date
-            } else {
-                throw DecodingError.dataCorruptedError(in: c, debugDescription: "Unable to decode date-string '\(dateStr)'")
-            }
-        })
-    }
-}
+//extension JSONEncoder.DateEncodingStrategy {
+//    fileprivate static func customISO8601(_ iso8601: ISO8601DateFormatter) -> Self {
+//        .custom({ date, encoder in
+//            var c = encoder.singleValueContainer()
+//            let dateStr = iso8601.string(from: date)
+//            try c.encode(dateStr)
+//        })
+//    }
+//}
+//
+//extension JSONDecoder.DateDecodingStrategy {
+//    fileprivate static func customISO8601(_ iso8601: ISO8601DateFormatter) -> Self {
+//        .custom({ decoder in
+//            let c = try decoder.singleValueContainer()
+//            let dateStr = try c.decode(String.self)
+//            if let date = iso8601.date(from: dateStr) {
+//                return date
+//            } else {
+//                throw DecodingError.dataCorruptedError(in: c, debugDescription: "Unable to decode date-string '\(dateStr)'")
+//            }
+//        })
+//    }
+//}
 
 public func shortBundleVersion(_ bundle: Bundle) -> String {
     bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
 }
 
-// MARK: - Request Versioning
-
-/// This is a v2 version tag, used to mark which API a request will be sent to.
-public enum API_v2 { }
-/// This is a v4 version tag, used to mark which API a request will be sent to.
-public enum API_v4 { }
-
-extension TjekAPI {
-    /// Send an API Request to the v2 API client.
-    /// The result is received in the `completion` handler, on the `completesOn` queue (defaults to `.main`).
-    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v2>, completesOn: DispatchQueue = .main, completion: @escaping (Result<ResponseType, APIError>) -> Void) {
-        v2.send(request, completesOn: completesOn, completion: completion)
-    }
-    
-    /// Send an API Request to the v4 API client.
-    /// The result is received in the `completion` handler, on the `completesOn` queue (defaults to `.main`).
-    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v4>, completesOn: DispatchQueue = .main, completion: @escaping (Result<ResponseType, APIError>) -> Void) {
-        v4.send(request, completesOn: completesOn, completion: completion)
-    }
-}
-
-#if canImport(Future)
-import Future
-
-extension TjekAPI {
-    /// Returns a Future, which, when run, sends an API Request to the v2 API client.
-    /// Future's completion-handler is called on the `completesOn` queue (defaults to `.main`)
-    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v2>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
-        v2.send(request, completesOn: completesOn)
-    }
-    
-    /// Returns a Future, which, when run, sends an API Request to the v4 API client.
-    /// Future's completion-handler is called on the `completesOn` queue (defaults to `.main`)
-    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v4>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
-        v4.send(request, completesOn: completesOn)
-    }
-}
-#endif
+//// MARK: - Request Versioning
+//
+///// This is a v2 version tag, used to mark which API a request will be sent to.
+//public enum API_v2 { }
+///// This is a v4 version tag, used to mark which API a request will be sent to.
+//public enum API_v4 { }
+//
+//extension TjekAPI {
+//    /// Send an API Request to the v2 API client.
+//    /// The result is received in the `completion` handler, on the `completesOn` queue (defaults to `.main`).
+//    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v2>, completesOn: DispatchQueue = .main, completion: @escaping (Result<ResponseType, APIError>) -> Void) {
+//        v2.send(request, completesOn: completesOn, completion: completion)
+//    }
+//
+//    /// Send an API Request to the v4 API client.
+//    /// The result is received in the `completion` handler, on the `completesOn` queue (defaults to `.main`).
+//    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v4>, completesOn: DispatchQueue = .main, completion: @escaping (Result<ResponseType, APIError>) -> Void) {
+//        v4.send(request, completesOn: completesOn, completion: completion)
+//    }
+//}
+//
+//#if canImport(Future)
+//import Future
+//
+//extension TjekAPI {
+//    /// Returns a Future, which, when run, sends an API Request to the v2 API client.
+//    /// Future's completion-handler is called on the `completesOn` queue (defaults to `.main`)
+//    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v2>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
+//        v2.send(request, completesOn: completesOn)
+//    }
+//
+//    /// Returns a Future, which, when run, sends an API Request to the v4 API client.
+//    /// Future's completion-handler is called on the `completesOn` queue (defaults to `.main`)
+//    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v4>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
+//        v4.send(request, completesOn: completesOn)
+//    }
+//}
+//#endif

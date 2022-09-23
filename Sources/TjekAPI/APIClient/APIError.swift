@@ -8,7 +8,7 @@ public enum APIError: Error {
     case server(ServerResponse, httpResponse: HTTPURLResponse)
     case undecodableServer(String, httpResponse: HTTPURLResponse)
     case unencodableRequest(error: Error)
-    case network(error: Error, urlResponse: URLResponse?)
+    case network(error: Error)
     case failedRequest(urlResponse: URLResponse?)
     case decode(error: Error, data: Data)
     case unknown(error: Error)
@@ -23,7 +23,7 @@ extension APIError: LocalizedError {
             return "[Tjek.APIError: Undecodable Server] '\(response)' ([\(httpResponse.statusCode)] \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode) ))"
         case let .unencodableRequest(error):
             return "[Tjek.APIError: Unencodable Request] \(error.localizedDescription)"
-        case let .network(error, _):
+        case let .network(error):
             return "[Tjek.APIError: Network] \(error.localizedDescription)"
         case let .decode(error, _):
             return "[Tjek.APIError: Decoding] \(error.localizedDescription)"

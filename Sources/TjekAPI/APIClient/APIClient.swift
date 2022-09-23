@@ -4,227 +4,135 @@
 
 import Foundation
 
-public class APIClient {
+public actor APIClient {
+    public typealias ResponseListener = (URLRequest, Result<HTTPURLResponse, APIError>) async -> Void
     
-    // MARK: - Public vars
-    
-    public typealias ResponseListener = (queue: DispatchQueue, callback: (_ endpointName: String, Result<HTTPURLResponse, APIError>) -> Void)
-    
-    public var baseURL: URL
-    public let defaultEncoder: JSONEncoder
-    public let defaultDecoder: JSONDecoder
-    
-    // MARK: - Private vars
-    
-    private var clientHeaders: [String: String?]
-    private var responseListeners: [ResponseListener] = []
-    private let urlSession: URLSession
-    private let requestQueue: DispatchQueue = DispatchQueue(label: "APIClient Queue")
-    
-    // MARK: - Public funcs
+    public let baseURL: URL
+    let session: URLSession
+    var willSendRequest: URLRequestBuilder
+    var didReceiveResponse: ResponseListener
+    let defaultJSONEncoder: JSONEncoder
     
     public init(
         baseURL: URL,
         urlSession: URLSession = URLSession(configuration: .default),
-        headers: [String: String?] = [:],
-        defaultEncoder: JSONEncoder = JSONEncoder(),
-        defaultDecoder: JSONDecoder = JSONDecoder()
+        defaultJSONEncoder: JSONEncoder = JSONEncoder(),
+        willSendRequest: @escaping URLRequestBuilder = { _ in },
+        didReceiveResponse: @escaping ResponseListener = { _, _ in }
     ) {
         self.baseURL = baseURL
-        self.urlSession = urlSession
-        self.clientHeaders = headers
-        self.defaultEncoder = defaultEncoder
-        self.defaultDecoder = defaultDecoder
+        self.willSendRequest = willSendRequest
+        self.didReceiveResponse = didReceiveResponse
+        self.session = urlSession
+        self.defaultJSONEncoder = defaultJSONEncoder
     }
     
-    /// The response listener callback will be called on the specified queue whenever a request completes. It receives the url response or the error.
-    public func addResponseListener(on queue: DispatchQueue, _ callback: @escaping (_ endpointName: String, Result<HTTPURLResponse, APIError>) -> Void) {
-        self.responseListeners.append((
-            queue: queue,
-            callback: callback
-        ))
-    }
-    
-    // MARK: - Private funcs
-    
-    private func callResponseListeners(endpointName: String, result: Result<HTTPURLResponse, APIError>) {
-        for listener in self.responseListeners {
-            listener.queue.async {
-                listener.callback(endpointName, result)
-            }
+    public func addWillSendRequestBuilder(_ builder: @escaping URLRequestBuilder) {
+        let prevReqBuilder = self.willSendRequest
+        self.willSendRequest = { urlReq in
+            try await prevReqBuilder(&urlReq)
+            try await builder(&urlReq)
         }
     }
-}
-
-// MARK: - Common request headers
-
-/// A typealias for the token type used to sign v2 & v4 requests.
-public typealias AuthToken = String
-
-extension APIClient {
-    
-    public func setAuthToken(_ authToken: AuthToken?) {
-        self.clientHeaders["X-Token"] = authToken
-    }
-    
-    /// All future requests will use the specified APIKey
-    public func setAPIKey(_ apiKey: String) {
-        self.clientHeaders["X-Api-Key"] = apiKey
-    }
-    
-    @available(*, deprecated, message: "apiSecret is no longer needed")
-    public func setAPIKey(_ apiKey: String, apiSecret: String) {
-        setAPIKey(apiKey)
-    }
-    
-    /// All future requests will use the specified app version (in simVer).
-    public func setClientVersion(_ appVersion: String) {
-        self.clientHeaders["X-Client-Version"] = appVersion
-    }
-}
-
-// MARK: - Send
-
-extension APIClient {
-    
-    /**
-     Send a request to the API's urlSession.
-     Will report the HTTPURLResponse or API error to the `responseListeners`.
-     Calls the completionHandler async on the `completesOn` queue.
-     */
-    public func send<ResponseType, VersionTag>(
-        _ request: APIRequest<ResponseType, VersionTag>,
-        completesOn completionQueue: DispatchQueue = .main,
-        completion: @escaping (Result<ResponseType, APIError>) -> Void
-    ) {
-        self.requestQueue.async { [weak self] in
-            self?.queuedSend(request, completesOn: completionQueue, completion: completion)
+    public func addDidReceiveResponseListener(_ listener: @escaping ResponseListener) {
+        let prevResponseListener = self.didReceiveResponse
+        self.didReceiveResponse = { urlReq, result in
+            await prevResponseListener(urlReq, result)
+            await listener(urlReq, result)
         }
     }
     
-    /// Actually does the sending of the request. This must be run on the `requestQueue`
-    fileprivate func queuedSend<ResponseType, VersionTag>(
-        _ request: APIRequest<ResponseType, VersionTag>,
-        completesOn completionQueue: DispatchQueue,
-        completion: @escaping (Result<ResponseType, APIError>) -> Void
-    ) {
-        let endpointName = request.endpoint
-        var endpointURL = self.baseURL.appendingPathComponent(endpointName)
-        let headers = self.clientHeaders
-        
-        // add the request's queryParams to the url
-        if !request.queryParams.isEmpty, var urlComps = URLComponents(url: endpointURL, resolvingAgainstBaseURL: false) {
-            urlComps.queryItems = request.queryParams.map({
-                URLQueryItem(name: $0.key, value: $0.value)
-            })
-            
-            if let urlWithParams = urlComps.url {
-                endpointURL = urlWithParams
-            }
-        }
-        
-        // build the url request
-        var urlReq = URLRequest(url: endpointURL, cachePolicy: request.cachePolicy, timeoutInterval: request.timeoutInterval)
-        urlReq.httpMethod = request.method.rawValue
-                
-        var mergedHeaders: [String: String] = [:]
-        
-        // add the headers and request's headerOverrides
-        for (key, value) in headers {
-            mergedHeaders[key.lowercased()] = value
-        }
-        for (key, value) in request.headerOverrides {
-            mergedHeaders[key.lowercased()] = value
-        }
-        
-        urlReq.allHTTPHeaderFields = mergedHeaders
-        
-        // Encode the request's `body` property.
-        // NOTE: the request will fail if it is a GET and this property is set.
+    public func send<ResponseType>(_ request: APIRequest<ResponseType>) async -> Result<ResponseType, APIError> {
+        await send(request, retryCount: 0)
+    }
+    
+    public func sendThrowable<ResponseType>(_ request: APIRequest<ResponseType>) async throws -> ResponseType {
+        try await send(request, retryCount: 0).get()
+    }
+    
+    fileprivate func send<ResponseType>(_ request: APIRequest<ResponseType>, retryCount: Int) async -> Result<ResponseType, APIError> {
         do {
-            urlReq.httpBody = try request.body?.encode(self.defaultEncoder)
-        } catch {
-            // We were unable to make the request
-            self.handleRequestResult(.failure(.unencodableRequest(error: error)), endpointName: endpointName, completesOn: completionQueue, completion: completion)
-            return
-        }
-        let reqDecoder = request.decoder
-        let defaultDecoder = self.defaultDecoder
-        let task = self.urlSession.dataTask(with: urlReq) { [weak self] (data, urlResponse, error) in
-            if let data = data, let httpResponse = urlResponse as? HTTPURLResponse {
+            var urlRequest: URLRequest
+            do {
+                // let the request build the URLRequest
+                urlRequest = try await request.generateURLRequest(baseURL: self.baseURL, defaultJSONEncoder: defaultJSONEncoder)
+                // let the client tweak the URLRequest before sending
+                try await willSendRequest(&urlRequest)
+            } catch let encodeError {
+                throw APIError.unencodableRequest(error: encodeError)
+            }
+            
+            do {
+                let data: Data
+                let urlResponse: URLResponse
+                do {
+                    (data, urlResponse) = try await session.data(for: urlRequest)
+                } catch let networkError {
+                    throw APIError.network(error: networkError)
+                }
+                
+                guard let httpResponse = urlResponse as? HTTPURLResponse else {
+                    throw APIError.failedRequest(urlResponse: urlResponse)
+                }
                 if (200..<300).contains(httpResponse.statusCode) {
                     do {
-                        let successResponse = try reqDecoder.decode(data, defaultDecoder)
                         // Successfully decoded the expected ResponseType!
-                        self?.handleRequestResult(.success((successResponse, httpResponse)), endpointName: endpointName, completesOn: completionQueue, completion: completion)
-                        return
+                        let decodedResponse = try await request.responseDecoder.decode(data)
+                        await self.didReceiveResponse(urlRequest, .success(httpResponse))
+                        return .success(decodedResponse) // 👈 Success!
                     } catch let decodeError {
-                        // Unable to decode the expected ResponseType.
-                        self?.handleRequestResult(.failure(.decode(error: decodeError, data: data)), endpointName: endpointName, completesOn: completionQueue, completion: completion)
-                        return
+                        throw APIError.decode(error: decodeError, data: data)
                     }
                 } else if let errorResponse = try? JSONDecoder().decode(APIError.ServerResponse.self, from: data) {
                     // We got a specific error object in the server's response.
-                    self?.handleRequestResult(.failure(.server(errorResponse, httpResponse: httpResponse)), endpointName: endpointName, completesOn: completionQueue, completion: completion)
-                    return
+                    throw APIError.server(errorResponse, httpResponse: httpResponse)
                 } else if let stringResponse = String(data: data, encoding: .utf8) {
                     // We got some error data in the server's response, but we cant decode it.
-                    self?.handleRequestResult(.failure(.undecodableServer(stringResponse, httpResponse: httpResponse)), endpointName: endpointName, completesOn: completionQueue, completion: completion)
-                    return
+                    throw APIError.undecodableServer(stringResponse, httpResponse: httpResponse)
+                } else {
+                    throw APIError.failedRequest(urlResponse: urlResponse)
                 }
+            } catch let apiError as APIError {
+                await self.didReceiveResponse(urlRequest, .failure(apiError))
+                throw apiError
             }
-            
-            if let error = error {
-                // We got a system networking error.
-                self?.handleRequestResult(.failure(.network(error: error, urlResponse: urlResponse)), endpointName: endpointName, completesOn: completionQueue, completion: completion)
-                return
+        } catch {
+            let apiError = (error as? APIError) ?? .unknown(error: error)
+            if request.shouldRetry.predicate(retryCount, apiError) {
+                return await self.send(request, retryCount: retryCount + 1)
             } else {
-                // The request failed for some unknown reason.
-                self?.handleRequestResult(.failure(.failedRequest(urlResponse: urlResponse)), endpointName: endpointName, completesOn: completionQueue, completion: completion)
-                return
+                return .failure(apiError)
             }
         }
-        task.resume()
     }
-    
-    fileprivate func handleRequestResult<ResponseType>(_ result: Result<(ResponseType, HTTPURLResponse), APIError>, endpointName: String, completesOn completionQueue: DispatchQueue, completion: @escaping (Result<ResponseType, APIError>) -> Void) {
-        switch result {
-        case let .success((response, httpResponse)):
-            // tell any listeners about the http response
-            self.callResponseListeners(
-                endpointName: endpointName,
-                result: .success(httpResponse)
-            )
-            
-            // complete with success!
-            completionQueue.async {
-                completion(.success(response))
-            }
-        case let .failure(error):
-            
-            // tell any listeners about the error
-            self.callResponseListeners(
-                endpointName: endpointName,
-                result: .failure(error)
-            )
-            
-            // complete with failure :(
-            completionQueue.async {
-                completion(.failure(error))
+}
+
+fileprivate struct APIClientDestroyed: Error { }
+
+extension APIClient {
+    /// A callback version of the async `send` function
+    public func send<ResponseType>(_ request: APIRequest<ResponseType>, completesOn: DispatchQueue = .main, completion: @escaping (Result<ResponseType, APIError>) -> Void) {
+        Task { [weak self] in
+            let result: Result<ResponseType, APIError>? = await self?.send(request)
+            completesOn.async {
+                completion(result ?? .failure(APIError.unknown(error: APIClientDestroyed())))
             }
         }
     }
 }
 
 #if canImport(Future)
-// MARK: - APIClient + Future
-
-import Future
+import struct Future.Future
 
 extension APIClient {
-    public func send<ResponseType, VersionTag>(_ request: APIRequest<ResponseType, VersionTag>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
+    public func send<ResponseType>(_ request: APIRequest<ResponseType>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
         .init(run: { [weak self] cb in
-            self?.send(request, completesOn: completesOn, completion: cb)
+            Task { [weak self] in
+                let result: Result<ResponseType, APIError>? = await self?.send(request)
+                completesOn.async {
+                    cb(result ?? .failure(APIError.unknown(error: APIClientDestroyed())))
+                }
+            }
         })
     }
 }

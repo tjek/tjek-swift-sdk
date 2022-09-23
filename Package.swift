@@ -1,13 +1,13 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 import PackageDescription
 
 let package = Package(
     name: "TjekSDK",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v12),
+        .iOS(.v13),
         .watchOS(.v6),
-        .macOS(.v10_14),
+        .macOS(.v10_15),
         .tvOS(.v12)
     ],
     products: [

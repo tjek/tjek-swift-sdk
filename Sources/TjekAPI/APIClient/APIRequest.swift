@@ -3,31 +3,194 @@
 ///
 
 import Foundation
-#if !COCOAPODS // Cocoapods merges these modules
-import TjekUtils
-#endif
+//#if !COCOAPODS // Cocoapods merges these modules
+//import TjekUtils
+//#endif
 
-public struct APIRequestEncoder {
-    public var encode: (_ clientEncoder: JSONEncoder) throws -> Data?
+public struct APIRequest<ResponseType> {
+    public let path: String
+    public let method: APIRequestMethod
+    public var queryParams: [String: String?]
+    public var urlRequestBuilder: URLRequestBuilder
+    public var bodyEncoder: APIRequestBodyEncoder?
+    public var responseDecoder: APIResponseDecoder<ResponseType>
+    public var shouldRetry: APIRequestRetryHandler
     
-    public init(_ encode: @escaping (_ clientEncoder: JSONEncoder) throws -> Data?) {
-        self.encode = encode
+    public init(
+        path: String,
+        method: APIRequestMethod,
+        queryParams: [String: String?] = [:],
+        urlRequestBuilder: @escaping URLRequestBuilder = { _ in },
+        bodyEncoder: APIRequestBodyEncoder?,
+        responseDecoder: APIResponseDecoder<ResponseType>,
+        shouldRetry: APIRequestRetryHandler
+    ) {
+        self.path = path
+        self.method = method
+        self.queryParams = queryParams
+        self.urlRequestBuilder = urlRequestBuilder
+        self.bodyEncoder = bodyEncoder
+        self.responseDecoder = responseDecoder
+        self.shouldRetry = shouldRetry
     }
     
-    public static func encodable<Input: Encodable>(_ input: Input, _ customEncoder: JSONEncoder? = nil) -> APIRequestEncoder {
-        APIRequestEncoder { clientEncoder in
-            try (customEncoder ?? clientEncoder).encode(input)
+    private func generateURL(fromBaseURL baseURL: URL) throws -> URL {
+        // add the query params to the url
+        let requestURL = baseURL.appendingPathComponent(path)
+        guard var components = URLComponents(url: requestURL, resolvingAgainstBaseURL: false)
+        else {
+            throw URLError(.badURL)
+        }
+        if !queryParams.isEmpty {
+            components.queryItems = queryParams.map({
+                URLQueryItem(name: $0.key, value: $0.value)
+            })
+        }
+        guard let url = components.url else {
+            throw URLError(.badURL)
+        }
+        return url
+    }
+    
+    public func generateURLRequest(baseURL: URL, defaultJSONEncoder: JSONEncoder) async throws -> URLRequest {
+        let endpointURL = try generateURL(fromBaseURL: baseURL)
+        
+        var urlRequest = URLRequest(url: endpointURL)
+        urlRequest.httpMethod = method.rawValue
+        urlRequest.httpBody = try await bodyEncoder?.encode(defaultJSONEncoder)
+        
+        try await urlRequestBuilder(&urlRequest)
+        
+        return urlRequest
+    }
+}
+
+extension APIRequest {
+    /// Converts an APIRequest of one responseType into an APIRequest of a different type, by modifying the decoder.
+    public func mapResponse<NewResponseType>(
+        _ transform: @escaping (ResponseType) -> NewResponseType
+    ) -> APIRequest<NewResponseType> {
+        APIRequest<NewResponseType>(
+            path: self.path,
+            method: self.method,
+            queryParams: self.queryParams,
+            urlRequestBuilder: self.urlRequestBuilder,
+            bodyEncoder: self.bodyEncoder,
+            responseDecoder: self.responseDecoder.map(transform),
+            shouldRetry: self.shouldRetry
+        )
+    }
+}
+
+extension APIRequest {
+    public func addingURLRequestBuilder(_ reqBuilder: @escaping URLRequestBuilder) -> Self {
+        var copy = self
+        let prevReqBuilder = self.urlRequestBuilder
+        copy.urlRequestBuilder = { urlReq in
+            try await prevReqBuilder(&urlReq)
+            try await reqBuilder(&urlReq)
+        }
+        return copy
+    }
+    
+    public func with(headers: [String: String?]) -> Self {
+        self.addingURLRequestBuilder { urlReq in
+            for (key, value) in headers {
+                urlReq.setValue(value, forHTTPHeaderField: key)
+            }
         }
     }
-    public static func args(_ args: [String: JSONValue], _ customEncoder: JSONEncoder? = nil) -> APIRequestEncoder {
-        encodable(args, customEncoder)
+    
+    public func with(cachePolicy: URLRequest.CachePolicy) -> Self {
+        self.addingURLRequestBuilder { $0.cachePolicy = cachePolicy }
+    }
+    
+    public func with(timeoutInterval: TimeInterval) -> Self {
+        self.addingURLRequestBuilder { $0.timeoutInterval = timeoutInterval }
+    }
+}
+
+extension APIRequest {
+    public func retry(_ retry: APIRequestRetryHandler) -> Self {
+        var copy = self
+        copy.shouldRetry = retry
+        return copy
+    }
+    
+    public func retry(times: Int, whileError: @escaping (APIError) -> Bool) -> Self {
+        retry(.times(times, whileError: whileError))
+    }
+}
+
+
+// MARK: -
+
+public enum APIRequestMethod: String {
+    case GET
+    case POST
+    case PUT
+    case DELETE
+}
+
+public typealias URLRequestBuilder = (inout URLRequest) async throws -> Void
+public typealias URLRequestBodyBuilder = () async throws -> Data?
+
+public struct APIRequestRetryHandler {
+    public typealias ErrorType = APIError
+    
+    public let predicate: (_ count: Int, _ error: ErrorType) -> Bool
+    
+    public static var nope: Self {
+        .init { _, _ in false }
+    }
+    
+    public static var once: Self { .times(1) }
+    
+    public static func times(_ maxRetryCount: Int, whileError: @escaping (ErrorType) -> Bool = { _ in true }) -> Self {
+        .init { count, error in
+            count < maxRetryCount && whileError(error)
+        }
+    }
+}
+
+// MARK: -
+
+public struct APIRequestBodyEncoder {
+    public var encode: (JSONEncoder) async throws -> Data?
+    
+    public init(_ encode: @escaping (JSONEncoder) async throws -> Data?) {
+        self.encode = encode
+    }
+    public init(_ data: Data? = nil) {
+        self.init({ _ in data })
+    }
+    
+    public static func encodable(_ inputBuilder: @escaping () async throws -> Encodable?) -> Self {
+        self.init { jsonEncoder in
+            guard let input = try await inputBuilder() else {
+                return nil
+            }
+            return try jsonEncoder.encode(input)
+        }
+    }
+    
+    public static func encodable(_ input: Encodable?) -> Self {
+        self.init { jsonEncoder in
+            try input.map({ try jsonEncoder.encode($0) })
+        }
+    }
+    
+    public func usingEncoder(_ newEncoder: JSONEncoder) -> Self {
+        Self { _ in
+            try await self.encode(newEncoder)
+        }
     }
     
     /// Adds a callback to the encoding action when it's performed.
     /// Use this to validate the data is as expected
     public func debugging(_ resultViewer: @escaping (Data?) -> Void) -> Self {
-        APIRequestEncoder {
-            let data = try self.encode($0)
+        APIRequestBodyEncoder { jsonEncoder in
+            let data = try await self.encode(jsonEncoder)
             resultViewer(data)
             return data
         }
@@ -39,24 +202,26 @@ public struct APIRequestEncoder {
     }
 }
 
-public struct APIRequestDecoder<ResponseType> {
-    public var decode: (Data, _ clientDecoder: JSONDecoder) throws -> ResponseType
+// MARK: -
+
+public struct APIResponseDecoder<ResponseType> {
+    public var decode: (Data) async throws -> ResponseType
     
-    public init(_ decode: @escaping (Data, _ clientDecoder: JSONDecoder) throws -> ResponseType) {
+    public init(_ decode: @escaping (Data) async throws -> ResponseType) {
         self.decode = decode
     }
     
-    public func map<NewResponseType>(_ transform: @escaping (ResponseType) -> NewResponseType) -> APIRequestDecoder<NewResponseType> {
-        APIRequestDecoder<NewResponseType> { data, clientDecoder in
-            transform(try decode(data, clientDecoder))
+    public func map<NewResponseType>(_ transform: @escaping (ResponseType) async throws -> NewResponseType) -> APIResponseDecoder<NewResponseType> {
+        APIResponseDecoder<NewResponseType> { data in
+            try await transform(try await decode(data))
         }
     }
     
     /// Adds a callback to the decoding action when it's performed.
     /// Use this to validate the data is as expected
     public func debugging(_ resultViewer: @escaping (Data, ResponseType) -> Void) -> Self {
-        APIRequestDecoder { data, clientDecoder in
-            let response = try decode(data, clientDecoder)
+        APIResponseDecoder { data in
+            let response = try await decode(data)
             resultViewer(data, response)
             return response
         }
@@ -68,102 +233,30 @@ public struct APIRequestDecoder<ResponseType> {
     }
 }
 
-public enum APIRequestMethod: String {
-    case GET
-    case POST
-    case PUT
-    case DELETE
-}
-
-public struct APIRequest<ResponseType, VersionTag> {
-    
-    public let endpoint: String
-    public let method: APIRequestMethod
-    /// NOTE, if `method` is GET and `body` is non-nil, the request will fail.
-    public var body: APIRequestEncoder?
-    public var queryParams: [String: String?]
-    public var headerOverrides: [String: String?]
-    public var timeoutInterval: TimeInterval
-    public var cachePolicy: URLRequest.CachePolicy
-    public var decoder: APIRequestDecoder<ResponseType>
-
-    public init(endpoint: String, method: APIRequestMethod = .POST, body: APIRequestEncoder? = nil, queryParams: [String: String?] = [:], headerOverrides: [String: String?] = [:], timeoutInterval: TimeInterval = 10, cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy, decoder: APIRequestDecoder<ResponseType>) {
-        self.endpoint = endpoint
-        self.method = method
-        self.body = body
-        self.queryParams = queryParams
-        self.headerOverrides = headerOverrides
-        self.timeoutInterval = timeoutInterval
-        self.cachePolicy = cachePolicy
-        self.decoder = decoder
+extension APIResponseDecoder where ResponseType == Data {
+    public static var data: Self {
+        APIResponseDecoder { $0 }
     }
 }
-
-// MARK: - Utils
-
-extension APIRequest {
-    /// Converts an APIRequest of one responseType into an APIRequest of a different type, by modifying the decoder.
-    public func map<NewResponseType>(_ transform: @escaping (ResponseType) -> NewResponseType) -> APIRequest<NewResponseType, VersionTag> {
-        return .init(endpoint: endpoint, method: method, body: body, queryParams: queryParams, headerOverrides: headerOverrides, timeoutInterval: timeoutInterval, cachePolicy: cachePolicy, decoder: decoder.map(transform))
-    }
-}
-
-// MARK: - Decoder Overrides
-
-extension APIRequestDecoder where ResponseType == Data {
-    static var data: Self {
-        APIRequestDecoder { data, _ in data }
-    }
-}
-extension APIRequestDecoder where ResponseType: Decodable {
-    static func decodable(_ customDecoder: JSONDecoder? = nil) -> Self {
-        APIRequestDecoder { data, clientDecoder in
-            try (customDecoder ?? clientDecoder).decode(ResponseType.self, from: data)
+extension APIResponseDecoder where ResponseType: Decodable {
+    public static func decodable(_ decoder: JSONDecoder) -> Self {
+        APIResponseDecoder { data in
+            try decoder.decode(ResponseType.self, from: data)
         }
     }
 }
-extension APIRequestDecoder where ResponseType == Void {
-    static var void: Self {
-        APIRequestDecoder { _, _ in () }
+extension APIResponseDecoder where ResponseType == Void {
+    public static var void: Self {
+        APIResponseDecoder { _ in () }
     }
 }
-extension APIRequestDecoder {
-    static var jsonSerialization: Self {
-        APIRequestDecoder { data, _ in
+extension APIResponseDecoder {
+    public static var jsonSerialization: Self {
+        APIResponseDecoder { data in
             guard let successValue = try JSONSerialization.jsonObject(with: data, options: []) as? ResponseType else {
                 throw DecodingError.typeMismatch(ResponseType.self, DecodingError.Context(codingPath: [], debugDescription: "Unable to decode API request"))
             }
             return successValue
         }
-    }
-}
-
-extension APIRequest where ResponseType == Data {
-    public init(endpoint: String, method: APIRequestMethod = .POST, body: APIRequestEncoder? = nil, queryParams: [String: String?] = [:], headerOverrides: [String: String?] = [:], timeoutInterval: TimeInterval = 10, cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy) {
-        self.init(endpoint: endpoint, method: method, body: body, queryParams: queryParams, headerOverrides: headerOverrides, timeoutInterval: timeoutInterval, cachePolicy: cachePolicy, decoder: .data)
-    }
-}
-
-extension APIRequest where ResponseType: Decodable {
-    public init(endpoint: String, method: APIRequestMethod = .POST, body: APIRequestEncoder? = nil, queryParams: [String: String?] = [:], headerOverrides: [String: String?] = [:], timeoutInterval: TimeInterval = 10, cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy) {
-        self.init(endpoint: endpoint, method: method, body: body, queryParams: queryParams, headerOverrides: headerOverrides, timeoutInterval: timeoutInterval, cachePolicy: cachePolicy, decoder: .decodable())
-    }
-}
-
-extension APIRequest where ResponseType == Void {
-    public init(endpoint: String, method: APIRequestMethod = .POST, body: APIRequestEncoder? = nil, queryParams: [String: String?] = [:], headerOverrides: [String: String?] = [:], timeoutInterval: TimeInterval = 10, cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy) {
-        self.init(endpoint: endpoint, method: method, body: body, queryParams: queryParams, headerOverrides: headerOverrides, timeoutInterval: timeoutInterval, cachePolicy: cachePolicy, decoder: .void)
-    }
-}
-
-extension APIRequest where ResponseType == [String: Any] {
-    public init(endpoint: String, method: APIRequestMethod = .POST, body: APIRequestEncoder? = nil, queryParams: [String: String?] = [:], headerOverrides: [String: String?] = [:], timeoutInterval: TimeInterval = 10, cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy) {
-        self.init(endpoint: endpoint, method: method, body: body, queryParams: queryParams, headerOverrides: headerOverrides, timeoutInterval: timeoutInterval, cachePolicy: cachePolicy, decoder: .jsonSerialization)
-    }
-}
-
-extension APIRequest where ResponseType == [[String: Any]] {
-    public init(endpoint: String, method: APIRequestMethod = .POST, body: APIRequestEncoder? = nil, queryParams: [String: String?] = [:], headerOverrides: [String: String?] = [:], timeoutInterval: TimeInterval = 10, cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy) {
-        self.init(endpoint: endpoint, method: method, body: body, queryParams: queryParams, headerOverrides: headerOverrides, timeoutInterval: timeoutInterval, cachePolicy: cachePolicy, decoder: .jsonSerialization)
     }
 }
