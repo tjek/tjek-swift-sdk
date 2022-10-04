@@ -18,7 +18,7 @@ class OpeningHoursTests: XCTestCase {
         let v2df = DateFormatter()
         v2df.locale = Locale(identifier: "en_US_POSIX")
         v2df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        let decoder = TjekAPI(config: try .init(apiKey: "apiKey")).v2.defaultDecoder
+        let decoder = APIPath.v2.jsonDecoder
         
         let fromDate = v2df.date(from: validFrom)!
         let toDate = v2df.date(from: validUntil)!

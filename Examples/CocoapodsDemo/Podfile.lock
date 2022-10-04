@@ -2,13 +2,13 @@ PODS:
   - Incito (1.0.3)
   - Kingfisher (7.1.2)
   - Tjek-Future (0.5.3)
-  - TjekSDK (5.0.3):
-    - TjekSDK/API (= 5.0.3)
-    - TjekSDK/PublicationViewer (= 5.0.3)
-  - TjekSDK/API (5.0.3):
+  - TjekSDK (5.1):
+    - TjekSDK/API (= 5.1)
+    - TjekSDK/PublicationViewer (= 5.1)
+  - TjekSDK/API (5.1):
     - Tjek-Future (~> 0.5)
     - Valet (~> 4.1.1)
-  - TjekSDK/PublicationViewer (5.0.3):
+  - TjekSDK/PublicationViewer (5.1):
     - Incito (~> 1.0)
     - Kingfisher (~> 7.0)
     - Tjek-Future (~> 0.5)
@@ -36,10 +36,10 @@ SPEC CHECKSUMS:
   Incito: c95a17efcb8c8c1e1cbf0572f090c2e1276d9053
   Kingfisher: 44ed6a8504763f27bab46163adfac83f5deb240c
   Tjek-Future: c9588d0c52852e6f66374cb64ca84308ef516e7a
-  TjekSDK: ff6c5e32b2b57862dbaf7797eb2b0265db7cb272
+  TjekSDK: 20a64ecf8abd7f0f02fc3ece53c4b41b98da6843
   Valet: 11ab0e318b7284888a81392e36136563b4af5deb
   Verso: b6e66030671be9728a3e0d441ad531b5f2c6f2f4
 
-PODFILE CHECKSUM: 58c750740da68469ee681c69922f88ef3aee3b0a
+PODFILE CHECKSUM: 3c892191c8288fc512b578b314807a3851e96178
 
 COCOAPODS: 1.11.3

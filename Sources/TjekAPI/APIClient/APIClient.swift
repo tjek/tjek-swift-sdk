@@ -4,7 +4,13 @@
 
 import Foundation
 
-public actor APIClient {
+public typealias APIResponseListener = (URLRequest, Result<HTTPURLResponse, APIError>) async -> Void
+
+public protocol APIRequestSender: Actor {
+    func send<ResponseType>(_ request: APIRequest<ResponseType>) async -> Result<ResponseType, APIError>
+}
+
+public actor APIClient: APIRequestSender {
     public typealias ResponseListener = (URLRequest, Result<HTTPURLResponse, APIError>) async -> Void
     
     public let baseURL: URL
@@ -44,10 +50,6 @@ public actor APIClient {
     
     public func send<ResponseType>(_ request: APIRequest<ResponseType>) async -> Result<ResponseType, APIError> {
         await send(request, retryCount: 0)
-    }
-    
-    public func sendThrowable<ResponseType>(_ request: APIRequest<ResponseType>) async throws -> ResponseType {
-        try await send(request, retryCount: 0).get()
     }
     
     fileprivate func send<ResponseType>(_ request: APIRequest<ResponseType>, retryCount: Int) async -> Result<ResponseType, APIError> {
@@ -107,11 +109,17 @@ public actor APIClient {
     }
 }
 
+// MARK: -
+
 fileprivate struct APIClientDestroyed: Error { }
 
-extension APIClient {
+extension APIRequestSender {
+    public func sendThrowable<ResponseType>(_ request: APIRequest<ResponseType>) async throws -> ResponseType {
+        try await send(request).get()
+    }
+    
     /// A callback version of the async `send` function
-    public func send<ResponseType>(_ request: APIRequest<ResponseType>, completesOn: DispatchQueue = .main, completion: @escaping (Result<ResponseType, APIError>) -> Void) {
+    public nonisolated func send<ResponseType>(_ request: APIRequest<ResponseType>, completesOn: DispatchQueue = .main, completion: @escaping (Result<ResponseType, APIError>) -> Void) {
         Task { [weak self] in
             let result: Result<ResponseType, APIError>? = await self?.send(request)
             completesOn.async {
@@ -124,8 +132,8 @@ extension APIClient {
 #if canImport(Future)
 import struct Future.Future
 
-extension APIClient {
-    public func send<ResponseType>(_ request: APIRequest<ResponseType>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
+extension APIRequestSender {
+    public nonisolated func send<ResponseType>(_ request: APIRequest<ResponseType>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
         .init(run: { [weak self] cb in
             Task { [weak self] in
                 let result: Result<ResponseType, APIError>? = await self?.send(request)

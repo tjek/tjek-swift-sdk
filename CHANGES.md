@@ -1,5 +1,29 @@
 # Change Log
 
+## v5.1
+
+> Minimum supported deployment target is now iOS 13 (previously iOS 12)
+
+This release adds support for the async/await model of concurrency. It changes both the APIClient and TjekAPI objects to become actors.
+
+- `TjekAPI.send(…)` is now an `async` function (though it is still possible to use the callback and Future versions of this function).
+- `APIRequest` now no longer has a version tag. If you need to define a new APIRequest, you define the endpoint version by picking the correct `.v2()` or `.v4()` static initializers function.
+- `TjekAPI.initialize` will now fatalError if called more than once. In order to re-initialize the API, you must call `await TjekAPI.shared.update(config:)`
+
+
+## v5.0.3
+
+- Adds opening hours to the `Store_v2` model
+- Remove the need for API secret
+
+## v5.0.2
+
+- Fix issue with `getPublications` request where storeIds filter was not being applied properly
+
+## v5.0.1
+
+- Adds a search request & a specific model for offer hotspots 
+
 ## v5.0
 
 > This release is not backwards-compatible with the previous versions.

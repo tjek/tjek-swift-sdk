@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
     s.name            = "TjekSDK"
-    s.version         = "5.0.3"
+    s.version         = "5.1"
     s.summary         = "Tjek SDK for iOS."
     s.description     = <<-DESC
                          An SDK that makes it easy to talk to the Tjek API.
@@ -11,8 +11,8 @@ Pod::Spec.new do |s|
     s.license          = "MIT"
     s.author           = "Tjek"
 
-    s.platform         = :ios, "12.0"
-    s.swift_version    = "5.0.1"
+    s.platform         = :ios, "13.0"
+    s.swift_version    = "5.5"
     s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0' }
 
     s.source       = { :git => "https://github.com/tjek/tjek-swift-sdk.git", :tag => "v#{s.version}" }

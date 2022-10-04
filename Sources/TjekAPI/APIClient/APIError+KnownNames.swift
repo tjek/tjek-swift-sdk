@@ -35,7 +35,7 @@ extension APIError: HasUnderlyingError {
              .failedRequest:
             return nil
         case .unencodableRequest(let error),
-             .network(let error, _),
+             .network(let error),
              .decode(let error, _),
              .unknown(let error):
             return error

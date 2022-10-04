@@ -49,8 +49,8 @@ extension PagedPublicationView {
 extension APIRequest {
     
     /// Fetch all the pages for the specified publication
-    static func getPublicationPages(withId pubId: PublicationId, aspectRatio: Double? = nil) -> APIRequest<[PublicationPage_v2], API_v2> {
-        APIRequest<[v2ImageURLs], API_v2>(
+    static func getPublicationPages(withId pubId: PublicationId, aspectRatio: Double? = nil) -> APIRequest<[PublicationPage_v2]> {
+        APIRequest<[v2ImageURLs]>.v2(
             endpoint: "catalogs/\(pubId)/pages",
             method: .GET
         ).map({ pageURLs in
@@ -64,8 +64,8 @@ extension APIRequest {
     
     /// Fetch all hotspots for the specified publication
     /// The `aspectRatio` (w/h) of the publication is needed in order to position the hotspots correctly
-    static func getPublicationHotspots(withId pubId: PublicationId, aspectRatio: Double) -> APIRequest<[PublicationHotspot_v2], API_v2> {
-        APIRequest<[PublicationHotspot_v2], API_v2>(
+    static func getPublicationHotspots(withId pubId: PublicationId, aspectRatio: Double) -> APIRequest<[PublicationHotspot_v2]> {
+        APIRequest<[PublicationHotspot_v2]>.v2(
             endpoint: "catalogs/\(pubId)/hotspots",
             method: .GET
         ).map({ hotspots in

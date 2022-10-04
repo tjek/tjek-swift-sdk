@@ -7,7 +7,7 @@ import Foundation
 import TjekUtils
 #endif
 
-public class TjekAPI {
+public actor TjekAPI {
     
     public struct Config: Equatable {
         public var apiKey: String
@@ -31,10 +31,14 @@ public class TjekAPI {
         }
     }
     
-    /// Initialize the `shared` TjekAPI using the specified `Config`.
+    /**
+     Initialize the `shared` TjekAPI using the specified `Config`.
+     Will fatalError if you call after the API has already been initialized.
+     If you wish to re-initialize the shared api, use `await TjekAPI.shared.update(config:)`
+     */
     public static func initialize(config: Config) {
-        if let currShared = _shared {
-            currShared.config = config
+        if _shared != nil {
+            fatalError("TjekAPI is already initialized. Use `await TjekAPI.shared.update(config:)` to re-initialize.")
         } else {
             _shared = TjekAPI(config: config)
         }
@@ -71,95 +75,106 @@ public class TjekAPI {
     
     // MARK: -
     
-    public var config: Config {
-        didSet {
-            if config != oldValue {
-                client = APIClient(baseURL: config.baseURL)
-            }
-//            client.baseURL = config.baseURL
-            //                .appendingPathComponent("v2")
-            //            v2.setAPIKey(config.apiKey)
-            //            v2.setClientVersion(config.clientVersion)
-            
-            //            v4.baseURL = config.baseURL
-            //                .appendingPathComponent("v4/rpc")
-            //            v4.setAPIKey(config.apiKey)
-            //            v4.setClientVersion(config.clientVersion)
+    public init(
+        config: Config,
+        willSendRequest: @escaping URLRequestBuilder = { _ in },
+        didReceiveResponse: @escaping APIResponseListener = { _, _ in }
+    ) {
+        self.config = config
+        self.willSendRequest = willSendRequest
+        self.didReceiveResponse = didReceiveResponse
+    }
+    
+    fileprivate var willSendRequest: URLRequestBuilder
+    fileprivate var didReceiveResponse: APIResponseListener
+    
+    /// The `URLRequestBuilder` callback you add here will be called after previously added builders have been called.
+    /// It will give you the opportunity to modify the URLRequest before it is sent.
+    /// Note, this callback is `async`, meaning that any work you do in here will block the sending of any future requests until finished.
+    public func addWillSendRequestBuilder(_ builder: @escaping URLRequestBuilder) {
+        let prevReqBuilder = self.willSendRequest
+        self.willSendRequest = { urlReq in
+            try await prevReqBuilder(&urlReq)
+            try await builder(&urlReq)
+        }
+    }
+    /// The `APIResponseListener` callback is called after previously added listeners have been called.
+    /// It will give you an opportunity to react to the response from the request.
+    /// Note, this callback is `async`, meaning that any work you do in here will delay the original send request from completing.
+    public func addDidReceiveResponseListener(_ listener: @escaping APIResponseListener) {
+        let prevResponseListener = self.didReceiveResponse
+        self.didReceiveResponse = { urlReq, result in
+            await prevResponseListener(urlReq, result)
+            await listener(urlReq, result)
         }
     }
     
-    public var client: APIClient
-    
-    public init(config: Config) {
+    public var config: Config
+    public func update(config: Config) {
+        let oldConfig = self.config
         self.config = config
         
-        TjekLogger.info("[TjekSDK] Initializing TjekAPI")
-        
-        let urlSession = URLSession.shared
-        let preferredLanguages = Locale.preferredLanguages.joined(separator: ",")
-        
-        self.client = APIClient(
-            baseURL: config.baseURL,
-            urlSession: urlSession,
-            headers: ["content-type": "application/json; charset=utf-8",
-                      "accept-encoding": "gzip",
-                      "accept-language": preferredLanguages.isEmpty ? nil : preferredLanguages,
-                      "user-agent": generateUserAgent()
-                     ].compactMapValues({ $0 }),
-            defaultEncoder: {
-                let encoder = JSONEncoder()
-                encoder.dateEncodingStrategy = .formatted(v2df)
-                return encoder
-            }(),
-            defaultDecoder: {
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .formatted(v2df)
-                return decoder
-            }()
-        )
-        
-        v2.setAPIKey(config.apiKey)
-        v2.setClientVersion(config.clientVersion)
-        
-        // Initialize v4 API
-        
-        let v4df = ISO8601DateFormatter()
-        v4df.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        
-        self.v4 = APIClient(
-            baseURL: config.baseURL.appendingPathComponent("v4/rpc"),
-            headers: ["content-type": "application/json; charset=utf-8",
-                      "accept-encoding": "gzip",
-                      "accept-language": preferredLanguages.isEmpty ? nil : preferredLanguages
-                     ].compactMapValues({ $0 }),
-            defaultEncoder: {
-                let encoder = JSONEncoder()
-                encoder.dateEncodingStrategy = .customISO8601(v4df)
-                return encoder
-            }(),
-            defaultDecoder: {
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .customISO8601(v4df)
-                return decoder
-            }()
-        )
-        v4.setAPIKey(config.apiKey)
-        v4.setClientVersion(config.clientVersion)
+        if oldConfig != config {
+            // setting to nil causes getClient() to rebuild a new client
+            self._client = nil
+        }
+    }
+    
+    fileprivate var _client: APIClient?
+    
+    public func getClient() -> APIClient {
+        if let client = self._client {
+            return client
+        } else {
+            
+            TjekLogger.info("[TjekSDK] Initializing TjekAPI Client")
+            
+            let client = APIClient(
+                baseURL: self.config.baseURL,
+                willSendRequest: { [weak self] urlReq in
+                    if urlReq.apiKey == nil, let apiKey = await self?.config.apiKey {
+                        urlReq.apiKey = apiKey
+                    }
+                    
+                    urlReq.addValue("application/json; charset=utf-8", forHTTPHeaderField: "content-type")
+                    urlReq.addValue("gzip", forHTTPHeaderField: "accept-encoding")
+                    urlReq.addValue(generateUserAgent(), forHTTPHeaderField: "user-agent")
+                    let preferredLanguages = Locale.preferredLanguages.joined(separator: ",")
+                    if !preferredLanguages.isEmpty {
+                        urlReq.addValue(preferredLanguages, forHTTPHeaderField: "accept-language")
+                    }
+                    
+                    try await self?.willSendRequest(&urlReq)
+                },
+                didReceiveResponse: { [weak self] urlReq, responseResult in
+                    switch responseResult {
+                    case .success(let httpResponse):
+                        // Log any deprecation warnings
+                        let deprecationReason = httpResponse.value(forHTTPHeaderField: "X-Api-Deprecation-Info")
+                        let deprecationDate = httpResponse.value(forHTTPHeaderField: "X-Api-Deprecation-Date")
+                        if deprecationReason != nil || deprecationDate != nil {
+                            let deprecationInfo = [deprecationReason, deprecationDate.map({ "(\($0))" })].compactMap({ $0 }).joined(separator: " ")
+                            print("🏚 DEPRECATED ENDPOINT '\(urlReq)': \(deprecationInfo)")
+                        }
+                        
+                    case .failure(let error):
+                        // Log any failed requests
+                        print("❌ Request '\(urlReq)' failed: \(error.localizedDescription)")
+                    }
+                    
+                    await self?.didReceiveResponse(urlReq, responseResult)
+                }
+            )
+            
+            self._client = client
+            return client
+        }
     }
 }
 
-extension TjekAPI {
-    /// Update the AuthToken on all the API clients
-    public func setAuthToken(_ authToken: AuthToken?) {
-        self.v2.setAuthToken(authToken)
-        self.v4.setAuthToken(authToken)
-    }
-    
-    /// The response listener callback will be called on the specified queue whenever a request completes. It receives the url response or the error.
-    /// It is added to all API clients
-    public func addResponseListener(on queue: DispatchQueue, _ callback: @escaping (_ endpointName: String, Result<HTTPURLResponse, APIError>) -> Void) {
-        self.v2.addResponseListener(on: queue, callback)
-        self.v4.addResponseListener(on: queue, callback)
+extension TjekAPI: APIRequestSender {
+    public func send<ResponseType>(_ request: APIRequest<ResponseType>) async -> Result<ResponseType, APIError> {
+        await self.getClient().send(request)
     }
 }
 
@@ -223,69 +238,6 @@ extension TjekAPI.Config {
 
 // MARK: -
 
-//extension JSONEncoder.DateEncodingStrategy {
-//    fileprivate static func customISO8601(_ iso8601: ISO8601DateFormatter) -> Self {
-//        .custom({ date, encoder in
-//            var c = encoder.singleValueContainer()
-//            let dateStr = iso8601.string(from: date)
-//            try c.encode(dateStr)
-//        })
-//    }
-//}
-//
-//extension JSONDecoder.DateDecodingStrategy {
-//    fileprivate static func customISO8601(_ iso8601: ISO8601DateFormatter) -> Self {
-//        .custom({ decoder in
-//            let c = try decoder.singleValueContainer()
-//            let dateStr = try c.decode(String.self)
-//            if let date = iso8601.date(from: dateStr) {
-//                return date
-//            } else {
-//                throw DecodingError.dataCorruptedError(in: c, debugDescription: "Unable to decode date-string '\(dateStr)'")
-//            }
-//        })
-//    }
-//}
-
 public func shortBundleVersion(_ bundle: Bundle) -> String {
     bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
 }
-
-//// MARK: - Request Versioning
-//
-///// This is a v2 version tag, used to mark which API a request will be sent to.
-//public enum API_v2 { }
-///// This is a v4 version tag, used to mark which API a request will be sent to.
-//public enum API_v4 { }
-//
-//extension TjekAPI {
-//    /// Send an API Request to the v2 API client.
-//    /// The result is received in the `completion` handler, on the `completesOn` queue (defaults to `.main`).
-//    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v2>, completesOn: DispatchQueue = .main, completion: @escaping (Result<ResponseType, APIError>) -> Void) {
-//        v2.send(request, completesOn: completesOn, completion: completion)
-//    }
-//
-//    /// Send an API Request to the v4 API client.
-//    /// The result is received in the `completion` handler, on the `completesOn` queue (defaults to `.main`).
-//    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v4>, completesOn: DispatchQueue = .main, completion: @escaping (Result<ResponseType, APIError>) -> Void) {
-//        v4.send(request, completesOn: completesOn, completion: completion)
-//    }
-//}
-//
-//#if canImport(Future)
-//import Future
-//
-//extension TjekAPI {
-//    /// Returns a Future, which, when run, sends an API Request to the v2 API client.
-//    /// Future's completion-handler is called on the `completesOn` queue (defaults to `.main`)
-//    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v2>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
-//        v2.send(request, completesOn: completesOn)
-//    }
-//
-//    /// Returns a Future, which, when run, sends an API Request to the v4 API client.
-//    /// Future's completion-handler is called on the `completesOn` queue (defaults to `.main`)
-//    public func send<ResponseType>(_ request: APIRequest<ResponseType, API_v4>, completesOn: DispatchQueue = .main) -> Future<Result<ResponseType, APIError>> {
-//        v4.send(request, completesOn: completesOn)
-//    }
-//}
-//#endif

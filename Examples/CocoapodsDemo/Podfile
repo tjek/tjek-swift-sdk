@@ -1,6 +1,6 @@
 workspace '../../TjekSDK.xcworkspace'
 project "CocoapodsDemo"
-platform :ios, '12.0'
+platform :ios, '13.0'
 
 target 'CocoapodsDemo' do
   use_frameworks!

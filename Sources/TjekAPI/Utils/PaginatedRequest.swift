@@ -131,7 +131,7 @@ extension PaginatedResponse where CursorType == Int {
 
 extension APIRequest {
     public func paginatedResponse<ResponseElement, NewResponseElement>(_ transform: @escaping (ResponseElement) -> NewResponseElement, paginatedRequest: PaginatedRequest<Int>) -> APIRequest<PaginatedResponse<NewResponseElement, Int>> where ResponseType == [ResponseElement] {
-        self.mapResponse({
+        self.map({
             PaginatedResponse(
                 results: $0.map(transform),
                 expectedCount: paginatedRequest.itemCount,
@@ -140,7 +140,7 @@ extension APIRequest {
         })
     }
     public func paginatedResponse<ResponseElement>(paginatedRequest: PaginatedRequest<Int>) -> APIRequest<PaginatedResponse<ResponseElement, Int>> where ResponseType == [ResponseElement] {
-        self.mapResponse({
+        self.map({
             PaginatedResponse(
                 results: $0,
                 expectedCount: paginatedRequest.itemCount,

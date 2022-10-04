@@ -44,11 +44,11 @@ struct IncitoAPIQuery: Encodable {
     var time: Date?
     var featureLabels: [String: Double]
     
-    var apiRequest: APIRequest<IncitoDocument, API_v4> {
-        APIRequest<IncitoDocument, API_v4>(
+    var apiRequest: APIRequest<IncitoDocument> {
+        APIRequest<IncitoDocument>.v4(
             endpoint: "generate_incito_from_publication",
             body: .encodable(self),
-            decoder: APIRequestDecoder { data, _ in
+            responseDecoder: .init { data in
                 guard let jsonDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                     let jsonStr = String(data: data, encoding: .utf8) else {
                         throw IncitoAPIQueryError.invalidData
