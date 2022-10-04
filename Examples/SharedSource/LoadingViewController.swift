@@ -7,7 +7,7 @@ import UIKit
 class LoadingViewController: UIViewController {
     
     lazy var activityIndicator: UIActivityIndicatorView = {
-        let view = UIActivityIndicatorView(style: .whiteLarge)
+        let view = UIActivityIndicatorView(style: .large)
         view.color = UIColor(white: 0, alpha: 0.7)
         return view
     }()
