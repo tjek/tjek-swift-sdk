@@ -6,7 +6,7 @@ import Foundation
 
 public typealias APIResponseListener = (URLRequest, Result<HTTPURLResponse, APIError>) async -> Void
 
-public protocol APIRequestSender: Actor {
+public protocol APIRequestSender: AnyObject {
     func send<ResponseType>(_ request: APIRequest<ResponseType>) async -> Result<ResponseType, APIError>
 }
 

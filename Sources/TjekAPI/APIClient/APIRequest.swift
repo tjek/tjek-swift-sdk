@@ -3,9 +3,6 @@
 ///
 
 import Foundation
-//#if !COCOAPODS // Cocoapods merges these modules
-//import TjekUtils
-//#endif
 
 public struct APIRequest<ResponseType> {
     public let path: String
@@ -121,7 +118,6 @@ extension APIRequest {
         retry(.times(times, whileError: whileError))
     }
 }
-
 
 // MARK: -
 

@@ -106,7 +106,7 @@ extension IncitoLoaderViewController {
     public func load(
         publicationId: PublicationId,
         featureLabelWeights: [String: Double] = [:],
-        apiClient: TjekAPI = .shared,
+        apiClient: some APIRequestSender = TjekAPI.shared,
         publicationLoaded: ((Result<Publication_v2, Error>) -> Void)? = nil,
         completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
     ) {
@@ -166,7 +166,7 @@ extension IncitoLoaderViewController {
     public func load(
         publication: Publication_v2,
         featureLabelWeights: [String: Double] = [:],
-        apiClient: TjekAPI = .shared,
+        apiClient: some APIRequestSender = TjekAPI.shared,
         completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
         ) {
         

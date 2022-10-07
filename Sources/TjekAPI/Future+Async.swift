@@ -11,7 +11,7 @@ extension Future {
         }
     }
     
-    public init<SuccessType>(asyncThrows: @escaping () async throws -> SuccessType) where Response == Result<SuccessType, Error>{
+    public init<SuccessType>(asyncThrows: @escaping () async throws -> SuccessType) where Response == Result<SuccessType, Error> {
         self.init { cb in
             Task {
                 let result: Result<SuccessType, Error>

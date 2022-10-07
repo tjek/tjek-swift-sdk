@@ -154,12 +154,12 @@ public actor TjekAPI {
                         let deprecationDate = httpResponse.value(forHTTPHeaderField: "X-Api-Deprecation-Date")
                         if deprecationReason != nil || deprecationDate != nil {
                             let deprecationInfo = [deprecationReason, deprecationDate.map({ "(\($0))" })].compactMap({ $0 }).joined(separator: " ")
-                            print("🏚 DEPRECATED ENDPOINT '\(urlReq)': \(deprecationInfo)")
+                            TjekLogger.warning("🏚 DEPRECATED ENDPOINT '\(urlReq)': \(deprecationInfo)")
                         }
                         
                     case .failure(let error):
                         // Log any failed requests
-                        print("❌ Request '\(urlReq)' failed: \(error.localizedDescription)")
+                        TjekLogger.error("Request '\(urlReq)' failed: \(error.localizedDescription)")
                     }
                     
                     await self?.didReceiveResponse(urlReq, responseResult)
