@@ -65,7 +65,7 @@ public struct APIRequest<ResponseType> {
 extension APIRequest {
     /// Converts an APIRequest of one responseType into an APIRequest of a different type, by modifying the decoder.
     public func map<NewResponseType>(
-        _ transform: @escaping (ResponseType) -> NewResponseType
+        _ transform: @escaping (ResponseType) async throws -> NewResponseType
     ) -> APIRequest<NewResponseType> {
         APIRequest<NewResponseType>(
             path: self.path,
