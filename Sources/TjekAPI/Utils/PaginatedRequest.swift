@@ -63,8 +63,13 @@ public struct PaginatedResponse<ResultsType, CursorType> {
     }
     
     /// An empty first page that has no next page
-    public static var emptyFirstPage: Self {
+    public static var noResults: Self {
         PaginatedResponse(results: [], pageInfo: .init(lastCursor: nil, hasNextPage: false))
+    }
+    
+    /// An empty first page that has a next page
+    public static var unloaded: Self {
+        PaginatedResponse(results: [], pageInfo: .init(lastCursor: nil, hasNextPage: true))
     }
 }
 
