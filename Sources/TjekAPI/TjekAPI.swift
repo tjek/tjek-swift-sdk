@@ -98,6 +98,12 @@ public actor TjekAPI {
             try await builder(&urlReq)
         }
     }
+    
+    /// Replaces all previously set `URLRequestBuilder` callbacks.
+    public func setWillSendRequestBuilder(_ builder: @escaping URLRequestBuilder) {
+        self.willSendRequest = builder
+    }
+    
     /// The `APIResponseListener` callback is called after previously added listeners have been called.
     /// It will give you an opportunity to react to the response from the request.
     /// Note, this callback is `async`, meaning that any work you do in here will delay the original send request from completing.
@@ -107,6 +113,11 @@ public actor TjekAPI {
             await prevResponseListener(urlReq, result)
             await listener(urlReq, result)
         }
+    }
+    
+    /// Replaces all previously set `APIResponseListener` callbacks.
+    public func setDidReceiveResponseListener(_ listener: @escaping APIResponseListener) {
+        self.didReceiveResponse = listener
     }
     
     public var config: Config
