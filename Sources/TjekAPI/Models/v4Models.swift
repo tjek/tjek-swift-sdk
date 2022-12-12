@@ -470,6 +470,7 @@ extension QuantityUnit {
     /// For example `QuantityUnit.gram.conversionFactor(to: .kilogram)` = 0.001
     /// Undefined result when converting from different unit types, like volume to mass.
     public func conversionFactor(to: QuantityUnit) -> Double? {
+        if self == to { return 1 }
         guard let fromUnit = self.unit as? Dimension, let toUnit = to.unit as? Dimension else { return nil }
         
         return Measurement(value: 1, unit: fromUnit)
