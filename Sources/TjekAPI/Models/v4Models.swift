@@ -178,7 +178,7 @@ extension Offer_v4 {
 }
 
 extension Offer_v4 {
-    public init(v2 v2Model: Offer_v2, business: Business_v4) {
+    public init(v2 v2Model: Offer_v2) {
         self.id = v2Model.id
         self.name = v2Model.heading
         self.description = v2Model.description
@@ -198,7 +198,7 @@ extension Offer_v4 {
         self.validFrom = v2Model.runDateRange.lowerBound == .distantPast ? nil : v2Model.runDateRange.lowerBound
         self.validUntil = v2Model.runDateRange.upperBound == .distantFuture ? nil : v2Model.runDateRange.upperBound
         self.visibleFrom = v2Model.publishDate ?? .distantPast
-        self.business = business
+        self.business = Business_v4(v2: v2Model.business)
         self.publicationId = v2Model.publicationId
         self.publicationPageIndex = v2Model.publicationPageIndex
         self.incitoViewId = v2Model.incitoViewId

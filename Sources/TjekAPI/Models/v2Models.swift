@@ -183,9 +183,12 @@ public struct Offer_v2: Equatable {
     public var publicationPageIndex: Int?
     public var incitoViewId: String?
     
-    public var businessId: Business_v2.ID
+    public var business: Business_v2
+    
     /// The id of the nearest store. Only available if a location was provided when fetching the offer.
     public var storeId: Store_v2.ID?
+    
+    public var businessId: Business_v2.ID { business.id }
 }
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
@@ -208,7 +211,7 @@ extension Offer_v2: Decodable {
         case catalogId          = "catalog_id"
         case catalogPage        = "catalog_page"
         case catalogViewId      = "catalog_view_id"
-        case dealerId           = "dealer_id"
+        case dealer
         case storeId            = "store_id"
     }
     
@@ -243,7 +246,7 @@ extension Offer_v2: Decodable {
         self.publicationPageIndex = (try? values.decode(Int.self, forKey: .catalogPage)).flatMap({ $0 > 0 ? $0 - 1 : nil })
         self.incitoViewId = try? values.decode(String.self, forKey: .catalogViewId)
         
-        self.businessId = try values.decode(Business_v2.ID.self, forKey: .dealerId)
+        self.business = try values.decode(Business_v2.self, forKey: .dealer)
         self.storeId = try? values.decode(Store_v2.ID.self, forKey: .storeId)
     }
 }
