@@ -146,6 +146,9 @@ public actor TjekAPI {
                     if urlReq.apiKey == nil, let apiKey = await self?.config.apiKey {
                         urlReq.apiKey = apiKey
                     }
+                    if urlReq.clientVersion == nil, let clientVersion = await self?.config.clientVersion {
+                        urlReq.clientVersion = clientVersion
+                    }
                     
                     urlReq.addValue("application/json; charset=utf-8", forHTTPHeaderField: "content-type")
                     urlReq.addValue("gzip", forHTTPHeaderField: "accept-encoding")

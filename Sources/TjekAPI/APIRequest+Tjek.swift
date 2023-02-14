@@ -121,4 +121,13 @@ extension URLRequest {
             self.setValue(newValue, forHTTPHeaderField: "X-Api-Key")
         }
     }
+    
+    public var clientVersion: String? {
+        get {
+            self.value(forHTTPHeaderField: "X-Client-Version")
+        }
+        set {
+            self.setValue(newValue, forHTTPHeaderField: "X-Client-Version")
+        }
+    }
 }
