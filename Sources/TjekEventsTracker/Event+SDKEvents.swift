@@ -31,7 +31,7 @@ extension Event {
      The dummy event used for testing purposes.
      - parameter timestamp: The date that the event occurred. Defaults to now.
      */
-    internal static func dummy(timestamp: Date = Date()) -> Event {
+    internal static func _dummy(timestamp: Date = Date()) -> Event {
         return Event(timestamp: timestamp,
                      type: EventType.dummy.rawValue)
     }
@@ -42,7 +42,7 @@ extension Event {
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
-    internal static func pagedPublicationOpened(
+    internal static func _pagedPublicationOpened(
         _ publicationId: PublicationId,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
@@ -67,7 +67,7 @@ extension Event {
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
-    internal static func basicAnalytics(
+    internal static func _basicAnalytics(
         _ category: String,
         action: String,
         appVersion: String,
@@ -130,7 +130,7 @@ extension Event {
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
-    internal static func pagedPublicationPageOpened(
+    internal static func _pagedPublicationPageOpened(
         _ publicationId: PublicationId,
         pageNumber: Int,
         timestamp: Date = Date(),
@@ -164,7 +164,7 @@ extension Event {
      - parameter screenName: The name of the screen where actio has been taken
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
-    internal static func offerInteraction(
+    internal static func _offerInteraction(
         _ offerId: OfferId,
         timestamp: Date = Date(),
         action: String?,
@@ -194,7 +194,7 @@ extension Event {
      - parameter timestamp: The date that the event occurred. Defaults to now.
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
-    internal static func searched(
+    internal static func _searched(
         for query: String,
         languageCode: String?,
         timestamp: Date = Date(),
@@ -220,7 +220,7 @@ extension Event {
      - parameter languageCode: The language the user is searching with (2-character ISO-639-1 code, or nil if no language can be detected)
      - parameter timestamp: The date that the event occurred. Defaults to now.
      */
-    internal static func firstOfferOpenedAfterSearch(
+    internal static func _firstOfferOpenedAfterSearch(
         offerId: OfferId,
         precedingOfferIds: [OfferId],
         query: String,
@@ -252,7 +252,7 @@ extension Event {
      - parameter languageCode: The language the user is searching with (2-character ISO-639-1 code, or nil if no language can be detected)
      - parameter timestamp: The date that the event occurred. Defaults to now.
      */
-    internal static func offerOpenedAfterSearch(
+    internal static func _offerOpenedAfterSearch(
         offerId: OfferId,
         query: String,
         languageCode: String?,
@@ -281,7 +281,7 @@ extension Event {
      - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
      */
     @available(*, deprecated, renamed: "incitoPublicationOpened(_:timestamp:tokenizer:)")
-    internal static func incitoPublicationOpened(
+    internal static func _incitoPublicationOpened(
         _ incitoId: PublicationId,
         pagedPublicationId: PublicationId?,
         timestamp: Date = Date(),
@@ -302,7 +302,7 @@ extension Event {
         return event
     }
     
-    internal static func incitoPublicationOpened(
+    internal static func _incitoPublicationOpened(
         _ incitoPublicationId: PublicationId,
         timestamp: Date = Date(),
         tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
@@ -327,7 +327,7 @@ extension Event {
      - parameter resultsViewedCount: The total number of unique results seen by the user before they leave the screen. Cannot be < 1.
      - parameter timestamp: The date that the event occurred. Defaults to now.
      */
-    internal static func searchResultsViewed(
+    internal static func _searchResultsViewed(
         query: String,
         languageCode: String?,
         resultsViewedCount: Int,
@@ -352,7 +352,7 @@ extension Event {
 extension Event {
     
     public static func offerInteraction(_ offerId: OfferId, action: String?, screenName: String?) -> Event {
-        return offerInteraction(
+        return _offerInteraction(
             offerId,
             timestamp: Date(),
             action: action,
@@ -364,7 +364,7 @@ extension Event {
         for query: String,
         languageCode: String?
     ) -> Event {
-        return searched(for: query, languageCode: languageCode, timestamp: Date())
+        return _searched(for: query, languageCode: languageCode, timestamp: Date())
     }
     
     public static func basicAnalytics(
@@ -378,7 +378,7 @@ extension Event {
         flags: [String] = [],
         deviceInfo: DeviceInfo = .current
     ) -> Event {
-        return basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, previousScreenName: previousScreenName, label: label, value: value, flags: flags, deviceInfo: deviceInfo, timestamp: Date())
+        return _basicAnalytics(category, action: action, appVersion: appVersion, screenName: screenName, previousScreenName: previousScreenName, label: label, value: value, flags: flags, deviceInfo: deviceInfo, timestamp: Date())
     }
     
     public static func firstOfferOpenedAfterSearch(
@@ -387,27 +387,28 @@ extension Event {
         query: String,
         languageCode: String?
     ) -> Event {
-        return firstOfferOpenedAfterSearch(offerId: offerId, precedingOfferIds: precedingOfferIds, query: query, languageCode: languageCode, timestamp: Date())
+        return _firstOfferOpenedAfterSearch(offerId: offerId, precedingOfferIds: precedingOfferIds, query: query, languageCode: languageCode, timestamp: Date())
     }
     public static func offerOpenedAfterSearch(
         offerId: OfferId,
         query: String,
         languageCode: String?
     ) -> Event {
-        return offerOpenedAfterSearch(offerId: offerId, query: query, languageCode: languageCode, timestamp: Date())
+        return _offerOpenedAfterSearch(offerId: offerId, query: query, languageCode: languageCode, timestamp: Date())
     }
     
     public static func pagedPublicationOpened(
         _ publicationId: PublicationId
     ) -> Event {
-        return pagedPublicationOpened(publicationId, timestamp: Date())
+        return _pagedPublicationOpened(publicationId, timestamp: Date())
     }
     
     public static func pagedPublicationPageOpened(
         _ publicationId: PublicationId,
-        pageNumber: Int
+        pageNumber: Int,
+        timestamp: Date = Date()
     ) -> Event {
-        return pagedPublicationPageOpened(publicationId, pageNumber: pageNumber, timestamp: Date())
+        return _pagedPublicationPageOpened(publicationId, pageNumber: pageNumber, timestamp: timestamp)
     }
     
     @available(*, deprecated, renamed: "incitoPublicationOpened(_:)")
@@ -415,7 +416,7 @@ extension Event {
         _ incitoId: PublicationId,
         pagedPublicationId: PublicationId?
     ) -> Event {
-        return incitoPublicationOpened(
+        return _incitoPublicationOpened(
             incitoId,
             pagedPublicationId: pagedPublicationId,
             timestamp: Date()
@@ -427,13 +428,13 @@ extension Event {
         _ incitoPublicationId: PublicationId,
         isAlsoPagedPublication: Bool
     ) -> Event {
-        return incitoPublicationOpened(incitoPublicationId)
+        return _incitoPublicationOpened(incitoPublicationId)
     }
     
     public static func incitoPublicationOpened(
         _ incitoPublicationId: PublicationId
     ) -> Event {
-        return incitoPublicationOpened(
+        return _incitoPublicationOpened(
             incitoPublicationId,
             timestamp: Date()
         )
@@ -444,6 +445,6 @@ extension Event {
         languageCode: String?,
         resultsViewedCount: Int
     ) -> Event {
-        return searchResultsViewed(query: query, languageCode: languageCode, resultsViewedCount: resultsViewedCount, timestamp: Date())
+        return _searchResultsViewed(query: query, languageCode: languageCode, resultsViewedCount: resultsViewedCount, timestamp: Date())
     }
 }

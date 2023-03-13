@@ -36,7 +36,7 @@ class SDKEventsTests: XCTestCase {
     func testDummy() {
         let testDate = Date(eventTimestamp: 12345)
         
-        let event = Event.dummy(timestamp: testDate)
+        let event = Event._dummy(timestamp: testDate)
         
         XCTAssertFalse(event.id.rawValue.isEmpty)
         XCTAssertEqual(event.type, 0)
@@ -45,12 +45,12 @@ class SDKEventsTests: XCTestCase {
         XCTAssertEqual(event.payload, [:])
         
         let nowTimestamp = Date().eventTimestamp
-        XCTAssert(abs(Event.dummy().timestamp.eventTimestamp - nowTimestamp) <= 2)
+        XCTAssert(abs(Event._dummy().timestamp.eventTimestamp - nowTimestamp) <= 2)
     }
     
     func testPagePublicationOpened() {
         let testDate = Date(eventTimestamp: 12345)
-        let event = Event.pagedPublicationOpened("pub1", timestamp: testDate, tokenizer: self.tokenizer.tokenize)
+        let event = Event._pagedPublicationOpened("pub1", timestamp: testDate, tokenizer: self.tokenizer.tokenize)
         
         XCTAssertFalse(event.id.rawValue.isEmpty)
         XCTAssertEqual(event.type, 1)
@@ -61,7 +61,7 @@ class SDKEventsTests: XCTestCase {
                         "vt": .string("HUdC076YIL8=")])
         
         let nowTimestamp = Date().eventTimestamp
-        let defaultEvent = Event.pagedPublicationOpened("😁")
+        let defaultEvent = Event._pagedPublicationOpened("😁")
         XCTAssert(abs(defaultEvent.timestamp.eventTimestamp - nowTimestamp) <= 2)
         XCTAssertEqual(defaultEvent.payload,
                        ["pp.id": .string("😁"),
@@ -70,7 +70,7 @@ class SDKEventsTests: XCTestCase {
     
     func testPagedPublicationPageOpened() {
         let testDate = Date(eventTimestamp: 12345)
-        let event = Event.pagedPublicationPageOpened("pub1", pageNumber: 1, timestamp: testDate, tokenizer: self.tokenizer.tokenize)
+        let event = Event._pagedPublicationPageOpened("pub1", pageNumber: 1, timestamp: testDate, tokenizer: self.tokenizer.tokenize)
 
         XCTAssertFalse(event.id.rawValue.isEmpty)
         XCTAssertEqual(event.type, 2)
@@ -102,7 +102,7 @@ class SDKEventsTests: XCTestCase {
     
     func testOfferOpened() {
         let testDate = Date(eventTimestamp: 12345)
-        let event = Event.offerInteraction("offer_123", timestamp: testDate, action: "action_123", screenName: "screenName_567", tokenizer: self.tokenizer.tokenize)
+        let event = Event._offerInteraction("offer_123", timestamp: testDate, action: "action_123", screenName: "screenName_567", tokenizer: self.tokenizer.tokenize)
         
         XCTAssertFalse(event.id.rawValue.isEmpty)
         XCTAssertEqual(event.type, 3)
@@ -125,7 +125,7 @@ class SDKEventsTests: XCTestCase {
     func testSearched() {
         let testDate = Date(eventTimestamp: 12345)
         let query = "Søme Very Long Séarch string 🌈"
-        let event = Event.searched(for: query, languageCode: "DA", timestamp: testDate, tokenizer: self.tokenizer.tokenize)
+        let event = Event._searched(for: query, languageCode: "DA", timestamp: testDate, tokenizer: self.tokenizer.tokenize)
         
         XCTAssertFalse(event.id.rawValue.isEmpty)
         XCTAssertEqual(event.type, 5)
@@ -137,7 +137,7 @@ class SDKEventsTests: XCTestCase {
                         "vt": .string("erHTNwqSrLY=")])
         
         let nowTimestamp = Date().eventTimestamp
-        let defaultEvent = Event.searched(for: "", languageCode: nil)
+        let defaultEvent = Event._searched(for: "", languageCode: nil)
         XCTAssert(abs(defaultEvent.timestamp.eventTimestamp - nowTimestamp) <= 2)
         XCTAssertEqual(defaultEvent.payload,
                        ["sea.q": .string(""),
@@ -160,7 +160,7 @@ class SDKEventsTests: XCTestCase {
     func testOfferOpenedAfterSearch() {
         let testDate = Date(eventTimestamp: 12345)
         let query = "Søme Very Long Séarch string 🌈"
-        let event = Event.offerOpenedAfterSearch(offerId: "offer_123", query: query, languageCode: "DA", timestamp: testDate)
+        let event = Event._offerOpenedAfterSearch(offerId: "offer_123", query: query, languageCode: "DA", timestamp: testDate)
         
         XCTAssertFalse(event.id.rawValue.isEmpty)
         XCTAssertEqual(event.type, 7)
@@ -172,7 +172,7 @@ class SDKEventsTests: XCTestCase {
                         "of.id": .string("offer_123")])
         
         let nowTimestamp = Date().eventTimestamp
-        let defaultEvent = Event.offerOpenedAfterSearch(offerId: "abc123", query: "", languageCode: nil)
+        let defaultEvent = Event._offerOpenedAfterSearch(offerId: "abc123", query: "", languageCode: nil)
         XCTAssert(abs(defaultEvent.timestamp.eventTimestamp - nowTimestamp) <= 2)
         XCTAssertEqual(defaultEvent.payload,
                        ["sea.q": .string(""),
@@ -183,7 +183,7 @@ class SDKEventsTests: XCTestCase {
         let testDate = Date(eventTimestamp: 12345)
         let query = "Another Very Long Séarch string 🌈"
         let offerIds = ["b", "a", "c"].map(OfferId.init(rawValue:))
-        let event = Event.firstOfferOpenedAfterSearch(offerId: "offer_123", precedingOfferIds: offerIds, query: query, languageCode: "DA", timestamp: testDate)
+        let event = Event._firstOfferOpenedAfterSearch(offerId: "offer_123", precedingOfferIds: offerIds, query: query, languageCode: "DA", timestamp: testDate)
         
         XCTAssertFalse(event.id.rawValue.isEmpty)
         XCTAssertEqual(event.type, 6)
@@ -197,7 +197,7 @@ class SDKEventsTests: XCTestCase {
                         ])
         
         let nowTimestamp = Date().eventTimestamp
-        let defaultEvent = Event.firstOfferOpenedAfterSearch(offerId: "abc123", precedingOfferIds: [], query: "", languageCode: nil)
+        let defaultEvent = Event._firstOfferOpenedAfterSearch(offerId: "abc123", precedingOfferIds: [], query: "", languageCode: nil)
         XCTAssert(abs(defaultEvent.timestamp.eventTimestamp - nowTimestamp) <= 2)
         XCTAssertEqual(defaultEvent.payload,
                        ["sea.q": .string(""),
@@ -209,7 +209,7 @@ class SDKEventsTests: XCTestCase {
         
         let clampedOfferIds = manyOfferIds.prefix(100).map({ JSONValue.string($0.rawValue) })
         
-        let bigEvent = Event.firstOfferOpenedAfterSearch(offerId: "abc123", precedingOfferIds: manyOfferIds, query: "", languageCode: nil)
+        let bigEvent = Event._firstOfferOpenedAfterSearch(offerId: "abc123", precedingOfferIds: manyOfferIds, query: "", languageCode: nil)
         
         XCTAssertEqual(bigEvent.payload,
                        ["sea.q": .string(""),
@@ -221,7 +221,7 @@ class SDKEventsTests: XCTestCase {
     func testSearchResultsViewed() {
         let testDate = Date(eventTimestamp: 12345)
         let query = "Søme Very Long Séarch string 🌈"
-        let event = Event.searchResultsViewed(query: query, languageCode: "DA", resultsViewedCount: 5, timestamp: testDate)
+        let event = Event._searchResultsViewed(query: query, languageCode: "DA", resultsViewedCount: 5, timestamp: testDate)
         
         XCTAssertFalse(event.id.rawValue.isEmpty)
         XCTAssertEqual(event.type, 9)
@@ -233,7 +233,7 @@ class SDKEventsTests: XCTestCase {
                         "sea.v": .int(5)])
         
         let nowTimestamp = Date().eventTimestamp
-        let defaultEvent = Event.searchResultsViewed(query: "", languageCode: nil, resultsViewedCount: 1)
+        let defaultEvent = Event._searchResultsViewed(query: "", languageCode: nil, resultsViewedCount: 1)
         XCTAssert(abs(defaultEvent.timestamp.eventTimestamp - nowTimestamp) <= 2)
         XCTAssertEqual(defaultEvent.payload,
                        ["sea.q": .string(""),
