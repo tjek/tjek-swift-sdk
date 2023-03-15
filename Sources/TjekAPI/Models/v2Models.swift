@@ -42,6 +42,21 @@ public struct Publication_v2: Equatable {
     /// If it contains `incito`, the `id` can be used to view this with the IncitoViewer
     /// If it ONLY contains `incito`, this cannot be viewed in a PagedPublicationViewer (see `isOnlyIncito`)
     public var types: Set<PublicationType>
+    
+    public init(id: ID, label: String? = nil, pageCount: Int, offerCount: Int, runDateRange: Range<Date>, aspectRatio: Double, branding: Branding_v2, frontPageImages: Set<ImageURL>, isAvailableInAllStores: Bool, businessId: Business_v2.ID, storeId: Store_v2.ID? = nil, types: Set<PublicationType>) {
+        self.id = id
+        self.label = label
+        self.pageCount = pageCount
+        self.offerCount = offerCount
+        self.runDateRange = runDateRange
+        self.aspectRatio = aspectRatio
+        self.branding = branding
+        self.frontPageImages = frontPageImages
+        self.isAvailableInAllStores = isAvailableInAllStores
+        self.businessId = businessId
+        self.storeId = storeId
+        self.types = types
+    }
 }
 
 extension Publication_v2 {

@@ -13,6 +13,13 @@ public struct PublicationPage_v2: Equatable {
     public var title: String?
     public var aspectRatio: Double
     public var images: Set<ImageURL>
+    
+    public init(index: Int, title: String? = nil, aspectRatio: Double, images: Set<ImageURL>) {
+        self.index = index
+        self.title = title
+        self.aspectRatio = aspectRatio
+        self.images = images
+    }
 }
 
 // MARK: -
