@@ -156,6 +156,21 @@ extension IncitoLoaderViewController {
             case let .success(viewController):
                 let firstLoad = !hasLoadedIncito
                 hasLoadedIncito = true
+                let prevHandler = viewController.sectionViewedEventHandler
+                viewController.sectionViewedEventHandler = { event in
+                    prevHandler(event)
+                    
+                    // ignore short events
+                    guard event.duration > 0.3 else {
+                        return
+                    }
+                    
+                    if TjekEventsTracker.isInitialized {
+                        TjekEventsTracker.shared.trackEvent(
+                            .incitoPublicationSectionOpened(publicationId, sectionId: event.id.sectionId, sectionPosition: event.id.sectionPosition, openedAt: event.appeared, millisecsOnScreen: Int(event.duration * 1000))
+                        )
+                    }
+                }
                 completion?(.success((viewController, firstLoad)))
             case let .failure(error):
                 completion?(.failure(error))
