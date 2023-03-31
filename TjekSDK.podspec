@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
         
         ss.frameworks   = "Foundation", "UIKit"
         
-        ss.dependency "Incito", "~> 1.0"
+        ss.dependency "Incito", "~> 1.0.6"
         ss.dependency "Tjek-Future", "~> 0.5"
         ss.dependency "Verso", "~> 1.0"
         ss.dependency "Kingfisher", "~> 7.0"

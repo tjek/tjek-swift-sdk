@@ -10,6 +10,7 @@ This release adds support for the async/await model of concurrency. It changes b
 - `APIRequest` now no longer has a version tag. If you need to define a new APIRequest, you define the endpoint version by picking the correct `.v2()` or `.v4()` static initializers function.
 - `TjekAPI.initialize` will now fatalError if called more than once. In order to re-initialize the API, you must call `await TjekAPI.shared.update(config:)`
 
+It also adds a section-opened event to the incito publication viewer.
 
 ## v5.0.3
 
