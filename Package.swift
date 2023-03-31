@@ -16,7 +16,7 @@ let package = Package(
         .library(name: "TjekPublicationViewer", targets: ["TjekPublicationViewer"])
     ],
     dependencies: [
-        .package(name: "Incito", url: "https://github.com/tjek/incito-ios.git", from: "1.0.3"),
+        .package(name: "Incito", url: "https://github.com/tjek/incito-ios.git", from: "1.0.6"),
         .package(name: "Future", url: "https://github.com/tjek/swift-future.git", from: "0.5.0"),
         .package(name: "Verso", url: "https://github.com/tjek/verso-ios.git", from: "1.0.6"),
         .package(name: "Kingfisher", url: "https://github.com/onevcat/Kingfisher.git", from: "7.0.0"),

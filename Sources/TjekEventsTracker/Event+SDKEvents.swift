@@ -25,6 +25,7 @@ extension Event {
         case searchResultsViewed            = 9
         case incitoPublicationOpened_v2     = 11
         case basicAnalytics                 = 12
+        case incitoPublicationSectionOpened = 13
     }
     
     /**
@@ -347,6 +348,39 @@ extension Event {
                      type: EventType.searchResultsViewed.rawValue,
                      payload: payload)
     }
+    
+    /**
+     The event when an incito section has disappeared from screen. Uniqueness is defined by the publicationId and the sectionPosition.
+     - parameter publicationId: The uuid of the incito.
+     - parameter sectionId: The id of the section that was opened (provided by the webview).
+     - parameter sectionPosition: The position of the section that was opened (provided by the webview)
+     - parameter openedAt: The date that the section appeared on screen.
+     - parameter millisecsOnScreen: The number of milliseconds the section was on screen.
+     - parameter tokenizer: A Tokenizer for generating the unique view token. Defaults to the shared EventsTrackers's viewTokenizer.
+     */
+    internal static func _incitoPublicationSectionOpened(
+        _ publicationId: PublicationId,
+        sectionId: String,
+        sectionPosition: Int,
+        openedAt: Date,
+        millisecsOnScreen: Int,
+        tokenizer: Tokenizer = TjekEventsTracker.shared.viewTokenizer.tokenize
+    ) -> Event {
+        
+        let payload: PayloadType = [
+            "ip.id": .string(publicationId.rawValue),
+            "ips.id": .string(sectionId),
+            "ips.p": .int(sectionPosition),
+            "mos": .int(millisecsOnScreen)
+        ]
+        
+        let viewTokenContent = "\(sectionId).\(sectionPosition)"
+        
+        return Event(timestamp: openedAt,
+                     type: EventType.incitoPublicationSectionOpened.rawValue,
+                     payload: payload)
+            .addingViewToken(content: viewTokenContent, tokenizer: tokenizer)
+    }
 }
 
 extension Event {
@@ -446,5 +480,15 @@ extension Event {
         resultsViewedCount: Int
     ) -> Event {
         return _searchResultsViewed(query: query, languageCode: languageCode, resultsViewedCount: resultsViewedCount, timestamp: Date())
+    }
+    
+    public static func incitoPublicationSectionOpened(
+        _ publicationId: PublicationId,
+        sectionId: String,
+        sectionPosition: Int,
+        openedAt: Date,
+        millisecsOnScreen: Int
+    ) -> Event {
+        return _incitoPublicationSectionOpened(publicationId, sectionId: sectionId, sectionPosition: sectionPosition, openedAt: openedAt, millisecsOnScreen: millisecsOnScreen)
     }
 }
