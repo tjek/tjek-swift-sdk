@@ -374,7 +374,7 @@ extension Event {
             "mos": .int(millisecsOnScreen)
         ]
         
-        let viewTokenContent = "\(sectionId).\(sectionPosition)"
+        let viewTokenContent = "\(publicationId.rawValue).\(sectionId)"
         
         return Event(timestamp: openedAt,
                      type: EventType.incitoPublicationSectionOpened.rawValue,
