@@ -644,9 +644,9 @@ public struct v2ImageURLs: Decodable {
     
     public var imageURLSet: Set<ImageURL> {
         Set([
-            thumb.map({ ImageURL(url: $0, width: 177) }),
-            view.map({ ImageURL(url: $0, width: 768) }),
-            zoom.map({ ImageURL(url: $0, width: 1536) })
+            thumb.map({ ImageURL(url: $0, width: 300) }),
+            view.map({ ImageURL(url: $0, width: 600) }),
+            zoom.map({ ImageURL(url: $0, width: 1000) })
         ].compactMap({ $0 }))
     }
 }
