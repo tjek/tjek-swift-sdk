@@ -20,8 +20,8 @@ class TjekEventsTrackerConfigTests: XCTestCase {
         
         XCTAssertEqual(minimalSettings.trackId, "bar")
         XCTAssertEqual(minimalSettings.baseURL, URL(string: "https://wolf-api.tjek.com")!)
-        XCTAssertEqual(minimalSettings.dispatchInterval, 120)
-        XCTAssertEqual(minimalSettings.dispatchLimit, 100)
+        XCTAssertEqual(minimalSettings.dispatchInterval, 2)
+        XCTAssertEqual(minimalSettings.dispatchLimit, 20)
         XCTAssertEqual(minimalSettings.enabled, true)
         
         // test empty input
@@ -29,7 +29,7 @@ class TjekEventsTrackerConfigTests: XCTestCase {
     }
     
     func testLoadingPlist() throws {
-        let expectedHappyConfig = try TjekEventsTracker.Config(trackId: "<sdk-demo trackId>", baseURL: URL(string: "https://wolf-api.tjek.com")!, dispatchInterval: 120.0, dispatchLimit: 100, enabled: true)
+        let expectedHappyConfig = try TjekEventsTracker.Config(trackId: "<sdk-demo trackId>", baseURL: URL(string: "https://wolf-api.tjek.com")!, dispatchInterval: 2.0, dispatchLimit: 20, enabled: true)
         
         let testBundle = Bundle.tjekEventsTrackerTests
         // try to load the updated config
@@ -42,7 +42,7 @@ class TjekEventsTrackerConfigTests: XCTestCase {
         // test legacy config file
         let legacyFilePath = try XCTUnwrap(testBundle.url(forResource: "ShopGunSDK-Config.plist", withExtension: nil))
         let legacyConfig = try TjekEventsTracker.Config.load(fromLegacyPlist: legacyFilePath)
-        let expectedLegacyConfig = try TjekEventsTracker.Config(trackId: "<legacy appId>", baseURL: URL(string: "https://wolf-api.tjek.com")!, dispatchInterval: 120.0, dispatchLimit: 100, enabled: true)
+        let expectedLegacyConfig = try TjekEventsTracker.Config(trackId: "<legacy appId>", baseURL: URL(string: "https://wolf-api.tjek.com")!, dispatchInterval: 2.0, dispatchLimit: 20, enabled: true)
         XCTAssertEqual(legacyConfig, expectedLegacyConfig)
     }
 }

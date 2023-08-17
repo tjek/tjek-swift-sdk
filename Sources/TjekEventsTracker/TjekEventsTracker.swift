@@ -24,7 +24,7 @@ public class TjekEventsTracker {
         public var enabled: Bool
         
         /// Throws if `trackId` is an empty string.
-        public init(trackId: TrackId, baseURL: URL = URL(string: "https://wolf-api.tjek.com")!, dispatchInterval: TimeInterval = 120.0, dispatchLimit: Int = 100, enabled: Bool = true) throws {
+        public init(trackId: TrackId, baseURL: URL = URL(string: "https://wolf-api.tjek.com")!, dispatchInterval: TimeInterval = 2.0, dispatchLimit: Int = 20, enabled: Bool = true) throws {
             
             guard !trackId.rawValue.isEmpty else {
                 struct TrackIdEmpty: Error { }
