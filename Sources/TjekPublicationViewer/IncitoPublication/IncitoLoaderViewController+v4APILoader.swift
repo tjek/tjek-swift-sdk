@@ -43,6 +43,7 @@ struct IncitoAPIQuery: Encodable {
     var localeCode: String?
     var time: Date?
     var featureLabels: [String: Double]
+    var enableLazyLoading: Bool
     
     var apiRequest: APIRequest<IncitoDocument> {
         APIRequest<IncitoDocument>.v4(
@@ -69,7 +70,8 @@ struct IncitoAPIQuery: Encodable {
              versionsSupported = "versions_supported",
              localeCode = "locale_code",
              time,
-             featureLabels = "feature_labels"
+             featureLabels = "feature_labels",
+             enableLazyLoading = "enable_lazy_loading"
     }
     
     func encode(to encoder: Encoder) throws {
@@ -87,6 +89,7 @@ struct IncitoAPIQuery: Encodable {
         
         let features: [[String: JSONValue]] = self.featureLabels.map({ ["key": $0.jsonValue, "value": $1.jsonValue] })
         try c.encode(features, forKey: .featureLabels)
+        try c.encode(self.enableLazyLoading, forKey: .enableLazyLoading)
     }
 }
 
@@ -106,6 +109,7 @@ extension IncitoLoaderViewController {
     public func load(
         publicationId: PublicationId,
         featureLabelWeights: [String: Double] = [:],
+        enableLazyLoading: Bool = false,
         apiClient: some APIRequestSender = TjekAPI.shared,
         publicationLoaded: ((Result<Publication_v2, Error>) -> Void)? = nil,
         completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
@@ -141,7 +145,8 @@ extension IncitoLoaderViewController {
                     versionsSupported: IncitoEnvironment.supportedVersions,
                     localeCode: Locale.autoupdatingCurrent.identifier,
                     time: Date(),
-                    featureLabels: featureLabelWeights
+                    featureLabels: featureLabelWeights,
+                    enableLazyLoading: enableLazyLoading
                 )
             })
                 .performing(on: .main)
@@ -181,6 +186,7 @@ extension IncitoLoaderViewController {
     public func load(
         publication: Publication_v2,
         featureLabelWeights: [String: Double] = [:],
+        enableLazyLoading: Bool = false,
         apiClient: some APIRequestSender = TjekAPI.shared,
         completion: ((Result<(viewController: IncitoViewController, firstSuccessfulLoad: Bool), Error>) -> Void)? = nil
         ) {
@@ -196,6 +202,7 @@ extension IncitoLoaderViewController {
         self.load(
             publicationId: publication.id,
             featureLabelWeights: featureLabelWeights,
+            enableLazyLoading: enableLazyLoading,
             apiClient: apiClient,
             completion: completion
         )

@@ -119,7 +119,7 @@ extension IncitoDocument.Element {
 
 extension IncitoViewController {
     
-    public func firstOffer(at point: CGPoint, completion: @escaping (IncitoDocument.Element?) -> Void) {
-        self.getFirstElement(at: point, where: \.isOffer, completion: completion)
+    public func firstOffer(at point: CGPoint, completion: @escaping (String?) -> Void) {
+        self.getFirstOfferElementId(at: point, completion: completion)
     }
 }
