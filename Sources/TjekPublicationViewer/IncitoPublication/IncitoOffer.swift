@@ -116,10 +116,3 @@ extension IncitoDocument.Element {
         return IncitoOffer(element: self)
     }
 }
-
-extension IncitoViewController {
-    
-    public func firstOffer(at point: CGPoint, completion: @escaping (String?) -> Void) {
-        self.getFirstOfferElementId(at: point, completion: completion)
-    }
-}
