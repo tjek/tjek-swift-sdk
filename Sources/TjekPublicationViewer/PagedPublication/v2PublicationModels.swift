@@ -141,3 +141,27 @@ extension PublicationHotspot_v2: Decodable {
         }
     }
 }
+
+// MARK: -
+
+public struct PublicationPageDecoration_v2: Equatable {
+    public let pageNumber: Int
+    public let title: String?
+    public let url: URL?
+    
+    public init(pageNumber: Int, title: String? = nil, url: URL?) {
+        let title = title ?? url?.host?.replacingOccurrences(of: "www.", with: "")
+        
+        self.pageNumber = pageNumber
+        self.title = title
+        self.url = url
+    }
+}
+
+extension PublicationPageDecoration_v2: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case pageNumber = "page_number"
+        case title
+        case url = "website_link"
+    }
+}
