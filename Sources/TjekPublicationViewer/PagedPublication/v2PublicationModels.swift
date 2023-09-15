@@ -150,11 +150,13 @@ public struct PublicationPageDecoration_v2: Equatable {
     public let url: URL?
     
     public init(pageNumber: Int, title: String? = nil, url: URL?) {
-        let title = title ?? url?.host?.replacingOccurrences(of: "www.", with: "")
-        
         self.pageNumber = pageNumber
         self.title = title
         self.url = url
+    }
+    
+    public func altTitle() -> String? {
+        return title ?? url?.host?.replacingOccurrences(of: "www.", with: "")
     }
 }
 
