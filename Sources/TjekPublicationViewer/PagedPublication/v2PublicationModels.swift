@@ -155,8 +155,8 @@ public struct PublicationPageDecoration_v2: Equatable {
         self.url = url
     }
     
-    public func altTitle() -> String? {
-        return title ?? url?.host?.replacingOccurrences(of: "www.", with: "")
+    public func urlTitle() -> String? {
+        url?.host?.replacingOccurrences(of: "www.", with: "")
     }
 }
 

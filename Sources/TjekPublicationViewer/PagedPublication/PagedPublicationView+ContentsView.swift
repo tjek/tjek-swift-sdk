@@ -213,13 +213,13 @@ extension ContentsPageDecorationButton {
     fileprivate func updatePageDecorationButton(with decoration: PagedPublicationView.PageDecorationModel?) {
         if let decoration = decoration {
             // update the text & show label
-            if pageDecorationButton.titleLabel?.text != decoration.altTitle() && pageDecorationButton.titleLabel?.text != nil && self.pageDecorationButton.alpha != 0 {
+            if pageDecorationButton.titleLabel?.text != decoration.urlTitle() && pageDecorationButton.titleLabel?.text != nil && self.pageDecorationButton.alpha != 0 {
                 UIView.transition(with: pageDecorationButton, duration: 0.15, options: [.transitionCrossDissolve, .beginFromCurrentState], animations: {
-                    self.pageDecorationButton.setTitle(decoration.altTitle(), for: .normal)
+                    self.pageDecorationButton.setTitle(decoration.urlTitle(), for: .normal)
                     self.layoutPageDecorationButton()
                 })
             } else {
-                self.pageDecorationButton.setTitle(decoration.altTitle(), for: .normal)
+                self.pageDecorationButton.setTitle(decoration.urlTitle(), for: .normal)
                 self.layoutPageDecorationButton()
             }
             
