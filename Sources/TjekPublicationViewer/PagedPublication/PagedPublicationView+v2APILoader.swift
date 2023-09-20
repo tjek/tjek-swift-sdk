@@ -15,6 +15,7 @@ extension PagedPublicationView {
         typealias PublicationLoadedHandler = ((Result<PublicationModel, APIError>) -> Void)
         typealias PagesLoadedHandler = ((Result<[PageModel], APIError>) -> Void)
         typealias HotspotsLoadedHandler = ((Result<[HotspotModel], APIError>) -> Void)
+        typealias PageDecrationsLoadedHandler = ((Result<[PageDecorationModel], APIError>) -> Void)
         
         fileprivate let api: TjekAPI
         
@@ -22,7 +23,7 @@ extension PagedPublicationView {
             self.api = api
         }
         
-        func startLoading(publicationId: PublicationId, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler) {
+        func startLoading(publicationId: PublicationId, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler, pageDecorationsLoaded: @escaping PageDecrationsLoadedHandler) {
             api.send(.getPublication(withId: publicationId)) { [weak self] (pubResult) in
                 // trigger the publication loaded callback
                 publicationLoaded(pubResult)
@@ -40,6 +41,11 @@ extension PagedPublicationView {
                 // start requesting hotspots
                 self?.api.send(.getPublicationHotspots(withId: publicationId, aspectRatio: publication.aspectRatio)) { hotspotsResult in
                     hotspotsLoaded(hotspotsResult)
+                }
+                
+                // start requesting page decorations
+                self?.api.send(.getPublicationPageDecorations(withId: publicationId)) { pageDecarationsResult in
+                    pageDecorationsLoaded(pageDecarationsResult)
                 }
             }
         }
@@ -74,5 +80,13 @@ extension APIRequest {
                 $0.withScaledBounds(scale: CGPoint(x: 1, y: aspectRatio))
             })
         })
+    }
+    
+    /// Fetch all page decorations for the specified publication
+    public static func getPublicationPageDecorations(withId pubId: PublicationId) -> APIRequest<[PublicationPageDecoration_v2]> {
+        APIRequest<[PublicationPageDecoration_v2]>.v2(
+            endpoint: "catalogs/\(pubId)/page_decorations",
+            method: .GET
+        )
     }
 }

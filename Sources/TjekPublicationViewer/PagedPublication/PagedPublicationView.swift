@@ -14,8 +14,9 @@ public protocol PagedPublicationViewDataLoader {
     typealias PublicationLoadedHandler = ((Result<PagedPublicationView.PublicationModel, APIError>) -> Void)
     typealias PagesLoadedHandler = ((Result<[PagedPublicationView.PageModel], APIError>) -> Void)
     typealias HotspotsLoadedHandler = ((Result<[PagedPublicationView.HotspotModel], APIError>) -> Void)
+    typealias PageDecrationsLoadedHandler = ((Result<[PagedPublicationView.PageDecorationModel], APIError>) -> Void)
     
-    func startLoading(publicationId: PublicationId, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler)
+    func startLoading(publicationId: PublicationId, publicationLoaded: @escaping PublicationLoadedHandler, pagesLoaded: @escaping PagesLoadedHandler, hotspotsLoaded: @escaping HotspotsLoadedHandler, pageDecorationsLoaded: @escaping PageDecrationsLoadedHandler)
 }
 
 public protocol PagedPublicationViewDelegate: AnyObject {
@@ -30,6 +31,9 @@ public protocol PagedPublicationViewDelegate: AnyObject {
     func didLongPress(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView)
     func didDoubleTap(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView)
     
+    // MARK: Page Decoration events
+    func didTapPageDecorationButton(with url: URL, in publicationView: PagedPublicationView)
+    
     // MARK: Outro events
     func outroDidAppear(_ outroView: PagedPublicationView.OutroView, in pagedPublicationView: PagedPublicationView)
     func outroDidDisappear(_ outroView: PagedPublicationView.OutroView, in pagedPublicationView: PagedPublicationView)
@@ -39,6 +43,7 @@ public protocol PagedPublicationViewDelegate: AnyObject {
     func didLoad(publication publicationModel: PagedPublicationView.PublicationModel, in pagedPublicationView: PagedPublicationView)
     func didLoad(pages pageModels: [PagedPublicationView.PageModel], in pagedPublicationView: PagedPublicationView)
     func didLoad(hotspots hotspotModels: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView)
+    func didLoad(pageDecorations pageDecorationModels: [PagedPublicationView.PageDecorationModel], in pagedPublicationView: PagedPublicationView)
     
     func backgroundColor(publication publicationModel: PagedPublicationView.PublicationModel, in pagedPublicationView: PagedPublicationView) -> UIColor?
 }
@@ -59,6 +64,7 @@ public class PagedPublicationView: UIView {
     public typealias PublicationModel = Publication_v2
     public typealias PageModel = PublicationPage_v2
     public typealias HotspotModel = PublicationHotspot_v2
+    public typealias PageDecorationModel = PublicationPageDecoration_v2
     
     public typealias CoreProperties = (pageCount: Int?, bgColor: UIColor, aspectRatio: Double)
     
@@ -78,6 +84,7 @@ public class PagedPublicationView: UIView {
             s.publicationState = .loading(publicationId)
             s.pagesState = .loading(publicationId)
             s.hotspotsState = .loading(publicationId)
+            s.pageDecorationsState = .loading(publicationId)
             
             // change what we are showing based on the states
             s.updateCurrentViewState(initialPageIndex: initialPageIndex)
@@ -99,8 +106,9 @@ public class PagedPublicationView: UIView {
             // do the loading
             s.dataLoader.startLoading(publicationId: publicationId, publicationLoaded: { [weak self] in self?.publicationDidLoad(forId: publicationId, result: $0) },
                                       pagesLoaded: { [weak self] in self?.pagesDidLoad(forId: publicationId, result: $0) },
-                                      hotspotsLoaded: { [weak self] in self?.hotspotsDidLoad(forId: publicationId, result: $0)
-            })
+                                      hotspotsLoaded: { [weak self] in self?.hotspotsDidLoad(forId: publicationId, result: $0) },
+                                      pageDecorationsLoaded: { [weak self] in self?.pageDecorationsDidLoad(forId: publicationId, result: $0) }
+            )
         }
     }
     
@@ -124,6 +132,10 @@ public class PagedPublicationView: UIView {
         self.contentsView.alpha = 0
         self.contentsView.versoView.delegate = self
         self.contentsView.versoView.dataSource = self
+        self.contentsView.didTapPageDecorationButtonCallback = { [weak self] url in
+            guard let self = self else { return }
+            self.delegate?.didTapPageDecorationButton(with: url, in: self)
+        }
         
         self.contentsView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -194,23 +206,26 @@ public class PagedPublicationView: UIView {
         init(coreProperties: CoreProperties,
              publicationState: LoadingState<PublicationId, PublicationModel>,
              pagesState: LoadingState<PublicationId, [PageModel]>,
-             hotspotsState: LoadingState<PublicationId, [IndexSet: [HotspotModel]]>) {
+             hotspotsState: LoadingState<PublicationId, [IndexSet: [HotspotModel]]>,
+             pageDecorationsState: LoadingState<PublicationId, [IndexSet: [PageDecorationModel]]>
+        ) {
             
-            switch (publicationState, pagesState, hotspotsState) {
-            case (.error(_, let error), _, _),
-                 (_, .error(_, let error), _):
+            switch (publicationState, pagesState, hotspotsState, pageDecorationsState) {
+            case (.error(_, let error), _, _, _),
+                 (_, .error(_, let error), _, _):
                 // the publication failed to load, or the pages failed.
                 // either way, it's an error, so show an error (preferring the publication error)
                 self = .error(bgColor: coreProperties.bgColor, error: error)
-            case (_, _, _) where (coreProperties.pageCount ?? 0) == 0:
+            case (_, _, _, _) where (coreProperties.pageCount ?? 0) == 0:
                 // we dont have a pageCount, so show spinner (even if pages or hotspots have loaded)
                 self = .loading(bgColor: coreProperties.bgColor)
-            case (_, _, .loading),
-                 (_, .loading, _),
-                 (.loading, _, _):
+            case (_, _, _, .loading),
+                 (_, _, .loading, _),
+                 (_, .loading, _, _),
+                 (.loading, _, _, _):
                 // we have a page count, but still loading publication or hotpots or pages, so show the contents with a spinner
                 self = .contents(coreProperties: coreProperties, additionalLoading: true)
-            case (.loaded, _, _):
+            case (.loaded, _, _, _):
                 // publication is loaded (pages & hotspots loaded or error)
                 self = .contents(coreProperties: coreProperties, additionalLoading: false)
             default:
@@ -223,6 +238,7 @@ public class PagedPublicationView: UIView {
     var publicationState: LoadingState<PublicationId, PublicationModel> = .unloaded
     var pagesState: LoadingState<PublicationId, [PageModel]> = .unloaded
     var hotspotsState: LoadingState<PublicationId, [IndexSet: [HotspotModel]]> = .unloaded
+    var pageDecorationsState: LoadingState<PublicationId, [IndexSet: [PageDecorationModel]]> = .unloaded
     var eventHandler: PagedPublicationView.EventsHandler?
 
     var currentViewState: ViewState = .initial
@@ -286,6 +302,18 @@ public class PagedPublicationView: UIView {
         })
     }
     
+    public func pageDecorationModels(onPageIndexes pageIndexSet: IndexSet) -> [PageDecorationModel] {
+        guard case .loaded(_, let pageDecorationModelsByPage) = self.pageDecorationsState else {
+            return []
+        }
+        
+        return pageDecorationModelsByPage.reduce(into: [], {
+            if $1.key.contains(where: pageIndexSet.contains) {
+                $0 += $1.value
+            }
+        })
+    }
+    
     public var pageModels: [PageModel]? {
         guard case .loaded(_, let models) = self.pagesState else { return nil }
         return models
@@ -307,7 +335,7 @@ public class PagedPublicationView: UIView {
     let hotspotOverlayView = HotspotOverlayView()
     
     lazy var outroOutsideTapGesture: UITapGestureRecognizer = { [weak self] in
-        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapOutsideOutro))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self?.didTapOutsideOutro))
         tap.cancelsTouchesInView = false
         self?.addGestureRecognizer(tap)
         return tap
@@ -367,6 +395,24 @@ public class PagedPublicationView: UIView {
         self.updateCurrentViewState(initialPageIndex: self.postReloadPageIndex)
     }
     
+    private func pageDecorationsDidLoad(forId publicationId: PublicationId, result: Result<[PageDecorationModel], APIError>) {
+        switch result {
+        case .success(let pageDecorationModels):
+            let pageDecorationsByPage: [IndexSet: [PageDecorationModel]] = pageDecorationModels.reduce(into: [:], {
+                // normalize page indexes to be 0-based
+                let normalizedPageIndex = IndexSet(integer: $1.pageNumber - 1)
+                $0[normalizedPageIndex] = $0[normalizedPageIndex, default: []] + [$1]
+            })
+            
+            self.pageDecorationsState = .loaded(publicationId, pageDecorationsByPage)
+            self.delegate?.didLoad(pageDecorations: pageDecorationModels, in: self)
+        case .failure(let error):
+            self.pageDecorationsState = .error(publicationId, error)
+        }
+        
+        self.updateCurrentViewState(initialPageIndex: self.postReloadPageIndex)
+    }
+    
     // MARK: View updating
     
     public func shouldHideLoadingSpinner(shouldHide: Bool) {
@@ -381,7 +427,8 @@ public class PagedPublicationView: UIView {
         currentViewState = ViewState(coreProperties: self.coreProperties,
                                      publicationState: self.publicationState,
                                      pagesState: self.pagesState,
-                                     hotspotsState: self.hotspotsState)
+                                     hotspotsState: self.hotspotsState,
+                                     pageDecorationsState: self.pageDecorationsState)
         
         // change what views are visible (and update them) based on the viewState
         switch self.currentViewState {
@@ -436,9 +483,10 @@ public class PagedPublicationView: UIView {
             properties.pageLabelString = dataSourceWithDefaults.textForPageNumberLabel(pageIndexes: pageIndexes,
                                                                                        pageCount: pageCount,
                                                                                        for: self)
-            
+            properties.pageDecoration = pageDecorationModels(onPageIndexes: pageIndexes).first
         } else {
             properties.pageLabelString = nil
+            properties.pageDecoration = nil
         }
         
         properties.showAdditionalLoading = additionalLoading
