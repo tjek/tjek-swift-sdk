@@ -399,10 +399,9 @@ public class PagedPublicationView: UIView {
         switch result {
         case .success(let pageDecorationModels):
             let pageDecorationsByPage: [IndexSet: [PageDecorationModel]] = pageDecorationModels.reduce(into: [:], {
-                let pageNumber = $1.pageNumber
-                let pageRange = (pageNumber - 1)...pageNumber
-                let pageKey = IndexSet(pageRange)
-                $0[pageKey] = $0[pageKey, default: []] + [$1]
+                // normalize page indexes to be 0-based
+                let normalizedPageIndex = IndexSet(integer: $1.pageNumber - 1)
+                $0[normalizedPageIndex] = $0[normalizedPageIndex, default: []] + [$1]
             })
             
             self.pageDecorationsState = .loaded(publicationId, pageDecorationsByPage)
