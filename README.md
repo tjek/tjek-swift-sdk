@@ -10,6 +10,8 @@ TjekSDK
 
 ![Logo](./Examples/SharedSource/Images.xcassets/AppIcon.appiconset/SDKAppIcon-120w.png) 
 
+Questions related to the SDK? Email us at [services@tjek.com](mailto:services@tjek.com).
+
 ## Introduction
 
 This is an SDK for interacting with the different Tjek services from within your own apps. The SDK has been split into several libraries, which can be loaded independently if you wish:
