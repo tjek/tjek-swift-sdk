@@ -32,7 +32,7 @@ public protocol PagedPublicationViewDelegate: AnyObject {
     func didDoubleTap(pageIndex: Int, locationInPage: CGPoint, hittingHotspots: [PagedPublicationView.HotspotModel], in pagedPublicationView: PagedPublicationView)
     
     // MARK: Page Decoration events
-    func didTapPageDecorationButton(with url: URL, in publicationView: PagedPublicationView)
+    func pageExternalURLChanged(with url: URL?, in publicationView: PagedPublicationView)
     
     // MARK: Outro events
     func outroDidAppear(_ outroView: PagedPublicationView.OutroView, in pagedPublicationView: PagedPublicationView)
@@ -132,9 +132,9 @@ public class PagedPublicationView: UIView {
         self.contentsView.alpha = 0
         self.contentsView.versoView.delegate = self
         self.contentsView.versoView.dataSource = self
-        self.contentsView.didTapPageDecorationButtonCallback = { [weak self] url in
+        self.contentsView.pageExternalURLChangedCallback = { [weak self] url in
             guard let self = self else { return }
-            self.delegate?.didTapPageDecorationButton(with: url, in: self)
+            self.delegate?.pageExternalURLChanged(with: url, in: self)
         }
         
         self.contentsView.translatesAutoresizingMaskIntoConstraints = false

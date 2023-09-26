@@ -24,7 +24,7 @@ extension PagedPublicationView {
             self.properties = properties
             pageNumberLabel.isHidden = shouldHidePageCountLabel
             updatePageNumberLabel(with: properties.pageLabelString)
-            updatePageDecorationButton(with: properties.pageDecoration)
+            updatePageExternalURLButton(with: properties.pageDecoration?.url)
             
             var spinnerFrame = additionalLoadingSpinner.frame
             spinnerFrame.origin.x = self.layoutMarginsGuide.layoutFrame.maxX - spinnerFrame.width
@@ -39,9 +39,8 @@ extension PagedPublicationView {
         
         var versoView = VersoView()
         fileprivate var pageNumberLabel = PageNumberLabel()
-        fileprivate var pageDecorationButton = PageDecorationButton()
         var shouldHidePageCountLabel: Bool = false
-        var didTapPageDecorationButtonCallback: ((URL) -> Void)?
+        var pageExternalURLChangedCallback: ((URL?) -> Void)?
         
         var additionalLoadingSpinner: UIActivityIndicatorView = {
             let view = UIActivityIndicatorView(style: .medium)
@@ -58,12 +57,10 @@ extension PagedPublicationView {
             versoView.frame = frame
             addSubview(versoView)
             addSubview(pageNumberLabel)
-            addSubview(pageDecorationButton)
             addSubview(additionalLoadingSpinner)
             
             // initial state is invisible
             pageNumberLabel.alpha = 0
-            pageDecorationButton.alpha = 0
             additionalLoadingSpinner.alpha = 0
             
             setNeedsLayout()
@@ -210,127 +207,7 @@ fileprivate class PageNumberLabel: UILabel {
 
 private typealias ContentsPageDecorationButton = PagedPublicationView.ContentsView
 extension ContentsPageDecorationButton {
-    fileprivate func updatePageDecorationButton(with decoration: PagedPublicationView.PageDecorationModel?) {
-        if let decoration = decoration {
-            // update the text & show label
-            if pageDecorationButton.titleLabel?.text != decoration.urlTitle() && pageDecorationButton.titleLabel?.text != nil && self.pageDecorationButton.alpha != 0 {
-                UIView.transition(with: pageDecorationButton, duration: 0.15, options: [.transitionCrossDissolve, .beginFromCurrentState], animations: {
-                    self.pageDecorationButton.setTitle(decoration.urlTitle(), for: .normal)
-                    self.layoutPageDecorationButton()
-                })
-            } else {
-                self.pageDecorationButton.setTitle(decoration.urlTitle(), for: .normal)
-                self.layoutPageDecorationButton()
-            }
-            
-            UIView.animate(withDuration: 0.5, delay: 0, options: [.beginFromCurrentState], animations: {
-                self.pageDecorationButton.alpha = 1.0
-            }, completion: nil)
-            
-        } else {
-            // hide the button
-            UIView.animate(withDuration: 0.2, delay: 0, options: [.beginFromCurrentState], animations: {
-                self.pageDecorationButton.alpha = 0
-            })
-        }
-    }
-    
-    fileprivate func layoutPageDecorationButton() {
-        // layout page number label
-        var buttonFrame = pageDecorationButton.frame
-        buttonFrame.size = pageDecorationButton.sizeThatFits(bounds.size)
-        
-        buttonFrame.size.width =  ceil(buttonFrame.size.width)
-        buttonFrame.size.height = round(buttonFrame.size.height)
-        
-        buttonFrame.origin.x = round(bounds.midX - (buttonFrame.width / 2))
-        
-        // change the bottom offset of the pageLabel when on iPhoneX
-        let pageDecorationButtonBottomOffset: CGFloat
-        if #available(iOS 11.0, *),
-           UIDevice.current.userInterfaceIdiom == .phone,
-           UIScreen.main.nativeBounds.height == 2436 { // iPhoneX
-            // position above the home indicator on iPhoneX
-            pageDecorationButtonBottomOffset = bounds.maxY - safeAreaLayoutGuide.layoutFrame.maxY
-        } else {
-            pageDecorationButtonBottomOffset = 11
-        }
-        
-        if shouldHidePageCountLabel {
-            buttonFrame.origin.y = round(bounds.maxY - pageDecorationButtonBottomOffset - buttonFrame.height)
-        } else {
-            buttonFrame.origin.y = round(bounds.minY + pageDecorationButtonBottomOffset + buttonFrame.height)
-        }
-        
-        pageDecorationButton.frame = buttonFrame
-        pageDecorationButton.addTarget(self, action: #selector(didTapPageDecorationButton), for: .touchUpInside)
-    }
-    
-    @objc
-    fileprivate func didTapPageDecorationButton() {
-        if let url = properties.pageDecoration?.url {
-            self.didTapPageDecorationButtonCallback?(url)
-        }
-    }
-}
-
-fileprivate class PageDecorationButton: UIButton {
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        layer.cornerRadius = 12
-        layer.shadowRadius = 6
-        layer.shadowOpacity = 0.35
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = .zero
-        layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-        
-        bouncesOnTouch = true
-        setTitleColor(.darkText, for: .normal)
-        backgroundColor = .white
-        titleLabel?.textAlignment = .center
-        titleLabel?.font = .preferredFont(forTextStyle: .callout)
-        contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-private extension UIButton {
-    @objc
-    var bouncesOnTouch: Bool {
-        get {
-            guard let selectorNames = actions(forTarget: self, forControlEvent: [.touchUpOutside, .touchUpInside, .touchDragExit, .touchCancel]) else {
-                return false
-            }
-            let bouncySelectorName = NSStringFromSelector(#selector(bouncyButtonTouchUp(_:)))
-            return selectorNames.contains(bouncySelectorName)
-        }
-        set {
-            let upEvents: UIControl.Event = [.touchUpOutside, .touchUpInside, .touchDragExit, .touchCancel]
-            let downEvents: UIControl.Event = [.touchDown, .touchDragEnter]
-            
-            if newValue == true {
-                addTarget(self, action: #selector(bouncyButtonTouchUp(_:)), for: upEvents)
-                addTarget(self, action: #selector(bouncyButtonTouchDown(_:)), for: downEvents)
-            } else {
-                removeTarget(self, action: #selector(bouncyButtonTouchUp(_:)), for: upEvents)
-                removeTarget(self, action: #selector(bouncyButtonTouchDown(_:)), for: downEvents)
-            }
-        }
-    }
-    
-    @objc private func bouncyButtonTouchDown(_ btn: UIButton) {
-        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.9, options: [.beginFromCurrentState], animations: {
-            btn.layer.transform = CATransform3DMakeScale(0.8, 0.8, 0.8)
-        }, completion: nil)
-    }
-    @objc private func bouncyButtonTouchUp(_ btn: UIButton) {
-        UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.9, options: [.beginFromCurrentState], animations: {
-            btn.layer.transform = CATransform3DMakeScale(1.0, 1.0, 1.0)
-        }, completion: nil)
+    fileprivate func updatePageExternalURLButton(with url: URL?) {
+        self.pageExternalURLChangedCallback?(url)
     }
 }

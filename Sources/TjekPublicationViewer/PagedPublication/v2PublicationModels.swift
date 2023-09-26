@@ -154,10 +154,6 @@ public struct PublicationPageDecoration_v2: Equatable {
         self.title = title
         self.url = url
     }
-    
-    public func urlTitle() -> String? {
-        url?.host?.replacingOccurrences(of: "www.", with: "")
-    }
 }
 
 extension PublicationPageDecoration_v2: Decodable {
