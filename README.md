@@ -1,3 +1,11 @@
+# HEADS UP! This SDK has been deprecated in favor of a new solution
+
+We've launched a new way of viewing your publications, which includes better stats tracking, videos, compatibility with React Native+Flutter, and more.
+
+Reach out to [services@tjek.com](mailto:services@tjek.com) to get an introduction.
+
+---
+
 [![Build Status](https://github.com/tjek/tjek-swift-sdk/actions/workflows/main.yml/badge.svg)](https://github.com/tjek/tjek-swift-sdk/actions/workflows/main.yml)
 [![Swift](http://img.shields.io/badge/swift-5.0-brightgreen.svg)](https://swift.org)
 [![SPM](https://img.shields.io/badge/SPM-supported-DE5C43.svg?style=flat)](https://swift.org/package-manager/)
